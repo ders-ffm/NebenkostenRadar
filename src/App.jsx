@@ -1006,6 +1006,7 @@ export default function App() {
                     <button onClick={() => { setPrevStep("result"); navigateTo("datenschutz"); }} style={{ background: "none", border: "none", color: C.dim, textDecoration: "underline", cursor: "pointer", fontSize: 10, fontFamily: "inherit", padding: 0 }}>Datenschutzerklärung</button>
                   </div>
                 </div>
+              </div>
             </div>
           ) : (
             <>
