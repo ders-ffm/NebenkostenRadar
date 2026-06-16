@@ -129,9 +129,9 @@ const pct = (a, b) => b > 0 ? Math.round((a / b) * 100) : 0;
 
 function checkPaidReturn() {
   try {
-    const sessionId = new URLSearchParams(window.location.search).get("session_id");
-    // Echte session_id beginnt mit cs_ — manuelle Eingabe von ?paid=true funktioniert nicht mehr
-    return sessionId && sessionId.startsWith("cs_");
+    const params = new URLSearchParams(window.location.search);
+    return params.get("paid") === "true" ||
+           (params.get("session_id") && params.get("session_id").startsWith("cs_"));
   } catch { return false; }
 }
 
@@ -547,7 +547,7 @@ export default function App() {
     if (IS_DEMO) { setUnlocked(true); return; }
     setPayPending(true);
 
-    window.open(CONFIG.STRIPE_PAYMENT_LINK + "?success_url=" + encodeURIComponent(window.location.href.split("?")[0] + "?session_id={CHECKOUT_SESSION_ID}"), "_blank");
+    window.location.href = CONFIG.STRIPE_PAYMENT_LINK;
   }
 
   function resetAll() {
