@@ -546,6 +546,28 @@ export default function App() {
     setEmailSending(false);
   }
 
+  function getBriefText() {
+    const gruende = result ? (result.widerspruchsgruende || []) : [];
+    return [
+      adressen.mieterName, adressen.mieterStrasse, adressen.mieterPlz + " " + adressen.mieterOrt, "", "",
+      adressen.vermieterName, adressen.vermieterStrasse, adressen.vermieterPlz + " " + adressen.vermieterOrt, "", "",
+      adressen.mieterOrt + ", " + adressen.datum, "", "",
+      "Betreff: Widerspruch zur Betriebskostenabrechnung " + wohnung.jahr,
+      "         Mietobjekt: " + adressen.mieterStrasse + ", " + adressen.mieterPlz + " " + adressen.mieterOrt, "", "",
+      "Sehr geehrte Damen und Herren,", "",
+      "hiermit widerspreche ich der Betriebskostenabrechnung für das Abrechnungsjahr " + wohnung.jahr + " fristgerecht gemäß § 556 Abs. 3 BGB.", "",
+      "Die Abrechnung weist nach meiner Prüfung folgende Mängel auf:", "",
+      ...(gruende.length > 0 ? gruende.map((g, i) => (i + 1) + ". " + g) : ["1. Die Abrechnung ist in mehreren Punkten nicht hinreichend nachvollziehbar."]),
+      "", "Ich bitte daher um:", "",
+      "1. Übersendung aller Originalbelege zur Einsichtnahme (§ 259 BGB)",
+      "2. Nachvollziehbare Darlegung des Umlageschlüssels für alle Positionen",
+      "3. Korrektur der beanstandeten Posten und Neuberechnung der Abrechnung", "",
+      "Eine eventuelle Nachzahlung leiste ich ausdrücklich unter Vorbehalt.", "",
+      "Ich bitte um schriftliche Stellungnahme innerhalb von 4 Wochen.", "", "",
+      "Mit freundlichen Grüßen,", "", "", "_________________________________", adressen.mieterName,
+    ].join("\n");
+  }
+
   async function handleKaufen(briefText, berichtText) {
     if (!widerrufsCheckbox && !IS_DEMO) {
       alert("Bitte bestätige zunächst die Zustimmung zur sofortigen Ausführung.");
@@ -992,7 +1014,7 @@ export default function App() {
                     Zahlung über Stripe · Kein Abo · Einmalige Zahlung
                   </div>
                   <button
-                    onClick={widerrufsCheckbox || IS_DEMO ? () => handleKaufen(briefText, reportContent) : undefined}
+                    onClick={widerrufsCheckbox || IS_DEMO ? () => handleKaufen(getBriefText(), reportContent) : undefined}
                     disabled={!widerrufsCheckbox && !IS_DEMO} aria-disabled={!widerrufsCheckbox && !IS_DEMO} aria-describedby="widerruf-hinweis"
                     style={{
                       width: "100%", border: "none", borderRadius: 12, padding: "16px",
