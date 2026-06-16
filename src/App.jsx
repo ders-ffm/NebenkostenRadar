@@ -1612,7 +1612,7 @@ export default function App() {
           { titel: "Unser Ansatz", text: "Wir kombinieren systematische Regelprüfung nach BetrKV, HeizkostenV und CO₂KostAufG mit dem aktuellen DMB-Betriebskostenspiegel. Jeder Posten wird automatisch auf Zulässigkeit und Plausibilität geprüft. Das Ergebnis ist nachvollziehbar, mit konkreten Rechtsgrundlagen belegt." },
           { titel: "Unabhängigkeit", text: "NebenkostenRadar hat keine Verbindungen zu Vermietern, Hausverwaltungen oder Immobiliengesellschaften. Wir arbeiten ausschließlich im Interesse der Mieter. Unsere Prüfergebnisse sind nicht käuflich." },
           { titel: "Aktualität", text: "Gesetzliche Änderungen — wie das Ende des Kabelanschluss-Nebenkostenprivilegs im Juli 2024 — fließen unmittelbar in unsere Prüflogik ein. Richtwerte werden jährlich nach dem DMB-Betriebskostenspiegel aktualisiert." },
-          { titel: "Transparenz bei den Kosten", text: "Die Basisanalyse ist kostenlos und ohne Registrierung verfügbar. Der vollständige Prüfbericht mit Prüfbericht mit Mustertext kostet einmalig €7,99 — ohne Abo, ohne versteckte Folgekosten." },
+          { titel: "Transparenz bei den Kosten", text: "Die Basisanalyse ist kostenlos und ohne Registrierung verfügbar. Der vollständige Prüfbericht mit Prüfbericht mit Mustertext kostet einmalig €9,99 — ohne Abo, ohne versteckte Folgekosten." },
         ].map((s, i) => (
           <div key={i} style={{ marginBottom: 24, paddingBottom: 24, borderBottom: i < 3 ? "1px solid " + C.border : "none" }}>
             <h2 style={{ fontSize: 17, fontWeight: 700, color: C.text, margin: "0 0 10px" }}>{s.titel}</h2>
