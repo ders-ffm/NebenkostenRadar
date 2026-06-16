@@ -1226,7 +1226,7 @@ export default function App() {
                 {emailInput && emailConfirm && emailInput === emailConfirm && (
                   <div style={{ fontSize: 11, color: C.green }}>✓ E-Mail-Adressen stimmen überein</div>
                 )}
-                <button onClick={() => handleEmailSenden(briefLines.join("\n"), "")}
+                <button onClick={() => handleEmailSenden(briefLines.join("\n"), reportContent)}
                   disabled={emailSending || emailInput !== emailConfirm || !emailInput}
                   style={{ background: emailSending || emailInput !== emailConfirm || !emailInput ? C.border : C.green, color: emailInput === emailConfirm && emailInput ? "#fff" : C.dim, border: "none", borderRadius: 8, padding: "10px 16px", fontSize: 13, fontFamily: "inherit", fontWeight: 700, cursor: emailSending || emailInput !== emailConfirm || !emailInput ? "not-allowed" : "pointer" }}>
                   {emailSending ? "Sende..." : "Brief und Bericht senden"}
