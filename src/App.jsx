@@ -3,7 +3,7 @@ import { ARTIKEL } from "./artikel.js";
 
 const CONFIG = {
   STRIPE_PAYMENT_LINK: "https://buy.stripe.com/4gM28r2qn26hf7a0MzgUM00",
-  PREIS: 7.99,
+  PREIS: 9.99,
   RICHTWERTE: {
     gesamt: 2.67, heizung_warmwasser: 1.32, heizung_max: 2.18,
     wasser_abwasser: 0.26, grundsteuer: 0.21, muell: 0.20,
