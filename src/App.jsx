@@ -955,8 +955,7 @@ export default function App() {
                   Mögliche Rückforderung laut Analyse: <strong>{fmt(result.moegliche_ersparnis)}</strong>
                 </div>
               )}
-              {true ? (
-                <div>
+              <div>
                   {/* Widerrufsbelehrung + Checkbox — Pflicht nach § 356 Abs. 5 BGB */}
                   <div style={{ background: "#f8f9fa", border: "1px solid " + C.border, borderRadius: 10, padding: "12px 14px", marginBottom: 12 }}>
                     <label style={{ display: "flex", alignItems: "flex-start", gap: 10, cursor: "pointer" }}>
@@ -1007,7 +1006,6 @@ export default function App() {
                     <button onClick={() => { setPrevStep("result"); navigateTo("datenschutz"); }} style={{ background: "none", border: "none", color: C.dim, textDecoration: "underline", cursor: "pointer", fontSize: 10, fontFamily: "inherit", padding: 0 }}>Datenschutzerklärung</button>
                   </div>
                 </div>
-              )}
             </div>
           ) : (
             <>
