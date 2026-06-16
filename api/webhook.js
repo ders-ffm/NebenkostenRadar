@@ -125,7 +125,7 @@ export default async function handler(req, res) {
       body: JSON.stringify({
         from: 'NebenkostenRadar <noreply@nebenkostenradar.com>',
         to: customerEmail,
-        subject: 'Ihr NebenkostenRadar Prüfbericht und Musterbrief',
+        subject: 'Ihr NebenkostenRadar Prüfbericht und Widerspruchsbrief',
         html: buildEmail(brief, bericht),
       }),
     });
@@ -144,64 +144,114 @@ export default async function handler(req, res) {
 }
 
 function buildEmail(brief, bericht) {
-  const briefSection = brief
-    ? `<div style="margin-bottom:28px;">
-        <div style="font-size:12px;font-weight:700;color:#1a1a1a;text-transform:uppercase;letter-spacing:0.08em;margin-bottom:10px;padding-bottom:6px;border-bottom:2px solid #2d7a4f;">Ihr Widerspruchsbrief</div>
-        <div style="background:#fafafa;border:1px solid #dde1e7;border-radius:8px;padding:20px;font-family:'Courier New',monospace;font-size:12px;color:#1a1a1a;line-height:1.8;white-space:pre-wrap;">${brief.replace(/</g,'&lt;').replace(/>/g,'&gt;')}</div>
-      </div>` : '';
+  const briefHtml = brief
+    ? brief
+        .split('\n')
+        .map(line => line.trim() === ''
+          ? '<div style="height:10px;"></div>'
+          : `<div style="font-size:13px;color:#1a1a1a;line-height:1.8;font-family:\'Segoe UI\',Arial,sans-serif;">${line.replace(/</g,'&lt;').replace(/>/g,'&gt;')}</div>`
+        )
+        .join('')
+    : '';
 
-  const berichtSection = bericht
-    ? `<div style="margin-bottom:28px;">
-        <div style="font-size:12px;font-weight:700;color:#1a1a1a;text-transform:uppercase;letter-spacing:0.08em;margin-bottom:10px;padding-bottom:6px;border-bottom:2px solid #2d7a4f;">Ihr Prüfbericht</div>
-        <div style="background:#fafafa;border:1px solid #dde1e7;border-radius:8px;padding:20px;font-family:'Courier New',monospace;font-size:11px;color:#1a1a1a;line-height:1.8;white-space:pre-wrap;">${bericht.replace(/</g,'&lt;').replace(/>/g,'&gt;')}</div>
-      </div>` : '';
+  const berichtHtml = bericht
+    ? bericht
+        .split('\n')
+        .map(line => {
+          const escaped = line.replace(/</g,'&lt;').replace(/>/g,'&gt;');
+          if (line.startsWith('===') || line.startsWith('---')) {
+            return `<div style="border-bottom:1px solid #dde1e7;margin:6px 0;"></div>`;
+          }
+          if (line.startsWith('GESAMTBEWERTUNG') || line.startsWith('POSTEN-BEWERTUNG') || line.startsWith('WIDERSPRUCHSGRUENDE') || line.startsWith('FRISTEN') || line.startsWith('NEBENKOSTEN')) {
+            return `<div style="font-size:11px;font-weight:700;color:#2d7a4f;text-transform:uppercase;letter-spacing:0.08em;margin:14px 0 4px;">${escaped}</div>`;
+          }
+          if (line.match(/^\d+\./)) {
+            return `<div style="font-size:12px;color:#1a1a1a;line-height:1.7;padding:4px 0 4px 8px;border-left:3px solid #2d7a4f;margin:4px 0;">${escaped}</div>`;
+          }
+          if (line.trim() === '') {
+            return `<div style="height:6px;"></div>`;
+          }
+          return `<div style="font-size:12px;color:#555e68;line-height:1.7;">${escaped}</div>`;
+        })
+        .join('')
+    : '';
 
   return `<!DOCTYPE html>
 <html lang="de">
 <head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0"></head>
-<body style="margin:0;padding:0;background:#f8f9fa;font-family:'Segoe UI','Helvetica Neue',Arial,sans-serif;">
-<table width="100%" cellpadding="0" cellspacing="0" style="background:#f8f9fa;padding:32px 16px;">
+<body style="margin:0;padding:0;background:#f0f2f5;font-family:'Segoe UI','Helvetica Neue',Arial,sans-serif;">
+<table width="100%" cellpadding="0" cellspacing="0" style="background:#f0f2f5;padding:32px 16px;">
 <tr><td align="center">
 <table width="600" cellpadding="0" cellspacing="0" style="max-width:600px;width:100%;">
 
-  <tr><td style="background:#ffffff;border-radius:12px 12px 0 0;padding:24px 32px;border-bottom:2px solid #dde1e7;">
+  <!-- Header -->
+  <tr><td style="background:#ffffff;border-radius:12px 12px 0 0;padding:22px 32px;border-bottom:2px solid #dde1e7;">
     <table width="100%" cellpadding="0" cellspacing="0"><tr>
-      <td><table cellpadding="0" cellspacing="0"><tr>
-        <td style="background:#2d7a4f;border-radius:8px;width:38px;height:38px;text-align:center;vertical-align:middle;">
-          <span style="color:#fff;font-size:20px;font-weight:bold;">&#9679;</span>
-        </td>
-        <td style="padding-left:10px;">
-          <div style="font-size:17px;font-weight:800;color:#1a1a1a;">Nebenkosten<span style="color:#2d7a4f;">Radar</span></div>
-          <div style="font-size:10px;color:#2d7a4f;font-weight:600;letter-spacing:0.06em;text-transform:uppercase;">nebenkostenradar.com</div>
-        </td>
-      </tr></table></td>
+      <td>
+        <table cellpadding="0" cellspacing="0"><tr>
+          <td style="background:#2d7a4f;border-radius:8px;width:38px;height:38px;text-align:center;vertical-align:middle;">
+            <span style="color:#fff;font-size:20px;font-weight:bold;">&#9679;</span>
+          </td>
+          <td style="padding-left:10px;">
+            <div style="font-size:17px;font-weight:800;color:#1a1a1a;">Nebenkosten<span style="color:#2d7a4f;">Radar</span></div>
+            <div style="font-size:10px;color:#2d7a4f;font-weight:600;letter-spacing:0.06em;text-transform:uppercase;">nebenkostenradar.com</div>
+          </td>
+        </tr></table>
+      </td>
       <td align="right" style="font-size:11px;color:#8a9199;">Unabhängige Abrechnungsprüfung</td>
     </tr></table>
   </td></tr>
 
-  <tr><td style="background:#ffffff;padding:28px 32px;">
-    <div style="background:#eaf4ee;border-left:4px solid #2d7a4f;border-radius:8px;padding:14px 18px;margin-bottom:24px;">
+  <!-- Danke -->
+  <tr><td style="background:#ffffff;padding:24px 32px 8px;">
+    <div style="background:#eaf4ee;border-left:4px solid #2d7a4f;border-radius:8px;padding:14px 18px;">
       <div style="font-size:15px;font-weight:700;color:#1a1a1a;margin-bottom:3px;">&#10003; Vielen Dank für Ihre Bestellung</div>
-      <div style="font-size:12px;color:#555e68;">Ihr Prüfbericht und Musterbrief sind beigefügt.</div>
+      <div style="font-size:12px;color:#555e68;">Ihr Widerspruchsbrief und Prüfbericht befinden sich unten in dieser E-Mail.</div>
     </div>
-
-    <p style="font-size:14px;color:#555e68;margin:0 0 24px;line-height:1.7;">
-      anbei erhalten Sie Ihren vollständigen Prüfbericht sowie den versandfertigen Widerspruchsbrief.
-      Sie können den Brief direkt ausdrucken und per Einschreiben an Ihren Vermieter senden.
-    </p>
-
-    ${briefSection}
-    ${berichtSection}
-
-    <table width="100%" cellpadding="0" cellspacing="0" style="margin-top:8px;">
-      <tr><td align="center">
-        <a href="https://nebenkostenradar.com" style="display:inline-block;background:#2d7a4f;color:#ffffff;text-decoration:none;padding:13px 30px;border-radius:8px;font-size:14px;font-weight:700;">
-          Neue Prüfung starten &#8594;
-        </a>
-      </td></tr>
-    </table>
   </td></tr>
 
+  <!-- Brief -->
+  ${brief ? `
+  <tr><td style="background:#ffffff;padding:24px 32px 8px;">
+    <div style="border:1px solid #dde1e7;border-radius:10px;overflow:hidden;">
+      <div style="background:#2d7a4f;padding:12px 20px;">
+        <span style="color:#fff;font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;">&#9993; Ihr Widerspruchsbrief</span>
+      </div>
+      <div style="background:#fffdf7;padding:6px 16px 4px;border-bottom:1px solid #dde1e7;">
+        <p style="font-size:11px;color:#b45309;margin:6px 0;">
+          <strong>So verwenden Sie diesen Brief:</strong> Text unten vollständig markieren &rarr;
+          <strong>Cmd+C</strong> (Mac) oder <strong>Strg+C</strong> (Windows) &rarr; in Word oder Pages einfügen &rarr; drucken &rarr; per Einschreiben senden.
+        </p>
+      </div>
+      <div style="background:#fafafa;padding:24px 28px;">
+        ${briefHtml}
+      </div>
+    </div>
+  </td></tr>
+  ` : ''}
+
+  <!-- Prüfbericht -->
+  ${bericht ? `
+  <tr><td style="background:#ffffff;padding:16px 32px 8px;">
+    <div style="border:1px solid #dde1e7;border-radius:10px;overflow:hidden;">
+      <div style="background:#1a3a2a;padding:12px 20px;">
+        <span style="color:#fff;font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;">&#128203; Ihr Prüfbericht</span>
+      </div>
+      <div style="background:#fafafa;padding:20px 24px;">
+        ${berichtHtml}
+      </div>
+    </div>
+  </td></tr>
+  ` : ''}
+
+  <!-- CTA -->
+  <tr><td style="background:#ffffff;padding:16px 32px 24px;text-align:center;">
+    <a href="https://nebenkostenradar.com" style="display:inline-block;background:#2d7a4f;color:#ffffff;text-decoration:none;padding:13px 30px;border-radius:8px;font-size:14px;font-weight:700;">
+      Neue Prüfung starten &#8594;
+    </a>
+  </td></tr>
+
+  <!-- Hinweis -->
   <tr><td style="background:#fef3e2;padding:14px 32px;border-top:1px solid #dde1e7;">
     <p style="font-size:12px;color:#b45309;margin:0;line-height:1.6;">
       Dieser Bericht ersetzt keine Rechtsberatung. Deutscher Mieterbund:
@@ -209,6 +259,7 @@ function buildEmail(brief, bericht) {
     </p>
   </td></tr>
 
+  <!-- Footer -->
   <tr><td style="background:#f8f9fa;border-radius:0 0 12px 12px;padding:18px 32px;border-top:1px solid #dde1e7;">
     <p style="font-size:11px;color:#8a9199;margin:0;line-height:1.8;text-align:center;">
       NebenkostenRadar &middot; Stefan Hennig &middot; Ludwigstr. 33-37, 60327 Frankfurt am Main<br>
