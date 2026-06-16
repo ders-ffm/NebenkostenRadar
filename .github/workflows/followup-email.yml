@@ -1,0 +1,188 @@
+name: NebenkostenRadar – Follow-up E-Mail
+
+on:
+  schedule:
+    - cron: '0 8 1 * *'  # Jeden 1. des Monats um 8:00 UTC
+  workflow_dispatch:       # Manuell auslösbar zum Testen
+
+jobs:
+  send-followup:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Follow-up E-Mails senden
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+          RESEND_API_KEY: ${{ secrets.RESEND_API_KEY }}
+        run: |
+          node << 'EOF'
+          const supabaseUrl = process.env.SUPABASE_URL;
+          const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
+          const resendKey = process.env.RESEND_API_KEY;
+
+          async function main() {
+            // Käufer holen die vor 10-12 Monaten gekauft haben und noch kein Follow-up bekommen haben
+            const now = new Date();
+            const from = new Date(now);
+            from.setMonth(from.getMonth() - 12);
+            const to = new Date(now);
+            to.setMonth(to.getMonth() - 10);
+
+            const url = `${supabaseUrl}/rest/v1/nkr_purchases?followup_sent=eq.false&purchased_at=gte.${from.toISOString()}&purchased_at=lte.${to.toISOString()}&select=id,email,purchased_at`;
+
+            const res = await fetch(url, {
+              headers: {
+                'apikey': supabaseKey,
+                'Authorization': `Bearer ${supabaseKey}`,
+              }
+            });
+
+            if (!res.ok) {
+              console.error('Supabase Fehler:', await res.text());
+              process.exit(1);
+            }
+
+            const purchases = await res.json();
+            console.log(`${purchases.length} Follow-up(s) zu senden`);
+
+            for (const purchase of purchases) {
+              console.log(`Sende an: ${purchase.email}`);
+
+              // E-Mail senden
+              const emailRes = await fetch('https://api.resend.com/emails', {
+                method: 'POST',
+                headers: {
+                  'Authorization': `Bearer ${resendKey}`,
+                  'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                  from: 'NebenkostenRadar <noreply@nebenkostenradar.com>',
+                  to: purchase.email,
+                  subject: 'Ihre Nebenkostenabrechnung 2025 — jetzt prüfen (20% Rabatt)',
+                  html: buildFollowupEmail(),
+                }),
+              });
+
+              if (!emailRes.ok) {
+                console.error('Resend Fehler für', purchase.email, ':', await emailRes.text());
+                continue;
+              }
+
+              console.log('E-Mail gesendet an:', purchase.email);
+
+              // followup_sent auf true setzen
+              const updateRes = await fetch(`${supabaseUrl}/rest/v1/nkr_purchases?id=eq.${purchase.id}`, {
+                method: 'PATCH',
+                headers: {
+                  'apikey': supabaseKey,
+                  'Authorization': `Bearer ${supabaseKey}`,
+                  'Content-Type': 'application/json',
+                  'Prefer': 'return=minimal',
+                },
+                body: JSON.stringify({ followup_sent: true }),
+              });
+
+              if (!updateRes.ok) {
+                console.error('Supabase Update Fehler:', await updateRes.text());
+              } else {
+                console.log('followup_sent gesetzt für:', purchase.email);
+              }
+            }
+
+            console.log('Fertig.');
+          }
+
+          function buildFollowupEmail() {
+            return `<!DOCTYPE html>
+          <html lang="de">
+          <head>
+          <meta charset="UTF-8">
+          <meta name="viewport" content="width=device-width, initial-scale=1.0">
+          </head>
+          <body style="margin:0;padding:0;background:#f8f9fa;font-family:'Segoe UI','Helvetica Neue',Arial,sans-serif;">
+            <table width="100%" cellpadding="0" cellspacing="0" style="background:#f8f9fa;padding:32px 16px;">
+              <tr><td align="center">
+                <table width="600" cellpadding="0" cellspacing="0" style="max-width:600px;width:100%;">
+
+                  <!-- Header -->
+                  <tr><td style="background:#ffffff;border-radius:12px 12px 0 0;padding:24px 32px;border-bottom:2px solid #dde1e7;">
+                    <table width="100%" cellpadding="0" cellspacing="0"><tr>
+                      <td>
+                        <table cellpadding="0" cellspacing="0"><tr>
+                          <td style="background:#2d7a4f;border-radius:8px;width:38px;height:38px;text-align:center;vertical-align:middle;">
+                            <span style="color:#fff;font-size:18px;">&#9679;</span>
+                          </td>
+                          <td style="padding-left:10px;">
+                            <div style="font-size:17px;font-weight:800;color:#1a1a1a;">Nebenkosten<span style="color:#2d7a4f;">Radar</span></div>
+                            <div style="font-size:10px;color:#2d7a4f;font-weight:600;letter-spacing:0.06em;text-transform:uppercase;">nebenkostenradar.com</div>
+                          </td>
+                        </tr></table>
+                      </td>
+                      <td align="right" style="font-size:11px;color:#8a9199;">Unabhängige Abrechnungsprüfung</td>
+                    </tr></table>
+                  </td></tr>
+
+                  <!-- Inhalt -->
+                  <tr><td style="background:#ffffff;padding:28px 32px;">
+                    <div style="background:#eaf4ee;border-left:4px solid #2d7a4f;border-radius:8px;padding:14px 18px;margin-bottom:20px;">
+                      <div style="font-size:15px;font-weight:700;color:#1a1a1a;margin-bottom:3px;">Neue Abrechnung? Wir prüfen sie für Sie.</div>
+                      <div style="font-size:12px;color:#555e68;">Exklusiv für bestehende Kunden: 20% Rabatt mit Code NKR20</div>
+                    </div>
+
+                    <p style="font-size:14px;color:#1a1a1a;margin:0 0 14px;line-height:1.65;">
+                      vor etwa einem Jahr haben Sie Ihre Nebenkostenabrechnung mit NebenkostenRadar geprüft.
+                    </p>
+                    <p style="font-size:14px;color:#555e68;margin:0 0 20px;line-height:1.7;">
+                      Die neue Abrechnung für 2025 kommt bald — oder liegt vielleicht schon im Briefkasten.
+                      Als bestehender Kunde erhalten Sie <strong style="color:#1a1a1a;">20% Rabatt</strong> auf die erneute Prüfung.
+                    </p>
+
+                    <div style="background:#fef9e7;border:2px solid #f59e0b;border-radius:10px;padding:18px 20px;margin-bottom:24px;text-align:center;">
+                      <div style="font-size:11px;color:#b45309;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;margin-bottom:6px;">Ihr persönlicher Rabatt-Code</div>
+                      <div style="font-size:28px;font-weight:900;color:#1a1a1a;letter-spacing:0.1em;">NKR20</div>
+                      <div style="font-size:12px;color:#b45309;margin-top:4px;">20% Rabatt · einmalig einlösbar</div>
+                    </div>
+
+                    <table width="100%" cellpadding="0" cellspacing="0" style="margin-bottom:24px;">
+                      <tr><td align="center">
+                        <a href="https://nebenkostenradar.com" style="display:inline-block;background:#2d7a4f;color:#ffffff;text-decoration:none;padding:13px 30px;border-radius:8px;font-size:14px;font-weight:700;">
+                          Jetzt Abrechnung prüfen &#8594;
+                        </a>
+                      </td></tr>
+                    </table>
+
+                    <p style="font-size:12px;color:#8a9199;margin:0;line-height:1.6;text-align:center;">
+                      Den Code einfach beim Bezahlen eingeben. Gültig für eine Prüfung.
+                    </p>
+                  </td></tr>
+
+                  <!-- Hinweis -->
+                  <tr><td style="background:#fef3e2;padding:14px 32px;border-top:1px solid #dde1e7;">
+                    <p style="font-size:12px;color:#b45309;margin:0;line-height:1.6;">
+                      Dieser Bericht ersetzt keine Rechtsberatung. Deutscher Mieterbund:
+                      <a href="https://www.mieterbund.de" style="color:#b45309;">mieterbund.de</a> &middot; Tel. 030 223230
+                    </p>
+                  </td></tr>
+
+                  <!-- Footer -->
+                  <tr><td style="background:#f8f9fa;border-radius:0 0 12px 12px;padding:18px 32px;border-top:1px solid #dde1e7;">
+                    <p style="font-size:11px;color:#8a9199;margin:0;line-height:1.8;text-align:center;">
+                      NebenkostenRadar &middot; Stefan Hennig &middot; Ludwigstr. 33-37, 60327 Frankfurt am Main<br>
+                      <a href="https://nebenkostenradar.com" style="color:#8a9199;">Impressum</a> &middot;
+                      <a href="https://nebenkostenradar.com" style="color:#8a9199;">Datenschutz</a> &middot;
+                      support@nebenkostenradar.com
+                    </p>
+                  </td></tr>
+
+                </table>
+              </td></tr>
+            </table>
+          </body>
+          </html>`;
+          }
+
+          main().catch(err => {
+            console.error(err);
+            process.exit(1);
+          });
+          EOF
