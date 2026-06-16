@@ -546,7 +546,7 @@ export default function App() {
     setEmailSending(false);
   }
 
-  function handleKaufen() {
+  async function handleKaufen(briefText, berichtText) {
     if (!widerrufsCheckbox && !IS_DEMO) {
       alert("Bitte bestätige zunächst die Zustimmung zur sofortigen Ausführung.");
       return;
@@ -554,7 +554,18 @@ export default function App() {
     if (IS_DEMO) { setUnlocked(true); return; }
     setPayPending(true);
 
-    window.location.href = CONFIG.STRIPE_PAYMENT_LINK;
+    const sessionId = crypto.randomUUID();
+    try {
+      await fetch("/api/save-report", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ sessionId, brief: briefText, bericht: berichtText }),
+      });
+    } catch (e) {
+      console.error("Bericht speichern fehlgeschlagen:", e);
+    }
+
+    window.location.href = CONFIG.STRIPE_PAYMENT_LINK + "?client_reference_id=" + sessionId;
   }
 
   function resetAll() {
@@ -934,12 +945,11 @@ export default function App() {
             ))}
           </div>
 
-          {justPaid && unlocked && (
+          {justPaid && (
             <div style={{ background: C.greenBg, border: "2px solid " + C.green, borderRadius: 12, padding: "16px 18px", marginBottom: 16 }}>
-              <div style={{ fontSize: 15, fontWeight: 800, color: C.green, marginBottom: 4 }}>✓ Zahlung erfolgreich — Vollbericht freigeschaltet!</div>
+              <div style={{ fontSize: 15, fontWeight: 800, color: C.green, marginBottom: 4 }}>✓ Vielen Dank für Ihre Bestellung!</div>
               <div style={{ fontSize: 12, color: C.muted, lineHeight: 1.6 }}>
-                Scrollen Sie nach unten um Ihren vollständigen Prüfbericht und Widerspruchsbrief zu sehen.
-                Sie können den Bericht auch per E-Mail an sich senden.
+                Ihr Prüfbericht und Musterbrief wurden an Ihre E-Mail-Adresse gesendet. Bitte prüfen Sie auch Ihren Spam-Ordner.
               </div>
             </div>
           )}
@@ -982,7 +992,7 @@ export default function App() {
                     Zahlung über Stripe · Kein Abo · Einmalige Zahlung
                   </div>
                   <button
-                    onClick={widerrufsCheckbox || IS_DEMO ? handleKaufen : undefined}
+                    onClick={widerrufsCheckbox || IS_DEMO ? () => handleKaufen(briefText, reportContent) : undefined}
                     disabled={!widerrufsCheckbox && !IS_DEMO} aria-disabled={!widerrufsCheckbox && !IS_DEMO} aria-describedby="widerruf-hinweis"
                     style={{
                       width: "100%", border: "none", borderRadius: 12, padding: "16px",
