@@ -129,15 +129,13 @@ const pct = (a, b) => b > 0 ? Math.round((a / b) * 100) : 0;
 
 function checkPaidReturn() {
   try {
-    const params = new URLSearchParams(window.location.search);
-    return params.get("paid") === "true" ||
-           (params.get("session_id") && params.get("session_id").startsWith("cs_"));
+    return window.location.pathname === "/danke";
   } catch { return false; }
 }
 
 function checkJustPaid() {
   try {
-    return new URLSearchParams(window.location.search).get("paid") === "true";
+    return window.location.pathname === "/danke";
   } catch { return false; }
 }
 
@@ -568,7 +566,7 @@ export default function App() {
     ].join("\n");
   }
 
-  async function handleKaufen(briefText, berichtText) {
+  async function handleKaufen() {
     if (!widerrufsCheckbox && !IS_DEMO) {
       alert("Bitte bestätige zunächst die Zustimmung zur sofortigen Ausführung.");
       return;
@@ -576,6 +574,42 @@ export default function App() {
     if (IS_DEMO) { setUnlocked(true); return; }
     setPayPending(true);
 
+    // Bericht generieren
+    const bew = BEWERTUNG[result?.gesamtbewertung] || BEWERTUNG.auffaellig;
+    const berichtLines = [
+      "NEBENKOSTENPRUEFBERICHT — NebenkostenRadar",
+      "===========================================",
+      "Wohnung: " + wohnung.flaeche + "m² | Abrechnungsjahr: " + wohnung.jahr,
+      "Erstellt am: " + new Date().toLocaleDateString("de-DE"),
+      "",
+      "GESAMTBEWERTUNG: " + bew.label,
+      "-------------------------------------------",
+      result?.zusammenfassung || "",
+      "",
+      "Ihr Wert/m²/Jahr: " + fmt(result?.pro_qm_gesamt),
+      "DMB-Richtwert 2024: " + fmt(result?.richtwert_pro_qm_jahr),
+      "Mögliche Ersparnis: " + (result?.moegliche_ersparnis > 0 ? fmt(result?.moegliche_ersparnis) : "Keine"),
+      "",
+      "POSTEN-BEWERTUNG",
+      "-------------------------------------------",
+      ...(result?.posten_bewertung || []).map(p => p.posten + ": " + fmt(p.betrag) + " [" + ({ ok: "ok", hoch: "erhöht", sehr_hoch: "stark erhöht", nicht_umlagefaehig: "NICHT ZULAESSIG", pruefen: "prüfen" })[p.status] + "] " + p.hinweis),
+      "",
+      "WIDERSPRUCHSGRUENDE",
+      "-------------------------------------------",
+      ...(result?.widerspruchsgruende?.length > 0 ? result.widerspruchsgruende.map((g, i) => (i + 1) + ". " + g) : ["Keine konkreten Widerspruchsgründe."]),
+      "",
+      "FRISTEN",
+      "-------------------------------------------",
+      result?.fristen_hinweis || "",
+      "",
+      "-------------------------------------------",
+      "Kein Ersatz für anwaltliche Beratung.",
+      "Deutscher Mieterbund: mieterbund.de · Tel. 030 223230",
+    ];
+    const berichtText = berichtLines.join("\n");
+    const briefText = getBriefText();
+
+    // In Supabase speichern
     const sessionId = crypto.randomUUID();
     try {
       await fetch("/api/save-report", {
@@ -1014,7 +1048,13 @@ export default function App() {
                     Zahlung über Stripe · Kein Abo · Einmalige Zahlung
                   </div>
                   <button
-                    onClick={widerrufsCheckbox || IS_DEMO ? () => handleKaufen(getBriefText(), reportContent) : undefined}
+                    onClick={widerrufsCheckbox || IS_DEMO ? () => {
+                      if (!adressen.mieterName.trim() || !adressen.vermieterName.trim()) {
+                        setStep("adressen");
+                      } else {
+                        handleKaufen();
+                      }
+                    } : undefined}
                     disabled={!widerrufsCheckbox && !IS_DEMO} aria-disabled={!widerrufsCheckbox && !IS_DEMO} aria-describedby="widerruf-hinweis"
                     style={{
                       width: "100%", border: "none", borderRadius: 12, padding: "16px",
@@ -1113,7 +1153,7 @@ export default function App() {
         </div>
 
         <Field label="Datum" value={adressen.datum} onChange={v => setA("datum", v)} placeholder="01.01.2024" tip="Datum für den Brief" />
-        <Btn onClick={() => { if (validateAdressen()) { setErrors({}); setStep("dokument"); } }}>Brief erstellen →</Btn>
+        <Btn onClick={() => { if (validateAdressen()) { setErrors({}); handleKaufen(); } }}>Jetzt kaufen · €{CONFIG.PREIS.toFixed(2)} →</Btn>
       </div>
     </div>
   );
@@ -1323,6 +1363,24 @@ export default function App() {
           Den kopierten Text in Word, Pages oder Notes einfügen und speichern.
         </div>
         <Btn onClick={() => { setErrors({}); setStep(adressen.mieterName && adressen.vermieterName ? "dokument" : "adressen"); }} variant="outline">← Zurück zum Prüfbericht mit Mustertext</Btn>
+      </div>
+    </div>
+  );
+
+  // ── DANKE ─────────────────────────────────────────────────────────────────────
+  if (step === "danke" || window.location.pathname === "/danke") return (
+    <div style={{ ...root, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", minHeight: "100vh", padding: "40px 20px" }}>
+      <div style={{ maxWidth: 480, width: "100%", textAlign: "center" }}>
+        <div style={{ width: 64, height: 64, borderRadius: "50%", background: C.greenBg, border: "2px solid " + C.green, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 28, margin: "0 auto 24px" }}>✓</div>
+        <h1 style={{ fontSize: 24, fontWeight: 700, color: C.text, margin: "0 0 12px" }}>Vielen Dank für Ihre Bestellung!</h1>
+        <p style={{ fontSize: 15, color: C.muted, lineHeight: 1.7, margin: "0 0 24px" }}>
+          Ihr Prüfbericht und Musterbrief wurden an Ihre E-Mail-Adresse gesendet.<br />
+          Bitte prüfen Sie auch Ihren Spam-Ordner.
+        </p>
+        <div style={{ background: C.surface, border: "1px solid " + C.border, borderRadius: 12, padding: "16px 20px", marginBottom: 24, fontSize: 13, color: C.muted, lineHeight: 1.6 }}>
+          Sie können den Widerspruchsbrief direkt ausdrucken und per Einschreiben an Ihren Vermieter senden.
+        </div>
+        <Btn onClick={() => { window.history.replaceState({}, "", "/"); navigateTo("welcome"); }}>Neue Prüfung starten</Btn>
       </div>
     </div>
   );
