@@ -2,7 +2,7 @@ import { useState, useCallback, useEffect } from "react";
 import { ARTIKEL } from "./artikel.js";
 
 const CONFIG = {
-  STRIPE_PAYMENT_LINK: "https://buy.stripe.com/4gM28r2qn26hf7a0MzgUM00",
+  STRIPE_PAYMENT_LINK: "https://buy.stripe.com/5kQeVdfd9h1b8IM1QDgUM01",
   PREIS: 9.99,
   RICHTWERTE: {
     gesamt: 2.67, heizung_warmwasser: 1.32, heizung_max: 2.18,
