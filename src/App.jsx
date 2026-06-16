@@ -135,6 +135,12 @@ function checkPaidReturn() {
   } catch { return false; }
 }
 
+function checkJustPaid() {
+  try {
+    return new URLSearchParams(window.location.search).get("paid") === "true";
+  } catch { return false; }
+}
+
 const BEWERTUNG = {
   ok:         { label: "Unauffällig",  farbe: C.green, bg: C.greenBg, icon: "✅", sub: "Keine wesentlichen Fehler gefunden" },
   auffaellig: { label: "Prüfenswert", farbe: C.amber, bg: C.amberBg, icon: "⚠️", sub: "Auffälligkeiten — Widerspruch empfohlen" },
@@ -386,6 +392,7 @@ export default function App() {
   const [errors, setErrors] = useState({});
   const [submitAttempted, setSubmitAttempted] = useState(false);
   const [unlocked, setUnlocked] = useState(() => checkPaidReturn());
+  const [justPaid, setJustPaid] = useState(() => checkJustPaid());
   const [payPending, setPayPending] = useState(false);
   const [loadingIdx, setLoadingIdx] = useState(0);
   const [result, setResult] = useState(null);
@@ -927,6 +934,15 @@ export default function App() {
             ))}
           </div>
 
+          {justPaid && unlocked && (
+            <div style={{ background: C.greenBg, border: "2px solid " + C.green, borderRadius: 12, padding: "16px 18px", marginBottom: 16 }}>
+              <div style={{ fontSize: 15, fontWeight: 800, color: C.green, marginBottom: 4 }}>✓ Zahlung erfolgreich — Vollbericht freigeschaltet!</div>
+              <div style={{ fontSize: 12, color: C.muted, lineHeight: 1.6 }}>
+                Scrollen Sie nach unten um Ihren vollständigen Prüfbericht und Widerspruchsbrief zu sehen.
+                Sie können den Bericht auch per E-Mail an sich senden.
+              </div>
+            </div>
+          )}
           {!unlocked ? (
             <div style={{ background: C.surface, border: "2px solid " + C.goldD, borderRadius: 16, padding: "20px 18px" }}>
               <div style={{ textAlign: "center", marginBottom: 14 }}>
@@ -939,35 +955,7 @@ export default function App() {
                   Mögliche Rückforderung laut Analyse: <strong>{fmt(result.moegliche_ersparnis)}</strong>
                 </div>
               )}
-              {payPending ? (
-                <div>
-                  <p style={{ fontSize: 12, color: C.muted, textAlign: "center", marginBottom: 12 }}>Zahlung läuft im neuen Tab. Nach Abschluss hier klicken:</p>
-                  <Btn onClick={async () => {
-                    const sessionId = new URLSearchParams(window.location.search).get("session_id");
-                    if (!sessionId || !sessionId.startsWith("cs_")) {
-                      alert("Bitte zuerst die Zahlung abschließen.");
-                      return;
-                    }
-                    try {
-                      const res = await fetch("/api/verify-payment", {
-                        method: "POST",
-                        headers: { "Content-Type": "application/json" },
-                        body: JSON.stringify({ sessionId }),
-                      });
-                      const data = await res.json();
-                      if (data.verified) {
-                        setUnlocked(true);
-                      } else {
-                        alert("Zahlung konnte nicht verifiziert werden. Bitte Zahlung abschließen.");
-                      }
-                    } catch {
-                      // Fallback: bei Netzwerkfehler session_id als Beweis akzeptieren
-                      if (sessionId && sessionId.startsWith("cs_")) setUnlocked(true);
-                    }
-                  }} variant="green" style={{ marginBottom: 8 }}>✓ Bezahlt — Vollbericht anzeigen</Btn>
-                  <Btn onClick={() => setPayPending(false)} variant="outline">Abbrechen</Btn>
-                </div>
-              ) : (
+              {false ? ( // payPending flow removed
                 <div>
                   {/* Widerrufsbelehrung + Checkbox — Pflicht nach § 356 Abs. 5 BGB */}
                   <div style={{ background: "#f8f9fa", border: "1px solid " + C.border, borderRadius: 10, padding: "12px 14px", marginBottom: 12 }}>
