@@ -1,7 +1,9 @@
-// Stripe Webhook → E-Mail via Resend
+// Stripe Webhook → E-Mail via Resend + Supabase Speicherung
 // Vercel Environment Variables:
 //   STRIPE_WEBHOOK_SECRET  (Stripe Dashboard → Webhooks → Signing secret)
 //   RESEND_API_KEY         (resend.com → API Keys)
+//   SUPABASE_URL           (Supabase → Settings → General → Project URL)
+//   SUPABASE_SERVICE_ROLE_KEY (Supabase → Settings → API → service_role)
 
 export const config = {
   api: { bodyParser: false }  // Raw body für Stripe Signaturprüfung
@@ -12,6 +14,8 @@ export default async function handler(req, res) {
 
   const resendKey = process.env.RESEND_API_KEY;
   const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET;
+  const supabaseUrl = process.env.SUPABASE_URL;
+  const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
 
   // Raw body lesen
   const chunks = [];
@@ -64,6 +68,36 @@ export default async function handler(req, res) {
   if (!customerEmail || !resendKey) {
     console.log('Keine E-Mail oder kein Resend Key — überspringe');
     return res.status(200).json({ received: true });
+  }
+
+  // Supabase: Käufer speichern
+  if (supabaseUrl && supabaseKey) {
+    try {
+      const supabaseRes = await fetch(`${supabaseUrl}/rest/v1/nkr_purchases`, {
+        method: 'POST',
+        headers: {
+          'apikey': supabaseKey,
+          'Authorization': `Bearer ${supabaseKey}`,
+          'Content-Type': 'application/json',
+          'Prefer': 'resolution=ignore-duplicates',
+        },
+        body: JSON.stringify({
+          email: customerEmail,
+          purchased_at: new Date().toISOString(),
+          followup_sent: false,
+        }),
+      });
+      if (!supabaseRes.ok) {
+        const errText = await supabaseRes.text();
+        console.error('Supabase Fehler:', errText);
+      } else {
+        console.log('Supabase: Käufer gespeichert:', customerEmail);
+      }
+    } catch (err) {
+      console.error('Supabase Fehler:', err.message);
+    }
+  } else {
+    console.log('Supabase nicht konfiguriert — überspringe Speicherung');
   }
 
   // E-Mail via Resend
