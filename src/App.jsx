@@ -955,7 +955,7 @@ export default function App() {
                   Mögliche Rückforderung laut Analyse: <strong>{fmt(result.moegliche_ersparnis)}</strong>
                 </div>
               )}
-              {false ? ( // payPending flow removed
+              {true ? (
                 <div>
                   {/* Widerrufsbelehrung + Checkbox — Pflicht nach § 356 Abs. 5 BGB */}
                   <div style={{ background: "#f8f9fa", border: "1px solid " + C.border, borderRadius: 10, padding: "12px 14px", marginBottom: 12 }}>
