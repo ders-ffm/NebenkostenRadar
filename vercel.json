@@ -2,7 +2,8 @@
   "rewrites": [
     { "source": "/api/v1/messages", "destination": "/api/messages" },
     { "source": "/admin",           "destination": "/index.html" },
-    { "source": "/admin/(.*)",      "destination": "/index.html" }
+    { "source": "/admin/(.*)",      "destination": "/index.html" },
+    { "source": "/danke",           "destination": "/index.html" }
   ],
   "headers": [
     {
