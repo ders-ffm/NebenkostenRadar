@@ -47,7 +47,8 @@ export default async function handler(req, res) {
     obj.metadata?.email ||
     null;
 
-  const stripeSessionId = null; // client_reference_id nicht verfügbar bei Payment Links
+  const stripeSessionId = obj.client_reference_id || null;
+  console.log('client_reference_id (session_id):', stripeSessionId);
 
   console.log('Kunde E-Mail:', customerEmail);
   console.log('Stripe Session ID:', stripeSessionId);
@@ -84,11 +85,36 @@ export default async function handler(req, res) {
     }
   }
 
-  // Bericht aus nkr_reports holen — neuester Eintrag der letzten 15 Minuten
+  // Bericht aus nkr_reports holen — per session_id (zuverlässiger Match)
   let brief = null;
   let bericht = null;
 
-  if (supabaseUrl && supabaseKey) {
+  if (supabaseUrl && supabaseKey && stripeSessionId) {
+    try {
+      const reportRes = await fetch(
+        `${supabaseUrl}/rest/v1/nkr_reports?session_id=eq.${encodeURIComponent(stripeSessionId)}&limit=1&select=brief,bericht`,
+        {
+          headers: {
+            'apikey': supabaseKey,
+            'Authorization': `Bearer ${supabaseKey}`,
+          },
+        }
+      );
+      if (reportRes.ok) {
+        const reports = await reportRes.json();
+        if (reports.length > 0) {
+          brief = reports[0].brief;
+          bericht = reports[0].bericht;
+          console.log('Bericht per session_id geladen:', stripeSessionId);
+        } else {
+          console.log('Kein Bericht für session_id gefunden:', stripeSessionId);
+        }
+      }
+    } catch (err) {
+      console.error('Bericht-Abruf Fehler:', err.message);
+    }
+  } else if (supabaseUrl && supabaseKey && !stripeSessionId) {
+    // Fallback: neuester Eintrag der letzten 15 Minuten
     try {
       const since = new Date(Date.now() - 15 * 60 * 1000).toISOString();
       const reportRes = await fetch(
@@ -105,13 +131,11 @@ export default async function handler(req, res) {
         if (reports.length > 0) {
           brief = reports[0].brief;
           bericht = reports[0].bericht;
-          console.log('Bericht aus Supabase geladen');
-        } else {
-          console.log('Kein Bericht in den letzten 15 Minuten gefunden');
+          console.log('Bericht per Zeitstempel-Fallback geladen');
         }
       }
     } catch (err) {
-      console.error('Bericht-Abruf Fehler:', err.message);
+      console.error('Bericht-Abruf Fallback Fehler:', err.message);
     }
   }
 
