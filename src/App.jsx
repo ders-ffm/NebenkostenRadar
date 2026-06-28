@@ -364,7 +364,9 @@ function LegalFooter({ setStep, setPrevStep, currentStep }) {
 // ─── Main App ─────────────────────────────────────────────────────────────────
 
 export default function App() {
-  const [step, setStep] = useState("welcome");
+  const [step, setStep] = useState(() =>
+    window.location.pathname === "/danke" ? "danke" : "welcome"
+  );
 
   // Browser-Zurück-Button: History API
   const navigateTo = useCallback((newStep) => {
