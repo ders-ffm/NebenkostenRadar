@@ -141,8 +141,8 @@ function checkJustPaid() {
 
 const BEWERTUNG = {
   ok:         { label: "Unauffällig",  farbe: C.green, bg: C.greenBg, icon: "✅", sub: "Keine wesentlichen Fehler gefunden" },
-  auffaellig: { label: "Prüfenswert", farbe: C.amber, bg: C.amberBg, icon: "⚠️", sub: "Auffälligkeiten — Widerspruch empfohlen" },
-  kritisch:   { label: "Fehlerhaft",  farbe: C.red,   bg: C.redBg,   icon: "🚨", sub: "Erhebliche Fehler — sofort widersprechen" },
+  auffaellig: { label: "Prüfenswert", farbe: C.amber, bg: C.amberBg, icon: "⚠️", sub: "Auffälligkeiten — Einwände ratsam" },
+  kritisch:   { label: "Fehlerhaft",  farbe: C.red,   bg: C.redBg,   icon: "🚨", sub: "Erhebliche Fehler — Einwände dringend empfohlen" },
 };
 
 function analysierePosten(w, wohn) {
@@ -509,6 +509,7 @@ export default function App() {
       result.fristen_hinweis || "",
       "",
       "-------------------------------------------",
+      "Unverbindliches Musterschreiben ohne Rechtsberatungscharakter (§ 2 RDG).",
       "Kein Ersatz für anwaltliche Beratung.",
       "Deutscher Mieterbund: mieterbund.de · Tel. 030 223230",
     ];
@@ -550,11 +551,11 @@ export default function App() {
       adressen.mieterName, adressen.mieterStrasse, adressen.mieterPlz + " " + adressen.mieterOrt, "", "",
       adressen.vermieterName, adressen.vermieterStrasse, adressen.vermieterPlz + " " + adressen.vermieterOrt, "", "",
       adressen.mieterOrt + ", " + adressen.datum, "", "",
-      "Betreff: Widerspruch zur Betriebskostenabrechnung " + wohnung.jahr,
+      "Betreff: Widerspruch gegen die Betriebskostenabrechnung " + wohnung.jahr,
       "         Mietobjekt: " + adressen.mieterStrasse + ", " + adressen.mieterPlz + " " + adressen.mieterOrt, "", "",
       "Sehr geehrte Damen und Herren,", "",
-      "hiermit widerspreche ich der Betriebskostenabrechnung für das Abrechnungsjahr " + wohnung.jahr + " fristgerecht gemäß § 556 Abs. 3 BGB.", "",
-      "Die Abrechnung weist nach meiner Prüfung folgende Mängel auf:", "",
+      "hiermit erhebe ich fristgerecht Einwände gegen die Betriebskostenabrechnung für das Abrechnungsjahr " + wohnung.jahr + " gemäß § 556 Abs. 3 BGB und bitte um Überprüfung der nachfolgend aufgeführten Punkte.", "",
+      "Die Abrechnung weist nach meiner Prüfung folgende Auffälligkeiten auf:", "",
       ...(gruende.length > 0 ? gruende.map((g, i) => (i + 1) + ". " + g) : ["1. Die Abrechnung ist in mehreren Punkten nicht hinreichend nachvollziehbar."]),
       "", "Ich bitte daher um:", "",
       "1. Übersendung aller Originalbelege zur Einsichtnahme (§ 259 BGB)",
@@ -563,6 +564,11 @@ export default function App() {
       "Eine eventuelle Nachzahlung leiste ich ausdrücklich unter Vorbehalt.", "",
       "Ich bitte um schriftliche Stellungnahme innerhalb von 4 Wochen.", "", "",
       "Mit freundlichen Grüßen,", "", "", "_________________________________", adressen.mieterName,
+      "", "",
+      "---",
+      "Dieses Schreiben wurde mit NebenkostenRadar (nebenkostenradar.com) erstellt.",
+      "Es handelt sich um ein unverbindliches Musterschreiben ohne Rechtsberatungscharakter (§ 2 RDG).",
+      "Für rechtssichere Beratung wenden Sie sich an den Deutschen Mieterbund (mieterbund.de) oder einen Rechtsanwalt.",
     ].join("\n");
   }
 
@@ -603,6 +609,7 @@ export default function App() {
       result?.fristen_hinweis || "",
       "",
       "-------------------------------------------",
+      "Unverbindliches Musterschreiben ohne Rechtsberatungscharakter (§ 2 RDG).",
       "Kein Ersatz für anwaltliche Beratung.",
       "Deutscher Mieterbund: mieterbund.de · Tel. 030 223230",
     ];
@@ -1175,15 +1182,15 @@ export default function App() {
       adressen.mieterOrt + ", " + adressen.datum,
       "",
       "",
-      "Betreff: Widerspruch zur Betriebskostenabrechnung " + wohnung.jahr,
+      "Betreff: Widerspruch gegen die Betriebskostenabrechnung " + wohnung.jahr,
       "         Mietobjekt: " + adressen.mieterStrasse + ", " + adressen.mieterPlz + " " + adressen.mieterOrt,
       "",
       "",
       "Sehr geehrte Damen und Herren,",
       "",
-      "hiermit widerspreche ich der Betriebskostenabrechnung für das Abrechnungsjahr " + wohnung.jahr + " fristgerecht gemäß § 556 Abs. 3 BGB.",
+      "hiermit erhebe ich fristgerecht Einwände gegen die Betriebskostenabrechnung für das Abrechnungsjahr " + wohnung.jahr + " gemäß § 556 Abs. 3 BGB und bitte um Überprüfung der nachfolgend aufgeführten Punkte.",
       "",
-      "Die Abrechnung weist nach meiner Prüfung folgende Mängel auf:",
+      "Die Abrechnung weist nach meiner Prüfung folgende Auffälligkeiten auf:",
       "",
       ...(gruende.length > 0 ? gruende.map((g, i) => (i + 1) + ". " + g) : ["1. Die Abrechnung ist in mehreren Punkten nicht hinreichend nachvollziehbar."]),
       "",
@@ -1203,6 +1210,12 @@ export default function App() {
       "",
       "_________________________________",
       adressen.mieterName,
+      "",
+      "",
+      "---",
+      "Dieses Schreiben wurde mit NebenkostenRadar (nebenkostenradar.com) erstellt.",
+      "Es handelt sich um ein unverbindliches Musterschreiben ohne Rechtsberatungscharakter (§ 2 RDG).",
+      "Für rechtssichere Beratung wenden Sie sich an den Deutschen Mieterbund (mieterbund.de) oder einen Rechtsanwalt.",
     ];
     const briefText = briefLines.join("\n");
     return (
@@ -1257,11 +1270,10 @@ export default function App() {
             {briefText}
           </div>
 
-          {/* Fußzeile */}
-          <div style={{ borderTop: "1px solid " + C.border, padding: "8px 28px", background: C.surface, display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-            <div style={{ fontSize: 10, color: C.dim }}>Erstellt mit NebenkostenRadar · nebenkostenradar.com</div>
-            <div style={{ fontSize: 10, color: C.dim }}>{new Date().toLocaleDateString("de-DE")}</div>
-          </div>
+            <div style={{ borderTop: "1px solid " + C.border, padding: "8px 28px", background: C.surface, display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+              <div style={{ fontSize: 10, color: C.dim }}>Unverbindliches Musterschreiben · Kein Rechtsberatungscharakter (§ 2 RDG) · nebenkostenradar.com</div>
+              <div style={{ fontSize: 10, color: C.dim }}>{new Date().toLocaleDateString("de-DE")}</div>
+            </div>
         </div>
 
         <div style={{ padding: "16px 20px 40px", display: "flex", flexDirection: "column", gap: 10 }}>
@@ -1378,7 +1390,7 @@ export default function App() {
           Bitte prüfen Sie auch Ihren Spam-Ordner.
         </p>
         <div style={{ background: C.surface, border: "1px solid " + C.border, borderRadius: 12, padding: "16px 20px", marginBottom: 24, fontSize: 13, color: C.muted, lineHeight: 1.6 }}>
-          Sie können den Widerspruchsbrief direkt ausdrucken und per Einschreiben an Ihren Vermieter senden.
+          Sie können das Musterschreiben direkt ausdrucken und per Einschreiben an Ihren Vermieter senden.
         </div>
         <Btn onClick={() => { window.history.replaceState({}, "", "/"); navigateTo("welcome"); }}>Neue Prüfung starten</Btn>
       </div>
@@ -1428,13 +1440,14 @@ export default function App() {
         {[
           { t: "1. Verantwortlicher", brand: true, lines: ["NebenkostenRadar — nebenkostenradar.com", "Inhaber: Stefan Hennig", "Ludwigstr. 33-37, 60327 Frankfurt am Main", "support@nebenkostenradar.com"] },
           { t: "2. Keine Datenspeicherung", lines: ["Diese Website speichert keine personenbezogenen Daten. Alle eingegebenen Werte (Nebenkostenposten, Wohnungsdaten) werden ausschließlich lokal in Ihrem Browser verarbeitet."] },
-          { t: "3. Keine Cookies", lines: ["Diese Website verwendet keine Tracking-Cookies, kein Webanalyse-Tool und keine Social-Media-Plugins. Es werden keine Cookies gesetzt, die einer Einwilligung bedürfen. Technisch notwendige Cookies (Session-Cookies) werden nur zur Bereitstellung der Website-Funktion verwendet und sind gemäß § 25 Abs. 2 TDDDG ohne Einwilligung zulässig."] },
+          { t: "3. Cookies und Webanalyse", lines: ["Diese Website verwendet Google Analytics (Google Ireland Ltd., Gordon House, Barrow Street, Dublin 4, Irland). Google Analytics wird nur mit Ihrer ausdrücklichen Einwilligung aktiviert (§ 25 Abs. 1 TDDDG, Art. 6 Abs. 1 lit. a DSGVO). Sie können die Einwilligung im Cookie-Banner ablehnen — in diesem Fall werden keine Analysedaten erhoben. Technisch notwendige Cookies (z.B. Cookie-Banner-Einstellung) sind gemäß § 25 Abs. 2 TDDDG ohne Einwilligung zulässig. Google Analytics Datenschutzerklärung: policies.google.com/privacy"] },
           { t: "4. Hosting (Vercel)", lines: ["Unser Hosting-Anbieter Vercel (Vercel Inc., 340 S Lemon Ave, Walnut, CA 91789, USA) erhebt automatisch Server-Log-Dateien (IP-Adresse, Browser, Zeitstempel). Diese Daten werden nicht mit anderen Daten zusammengeführt. Rechtsgrundlage: Art. 6 Abs. 1 lit. f DSGVO (berechtigtes Interesse am technischen Betrieb). Datenschutzerklärung Vercel: vercel.com/legal/privacy-policy"] },
           { t: "5. Zahlungsabwicklung (Stripe)", lines: ["Bei Kauf eines Vollberichts leiten wir Sie zur Zahlungsseite von Stripe Payments Europe, Ltd. (1 Grand Canal Street Lower, Dublin D02 H210, Irland) weiter. Dabei werden Name, E-Mail-Adresse und Zahlungsdaten an Stripe übermittelt. Stripe verarbeitet diese Daten gemäß eigener Datenschutzerklärung: stripe.com/de/privacy. Rechtsgrundlage: Art. 6 Abs. 1 lit. b DSGVO (Vertragserfüllung). Datenübermittlung in die USA auf Basis von Standardvertragsklauseln (Art. 46 Abs. 2 lit. c DSGVO)."] },
-          { t: "6. Analyse-Service (Anthropic)", lines: ["Für die automatische Prüfung werden die eingegebenen Kostenpositionen (KEINE personenbezogenen Daten) an die API von Anthropic PBC, USA übermittelt. Die Daten werden nicht dauerhaft gespeichert und nicht für KI-Training genutzt. Rechtsgrundlage: Art. 6 Abs. 1 lit. b DSGVO."] },
-          { t: "7. Ihre Rechte (Art. 15–22 DSGVO)", lines: ["Auskunft (Art. 15) · Berichtigung (Art. 16) · Löschung (Art. 17) · Einschränkung (Art. 18) · Datenübertragbarkeit (Art. 20) · Widerspruch (Art. 21)", "Kontakt für Datenschutzanfragen und Ausübung Ihrer Betroffenenrechte: support@nebenkostenradar.com (Antwort innerhalb von 30 Tagen gemäß Art. 12 Abs. 3 DSGVO)"] },
-          { t: "8. Beschwerderecht", lines: ["Sie haben das Recht, sich bei einer Datenschutz-Aufsichtsbehörde zu beschweren. Zuständig für Hessen: Der Hessische Beauftragte für Datenschutz und Informationsfreiheit, Postfach 3163, 65021 Wiesbaden."] },
-          { t: "9. Aktualität", lines: ["Diese Datenschutzerklärung gilt ab " + new Date().toLocaleDateString("de-DE") + "."] },
+          { t: "6. Analyse-Service (Anthropic)", lines: ["Für die automatische Prüfung werden die eingegebenen Kostenpositionen (KEINE personenbezogenen Daten) an die API von Anthropic PBC, USA übermittelt. Die Daten werden nicht dauerhaft gespeichert und nicht für KI-Training genutzt. Rechtsgrundlage: Art. 6 Abs. 1 lit. b DSGVO. Datenübermittlung in die USA auf Basis von Standardvertragsklauseln (Art. 46 Abs. 2 lit. c DSGVO)."] },
+          { t: "7. Bildmaterial (Unsplash)", lines: ["Einige Bilder in den Ratgeber-Artikeln werden direkt von Unsplash (Unsplash Inc., 500 rue Notre-Dame Ouest, Montréal, QC H2Y 1T8, Kanada / Akamai CDN, USA) geladen. Dabei wird Ihre IP-Adresse an die Server von Unsplash übermittelt. Rechtsgrundlage: Art. 6 Abs. 1 lit. f DSGVO (berechtigtes Interesse an der Darstellung von Bildmaterial). Datenschutzerklärung Unsplash: unsplash.com/privacy"] },
+          { t: "8. Ihre Rechte (Art. 15–22 DSGVO)", lines: ["Auskunft (Art. 15) · Berichtigung (Art. 16) · Löschung (Art. 17) · Einschränkung (Art. 18) · Datenübertragbarkeit (Art. 20) · Widerspruch (Art. 21)", "Kontakt für Datenschutzanfragen und Ausübung Ihrer Betroffenenrechte: support@nebenkostenradar.com (Antwort innerhalb von 30 Tagen gemäß Art. 12 Abs. 3 DSGVO)"] },
+          { t: "9. Beschwerderecht", lines: ["Sie haben das Recht, sich bei einer Datenschutz-Aufsichtsbehörde zu beschweren. Zuständig für Hessen: Der Hessische Beauftragte für Datenschutz und Informationsfreiheit, Postfach 3163, 65021 Wiesbaden."] },
+          { t: "10. Aktualität", lines: ["Diese Datenschutzerklärung gilt ab " + new Date().toLocaleDateString("de-DE") + "."] },
         ].map((s, i) => (
           <div key={i} style={{ marginBottom: 24 }}>
             <div style={{ fontSize: 13, fontWeight: 700, color: C.gold, marginBottom: 8, textTransform: "uppercase", letterSpacing: "0.08em" }}>{s.t}</div>
@@ -1446,7 +1459,7 @@ export default function App() {
           </div>
         ))}
         <div style={{ background: C.amberBg, border: "1px solid " + C.amber + "30", borderLeft: "3px solid " + C.amber, borderRadius: 10, padding: "12px 16px", fontSize: 12, color: C.amber, lineHeight: 1.7 }}>
-          Datenschutzerklärung vollständig. Aufsichtsbehörde: Hessen (korrekt für Frankfurt).
+          Datenschutzerklärung vollständig. Aufsichtsbehörde: Hessen (korrekt für Frankfurt). GA4, Unsplash und Anthropic SCC ergänzt.
         </div>
       </div>
     </div>
