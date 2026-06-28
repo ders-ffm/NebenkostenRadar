@@ -126,7 +126,7 @@ export default async function handler(req, res) {
       body: JSON.stringify({
         from: 'NebenkostenRadar <noreply@nebenkostenradar.com>',
         to: customerEmail,
-        subject: 'Ihr NebenkostenRadar Prüfbericht und Widerspruchsbrief',
+        subject: 'Ihr NebenkostenRadar Prüfbericht und Musterschreiben',
         html: buildEmail(brief, bericht),
       }),
     });
@@ -207,7 +207,7 @@ function buildEmail(brief, bericht) {
   <tr><td style="background:#ffffff;padding:24px 32px 8px;">
     <div style="background:#eaf4ee;border-left:4px solid #2d7a4f;border-radius:8px;padding:14px 18px;">
       <div style="font-size:15px;font-weight:700;color:#1a1a1a;margin-bottom:3px;">&#10003; Vielen Dank für Ihre Bestellung</div>
-      <div style="font-size:12px;color:#555e68;">Ihr Widerspruchsbrief und Prüfbericht befinden sich unten in dieser E-Mail.</div>
+      <div style="font-size:12px;color:#555e68;">Ihr Musterschreiben und Prüfbericht befinden sich unten in dieser E-Mail.</div>
     </div>
   </td></tr>
 
@@ -216,7 +216,7 @@ function buildEmail(brief, bericht) {
   <tr><td style="background:#ffffff;padding:24px 32px 8px;">
     <div style="border:1px solid #dde1e7;border-radius:10px;overflow:hidden;">
       <div style="background:#2d7a4f;padding:12px 20px;">
-        <span style="color:#fff;font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;">&#9993; Ihr Widerspruchsbrief</span>
+        <span style="color:#fff;font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;">&#9993; Ihr Musterschreiben</span>
       </div>
       <div style="background:#fffdf7;padding:6px 16px 4px;border-bottom:1px solid #dde1e7;">
         <p style="font-size:11px;color:#b45309;margin:6px 0;">
@@ -255,7 +255,7 @@ function buildEmail(brief, bericht) {
   <!-- Hinweis -->
   <tr><td style="background:#fef3e2;padding:14px 32px;border-top:1px solid #dde1e7;">
     <p style="font-size:12px;color:#b45309;margin:0;line-height:1.6;">
-      Dieser Bericht ersetzt keine Rechtsberatung. Deutscher Mieterbund:
+      Unverbindliches Musterschreiben ohne Rechtsberatungscharakter (§ 2 RDG). Kein Ersatz für anwaltliche Beratung. Deutscher Mieterbund:
       <a href="https://www.mieterbund.de" style="color:#b45309;">mieterbund.de</a> &middot; Tel. 030 223230
     </p>
   </td></tr>
