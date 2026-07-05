@@ -364,9 +364,13 @@ function LegalFooter({ setStep, setPrevStep, currentStep }) {
 // ─── Main App ─────────────────────────────────────────────────────────────────
 
 export default function App() {
-  const [step, setStep] = useState(() =>
-    window.location.pathname === "/danke" ? "danke" : "welcome"
-  );
+  const [step, setStep] = useState(() => {
+    const path = window.location.pathname;
+    if (path === "/danke") return "danke";
+    if (path === "/ratgeber") return "ratgeber";
+    if (path.startsWith("/ratgeber/")) return "artikel";
+    return "welcome";
+  });
 
   // Browser-Zurück-Button: History API
   const navigateTo = useCallback((newStep) => {
@@ -406,7 +410,11 @@ export default function App() {
   const [emailSent, setEmailSent] = useState(false);
   const [emailSending, setEmailSending] = useState(false);
   const [emailError, setEmailError] = useState("");
-  const [ratgeberArtikel, setRatgeberArtikel] = useState(null);
+  const [ratgeberArtikel, setRatgeberArtikel] = useState(() => {
+    const path = window.location.pathname;
+    if (path.startsWith("/ratgeber/")) return path.replace("/ratgeber/", "");
+    return null;
+  });
 
   const [wohnung, setWohnung] = useState({ flaeche: "", jahr: String(new Date().getFullYear() - 1), vorauszahlung: "" });
   const [werte, setWerte] = useState({});
@@ -1548,7 +1556,7 @@ export default function App() {
 
         <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
           {ARTIKEL.map(a => (
-            <div key={a.id} onClick={() => { setRatgeberArtikel(a.id); navigateTo("artikel"); }}
+            <div key={a.id} onClick={() => { setRatgeberArtikel(a.id); window.history.pushState({ step: "artikel" }, "", "/ratgeber/" + a.id); setStep("artikel"); }}
               style={{ background: "#fff", border: "1px solid " + C.border, borderRadius: 12, overflow: "hidden", cursor: "pointer", transition: "box-shadow 0.15s" }}
               onMouseEnter={e => e.currentTarget.style.boxShadow = "0 4px 20px rgba(0,0,0,0.1)"}
               onMouseLeave={e => e.currentTarget.style.boxShadow = "none"}>
@@ -1593,7 +1601,7 @@ export default function App() {
         </div>
 
         <div style={{ maxWidth: 720, margin: "0 auto", padding: "24px 20px 60px" }}>
-          <button onClick={() => navigateTo("ratgeber")} style={{ background: "none", border: "none", color: C.muted, cursor: "pointer", fontSize: 13, fontFamily: "inherit", padding: "0 0 20px" }}>← Ratgeber</button>
+          <button onClick={() => { window.history.pushState({ step: "ratgeber" }, "", "/ratgeber"); setStep("ratgeber"); }} style={{ background: "none", border: "none", color: C.muted, cursor: "pointer", fontSize: 13, fontFamily: "inherit", padding: "0 0 20px" }}>← Ratgeber</button>
 
           {/* Hero Bild */}
           <img src={artikel.bild} alt={artikel.bildAlt} style={{ width: "100%", height: 220, objectFit: "cover", borderRadius: 10, marginBottom: 24 }} />
@@ -1666,7 +1674,7 @@ export default function App() {
           <div style={{ borderTop: "1px solid " + C.border, paddingTop: 24, marginTop: 32 }}>
             <div style={{ fontSize: 13, fontWeight: 700, color: C.text, marginBottom: 16, textTransform: "uppercase", letterSpacing: "0.08em" }}>Weitere Artikel</div>
             {ARTIKEL.filter(a => a.id !== artikel.id).map(a => (
-              <div key={a.id} onClick={() => setRatgeberArtikel(a.id)}
+              <div key={a.id} onClick={() => { setRatgeberArtikel(a.id); window.history.pushState({ step: "artikel" }, "", "/ratgeber/" + a.id); }}
                 style={{ display: "flex", gap: 12, marginBottom: 12, cursor: "pointer", padding: "10px", borderRadius: 8, border: "1px solid " + C.border }}
                 onMouseEnter={e => e.currentTarget.style.background = C.surface}
                 onMouseLeave={e => e.currentTarget.style.background = "#fff"}>
