@@ -3,7 +3,9 @@
     { "source": "/api/v1/messages", "destination": "/api/messages" },
     { "source": "/admin",           "destination": "/index.html" },
     { "source": "/admin/(.*)",      "destination": "/index.html" },
-    { "source": "/danke",           "destination": "/index.html" }
+    { "source": "/danke",           "destination": "/index.html" },
+    { "source": "/ratgeber",        "destination": "/index.html" },
+    { "source": "/ratgeber/(.*)",   "destination": "/index.html" }
   ],
   "headers": [
     {
