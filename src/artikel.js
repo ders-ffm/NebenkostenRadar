@@ -4,6 +4,142 @@
 // Alte Artikel NIEMALS löschen — sie ranken bei Google weiter.
 export const ARTIKEL = [
     {
+      id: "heizkostenabrechnung-fehler-vermieter-checkliste-2026",
+      titel: "Heizkostenabrechnung 2026: Die häufigsten Fehler der Vermieter erkennen",
+      teaser: "Fast jede zweite Heizkostenabrechnung enthält Fehler – von falschen Verteilerschlüsseln bis zu unzulässig umgelegten CO2-Kosten. Wir zeigen, worauf Sie 2026 achten müssen, um zu viel gezahltes Geld zurückzuholen.",
+      datum: "Juli 2026",
+      lesezeit: "8 Min.",
+      bild: "https://images.unsplash.com/photo-1769598384555-65b3836e72ed?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w5NzcyMzl8MHwxfHNlYXJjaHwxfHxyYWRpYXRvciUyMGhlYXRpbmclMjBiaWxsJTIwYXBhcnRtZW50fGVufDF8MHx8fDE3ODQ5ODk1OTJ8MA&ixlib=rb-4.1.0&q=80&w=1080&utm_source=nebenkostenradar&utm_medium=referral",
+      bildAlt: "Heizkostenabrechnung 2026: Die häufigsten Fehler der Vermieter erkennen",
+      kategorie: "Mietrecht",
+      keywords: [],
+      inhalt: [
+        {
+                "typ": "intro",
+                "text": "Jedes Jahr im Frühjahr oder Sommer landet sie im Briefkasten: die Heizkostenabrechnung. Für viele Mieter ist sie ein Rätsel aus Verteilerschlüsseln, Grundkosten und Verbrauchseinheiten. Genau diese Komplexität führt dazu, dass sich in der Praxis immer wieder Fehler einschleichen – manche versehentlich, manche aus Unkenntnis der aktuellen Rechtslage. Dieser Ratgeber zeigt, welche Fehler 2026 besonders häufig vorkommen und wie Sie als Mieter darauf reagieren können."
+        },
+        {
+                "typ": "h2",
+                "text": "Warum Heizkostenabrechnungen so fehleranfällig sind"
+        },
+        {
+                "typ": "text",
+                "text": "Die Heizkostenabrechnung gilt seit Jahren als besonders streitanfälliger Teil der Nebenkostenabrechnung. Das liegt an der Kombination aus technischen Messwerten, gesetzlichen Verteilervorgaben und jährlich neuen Regelungen wie der CO2-Kostenteilung. Kein Wunder also, dass Prüfstellen regelmäßig auf erhebliche Fehlerquoten hinweisen: "
+        },
+        {
+                "typ": "text",
+                "text": "Nach Einschätzung von Verbraucherschützern ist ein erheblicher Teil aller Abrechnungen fehlerhaft oder zumindest missverständlich formuliert – ein Umstand, der Mietern jedes Jahr Geld kostet, wenn sie ihre Abrechnung ungeprüft akzeptieren."
+        },
+        {
+                "typ": "h2",
+                "text": "Fehler 1: Fehlende fernablesbare Zähler und fehlende Verbrauchsinformation"
+        },
+        {
+                "typ": "text",
+                "text": "Eine der wichtigsten Neuerungen für 2026 betrifft die Messtechnik selbst. Laut der novellierten Heizkostenverordnung müssen Heizkostenverteiler und Wärmezähler bis Ende 2026 fernablesbar sein, damit Verbrauchsdaten ohne Wohnungsbetreten erfasst werden können. Sobald diese Technik installiert ist, entsteht für Vermieter eine weitere Pflicht: Sie müssen ihre Mieter regelmäßig über den individuellen Verbrauch informieren, damit dieser rechtzeitig reagieren kann."
+        },
+        {
+                "typ": "hinweis",
+                "text": "Vermieter, die trotz vorhandener fernablesbarer Technik keine monatlichen Verbrauchsinformationen bereitstellen oder die Umrüstungsfrist bis 31.12.2026 versäumen, riskieren ein Kürzungsrecht der Mieter bei der nächsten Abrechnung."
+        },
+        {
+                "typ": "h2",
+                "text": "Fehler 2: CO2-Kosten werden komplett auf den Mieter abgewälzt"
+        },
+        {
+                "typ": "text",
+                "text": "Seit der Einführung der CO2-Kostenteilung ist einer der häufigsten Fehler, dass Vermieter die komplette Abgabe als Heizkosten weiterreichen, ohne ihren eigenen Anteil abzuziehen. Dabei hängt der Vermieteranteil vom energetischen Zustand des Gebäudes ab – je schlechter die Energieeffizienzklasse, desto höher der Anteil, den der Vermieter selbst tragen muss."
+        },
+        {
+                "typ": "text",
+                "text": "Bei besonders unsanierten Gebäuden kann der Vermieteranteil an der CO2-Abgabe erheblich sein. Wird dieser Anteil komplett auf den Mieter umgelegt, ist die Abrechnung in diesem Punkt fehlerhaft und ein Grund für Widerspruch."
+        },
+        {
+                "typ": "h2",
+                "text": "Fehler 3: Kabelgebühren tauchen weiterhin in der Abrechnung auf"
+        },
+        {
+                "typ": "text",
+                "text": "Ein Klassiker unter den veralteten Kostenpositionen: TV-Kabelgebühren dürfen seit Sommer 2024 grundsätzlich nicht mehr über die Nebenkosten umgelegt werden. Trotzdem finden sich diese Posten immer wieder in aktuellen Abrechnungen – oft, weil Vermieter alte Vorlagen weiterverwenden."
+        },
+        {
+                "typ": "verweis",
+                "ziel": "kabelanschluss-nicht-umlagefaehig",
+                "text": "Alle Details zur Rechtslage und wie Sie zu viel gezahlte Kabelgebühren zurückfordern, finden Sie in unserem Spezialartikel dazu."
+        },
+        {
+                "typ": "h2",
+                "text": "Fehler 4: Falscher oder fehlender Verteilerschlüssel"
+        },
+        {
+                "typ": "text",
+                "text": "Die Heizkostenverordnung schreibt eine Kombination aus verbrauchsabhängigen und verbrauchsunabhängigen Kosten vor. Rechnet ein Vermieter stattdessen ausschließlich nach Wohnfläche ab, verstößt er gegen diese Vorgabe – mit klaren Konsequenzen für den Mieter."
+        },
+        {
+                "typ": "text",
+                "text": "Wird ausschließlich mit einem verbrauchsunabhängigen Verteilerschlüssel wie der Wohnfläche abgerechnet, kann der Mieter seinen Anteil an den Heiz- und Warmwasserkosten um 15 Prozent kürzen."
+        },
+        {
+                "typ": "h2",
+                "text": "Fehler 5: Heiz- und Warmwasserkosten werden nicht getrennt ausgewiesen"
+        },
+        {
+                "typ": "text",
+                "text": "Sind Heizungs- und Warmwasseranlage miteinander verbunden, verlangt die Heizkostenverordnung eine getrennte Abrechnung beider Kostenblöcke. Diese Trennung wird in der Praxis gelegentlich vergessen oder unvollständig dargestellt, was die Nachvollziehbarkeit für den Mieter erheblich erschwert."
+        },
+        {
+                "typ": "h2",
+                "text": "Fehler 6: Die 12-Monats-Frist wird überschritten"
+        },
+        {
+                "typ": "text",
+                "text": "Auch formale Fristen sind ein wiederkehrendes Problem. Die jährliche Heizkostenabrechnung muss dem Mieter spätestens zwölf Monate nach Ende des Abrechnungszeitraums zugehen. Versäumt der Vermieter diese Frist, kann er keine Nachforderungen mehr geltend machen – ein Guthaben muss er dem Mieter trotzdem auszahlen."
+        },
+        {
+                "typ": "h2",
+                "text": "So prüfen Sie Ihre Heizkostenabrechnung Schritt für Schritt"
+        },
+        {
+                "typ": "liste",
+                "items": [
+                        "Fristen checken: Ist die Abrechnung spätestens zwölf Monate nach Ende des Abrechnungszeitraums bei Ihnen eingetroffen?",
+                        "Formale Angaben prüfen: Sind Abrechnungszeitraum, Wohnfläche und Ihr Name korrekt angegeben?",
+                        "Zählerstände vergleichen: Stimmen Anfangs- und Endwerte mit eigenen Notizen von der Ablesung überein?",
+                        "Rechnung nachrechnen: Ergibt die Summe aus Grund- und Verbrauchskosten mathematisch den geforderten Betrag?",
+                        "Verteilerschlüssel kontrollieren: Wird sowohl verbrauchsabhängig als auch nach Fläche abgerechnet?",
+                        "CO2-Kosten prüfen: Wurde der Vermieteranteil an der CO2-Abgabe korrekt abgezogen?"
+                ]
+        },
+        {
+                "typ": "verweis",
+                "ziel": "widerspruch-nebenkostenabrechnung",
+                "text": "Haben Sie einen Fehler entdeckt, erfahren Sie hier, welche Frist für einen Widerspruch gilt und wie Sie ihn formulieren."
+        },
+        {
+                "typ": "verweis",
+                "ziel": "betriebskostenspiegel-2024",
+                "text": "Um einzuschätzen, ob Ihre Heizkosten insgesamt im üblichen Rahmen liegen, hilft ein Blick in den aktuellen Betriebskostenspiegel."
+        },
+        {
+                "typ": "h2",
+                "text": "Aktuelle Rechtsprechung im Blick behalten"
+        },
+        {
+                "typ": "text",
+                "text": "Die rechtlichen Anforderungen an Heizkostenabrechnungen entwickeln sich durch neue Gerichtsentscheidungen ständig weiter. Wer seine Rechte als Mieter vollständig ausschöpfen möchte, sollte daher auch aktuelle BGH-Entscheidungen zum Nebenkostenrecht kennen."
+        },
+        {
+                "typ": "verweis",
+                "ziel": "bgh-urteile-mietrecht-nebenkosten-2026",
+                "text": "Einen Überblick über die wichtigsten aktuellen Urteile zum Nebenkostenrecht finden Sie in unserer Urteilsübersicht."
+        },
+        {
+                "typ": "cta",
+                "text": "Jetzt Abrechnung kostenlos prüfen lassen."
+        }
+],
+    },
+    {
       id: "heizkostenabrechnung-haeufigste-fehler-vermieter-2026",
       titel: "Heizkostenabrechnung 2026: Die häufigsten Fehler der Vermieter im Überblick",
       teaser: "Falscher Verteilerschlüssel, vergessene CO2-Aufteilung oder unzulässige Kosten: Heizkostenabrechnungen zählen zu den fehleranfälligsten Dokumenten im Mietrecht. Dieser Ratgeber zeigt, welche Fehler 2026 besonders häufig vorkommen und wie Sie als Mieter reagieren können.",
