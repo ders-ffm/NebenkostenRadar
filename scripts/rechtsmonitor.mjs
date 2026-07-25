@@ -25,14 +25,18 @@
  *   GitHub Actions Workflow: .github/workflows/rechtsmonitor.yml
  *
  * FEHLERDIAGNOSE:
- *   Schlägt die KI-Generierung fehl, wird jetzt die echte Ursache geloggt
+ *   Schlägt die KI-Generierung fehl, wird die echte Ursache geloggt
  *   (Stop-Grund + Antwort-Ausschnitt) — im GitHub-Actions-Log beim Schritt
- *   "Rechtsmonitor ausfuehren" sichtbar. Kein Rätselraten mehr nötig.
+ *   "Rechtsmonitor ausfuehren" sichtbar.
  *
  * VERLAUF:
- *   25.07.2026 — max_tokens von 6000 auf 8192 erhöht, nachdem ein Artikel
- *   mit vielen Listenpunkten/Schritten am 6000-Limit mitten im JSON
- *   abgebrochen ist (stop_reason: max_tokens, siehe Actions-Log).
+ *   25.07.2026 — max_tokens 6000→8192 (Abbruch mitten im JSON behoben).
+ *   25.07.2026 — system-Prompt ergänzt + robuste JSON-Extraktion, nachdem
+ *   die KI bei Websuche-Nutzung entweder das ganze Token-Budget für
+ *   Suchschritte verbraucht hat (leere Antwort) oder Fließtext vor dem
+ *   JSON geschrieben hat ("Ich werde den Artikel jetzt liefern..."), was
+ *   das reine JSON.parse gebrochen hat. max_tokens zusätzlich auf 12000
+ *   erhöht als Puffer für Suchschritte.
  */
 import fetch from 'node-fetch';
 import { readFileSync, writeFileSync, existsSync } from 'fs';
@@ -95,6 +99,21 @@ function bereinigeVerweise(inhalt, bekannteIds) {
   });
 }
 
+// ── JSON robust aus dem Antworttext extrahieren ──────────────────────────────
+// Die KI hält sich trotz Anweisung manchmal nicht an "nur JSON" und schreibt
+// Fließtext davor/danach (z.B. "Ich werde den Artikel jetzt liefern..." oder
+// eine Markdown-Überschrift). Statt den kompletten Text als JSON zu parsen,
+// wird hier nur der Bereich zwischen der ersten "{" und der letzten "}"
+// extrahiert — das übersteht Kommentare drumherum.
+function extrahiereJSON(text) {
+  const start = text.indexOf('{');
+  const end = text.lastIndexOf('}');
+  if (start === -1 || end === -1 || end < start) {
+    throw new Error('Kein JSON-Objekt im Antworttext gefunden.');
+  }
+  return text.slice(start, end + 1);
+}
+
 // ── KI-Artikel generieren ─────────────────────────────────────────────────────
 async function generiereArtikel(thema, bestehendeArtikel) {
   console.log(`  → KI schreibt Artikel über: ${thema}`);
@@ -103,13 +122,19 @@ async function generiereArtikel(thema, bestehendeArtikel) {
     ? bestehendeArtikel.map(a => `- id: "${a.id}" — ${a.titel}`).join('\n')
     : '(noch keine bestehenden Artikel)';
 
+  const system = `Du antwortest ausschließlich mit einem einzigen validen JSON-Objekt.
+Keine Einleitung, keine Erklärung, keine Markdown-Überschrift, kein Kommentar vor oder nach dem JSON.
+Die allererste Zeichenfolge deiner Antwort muss "{" sein, die letzte muss "}" sein.
+Falls du die Websuche nutzt: nutze sie sparsam (maximal 2-3 Anfragen), fasse Ergebnisse knapp zusammen,
+und liefere danach sofort und ausschließlich das JSON-Objekt — ohne einen einzigen Satz Kommentar davor.`;
+
   const prompt = `Du bist Mietrechtsexperte und schreibst für NebenkostenRadar.com.
 Schreibe einen SEO-Ratgeber-Artikel zum Thema: "${thema}"
 Wichtig:
 - Eigene Formulierungen, keine Kopien fremder Texte
 - Zielgruppe: Mieter ohne Rechtskenntnisse
 - Sachlich, verständlich, vertrauenswürdig
-- Aktuelle Rechtslage 2026 berücksichtigen (nutze Websuche)
+- Aktuelle Rechtslage 2026 berücksichtigen (nutze Websuche sparsam)
 
 Bestehende Artikel auf der Seite (für interne Verlinkung):
 ${artikelListe}
@@ -120,7 +145,7 @@ füge an einer sinnvollen Stelle im "inhalt"-Array ein bis zwei Blöcke vom Typ 
 Nutze "ziel" NUR mit einer ID exakt aus der Liste oben. Wenn kein Artikel wirklich passt,
 lass "verweis"-Blöcke einfach komplett weg — erzwinge keine Verlinkung.
 
-JSON ohne Backticks:
+Antworte NUR mit diesem JSON, keine Backticks, kein einleitender Satz:
 {
   "id": "url-slug",
   "titel": "SEO-Titel mit Keyword",
@@ -149,7 +174,8 @@ JSON ohne Backticks:
     },
     body: JSON.stringify({
       model: 'claude-sonnet-5',
-      max_tokens: 8192,
+      max_tokens: 12000,
+      system,
       tools: [{ type: "web_search_20250305", name: "web_search" }],
       messages: [{ role: 'user', content: prompt }],
     }),
@@ -166,12 +192,12 @@ JSON ohne Backticks:
   const raw = data.content?.filter(b => b.type === 'text').map(b => b.text).join('') || '';
 
   if (!raw) {
-    throw new Error('Leere Antwort von der KI (stop_reason: ' + data.stop_reason + '). Möglich: max_tokens zu knapp, oder die KI hat nur Tool-Aufrufe ohne finalen Text erzeugt.');
+    throw new Error('Leere Antwort von der KI (stop_reason: ' + data.stop_reason + '). Die KI hat vermutlich das ganze Token-Budget für Websuche-Schritte verbraucht, ohne einen finalen Text zu schreiben.');
   }
 
   let artikel;
   try {
-    artikel = JSON.parse(raw.replace(/```json|```/g, '').trim());
+    artikel = JSON.parse(extrahiereJSON(raw));
   } catch (e) {
     throw new Error('JSON-Parse-Fehler: ' + e.message + ' (stop_reason: ' + data.stop_reason + '). Rohtext (erste 500 Zeichen): ' + raw.slice(0, 500));
   }
