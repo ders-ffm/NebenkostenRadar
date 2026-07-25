@@ -369,12 +369,16 @@ export default function App() {
     if (path === "/danke") return "danke";
     if (path === "/ratgeber") return "ratgeber";
     if (path.startsWith("/ratgeber/")) return "artikel";
+    if (path === "/ueber-uns") return "ueberuns";
     return "welcome";
   });
 
   // Browser-Zurück-Button: History API
+  // Eigene URL nur für Seiten mit echtem SEO-Wert (Startseite, Ratgeber, Über uns) —
+  // alle anderen Schritte (Formular-Flow, rechtliche Seiten) behalten die aktuelle URL bei.
   const navigateTo = useCallback((newStep) => {
-    window.history.pushState({ step: newStep }, "", window.location.pathname);
+    const pfad = newStep === "welcome" ? "/" : newStep === "ratgeber" ? "/ratgeber" : newStep === "ueberuns" ? "/ueber-uns" : window.location.pathname;
+    window.history.pushState({ step: newStep }, "", pfad);
     setStep(newStep);
   }, []);
 
@@ -415,6 +419,56 @@ export default function App() {
     if (path.startsWith("/ratgeber/")) return path.replace("/ratgeber/", "");
     return null;
   });
+
+  // Titel, Meta-Description, Canonical- und OG-Tags pro Route aktualisieren.
+  // Grund: Vite baut nur eine statische index.html — ohne diesen Effekt liefern
+  // alle Routen (auch /ratgeber/... und /ueber-uns) identische Meta-Angaben der
+  // Startseite. Das führte in der GSC zum Ausschlussgrund "Alternative Seite mit
+  // richtigem kanonischen Tag" und zu falschen Titeln in Social-Share-Vorschauen.
+  useEffect(() => {
+    const BASE_URL = "https://nebenkostenradar.com";
+    let title = "Nebenkostenabrechnung prüfen — kostenlos | NebenkostenRadar";
+    let description = "Nebenkostenabrechnung kostenlos prüfen: NebenkostenRadar vergleicht jeden Posten mit dem DMB-Betriebskostenspiegel 2024, erkennt Fehler und erstellt einen versandfertigen Prüfbericht mit Mustertext. Sofort, ohne Registrierung.";
+    let pfad = "/";
+
+    if (step === "ratgeber") {
+      title = "Ratgeber Mietrecht — Nebenkostenabrechnung verstehen | NebenkostenRadar";
+      description = "Fundierte Ratgeber-Artikel zu Nebenkostenabrechnungen, Fristen und Mieterrechten — kostenlos und aktuell.";
+      pfad = "/ratgeber";
+    } else if (step === "artikel") {
+      const aktuellerArtikel = ARTIKEL.find(a => a.id === ratgeberArtikel);
+      if (aktuellerArtikel) {
+        title = aktuellerArtikel.titel + " | NebenkostenRadar Ratgeber";
+        description = aktuellerArtikel.teaser;
+        pfad = "/ratgeber/" + aktuellerArtikel.id;
+      }
+    } else if (step === "ueberuns") {
+      title = "Über uns — Unabhängige Nebenkostenprüfung | NebenkostenRadar";
+      description = "NebenkostenRadar ist ein unabhängiger digitaler Prüfdienst für Nebenkostenabrechnungen — ohne Verbindung zu Vermietern oder Hausverwaltungen.";
+      pfad = "/ueber-uns";
+    }
+
+    document.title = title;
+
+    const setByName = (name, value) => {
+      const el = document.querySelector('meta[name="' + name + '"]');
+      if (el) el.setAttribute("content", value);
+    };
+    const setByProperty = (prop, value) => {
+      const el = document.querySelector('meta[property="' + prop + '"]');
+      if (el) el.setAttribute("content", value);
+    };
+
+    setByName("description", description);
+    setByName("twitter:title", title);
+    setByName("twitter:description", description);
+    setByProperty("og:title", title);
+    setByProperty("og:description", description);
+    setByProperty("og:url", BASE_URL + pfad);
+
+    const canonicalEl = document.querySelector('link[rel="canonical"]');
+    if (canonicalEl) canonicalEl.setAttribute("href", BASE_URL + pfad);
+  }, [step, ratgeberArtikel]);
 
   const [wohnung, setWohnung] = useState({ flaeche: "", jahr: String(new Date().getFullYear() - 1), vorauszahlung: "" });
   const [werte, setWerte] = useState({});
@@ -678,7 +732,7 @@ export default function App() {
           <div style={{ display: "flex", alignItems: "center", gap: 2 }}>
             {items.map(item => (
               <button key={item.label}
-                onClick={() => { setPrevStep(activeStep); setStep(item.target); }}
+                onClick={() => { setPrevStep(activeStep); navigateTo(item.target); }}
                 style={{ background: "none", border: "none", padding: "6px 10px", fontSize: 13, fontFamily: "inherit", color: activeStep === item.target ? C.green : C.muted, fontWeight: activeStep === item.target ? 700 : 400, cursor: "pointer", borderRadius: 6 }}>
                 {item.label}
               </button>
@@ -1596,6 +1650,24 @@ export default function App() {
                 {block.text}
               </div>
             );
+            // Interne Verlinkung: klickbarer Verweis auf einen anderen Ratgeber-Artikel,
+            // direkt im Lesefluss statt nur im "Weitere Artikel"-Widget am Ende.
+            if (block.typ === "verweis") {
+              const zielArtikel = ARTIKEL.find(a => a.id === block.ziel);
+              if (!zielArtikel) return null;
+              return (
+                <div key={i}
+                  onClick={() => { setRatgeberArtikel(zielArtikel.id); window.history.pushState({ step: "artikel" }, "", "/ratgeber/" + zielArtikel.id); window.scrollTo(0, 0); }}
+                  style={{ display: "flex", gap: 12, alignItems: "center", background: C.blueBg, border: "1px solid " + C.blue + "30", borderLeft: "3px solid " + C.blue, borderRadius: 8, padding: "14px 16px", margin: "0 0 20px", cursor: "pointer" }}>
+                  <span style={{ fontSize: 18, flexShrink: 0 }}>📖</span>
+                  <div style={{ flex: 1 }}>
+                    <div style={{ fontSize: 10, color: C.blue, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.08em", marginBottom: 3 }}>Weiterführender Artikel</div>
+                    <div style={{ fontSize: 13, color: C.text, lineHeight: 1.5 }}>{block.text}</div>
+                  </div>
+                  <span style={{ color: C.blue, fontSize: 16, flexShrink: 0 }}>→</span>
+                </div>
+              );
+            }
             if (block.typ === "tabelle") return (
               <div key={i} style={{ overflowX: "auto", margin: "0 0 24px" }}>
                 <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 13 }}>
