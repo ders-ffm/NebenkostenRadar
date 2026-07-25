@@ -2,7 +2,6 @@
 // Diese Datei wird vom Rechtsmonitor (scripts/rechtsmonitor.mjs) automatisch erweitert.
 // Neue Artikel werden am Array-Anfang eingefügt (neueste zuerst).
 // Alte Artikel NIEMALS löschen — sie ranken bei Google weiter.
-
 export const ARTIKEL = [
     {
       id: "widerspruch-nebenkostenabrechnung",
@@ -29,6 +28,8 @@ export const ARTIKEL = [
           "Formelle Fehler (gravierend): Abrechnung fehlt ganz, wurde zu spät zugestellt (nach dem 31.12. des Folgejahres), oder enthält keinen nachvollziehbaren Verteilerschlüssel. Folge: Die gesamte Abrechnung ist unwirksam — Sie müssen keine Nachzahlung leisten.",
           "Inhaltliche Fehler: Nicht umlagefähige Posten (z.B. Kabelanschluss seit Juli 2024, Verwaltungskosten, Reparaturen), überhöhte Beträge über dem DMB-Richtwert, Verstoß gegen die Heizkostenverordnung.",
         ]},
+        { typ: "verweis", ziel: "kabelanschluss-nicht-umlagefaehig", text: "Kabelanschluss in Ihrer Abrechnung? Seit Juli 2024 ist dieser Posten grundsätzlich nicht mehr umlagefähig — Details im Artikel zur Rechtsänderung." },
+        { typ: "verweis", ziel: "betriebskostenspiegel-2024", text: "Nicht sicher, ob Ihre Beträge zu hoch sind? Der DMB-Betriebskostenspiegel 2024 zeigt die aktuellen Durchschnittswerte je Kostenart." },
         { typ: "h2", text: "Schritt-für-Schritt: So legen Sie wirksam Widerspruch ein" },
         { typ: "schritte", items: [
           "Abrechnung systematisch prüfen: Jeden Posten auf Umlagefähigkeit (§ 2 BetrKV) und Plausibilität (DMB-Betriebskostenspiegel) prüfen.",
@@ -79,6 +80,7 @@ export const ARTIKEL = [
           "Abrechnungen für 2024 (gemischter Zeitraum): Nur der Anteil ab Juli 2024 ist nicht umlagefähig — also 6/12 des Jahresbetrags.",
           "Abrechnungen für 2023 und früher: Das alte Recht gilt — Kabelkosten waren umlagefähig.",
         ]},
+        { typ: "verweis", ziel: "widerspruch-nebenkostenabrechnung", text: "So legen Sie formal Widerspruch ein und fordern zu viel gezahlte Kabelkosten zurück — Fristen und Muster im Widerspruchs-Ratgeber." },
         { typ: "cta", text: "NebenkostenRadar erkennt Kabelanschlusskosten automatisch und weist sie als nicht umlagefähig aus — mit der korrekten Rechtsgrundlage für Ihren Widerspruch." },
       ],
     },
@@ -112,6 +114,7 @@ export const ARTIKEL = [
         { typ: "hinweis", text: "Liegt Ihre Abrechnung mehr als 30% über dem Durchschnitt, ist eine Prüfung dringend empfohlen. NebenkostenRadar vergleicht automatisch jeden Posten mit diesen Richtwerten." },
         { typ: "h2", text: "Wie nutze ich die Richtwerte?" },
         { typ: "text", text: "Multiplizieren Sie den €/m²/Monat-Wert mit Ihrer Wohnfläche und mit 12 — das ergibt den erwarteten Jahresbetrag für Ihre Wohnung. Liegt ein Posten in Ihrer Abrechnung mehr als 30-40% darüber, ist das ein klarer Hinweis auf eine überhöhte Abrechnung." },
+        { typ: "verweis", ziel: "widerspruch-nebenkostenabrechnung", text: "Liegt Ihre Abrechnung deutlich über dem Durchschnitt? Der Widerspruchs-Ratgeber zeigt Fristen und den korrekten Ablauf." },
         { typ: "cta", text: "NebenkostenRadar macht diesen Vergleich automatisch für jeden Posten Ihrer Abrechnung — und zeigt Ihnen die Abweichung in Prozent." },
       ],
     },
