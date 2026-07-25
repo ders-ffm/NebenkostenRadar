@@ -4,6 +4,144 @@
 // Alte Artikel NIEMALS löschen — sie ranken bei Google weiter.
 export const ARTIKEL = [
     {
+      id: "bgh-urteile-mietrecht-nebenkosten-2026",
+      titel: "Aktuelle BGH-Urteile Mietrecht Nebenkosten 2026: Das müssen Mieter wissen",
+      teaser: "Der Bundesgerichtshof hat 2026 mehrere wichtige Entscheidungen zur Betriebskostenabrechnung getroffen – von der Wirtschaftlichkeit der Kosten bis zur Grundsteuer. Wir erklären dir verständlich, was sich geändert hat und wie du davon profitierst.",
+      datum: "Juli 2026",
+      lesezeit: "8 Min.",
+      bild: "https://images.unsplash.com/photo-1782478489718-da69c0fe5e99?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w5NzcyMzl8MHwxfHNlYXJjaHwxfHxnZXJtYW4lMjBjb3VydCUyMGdhdmVsJTIwZG9jdW1lbnRzfGVufDF8MHx8fDE3ODQ5ODU2MjN8MA&ixlib=rb-4.1.0&q=80&w=1080&utm_source=nebenkostenradar&utm_medium=referral",
+      bildAlt: "Aktuelle BGH-Urteile Mietrecht Nebenkosten 2026: Das müssen Mieter wissen",
+      kategorie: "Mietrecht",
+      keywords: [],
+      inhalt: [
+        {
+                "typ": "intro",
+                "text": "Jedes Jahr entscheidet der Bundesgerichtshof (BGH) über strittige Fragen rund um die Nebenkostenabrechnung – und diese Urteile wirken sich unmittelbar auf deine Rechte als Mieter aus. Im Jahr 2026 gab es gleich mehrere wichtige Entscheidungen, die klären, wann Vermieter Vergleichsangebote einholen müssen, wie sich Einsprüche gegen die Grundsteuer auf deine Abrechnungsfrist auswirken und welche Fehler eine Nachzahlung zu Fall bringen können. Dieser Ratgeber fasst die wichtigsten Urteile zusammen – verständlich erklärt, ohne Juristendeutsch."
+        },
+        {
+                "typ": "h2",
+                "text": "Warum BGH-Urteile für deine Abrechnung wichtig sind"
+        },
+        {
+                "typ": "text",
+                "text": "Der BGH ist die höchste Instanz für Zivilrecht in Deutschland und damit auch für Mietstreitigkeiten. Seine Entscheidungen sind zwar formal nur für den jeweiligen Einzelfall bindend, werden aber von Amtsgerichten und Landgerichten bundesweit als Maßstab herangezogen. Wenn du weißt, wie der BGH aktuell zu bestimmten Streitfragen urteilt, kannst du besser einschätzen, ob sich ein Widerspruch gegen deine Nebenkostenabrechnung lohnt."
+        },
+        {
+                "typ": "h2",
+                "text": "Wirtschaftlichkeitsgebot: Kein automatischer Fehler ohne Vergleichsangebote"
+        },
+        {
+                "typ": "text",
+                "text": "Eine der bedeutendsten Entscheidungen des Jahres 2026 betrifft das sogenannte Wirtschaftlichkeitsgebot. Der BGH hat am 20. Mai 2026 klargestellt, dass ein Verstoß gegen dieses Gebot nicht schon dann vorliegt, wenn dein Vermieter vor der Beauftragung von Dienstleistungen keine Vergleichsangebote eingeholt hat."
+        },
+        {
+                "typ": "text",
+                "text": "Entscheidend ist laut BGH vielmehr, ob dein Vermieter Leistungen zu nicht marktgerechten, objektiv überhöhten Preisen beauftragt hat und ob das Einholen von Vergleichsangeboten tatsächlich zu einer Kosteneinsparung geführt hätte. Das bedeutet: Es reicht nicht, im Widerspruch nur zu behaupten, es gebe günstigere Anbieter."
+        },
+        {
+                "typ": "liste",
+                "items": [
+                        "Du musst konkret darlegen, dass der vereinbarte Preis objektiv überhöht war",
+                        "Ein bloßer Verweis auf ein einzelnes günstigeres Angebot reicht meist nicht aus",
+                        "Der BGH stellte zudem klar, dass die Regelungen zum Einwendungsausschluss auch für Einwände zur Wirtschaftlichkeit gelten – du musst also fristgerecht widersprechen"
+                ]
+        },
+        {
+                "typ": "hinweis",
+                "text": "Wichtig: Auch wenn dieses Urteil auf den ersten Blick vermieterfreundlich wirkt, bleibt das Wirtschaftlichkeitsgebot bestehen. Bei tatsächlich überhöhten Preisen – etwa deutlich über dem Marktniveau – hast du weiterhin gute Chancen, eine Kürzung durchzusetzen."
+        },
+        {
+                "typ": "h2",
+                "text": "Grundsteuer-Einspruch verlängert die Abrechnungsfrist"
+        },
+        {
+                "typ": "text",
+                "text": "Ebenfalls im Urteil vom 20. Mai 2026 hat sich der BGH mit einer praxisrelevanten Frage befasst: Was passiert, wenn dein Vermieter gegen einen Grundsteuerbescheid Einspruch eingelegt hat? Der BGH entschied, dass die Frist für eine nachträgliche Abrechnung gegenüber dem Mieter in diesem Fall erst läuft, wenn über den Einspruch entschieden wurde."
+        },
+        {
+                "typ": "text",
+                "text": "Für dich als Mieter bedeutet das: Die übliche Zwölf-Monats-Frist zur Abrechnung nach § 556 Abs. 3 BGB kann sich in solchen Fällen ausnahmsweise verschieben. Grundsätzlich gilt aber weiterhin, dass dein Vermieter die Betriebskostenabrechnung spätestens bis zum Ablauf des zwölften Monats nach Ende des Abrechnungszeitraums zustellen muss."
+        },
+        {
+                "typ": "verweis",
+                "ziel": "widerspruch-nebenkostenabrechnung",
+                "text": "Ob deine Abrechnung fristgerecht war und wie du bei Zweifeln richtig widersprichst, erfährst du in unserem ausführlichen Ratgeber zum Widerspruch gegen die Nebenkostenabrechnung."
+        },
+        {
+                "typ": "h2",
+                "text": "Wärmelieferung: Nicht jede Umstellung ist automatisch umlagefähig"
+        },
+        {
+                "typ": "text",
+                "text": "Stellt dein Vermieter die Wärmeversorgung von einer Selbstversorgung der Mieter auf eine gewerbliche Wärmelieferung (Contracting) um, dürfen die daraus entstehenden Kosten nicht ohne Weiteres auf dich als Nebenkosten umgelegt werden. Die entsprechende mietrechtliche Vorschrift des § 556c BGB greift laut BGH nur dann, wenn die Mieter bereits vor der Umstellung Heizkosten als Betriebskosten getragen haben."
+        },
+        {
+                "typ": "text",
+                "text": "Wurde in deinem Haus also erstmals ein externer Wärmelieferant eingeschaltet, obwohl vorher gar keine Heizkosten separat abgerechnet wurden, solltest du genau prüfen, ob die neuen Kosten überhaupt rechtmäßig umlagefähig sind."
+        },
+        {
+                "typ": "h2",
+                "text": "Formelle und materielle Fehler: Unterschiedliche Folgen für deine Nachzahlung"
+        },
+        {
+                "typ": "text",
+                "text": "Der BGH hat 2026 auch die Unterscheidung zwischen formellen und materiellen Fehlern in der Betriebskostenabrechnung präzisiert. Erstreckt sich ein formeller Fehler nicht auf alle Abrechnungspositionen, verbleibt dem Vermieter eine Nachforderung insoweit, als sich unwirksame Einzelpositionen unschwer herausrechnen lassen und die Nachforderung auch ohne diese Positionen gerechtfertigt ist."
+        },
+        {
+                "typ": "text",
+                "text": "Materiell-rechtliche Fehler – also inhaltliche Fehler bei der Berechnung – führen dagegen lediglich zu einer Kürzung des Nachzahlungsanspruchs, gegebenenfalls bis auf null Euro. Sie machen die Abrechnung aber nicht von vornherein insgesamt unwirksam, wie es bei schweren formellen Mängeln der Fall sein kann."
+        },
+        {
+                "typ": "text",
+                "text": "Ein klassisches Beispiel für einen materiellen Fehler, der aktuell noch immer häufig vorkommt: Kosten für einen Kabelanschluss, die seit einer Gesetzesänderung 2024 grundsätzlich nicht mehr als Betriebskosten umgelegt werden dürfen."
+        },
+        {
+                "typ": "verweis",
+                "ziel": "kabelanschluss-nicht-umlagefaehig",
+                "text": "In unserem Artikel erfährst du, warum Kabelanschlusskosten seit Juli 2024 nicht mehr umlagefähig sind und wie du diesen Posten in deiner Abrechnung erkennst."
+        },
+        {
+                "typ": "h2",
+                "text": "Belegeinsicht: Dein Recht bleibt stark"
+        },
+        {
+                "typ": "text",
+                "text": "Auch wenn dieses Urteil nicht ganz neu ist, bestätigt sich die Linie des BGH 2026 weiter: Mieter haben Anspruch auf Einsicht in die Originalbelege der Nebenkostenabrechnung, Kopien gelten dabei nicht als gleichwertig. Für dieses Recht musst du kein besonderes Interesse nachweisen – es ergibt sich schon aus der grundsätzlichen Rechenschaftspflicht deines Vermieters."
+        },
+        {
+                "typ": "text",
+                "text": "Nur in seltenen Ausnahmefällen, etwa bei begründetem Verdacht auf Schikane, darf dein Vermieter die Einsicht einschränken."
+        },
+        {
+                "typ": "h2",
+                "text": "Was bedeutet das konkret für dich als Mieter?"
+        },
+        {
+                "typ": "liste",
+                "items": [
+                        "Prüfe bei Verdacht auf überhöhte Kosten, ob die Preise objektiv marktunüblich sind – ein einzelnes günstigeres Angebot reicht als Beweis oft nicht",
+                        "Achte bei Umstellungen auf Wärmelieferung darauf, ob vorher überhaupt Heizkosten separat abgerechnet wurden",
+                        "Verlange bei Zweifeln Einsicht in die Originalbelege – dieses Recht steht dir uneingeschränkt zu",
+                        "Vergleiche deine Abrechnung mit üblichen Werten, um schnell zu erkennen, ob einzelne Posten aus dem Rahmen fallen",
+                        "Widerspreche fristgerecht, denn auch Einwände zur Wirtschaftlichkeit unterliegen dem Einwendungsausschluss"
+                ]
+        },
+        {
+                "typ": "verweis",
+                "ziel": "betriebskostenspiegel-2024",
+                "text": "Um einzuschätzen, ob einzelne Kostenpositionen in deiner Abrechnung überhöht sind, hilft ein Blick in den DMB Betriebskostenspiegel mit bundesweiten Vergleichswerten."
+        },
+        {
+                "typ": "hinweis",
+                "text": "Dieser Artikel ersetzt keine individuelle Rechtsberatung. Bei konkreten Streitfällen mit deinem Vermieter empfiehlt sich eine Prüfung durch den Mieterverein oder einen Fachanwalt für Mietrecht."
+        },
+        {
+                "typ": "cta",
+                "text": "Jetzt Abrechnung kostenlos prüfen lassen."
+        }
+],
+    },
+    {
       id: "widerspruch-nebenkostenabrechnung",
       titel: "Widerspruch Nebenkostenabrechnung 2026: Frist, Muster & Anleitung",
       teaser: "12 Monate Zeit, aber nur 30 Tage für die Nachzahlung — viele Mieter verwechseln diese Fristen. Was Sie jetzt wissen müssen.",
