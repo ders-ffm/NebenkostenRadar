@@ -1,0 +1,23 @@
+name: Follow-up-Mail – 11 Monate nach Kauf
+on:
+  schedule:
+    - cron: '0 9 1 * *'
+  workflow_dispatch:
+jobs:
+  followup-mail:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Repository auschecken
+        uses: actions/checkout@v4
+      - name: Node.js einrichten
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - name: Abhaengigkeiten installieren
+        run: npm install
+      - name: Follow-up-Mails versenden
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+          RESEND_API_KEY: ${{ secrets.RESEND_API_KEY }}
+        run: node scripts/followup-mail.mjs
