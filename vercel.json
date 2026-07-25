@@ -5,7 +5,8 @@
     { "source": "/admin/(.*)",      "destination": "/index.html" },
     { "source": "/danke",           "destination": "/index.html" },
     { "source": "/ratgeber",        "destination": "/index.html" },
-    { "source": "/ratgeber/(.*)",   "destination": "/index.html" }
+    { "source": "/ratgeber/(.*)",   "destination": "/index.html" },
+    { "source": "/ueber-uns",       "destination": "/index.html" }
   ],
   "headers": [
     {
