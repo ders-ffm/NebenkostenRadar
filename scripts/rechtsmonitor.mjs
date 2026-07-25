@@ -28,6 +28,11 @@
  *   Schlägt die KI-Generierung fehl, wird jetzt die echte Ursache geloggt
  *   (Stop-Grund + Antwort-Ausschnitt) — im GitHub-Actions-Log beim Schritt
  *   "Rechtsmonitor ausfuehren" sichtbar. Kein Rätselraten mehr nötig.
+ *
+ * VERLAUF:
+ *   25.07.2026 — max_tokens von 6000 auf 8192 erhöht, nachdem ein Artikel
+ *   mit vielen Listenpunkten/Schritten am 6000-Limit mitten im JSON
+ *   abgebrochen ist (stop_reason: max_tokens, siehe Actions-Log).
  */
 import fetch from 'node-fetch';
 import { readFileSync, writeFileSync, existsSync } from 'fs';
@@ -144,7 +149,7 @@ JSON ohne Backticks:
     },
     body: JSON.stringify({
       model: 'claude-sonnet-5',
-      max_tokens: 6000,
+      max_tokens: 8192,
       tools: [{ type: "web_search_20250305", name: "web_search" }],
       messages: [{ role: 'user', content: prompt }],
     }),
