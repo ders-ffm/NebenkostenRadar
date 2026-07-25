@@ -647,9 +647,9 @@ export default function App() {
   }
 
   const root = { fontFamily: "'Inter','Segoe UI','Helvetica Neue',Arial,sans-serif", background: C.bg, color: C.text, minHeight: "100vh", WebkitTextSizeAdjust: "100%" };
+  const PAGE_MAX = 1200;
   const card = { background: C.surface, border: "1px solid " + C.border, borderRadius: 12, marginBottom: 12, overflow: "hidden" };
   const cardHead = { padding: "11px 16px", borderBottom: "1px solid " + C.border, fontSize: 11, fontWeight: 700, color: C.muted, textTransform: "uppercase", letterSpacing: "0.1em" };
-
 
   // ── Einheitliche Navigation ───────────────────────────────────────────────
   function Nav({ activeStep }) {
@@ -660,7 +660,7 @@ export default function App() {
     ];
     return (
       <div style={{ borderBottom: "2px solid " + C.border, padding: "0 20px", background: "#fff", position: "sticky", top: 0, zIndex: 100, boxShadow: "0 1px 8px rgba(0,0,0,0.06)" }}>
-        <div style={{ maxWidth: 720, margin: "0 auto", display: "flex", alignItems: "center", justifyContent: "space-between", height: 72 }}>
+        <div style={{ maxWidth: PAGE_MAX, margin: "0 auto", display: "flex", alignItems: "center", justifyContent: "space-between", height: 72 }}>
           <div style={{ display: "flex", alignItems: "center", gap: 12, cursor: "pointer" }} onClick={() => navigateTo("welcome")}>
             <div style={{ width: 42, height: 42, borderRadius: 10, background: C.green, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0, boxShadow: "0 2px 8px rgba(45,122,79,0.3)" }}>
               <svg width="24" height="24" viewBox="0 0 18 18" fill="none">
@@ -698,10 +698,8 @@ export default function App() {
     <div style={root}>
       <CookieBanner />
       <Nav activeStep="welcome" />
-
-
       {/* Hero */}
-      <div style={{ padding: "56px 24px 48px", borderBottom: "1px solid " + C.border, textAlign: "center", maxWidth: 680, margin: "0 auto", width: "100%", boxSizing: "border-box" }}>
+      <div style={{ padding: "56px 24px 48px", borderBottom: "1px solid " + C.border, textAlign: "center", maxWidth: PAGE_MAX, margin: "0 auto", width: "100%", boxSizing: "border-box" }}>
         <div style={{ display: "inline-block", background: C.greenBg, border: "1px solid " + C.green + "40", borderRadius: 4, padding: "4px 12px", fontSize: 11, color: C.green, fontWeight: 700, letterSpacing: "0.06em", marginBottom: 20, textTransform: "uppercase" }}>
           Unabhängige Prüfung · Keine versteckten Kosten
         </div>
@@ -712,7 +710,6 @@ export default function App() {
         <p style={{ fontSize: 16, color: C.muted, margin: "0 0 32px", lineHeight: 1.7, maxWidth: 520, marginLeft: "auto", marginRight: "auto" }}>
           Wir prüfen Ihre Abrechnung systematisch nach dem aktuellen deutschen Mietrecht — vollautomatisch, nachvollziehbar und ohne juristische Vorkenntnisse.
         </p>
-
         {/* Was wir tun */}
         <div style={{ display: "flex", flexDirection: "column", gap: 12, marginBottom: 36 }}>
           {[
@@ -732,7 +729,6 @@ export default function App() {
             </div>
           ))}
         </div>
-
         {IS_DEMO && <div style={{ background: C.amberBg, border: "1px solid " + C.amber + "40", borderRadius: 6, padding: "8px 14px", marginBottom: 16, fontSize: 11, color: C.amber }}>Demo-Modus — Stripe nicht konfiguriert</div>}
         <button onClick={() => navigateTo("wohnung")}
           style={{ width: "100%", background: C.green, color: "#ffffff", border: "none", borderRadius: 8, padding: "16px 24px", fontSize: 16, fontFamily: "inherit", fontWeight: 700, cursor: "pointer", letterSpacing: "0.01em" }}>
@@ -742,9 +738,8 @@ export default function App() {
           Basisanalyse kostenlos · Vollbericht einmalig €{CONFIG.PREIS.toFixed(2)} · Kein Abo · Keine Registrierung
         </p>
       </div>
-
       {/* Kennzahlen */}
-      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", borderBottom: "1px solid " + C.border, maxWidth: 680, margin: "0 auto", width: "100%" }}>
+      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", borderBottom: "1px solid " + C.border, maxWidth: PAGE_MAX, margin: "0 auto", width: "100%" }}>
         {[
           ["50 %", "aller Abrechnungen enthalten Fehler", "Quelle: Deutscher Mieterbund"],
           ["§ 2 BetrKV", "Rechtsgrundlage unserer Prüfung", "inkl. HeizkostenV & CO₂KostAufG"],
@@ -757,9 +752,8 @@ export default function App() {
           </div>
         ))}
       </div>
-
       {/* Transparenz */}
-      <div style={{ padding: "36px 24px", borderBottom: "1px solid " + C.border, maxWidth: 680, margin: "0 auto", width: "100%", boxSizing: "border-box", textAlign: "center" }}>
+      <div style={{ padding: "36px 24px", borderBottom: "1px solid " + C.border, maxWidth: PAGE_MAX, margin: "0 auto", width: "100%", boxSizing: "border-box", textAlign: "center" }}>
         <div style={{ fontSize: 13, fontWeight: 700, color: C.text, marginBottom: 24, textTransform: "uppercase", letterSpacing: "0.08em" }}>Unsere Grundsätze</div>
         <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
           {[
@@ -778,9 +772,8 @@ export default function App() {
           ))}
         </div>
       </div>
-
       {/* Leistungsübersicht — nur Premium */}
-      <div style={{ padding: "36px 24px", borderBottom: "1px solid " + C.border, maxWidth: 680, margin: "0 auto", width: "100%", boxSizing: "border-box", textAlign: "center" }}>
+      <div style={{ padding: "36px 24px", borderBottom: "1px solid " + C.border, maxWidth: PAGE_MAX, margin: "0 auto", width: "100%", boxSizing: "border-box", textAlign: "center" }}>
         <div style={{ fontSize: 13, fontWeight: 700, color: C.text, marginBottom: 8, textTransform: "uppercase", letterSpacing: "0.08em" }}>Was Sie erhalten</div>
         <p style={{ fontSize: 14, color: C.muted, margin: "0 0 24px", lineHeight: 1.6 }}>
           Die Basisanalyse ist kostenlos. Für €{CONFIG.PREIS.toFixed(2)} einmalig erhalten Sie den vollständigen Prüfbericht:
@@ -812,11 +805,9 @@ export default function App() {
           <div style={{ fontSize: 11, color: "rgba(255,255,255,0.75)", marginTop: 10 }}>Kein Abo · Einmalige Zahlung · Sofortiger Zugang</div>
         </div>
       </div>
-
             <LegalFooter setStep={setStep} setPrevStep={setPrevStep} currentStep="welcome" />
     </div>
   );
-
 
   // ── WOHNUNG ───────────────────────────────────────────────────────────────────
   if (step === "wohnung") {
@@ -830,18 +821,15 @@ export default function App() {
           <StepBar current={1} total={3} label="Wohnungsdaten" />
         </div>
         <div style={{ padding: "22px 20px 40px" }}>
-          <h2 style={{ fontSize: 21, fontWeight: 400, margin: "0 0 6px" }}>Angaben zur Wohnung</h2>
+          <h2 style={{ fontSize: 21, fontWeight: 400, margin: "0 0 6px" }}>Angaben zur Mietsache</h2>
           <p style={{ fontSize: 13, color: C.muted, margin: "0 0 16px", lineHeight: 1.55 }}>Steht auf dem Deckblatt deiner Abrechnung.</p>
-
           <div style={{ background: C.greenBg, border: "1px solid " + C.green + "40", borderRadius: 10, padding: "13px 14px", marginBottom: 20, fontSize: 12, color: C.muted, lineHeight: 1.75 }}>
             <div style={{ color: C.gold, fontWeight: 700, marginBottom: 5, fontSize: 13 }}>Wie funktioniert eine Nebenkostenabrechnung?</div>
             Du zahlst monatlich Abschläge für Heizung, Wasser, Müll u.a. Einmal im Jahr rechnet dein Vermieter ab, was tatsächlich angefallen ist. Im nächsten Schritt trägst du jeden Posten ein — genau so wie er auf der Abrechnung steht.
           </div>
-
           <Field label="Wohnfläche laut Mietvertrag" value={wohnung.flaeche} onChange={v => setW("flaeche", v)} type="number" placeholder="z.B. 75" suffix="m²" required error={errors.flaeche} autoFocus tip="Steht auf dem Deckblatt oder im Mietvertrag" />
           <Field label="Abrechnungsjahr" value={wohnung.jahr} onChange={v => setW("jahr", v)} type="number" placeholder="z.B. 2023" required error={errors.jahr} tip="Das Kalenderjahr oben auf der Abrechnung" />
           <Field label="Geleistete Vorauszahlungen" value={wohnung.vorauszahlung} onChange={v => setW("vorauszahlung", v)} type="number" placeholder="z.B. 1200,00" prefix="€" required error={errors.vorauszahlung} tip="Alle Abschläge des Jahres — steht als 'Summe Vorauszahlungen' auf der Abrechnung" />
-
           {diff !== null && !isNaN(diff) && (
             <div style={{ background: diff > 0 ? C.redBg : C.amberBg, border: "1px solid " + (diff > 0 ? C.red : C.amber) + "30", borderLeft: "3px solid " + (diff > 0 ? C.red : C.amber), borderRadius: 10, padding: "12px 14px", marginBottom: 10, fontSize: 13, color: diff > 0 ? C.red : C.amber, lineHeight: 1.5 }}>
               {diff > 0 ? "Nachzahlung " + fmt(diff) + " — prüfe ob alle Posten korrekt sind" : "Guthaben " + fmt(Math.abs(diff)) + " — trotzdem prüfen: Auch bei Guthaben kann die Abrechnung fehlerhafte Posten enthalten."}
@@ -857,7 +845,6 @@ export default function App() {
               Vorauszahlung auffällig hoch: {fmt(vzQm)}/m²/Monat — mehr als doppelt so hoch wie der DMB-Richtwert ({fmt(CONFIG.RICHTWERTE.gesamt)}/m²/Monat).
             </div>
           )}
-
           <Btn onClick={() => { if (validateWohnung()) { setErrors({}); setSubmitAttempted(false); setStep("posten"); } }}>Weiter zu den Posten →</Btn>
         </div>
       </div>
@@ -972,7 +959,6 @@ export default function App() {
             </div>
             <div style={{ fontSize: 13, color: C.muted, lineHeight: 1.6 }}>{result.zusammenfassung}</div>
           </div>
-
           <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8, marginBottom: 14 }}>
             {[
               { l: "Dein €/m²/Jahr", v: result.pro_qm_gesamt ? fmt(result.pro_qm_gesamt) : "–", s: "eingegebene Posten" },
@@ -987,13 +973,11 @@ export default function App() {
               </div>
             ))}
           </div>
-
           {result.co2_hinweis && (
             <div style={{ background: C.blueBg, border: "1px solid " + C.blue + "30", borderRadius: 10, padding: "11px 14px", marginBottom: 14, fontSize: 12, color: C.blue, lineHeight: 1.5 }}>
               {result.co2_hinweis}
             </div>
           )}
-
           <div style={card}>
             <div style={{ ...cardHead, display: "flex", justifyContent: "space-between" }}>
               <span>Posten-Bewertung</span>
@@ -1017,7 +1001,6 @@ export default function App() {
               </div>
             ))}
           </div>
-
           {justPaid && (
             <div style={{ background: C.greenBg, border: "2px solid " + C.green, borderRadius: 12, padding: "16px 18px", marginBottom: 16 }}>
               <div style={{ fontSize: 15, fontWeight: 800, color: C.green, marginBottom: 4 }}>✓ Vielen Dank für Ihre Bestellung!</div>
@@ -1057,7 +1040,6 @@ export default function App() {
                       <div style={{ fontSize: 12, color: C.muted, lineHeight: 1.55 }}>Nach der Zahlung senden wir Ihnen Brief und Prüfbericht direkt per E-Mail — damit Sie jederzeit darauf zugreifen können, auch wenn Sie den Tab schließen.</div>
                     </div>
                   </div>
-
                   {/* Preis, Lieferung, Anbieter — Pflichtangaben vor Kaufabschluss */}
                   <div style={{ fontSize: 11, color: C.dim, marginBottom: 12, lineHeight: 1.7, textAlign: "center" }}>
                     Gesamtpreis: <strong style={{ color: C.text }}>€{CONFIG.PREIS.toFixed(2)}</strong> · Sofortiger Zugang nach Zahlung<br/>
@@ -1108,7 +1090,6 @@ export default function App() {
                     </div>
                   ))}
               </div>
-
               <div style={card}>
                 <div style={cardHead}>Nächste Schritte</div>
                 {(result.naechste_schritte || []).map((s, i) => (
@@ -1117,19 +1098,16 @@ export default function App() {
                   </div>
                 ))}
               </div>
-
               <div style={{ background: C.amberBg, border: "1px solid " + C.amber + "20", borderLeft: "3px solid " + C.amber, borderRadius: 12, padding: "13px 16px", marginBottom: 14 }}>
                 <div style={{ fontSize: 11, fontWeight: 700, color: C.amber, marginBottom: 5, textTransform: "uppercase", letterSpacing: "0.1em" }}>Fristen</div>
                 <div style={{ fontSize: 13, color: C.muted, lineHeight: 1.65 }}>{result.fristen_hinweis}</div>
               </div>
-
               <div style={{ display: "flex", gap: 10, marginBottom: 10 }}>
                 <Btn onClick={() => { setErrors({}); setStep("adressen"); }} style={{ flex: 2 }}>Brief erstellen →</Btn>
                 <Btn onClick={generateReport} variant="dark" style={{ flex: 1, fontSize: 13 }}>Bericht</Btn>
               </div>
             </>
           )}
-
           <Btn onClick={resetAll} variant="outline" style={{ marginTop: 4 }}>← Neue Prüfung starten</Btn>
           <p style={{ textAlign: "center", fontSize: 10, color: C.dim, marginTop: 12, lineHeight: 1.6 }}>Keine Rechtsberatung. Deutscher Mieterbund: mieterbund.de · Tel. 030 223230</p>
           <LegalFooter setStep={setStep} setPrevStep={setPrevStep} currentStep="result" />
@@ -1148,7 +1126,6 @@ export default function App() {
       <div style={{ padding: "22px 20px 40px" }}>
         <h2 style={{ fontSize: 21, fontWeight: 400, margin: "0 0 6px" }}>Adressangaben für den Brief</h2>
         <p style={{ fontSize: 13, color: C.muted, margin: "0 0 22px" }}>Werden nur für den Brief verwendet — keine Speicherung.</p>
-
         <div style={{ background: C.surface, border: "1px solid " + C.border, borderRadius: 12, padding: "16px", marginBottom: 14 }}>
           <div style={{ fontSize: 11, color: C.gold, fontWeight: 700, letterSpacing: "0.15em", textTransform: "uppercase", marginBottom: 14 }}>Deine Adresse (Absender)</div>
           <Field label="Vor- und Nachname" value={adressen.mieterName} onChange={v => setA("mieterName", v)} placeholder="Max Mustermann" required error={errors.mieterName} autoFocus />
@@ -1158,7 +1135,6 @@ export default function App() {
             <Field label="Ort" value={adressen.mieterOrt} onChange={v => setA("mieterOrt", v)} placeholder="Musterstadt" required error={errors.mieterOrt} />
           </div>
         </div>
-
         <div style={{ background: C.surface, border: "1px solid " + C.border, borderRadius: 12, padding: "16px", marginBottom: 14 }}>
           <div style={{ fontSize: 11, color: C.muted, fontWeight: 700, letterSpacing: "0.15em", textTransform: "uppercase", marginBottom: 14 }}>Vermieter / Hausverwaltung</div>
           <Field label="Name oder Firma" value={adressen.vermieterName} onChange={v => setA("vermieterName", v)} placeholder="Muster Verwaltungs GmbH" required error={errors.vermieterName} />
@@ -1168,7 +1144,6 @@ export default function App() {
             <Field label="Ort" value={adressen.vermieterOrt} onChange={v => setA("vermieterOrt", v)} placeholder="Musterstadt" required error={errors.vermieterOrt} />
           </div>
         </div>
-
         <Field label="Datum" value={adressen.datum} onChange={v => setA("datum", v)} placeholder="01.01.2024" tip="Datum für den Brief" />
         <Btn onClick={() => { if (validateAdressen()) { setErrors({}); handleKaufen(); } }}>Jetzt kaufen · €{CONFIG.PREIS.toFixed(2)} →</Btn>
       </div>
@@ -1240,10 +1215,8 @@ export default function App() {
             <div style={{ background: C.greenBg, border: "1px solid " + C.green + "30", borderRadius: 20, padding: "4px 12px", fontSize: 11, color: C.green, fontWeight: 700 }}>✓ Versandfertig</div>
           </div>
         </div>
-
         {/* DIN 5008 Geschäftsbrief mit Branding */}
         <div style={{ margin: "16px 20px 0", background: "#ffffff", border: "1.5px solid " + C.border, borderRadius: 10, overflow: "hidden", boxShadow: "0 2px 12px rgba(0,0,0,0.08)" }}>
-
           {/* Briefkopf */}
           <div style={{ padding: "20px 28px 16px", borderBottom: "2px solid " + C.border, display: "flex", justifyContent: "space-between", alignItems: "center" }}>
             {/* Logo — wie im App-Header */}
@@ -1269,29 +1242,24 @@ export default function App() {
               <div style={{ fontSize: 10, color: C.dim }}>{new Date().toLocaleDateString("de-DE")}</div>
             </div>
           </div>
-
           {/* Absenderzeile über Empfänger (DIN 5008) */}
           <div style={{ padding: "10px 28px", fontSize: 10, color: C.dim, borderBottom: "1px solid " + C.border, background: C.surface }}>
             {adressen.mieterName} · {adressen.mieterStrasse} · {adressen.mieterPlz} {adressen.mieterOrt}
           </div>
-
           {/* Briefinhalt */}
           <div style={{ padding: "20px 28px 24px", fontFamily: "'Inter','Segoe UI','Helvetica Neue',Arial,sans-serif", fontSize: 13.5, color: "#1a1a1a", lineHeight: 1.95, whiteSpace: "pre-wrap", maxHeight: 440, overflowY: "auto" }}>
             {briefText}
           </div>
-
             <div style={{ borderTop: "1px solid " + C.border, padding: "8px 28px", background: C.surface, display: "flex", justifyContent: "space-between", alignItems: "center" }}>
               <div style={{ fontSize: 10, color: C.dim }}>Unverbindliches Musterschreiben · Kein Rechtsberatungscharakter (§ 2 RDG) · nebenkostenradar.com</div>
               <div style={{ fontSize: 10, color: C.dim }}>{new Date().toLocaleDateString("de-DE")}</div>
             </div>
         </div>
-
         <div style={{ padding: "16px 20px 40px", display: "flex", flexDirection: "column", gap: 10 }}>
           <Btn onClick={() => { try { navigator.clipboard.writeText(briefText); setCopied(true); setTimeout(() => setCopied(false), 2500); } catch {} }} variant={copied ? "green" : "gold"}>
             {copied ? "✓ In Zwischenablage kopiert!" : "Brief kopieren"}
           </Btn>
           <Btn onClick={generateReport} variant="dark">Vollständigen Prüfbericht anzeigen</Btn>
-
           {/* E-Mail-Versand */}
           <div style={{ background: C.surface, border: "1px solid " + C.border, borderRadius: 12, padding: "16px", marginTop: 4 }}>
             <div style={{ fontSize: 12, fontWeight: 700, color: C.text, marginBottom: 4 }}>
@@ -1329,7 +1297,6 @@ export default function App() {
             )}
             {emailError && <div style={{ fontSize: 11, color: C.red, marginTop: 6 }}>{emailError}</div>}
           </div>
-
           <div style={{ background: C.surface, border: "1px solid " + C.border, borderRadius: 12, padding: "16px" }}>
             <div style={{ fontSize: 11, fontWeight: 700, color: C.gold, marginBottom: 10, textTransform: "uppercase", letterSpacing: "0.1em" }}>Versandhinweise</div>
             {[["Per Einschreiben mit Rückschein", "Nur so ist der Zugang beweisbar"], ["Widerspruchsfrist beachten", "12 Monate nach Erhalt (§ 556 Abs. 3 BGB)"], ["Kopie aufbewahren", "Brief und Einlieferungsbeleg für deine Unterlagen"]].map(([t, s], i) => (
@@ -1342,7 +1309,6 @@ export default function App() {
               </div>
             ))}
           </div>
-
           <Btn onClick={resetAll} variant="outline">Neue Prüfung starten</Btn>
         </div>
         <div style={{ borderTop: "1px solid " + C.border, padding: "12px 20px", display: "flex", justifyContent: "center", gap: 20 }}>
@@ -1368,7 +1334,6 @@ export default function App() {
           <div style={{ background: C.greenBg, border: "1px solid " + C.green + "40", borderRadius: 20, padding: "4px 12px", fontSize: 11, color: C.gold, fontWeight: 700 }}>Jahr {wohnung.jahr}</div>
         </div>
       </div>
-
       <div style={{ margin: "16px 20px 0", background: "#fafafa", border: "1px solid #dde1e7", borderRadius: 12, overflow: "hidden" }}>
         <div style={{ background: "#f0f2f4", padding: "8px 16px", borderBottom: "1px solid #dde1e7", display: "flex", alignItems: "center", gap: 8 }}>
           {["#e05252", "#e8a642", "#4caf7d"].map(c => <div key={c} style={{ width: 9, height: 9, borderRadius: "50%", background: c }} />)}
@@ -1376,7 +1341,6 @@ export default function App() {
         </div>
         <pre style={{ padding: "20px", fontFamily: "'Courier New',monospace", fontSize: 11, color: "#1a1810", lineHeight: 1.8, whiteSpace: "pre-wrap", maxHeight: 500, overflowY: "auto", margin: 0 }}>{reportContent}</pre>
       </div>
-
       <div style={{ padding: "16px 20px 40px", display: "flex", flexDirection: "column", gap: 10 }}>
         <Btn onClick={() => { try { navigator.clipboard.writeText(reportContent); setReportCopied(true); setTimeout(() => setReportCopied(false), 2500); } catch { alert("Bitte den Text oben manuell markieren und kopieren."); } }} variant={reportCopied ? "green" : "gold"}>
           {reportCopied ? "✓ Bericht kopiert!" : "Bericht in Zwischenablage kopieren"}
@@ -1433,7 +1397,7 @@ export default function App() {
           </div>
         ))}
         <div style={{ background: C.amberBg, border: "1px solid " + C.amber + "30", borderLeft: "3px solid " + C.amber, borderRadius: 10, padding: "12px 16px", fontSize: 12, color: C.amber, lineHeight: 1.7 }}>
-          
+
         </div>
       </div>
     </div>
@@ -1474,7 +1438,6 @@ export default function App() {
       </div>
     </div>
   );
-
 
   if (step === "agb") return (
     <div style={root}>
@@ -1537,23 +1500,18 @@ export default function App() {
     </div>
   );
 
-
   // ════════════════════════════════════════════════════════════════════════════
   // RATGEBER ÜBERSICHT
   // ════════════════════════════════════════════════════════════════════════════
-
-
   if (step === "ratgeber") return (
     <div style={root}>
       <Nav activeStep="ratgeber" />
-
-      <div style={{ maxWidth: 720, margin: "0 auto", padding: "32px 20px 60px" }}>
+      <div style={{ maxWidth: PAGE_MAX, margin: "0 auto", padding: "32px 20px 60px" }}>
         <div style={{ marginBottom: 8 }}>
           <button onClick={() => navigateTo("welcome")} style={{ background: "none", border: "none", color: C.muted, cursor: "pointer", fontSize: 13, fontFamily: "inherit", padding: 0 }}>← Startseite</button>
         </div>
         <h1 style={{ fontSize: 28, fontWeight: 800, color: C.text, margin: "0 0 8px", letterSpacing: "-0.02em" }}>Ratgeber Mietrecht</h1>
         <p style={{ fontSize: 15, color: C.muted, margin: "0 0 32px", lineHeight: 1.6 }}>Fundierte Informationen zu Nebenkostenabrechnungen, Fristen und Ihren Rechten als Mieter — kostenlos und aktuell.</p>
-
         <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
           {ARTIKEL.map(a => (
             <div key={a.id} onClick={() => { setRatgeberArtikel(a.id); window.history.pushState({ step: "artikel" }, "", "/ratgeber/" + a.id); setStep("artikel"); }}
@@ -1586,7 +1544,7 @@ export default function App() {
       <div style={root}>
         {/* Nav */}
         <div style={{ borderBottom: "2px solid " + C.border, padding: "0 20px", background: "#fff", position: "sticky", top: 0, zIndex: 100, boxShadow: "0 1px 8px rgba(0,0,0,0.06)" }}>
-          <div style={{ maxWidth: 720, margin: "0 auto", display: "flex", alignItems: "center", justifyContent: "space-between", height: 72 }}>
+          <div style={{ maxWidth: PAGE_MAX, margin: "0 auto", display: "flex", alignItems: "center", justifyContent: "space-between", height: 72 }}>
             <div style={{ display: "flex", alignItems: "center", gap: 10, cursor: "pointer" }} onClick={() => navigateTo("welcome")}>
               <div style={{ width: 32, height: 32, borderRadius: 8, background: C.green, display: "flex", alignItems: "center", justifyContent: "center" }}>
                 <div style={{ width: 12, height: 12, borderRadius: "50%", border: "2.5px solid #fff" }} />
@@ -1599,21 +1557,16 @@ export default function App() {
             </button>
           </div>
         </div>
-
-        <div style={{ maxWidth: 720, margin: "0 auto", padding: "24px 20px 60px" }}>
+        <div style={{ maxWidth: PAGE_MAX, margin: "0 auto", padding: "24px 20px 60px" }}>
           <button onClick={() => { window.history.pushState({ step: "ratgeber" }, "", "/ratgeber"); setStep("ratgeber"); }} style={{ background: "none", border: "none", color: C.muted, cursor: "pointer", fontSize: 13, fontFamily: "inherit", padding: "0 0 20px" }}>← Ratgeber</button>
-
           {/* Hero Bild */}
           <img src={artikel.bild} alt={artikel.bildAlt} style={{ width: "100%", height: 220, objectFit: "cover", borderRadius: 10, marginBottom: 24 }} />
-
           {/* Meta */}
           <div style={{ display: "flex", gap: 10, alignItems: "center", marginBottom: 12 }}>
             <span style={{ background: C.greenBg, color: C.green, fontSize: 10, fontWeight: 700, padding: "3px 10px", borderRadius: 4, letterSpacing: "0.06em" }}>{artikel.kategorie}</span>
             <span style={{ color: C.dim, fontSize: 12 }}>{artikel.datum} · {artikel.lesezeit} Lesezeit</span>
           </div>
-
           <h1 style={{ fontSize: 24, fontWeight: 800, color: C.text, margin: "0 0 16px", lineHeight: 1.3, letterSpacing: "-0.02em" }}>{artikel.titel}</h1>
-
           {/* Inhalt rendern */}
           {artikel.inhalt.map((block, i) => {
             if (block.typ === "intro") return <p key={i} style={{ fontSize: 16, color: C.text, lineHeight: 1.75, margin: "0 0 24px", fontWeight: 400, borderLeft: "3px solid " + C.green, paddingLeft: 16 }}>{block.text}</p>;
@@ -1669,7 +1622,6 @@ export default function App() {
             );
             return null;
           })}
-
           {/* Weitere Artikel */}
           <div style={{ borderTop: "1px solid " + C.border, paddingTop: 24, marginTop: 32 }}>
             <div style={{ fontSize: 13, fontWeight: 700, color: C.text, marginBottom: 16, textTransform: "uppercase", letterSpacing: "0.08em" }}>Weitere Artikel</div>
@@ -1696,7 +1648,7 @@ export default function App() {
   if (step === "ueberuns") return (
     <div style={root}>
       <div style={{ borderBottom: "2px solid " + C.border, padding: "0 20px", background: "#fff", position: "sticky", top: 0, zIndex: 100, boxShadow: "0 1px 8px rgba(0,0,0,0.06)" }}>
-        <div style={{ maxWidth: 720, margin: "0 auto", display: "flex", alignItems: "center", justifyContent: "space-between", height: 72 }}>
+        <div style={{ maxWidth: PAGE_MAX, margin: "0 auto", display: "flex", alignItems: "center", justifyContent: "space-between", height: 72 }}>
           <div style={{ display: "flex", alignItems: "center", gap: 10, cursor: "pointer" }} onClick={() => navigateTo("welcome")}>
             <div style={{ width: 32, height: 32, borderRadius: 8, background: C.green, display: "flex", alignItems: "center", justifyContent: "center" }}>
               <div style={{ width: 12, height: 12, borderRadius: "50%", border: "2.5px solid #fff" }} />
@@ -1709,18 +1661,13 @@ export default function App() {
           </button>
         </div>
       </div>
-
-      <div style={{ maxWidth: 720, margin: "0 auto", padding: "32px 20px 60px" }}>
+      <div style={{ maxWidth: PAGE_MAX, margin: "0 auto", padding: "32px 20px 60px" }}>
         <button onClick={() => navigateTo("welcome")} style={{ background: "none", border: "none", color: C.muted, cursor: "pointer", fontSize: 13, fontFamily: "inherit", padding: "0 0 20px" }}>← Startseite</button>
-
         <img src="https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=800&q=80" alt="Modernes Bürogebäude in Frankfurt" style={{ width: "100%", height: 200, objectFit: "cover", borderRadius: 10, marginBottom: 28 }} />
-
         <h1 style={{ fontSize: 26, fontWeight: 800, color: C.text, margin: "0 0 16px", letterSpacing: "-0.02em" }}>Über NebenkostenRadar</h1>
-
         <p style={{ fontSize: 15, color: C.muted, lineHeight: 1.75, margin: "0 0 28px" }}>
           NebenkostenRadar ist ein unabhängiger digitaler Prüfdienst für Nebenkostenabrechnungen. Wir helfen Mietern in Deutschland, ihre Betriebskostenabrechnungen auf Fehler, überhöhte Posten und nicht umlagefähige Kosten zu überprüfen — schnell, transparent und ohne juristische Vorkenntnisse.
         </p>
-
         {[
           { titel: "Unser Ansatz", text: "Wir kombinieren systematische Regelprüfung nach BetrKV, HeizkostenV und CO₂KostAufG mit dem aktuellen DMB-Betriebskostenspiegel. Jeder Posten wird automatisch auf Zulässigkeit und Plausibilität geprüft. Das Ergebnis ist nachvollziehbar, mit konkreten Rechtsgrundlagen belegt." },
           { titel: "Unabhängigkeit", text: "NebenkostenRadar hat keine Verbindungen zu Vermietern, Hausverwaltungen oder Immobiliengesellschaften. Wir arbeiten ausschließlich im Interesse der Mieter. Unsere Prüfergebnisse sind nicht käuflich." },
@@ -1732,7 +1679,6 @@ export default function App() {
             <p style={{ fontSize: 14, color: C.muted, lineHeight: 1.75, margin: 0 }}>{s.text}</p>
           </div>
         ))}
-
         <div style={{ background: C.surface, border: "1px solid " + C.border, borderRadius: 10, padding: "18px 20px", marginTop: 8 }}>
           <div style={{ fontSize: 13, fontWeight: 700, color: C.text, marginBottom: 10 }}>Kontakt</div>
           <BrandAnschrift />
