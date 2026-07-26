@@ -1,6 +1,5 @@
 import { useState, useCallback, useEffect } from "react";
 import { ARTIKEL } from "./artikel.js";
-
 const CONFIG = {
   STRIPE_PAYMENT_LINK: "https://buy.stripe.com/5kQeVdfd9h1b8IM1QDgUM01",
   PREIS: 9.99,
@@ -44,7 +43,6 @@ function accept() {
   );
 }
 const IS_DEMO = CONFIG.STRIPE_PAYMENT_LINK.includes("HIER");
-
 const C = {
   bg: "#ffffff", surface: "#f8f9fa", high: "#f0f2f4", border: "#b8bfc9",
   gold: "#2d7a4f", goldD: "#1d5235", goldBg: "#eaf4ee",
@@ -54,7 +52,6 @@ const C = {
   amber: "#b45309", amberBg: "#fef3e2",
   blue: "#1d4ed8", blueBg: "#eff6ff",
 };
-
 const POSTEN_GRUPPEN = [
   { id: "heizung", label: "Heizung und Warmwasser", icon: "🔥",
     hint: "Größten Posten findest du unter 'Heizkosten' oder 'Wärmeversorgung'",
@@ -112,9 +109,7 @@ const POSTEN_GRUPPEN = [
       { key: "sonstiges_vereinbart", label: "Sonstige vereinbarte Betriebskosten", tip: "Nur wenn explizit im Mietvertrag" },
     ]},
 ];
-
 const ALLE_POSTEN = POSTEN_GRUPPEN.flatMap(g => g.posten);
-
 const toNum = v => {
   if (v == null || v === "") return 0;
   let s = String(v).trim();
@@ -123,41 +118,34 @@ const toNum = v => {
   const n = parseFloat(s);
   return (!isNaN(n) && n > 0) ? n : 0;
 };
-
 const fmt = n => (n != null && !isNaN(n)) ? "€ " + parseFloat(n || 0).toFixed(2) : "€ 0,00";
 const pct = (a, b) => b > 0 ? Math.round((a / b) * 100) : 0;
-
 function checkPaidReturn() {
   try {
     return window.location.pathname === "/danke";
   } catch { return false; }
 }
-
 function checkJustPaid() {
   try {
     return window.location.pathname === "/danke";
   } catch { return false; }
 }
-
 const BEWERTUNG = {
   ok:         { label: "Unauffällig",  farbe: C.green, bg: C.greenBg, icon: "✅", sub: "Keine wesentlichen Fehler gefunden" },
   auffaellig: { label: "Prüfenswert", farbe: C.amber, bg: C.amberBg, icon: "⚠️", sub: "Auffälligkeiten — Einwände ratsam" },
   kritisch:   { label: "Fehlerhaft",  farbe: C.red,   bg: C.redBg,   icon: "🚨", sub: "Erhebliche Fehler — Einwände dringend empfohlen" },
 };
-
 function analysierePosten(w, wohn) {
   const R = CONFIG.RICHTWERTE;
   const flaeche = Math.max(toNum(wohn.flaeche), 5);
   const rj = m => m * flaeche * 12;
   const abw = (b, rw) => rw > 0 ? Math.round(((b - rw) / rw) * 100) : 0;
   const widerspruch = [], posten_bewertung = [];
-
   if (toNum(w.kabelanschluss) > 0) {
     const b = toNum(w.kabelanschluss);
     posten_bewertung.push({ posten: "Kabelanschluss", betrag: b, richtwert: 0, abweichung_prozent: 100, status: "nicht_umlagefaehig", hinweis: "Seit 01.07.2024 nicht mehr umlagefähig. Voller Betrag rückforderbar.", paragraf: "§ 2 Nr. 15b TKG" });
     widerspruch.push("Kabelanschlusskosten " + fmt(b) + ": Nicht umlagefähig seit 01.07.2024 (§ 2 Nr. 15b TKG). Rückforderung des vollen Betrags.");
   }
-
   const heiz = toNum(w.heizkosten_gesamt), ww = toNum(w.warmwasser_gesamt);
   if (heiz > 0 || ww > 0) {
     const kombi = heiz + ww;
@@ -169,13 +157,11 @@ function analysierePosten(w, wohn) {
     if (heiz > 0) posten_bewertung.push({ posten: "Heizkosten", betrag: heiz, richtwert: rwK * 0.75, abweichung_prozent: aK, status: st, hinweis: hi, paragraf: "§ 2 Nr. 4 BetrKV, § 7 HeizkostenV" });
     if (ww > 0) posten_bewertung.push({ posten: "Warmwasserversorgung", betrag: ww, richtwert: rwK * 0.25, abweichung_prozent: 0, status: "ok", hinweis: "Muss separat ausgewiesen sein (§ 8 HeizkostenV).", paragraf: "§ 2 Nr. 5 BetrKV" });
   }
-
   if (toNum(w.co2_abgabe) > 0) {
     const b = toNum(w.co2_abgabe);
     posten_bewertung.push({ posten: "CO2-Abgabe", betrag: b, richtwert: 0, abweichung_prozent: 0, status: "pruefen", hinweis: "Vermieter muss 0-95% selbst tragen (10-Stufen-Modell). Energieausweis anfordern.", paragraf: "§ 5 CO2KostAufG" });
     widerspruch.push("CO2-Abgabe " + fmt(b) + ": Prüfe ob Vermieteranteil korrekt abgezogen wurde (§ 5 CO2KostAufG).");
   }
-
   if (toNum(w.hauswart) > 0) {
     const b = toNum(w.hauswart), rw = rj(R.hausmeister), rwMax = rj(R.hausmeister_max), a = abw(b, rw);
     let st = "ok", hi = "Nur Betriebskostenanteile umlagefähig. Richtwert: " + fmt(rw) + "/Jahr.";
@@ -183,7 +169,6 @@ function analysierePosten(w, wohn) {
     else if (b > rw * 1.3) { st = "hoch"; widerspruch.push("Hausmeisterkosten " + fmt(b) + " (" + a + "% über Richtwert). Nachweis anfordern."); }
     posten_bewertung.push({ posten: "Hauswart/Hausmeister", betrag: b, richtwert: rw, abweichung_prozent: a, status: st, hinweis: hi, paragraf: "§ 2 Nr. 14 BetrKV" });
   }
-
   const kw = toNum(w.kaltwasser), ew = toNum(w.entwasserung), nw = toNum(w.niederschlagswasser);
   const wg = kw + ew + nw;
   if (wg > 0) {
@@ -195,7 +180,6 @@ function analysierePosten(w, wohn) {
     if (ew > 0) posten_bewertung.push({ posten: "Entwässerung", betrag: ew, richtwert: rw * 0.5, abweichung_prozent: 0, status: "ok", hinweis: "Kanalgebühren der Gemeinde.", paragraf: "§ 2 Nr. 2 BetrKV" });
     if (nw > 0) posten_bewertung.push({ posten: "Niederschlagswasser", betrag: nw, richtwert: 0, abweichung_prozent: 0, status: "ok", hinweis: "Kommunale Gebühr.", paragraf: "§ 2 Nr. 2 BetrKV" });
   }
-
   const bm = { grundsteuer:[R.grundsteuer,"§ 2 Nr. 1 BetrKV"], muellbeseitigung:[R.muell,"§ 2 Nr. 8 BetrKV"], strassenreinigung:[R.strassenreinigung,"§ 2 Nr. 8 BetrKV"], allgemeinstrom:[R.allgemeinstrom,"§ 2 Nr. 11 BetrKV"], gartenpflege:[R.gartenpflege,"§ 2 Nr. 10 BetrKV"], aufzug:[R.aufzug,"§ 2 Nr. 7 BetrKV"], schornsteinreinigung:[R.schornstein,"§ 2 Nr. 12 BetrKV"], gebaeudeversicherung:[R.versicherungen*0.7,"§ 2 Nr. 13 BetrKV"], haftpflichtversicherung:[R.versicherungen*0.3,"§ 2 Nr. 13 BetrKV"], glasversicherung:[R.versicherungen*0.15,"§ 2 Nr. 13 BetrKV"], heizung_betriebsstrom:[0.03,"§ 2 Nr. 4 BetrKV"], heizung_wartung:[0.05,"§ 2 Nr. 4 BetrKV"], hausreinigung:[0.14,"§ 2 Nr. 9 BetrKV"], wasserzaehler:[0.03,"§ 2 Nr. 2 BetrKV"] };
   const skip = new Set(["heizkosten_gesamt","warmwasser_gesamt","co2_abgabe","hauswart","kaltwasser","entwasserung","niederschlagswasser","kabelanschluss"]);
   ALLE_POSTEN.forEach(p => {
@@ -214,7 +198,6 @@ function analysierePosten(w, wohn) {
   });
   return { posten_bewertung, widerspruch };
 }
-
 function buildResult(w, wohn) {
   const R = CONFIG.RICHTWERTE;
   const flaeche = Math.max(toNum(wohn.flaeche), 5);
@@ -256,9 +239,7 @@ function buildResult(w, wohn) {
     co2_hinweis: toNum(w.co2_abgabe) > 0 ? "CO2-Abgabe abgerechnet: Vermieter muss je nach Energieklasse 0-95% selbst tragen. Energieausweis anfordern." : "",
   };
 }
-
 // ─── UI Components ────────────────────────────────────────────────────────────
-
 function StepBar({ current, total, label }) {
   return (
     <div style={{ padding: "0 20px 16px" }}>
@@ -272,7 +253,6 @@ function StepBar({ current, total, label }) {
     </div>
   );
 }
-
 function Btn({ onClick, children, variant = "gold", style = {} }) {
   const bg = variant === "gold" ? C.gold : variant === "dark" ? C.surface : variant === "green" ? C.green : "transparent";
   const color = variant === "gold" ? "#0f0f0f" : variant === "green" ? "#fff" : C.muted;
@@ -283,7 +263,6 @@ function Btn({ onClick, children, variant = "gold", style = {} }) {
     </button>
   );
 }
-
 function Field({ label, value, onChange, type = "text", placeholder, error, tip, required, prefix, suffix, autoFocus }) {
   const [focused, setFocused] = useState(false);
   return (
@@ -307,7 +286,6 @@ function Field({ label, value, onChange, type = "text", placeholder, error, tip,
     </div>
   );
 }
-
 function EuroInput({ label, value, onChange, tip, pflicht, warn }) {
   const [focused, setFocused] = useState(false);
   const filled = toNum(value) > 0;
@@ -331,7 +309,6 @@ function EuroInput({ label, value, onChange, tip, pflicht, warn }) {
     </div>
   );
 }
-
 function BrandAnschrift() {
   return (
     <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 10 }}>
@@ -347,7 +324,6 @@ function BrandAnschrift() {
     </div>
   );
 }
-
 function LegalFooter({ setStep, setPrevStep, currentStep }) {
   return (
     <div style={{ borderTop: "1px solid " + C.border, padding: "14px 20px", display: "flex", justifyContent: "center", gap: 24, flexWrap: "wrap" }}>
@@ -360,9 +336,7 @@ function LegalFooter({ setStep, setPrevStep, currentStep }) {
     </div>
   );
 }
-
 // ─── Main App ─────────────────────────────────────────────────────────────────
-
 export default function App() {
   const [step, setStep] = useState(() => {
     const path = window.location.pathname;
@@ -372,7 +346,6 @@ export default function App() {
     if (path === "/ueber-uns") return "ueberuns";
     return "welcome";
   });
-
   // Browser-Zurück-Button: History API
   // Eigene URL nur für Seiten mit echtem SEO-Wert (Startseite, Ratgeber, Über uns) —
   // alle anderen Schritte (Formular-Flow, rechtliche Seiten) behalten die aktuelle URL bei.
@@ -381,7 +354,6 @@ export default function App() {
     window.history.pushState({ step: newStep }, "", pfad);
     setStep(newStep);
   }, []);
-
   useEffect(() => {
     // Initialer Eintrag
     window.history.replaceState({ step: "welcome" }, "", window.location.pathname);
@@ -414,12 +386,18 @@ export default function App() {
   const [emailSent, setEmailSent] = useState(false);
   const [emailSending, setEmailSending] = useState(false);
   const [emailError, setEmailError] = useState("");
+  // Kontaktformular (Impressum) — zweiter Kontaktweg neben E-Mail
+  const [contactName, setContactName] = useState("");
+  const [contactEmail, setContactEmail] = useState("");
+  const [contactMessage, setContactMessage] = useState("");
+  const [contactSending, setContactSending] = useState(false);
+  const [contactSent, setContactSent] = useState(false);
+  const [contactError, setContactError] = useState("");
   const [ratgeberArtikel, setRatgeberArtikel] = useState(() => {
     const path = window.location.pathname;
     if (path.startsWith("/ratgeber/")) return path.replace("/ratgeber/", "");
     return null;
   });
-
   // Titel, Meta-Description, Canonical- und OG-Tags pro Route aktualisieren.
   // Grund: Vite baut nur eine statische index.html — ohne diesen Effekt liefern
   // alle Routen (auch /ratgeber/... und /ueber-uns) identische Meta-Angaben der
@@ -430,7 +408,6 @@ export default function App() {
     let title = "Nebenkostenabrechnung prüfen — kostenlos | NebenkostenRadar";
     let description = "Nebenkostenabrechnung kostenlos prüfen: NebenkostenRadar vergleicht jeden Posten mit dem DMB-Betriebskostenspiegel 2024, erkennt Fehler und erstellt einen versandfertigen Prüfbericht mit Mustertext. Sofort, ohne Registrierung.";
     let pfad = "/";
-
     if (step === "ratgeber") {
       title = "Ratgeber Mietrecht — Nebenkostenabrechnung verstehen | NebenkostenRadar";
       description = "Fundierte Ratgeber-Artikel zu Nebenkostenabrechnungen, Fristen und Mieterrechten — kostenlos und aktuell.";
@@ -447,9 +424,7 @@ export default function App() {
       description = "NebenkostenRadar ist ein unabhängiger digitaler Prüfdienst für Nebenkostenabrechnungen — ohne Verbindung zu Vermietern oder Hausverwaltungen.";
       pfad = "/ueber-uns";
     }
-
     document.title = title;
-
     const setByName = (name, value) => {
       const el = document.querySelector('meta[name="' + name + '"]');
       if (el) el.setAttribute("content", value);
@@ -458,29 +433,23 @@ export default function App() {
       const el = document.querySelector('meta[property="' + prop + '"]');
       if (el) el.setAttribute("content", value);
     };
-
     setByName("description", description);
     setByName("twitter:title", title);
     setByName("twitter:description", description);
     setByProperty("og:title", title);
     setByProperty("og:description", description);
     setByProperty("og:url", BASE_URL + pfad);
-
     const canonicalEl = document.querySelector('link[rel="canonical"]');
     if (canonicalEl) canonicalEl.setAttribute("href", BASE_URL + pfad);
   }, [step, ratgeberArtikel]);
-
   const [wohnung, setWohnung] = useState({ flaeche: "", jahr: String(new Date().getFullYear() - 1), vorauszahlung: "" });
   const [werte, setWerte] = useState({});
   const [adressen, setAdressen] = useState({ mieterName: "", mieterStrasse: "", mieterPlz: "", mieterOrt: "", vermieterName: "", vermieterStrasse: "", vermieterPlz: "", vermieterOrt: "", datum: new Date().toLocaleDateString("de-DE") });
-
   const setW = useCallback((k, v) => setWohnung(p => ({ ...p, [k]: v })), []);
   const setA = useCallback((k, v) => setAdressen(p => ({ ...p, [k]: v })), []);
   const setPosten = useCallback((k, v) => setWerte(p => ({ ...p, [k]: v })), []);
-
   const total = ALLE_POSTEN.reduce((s, p) => s + toNum(werte[p.key]), 0);
   const filledPosten = ALLE_POSTEN.filter(p => toNum(werte[p.key]) > 0).length;
-
   const LOADING_MSGS = [
     "Prüfe Umlagefähigkeit nach § 2 BetrKV…",
     "Vergleiche mit DMB-Betriebskostenspiegel 2024…",
@@ -490,7 +459,6 @@ export default function App() {
     "Prüfe Verwaltungs- und Instandhaltungsanteile…",
     "Erstelle Widerspruchsbegründung…",
   ];
-
   function validateWohnung() {
     const e = {};
     if (!wohnung.flaeche || toNum(wohnung.flaeche) < 5) e.flaeche = "Gültige Wohnfläche erforderlich (mind. 5m²)";
@@ -499,7 +467,6 @@ export default function App() {
     setErrors(e); setSubmitAttempted(true);
     return Object.keys(e).length === 0;
   }
-
   function validatePosten() {
     const e = {};
     const pf = POSTEN_GRUPPEN[0].posten.filter(p => p.pflicht && toNum(werte[p.key]) <= 0);
@@ -508,7 +475,6 @@ export default function App() {
     setErrors(e); setSubmitAttempted(true);
     return Object.keys(e).length === 0;
   }
-
   function validateAdressen() {
     const e = {};
     if (!adressen.mieterName.trim()) e.mieterName = "Pflichtfeld";
@@ -522,7 +488,6 @@ export default function App() {
     setErrors(e); setSubmitAttempted(true);
     return Object.keys(e).length === 0;
   }
-
   async function runAnalyse() {
     setStep("loading"); setLoadingIdx(0);
     const iv = setInterval(() => setLoadingIdx(i => Math.min(i + 1, LOADING_MSGS.length - 1)), 900);
@@ -542,7 +507,6 @@ export default function App() {
       clearInterval(iv); setResult(fallback); setStep("result");
     }
   }
-
   function generateReport() {
     if (!result) return;
     const bew = BEWERTUNG[result.gesamtbewertung] || BEWERTUNG.auffaellig;
@@ -580,7 +544,6 @@ export default function App() {
     setReportContent(lines.join("\n"));
     setStep("bericht");
   }
-
   async function handleEmailSenden(briefText, berichtText) {
     if (!emailInput || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(emailInput)) {
       setEmailError("Bitte gültige E-Mail-Adresse eingeben");
@@ -608,7 +571,35 @@ export default function App() {
     }
     setEmailSending(false);
   }
-
+  // Kontaktformular-Versand (Impressum) — zweiter Kontaktweg neben support@-E-Mail,
+  // per Resend über die neue serverless Funktion api/contact.js
+  async function handleContactSenden() {
+    if (!contactEmail || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(contactEmail)) {
+      setContactError("Bitte gültige E-Mail-Adresse eingeben");
+      return;
+    }
+    if (!contactMessage.trim()) {
+      setContactError("Bitte eine Nachricht eingeben");
+      return;
+    }
+    setContactSending(true);
+    setContactError("");
+    try {
+      const res = await fetch("/api/contact", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ name: contactName, email: contactEmail, message: contactMessage }),
+      });
+      if (res.ok) {
+        setContactSent(true);
+      } else {
+        setContactError("Fehler beim Senden — bitte später nochmal versuchen oder direkt an support@nebenkostenradar.com schreiben");
+      }
+    } catch {
+      setContactError("Netzwerkfehler — bitte prüfen ob Sie online sind");
+    }
+    setContactSending(false);
+  }
   function getBriefText() {
     const gruende = result ? (result.widerspruchsgruende || []) : [];
     return [
@@ -635,7 +626,6 @@ export default function App() {
       "Für rechtssichere Beratung wenden Sie sich an den Deutschen Mieterbund (mieterbund.de) oder einen Rechtsanwalt.",
     ].join("\n");
   }
-
   async function handleKaufen() {
     if (!widerrufsCheckbox && !IS_DEMO) {
       alert("Bitte bestätige zunächst die Zustimmung zur sofortigen Ausführung.");
@@ -643,7 +633,6 @@ export default function App() {
     }
     if (IS_DEMO) { setUnlocked(true); return; }
     setPayPending(true);
-
     // Bericht generieren
     const bew = BEWERTUNG[result?.gesamtbewertung] || BEWERTUNG.auffaellig;
     const berichtLines = [
@@ -679,7 +668,6 @@ export default function App() {
     ];
     const berichtText = berichtLines.join("\n");
     const briefText = getBriefText();
-
     // In Supabase speichern
     const sessionId = crypto.randomUUID();
     try {
@@ -691,44 +679,89 @@ export default function App() {
     } catch (e) {
       console.error("Bericht speichern fehlgeschlagen:", e);
     }
-
     window.location.href = CONFIG.STRIPE_PAYMENT_LINK + "?client_reference_id=" + sessionId;
   }
-
   function resetAll() {
     navigateTo("welcome"); setResult(null); setUnlocked(false); setPayPending(false);
     setErrors({}); setSubmitAttempted(false); setWerte({}); setOpenGruppe("heizung");
   }
-
   const root = { fontFamily: "'Inter','Segoe UI','Helvetica Neue',Arial,sans-serif", background: C.bg, color: C.text, minHeight: "100vh", WebkitTextSizeAdjust: "100%" };
   const PAGE_MAX = 1200;
   const card = { background: C.surface, border: "1px solid " + C.border, borderRadius: 12, marginBottom: 12, overflow: "hidden" };
   const cardHead = { padding: "11px 16px", borderBottom: "1px solid " + C.border, fontSize: 11, fontWeight: 700, color: C.muted, textTransform: "uppercase", letterSpacing: "0.1em" };
-
   // ── Einheitliche Navigation ───────────────────────────────────────────────
+  // Mobile-Fix: unter ~760px wird die Reihe aus Nav-Links + CTA-Button durch
+  // ein Hamburger-Menü ersetzt, statt in einer starren, nicht umbrechenden
+  // Flex-Reihe seitlich abgeschnitten zu werden (führte dazu, dass auf
+  // schmalen Bildschirmen selbst "Ratgeber" nicht mehr vollständig zu sehen war).
   function Nav({ activeStep }) {
+    const [isMobile, setIsMobile] = useState(() => (typeof window !== "undefined" ? window.innerWidth < 760 : false));
+    const [mobileOpen, setMobileOpen] = useState(false);
+    useEffect(() => {
+      const onResize = () => {
+        setIsMobile(window.innerWidth < 760);
+        if (window.innerWidth >= 760) setMobileOpen(false);
+      };
+      window.addEventListener("resize", onResize);
+      return () => window.removeEventListener("resize", onResize);
+    }, []);
     const items = [
       { label: "Prüfen", target: "wohnung" },
       { label: "Ratgeber", target: "ratgeber" },
       { label: "Über uns", target: "ueberuns" },
     ];
+    const logo = (
+      <div style={{ display: "flex", alignItems: "center", gap: 12, cursor: "pointer" }} onClick={() => { setMobileOpen(false); navigateTo("welcome"); }}>
+        <div style={{ width: 42, height: 42, borderRadius: 10, background: C.green, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0, boxShadow: "0 2px 8px rgba(45,122,79,0.3)" }}>
+          <svg width="24" height="24" viewBox="0 0 18 18" fill="none">
+            <circle cx="9" cy="9" r="7" stroke="white" strokeWidth="2"/>
+            <circle cx="9" cy="9" r="3.5" stroke="white" strokeWidth="1.5"/>
+            <circle cx="9" cy="9" r="1" fill="white"/>
+            <line x1="9" y1="2" x2="14" y2="5" stroke="white" strokeWidth="1.5" strokeLinecap="round"/>
+          </svg>
+        </div>
+        <div>
+          <div style={{ fontSize: 20, fontWeight: 800, color: C.text, letterSpacing: "-0.02em", lineHeight: 1.1 }}>Nebenkosten<span style={{ color: C.green }}>Radar</span></div>
+          <div style={{ fontSize: 10, color: C.muted, fontWeight: 500, letterSpacing: "0.04em" }}>Unabhängige Abrechnungsprüfung</div>
+        </div>
+      </div>
+    );
+    if (isMobile) {
+      return (
+        <div style={{ borderBottom: "2px solid " + C.border, padding: "0 16px", background: "#fff", position: "sticky", top: 0, zIndex: 100, boxShadow: "0 1px 8px rgba(0,0,0,0.06)" }}>
+          <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", height: 64 }}>
+            {logo}
+            <button onClick={() => setMobileOpen(o => !o)} aria-label="Menü öffnen" aria-expanded={mobileOpen}
+              style={{ background: "none", border: "1px solid " + C.border, borderRadius: 8, width: 40, height: 40, display: "flex", alignItems: "center", justifyContent: "center", cursor: "pointer", flexShrink: 0 }}>
+              <div style={{ display: "flex", flexDirection: "column", gap: 4 }}>
+                <span style={{ width: 18, height: 2, background: C.text, borderRadius: 1, transform: mobileOpen ? "translateY(6px) rotate(45deg)" : "none", transition: "transform 0.2s" }} />
+                <span style={{ width: 18, height: 2, background: C.text, borderRadius: 1, opacity: mobileOpen ? 0 : 1, transition: "opacity 0.2s" }} />
+                <span style={{ width: 18, height: 2, background: C.text, borderRadius: 1, transform: mobileOpen ? "translateY(-6px) rotate(-45deg)" : "none", transition: "transform 0.2s" }} />
+              </div>
+            </button>
+          </div>
+          {mobileOpen && (
+            <div style={{ borderTop: "1px solid " + C.border, padding: "10px 0 16px", display: "flex", flexDirection: "column", gap: 2 }}>
+              {items.map(item => (
+                <button key={item.label}
+                  onClick={() => { setPrevStep(activeStep); setMobileOpen(false); navigateTo(item.target); }}
+                  style={{ background: "none", border: "none", textAlign: "left", padding: "12px 6px", fontSize: 15, fontFamily: "inherit", color: activeStep === item.target ? C.green : C.text, fontWeight: activeStep === item.target ? 700 : 500, cursor: "pointer" }}>
+                  {item.label}
+                </button>
+              ))}
+              <button onClick={() => { setMobileOpen(false); navigateTo("wohnung"); }}
+                style={{ background: C.green, border: "none", borderRadius: 8, padding: "13px 16px", fontSize: 14, fontFamily: "inherit", fontWeight: 700, color: "#fff", cursor: "pointer", marginTop: 8 }}>
+                Kostenlos prüfen
+              </button>
+            </div>
+          )}
+        </div>
+      );
+    }
     return (
       <div style={{ borderBottom: "2px solid " + C.border, padding: "0 20px", background: "#fff", position: "sticky", top: 0, zIndex: 100, boxShadow: "0 1px 8px rgba(0,0,0,0.06)" }}>
         <div style={{ maxWidth: PAGE_MAX, margin: "0 auto", display: "flex", alignItems: "center", justifyContent: "space-between", height: 72 }}>
-          <div style={{ display: "flex", alignItems: "center", gap: 12, cursor: "pointer" }} onClick={() => navigateTo("welcome")}>
-            <div style={{ width: 42, height: 42, borderRadius: 10, background: C.green, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0, boxShadow: "0 2px 8px rgba(45,122,79,0.3)" }}>
-              <svg width="24" height="24" viewBox="0 0 18 18" fill="none">
-                <circle cx="9" cy="9" r="7" stroke="white" strokeWidth="2"/>
-                <circle cx="9" cy="9" r="3.5" stroke="white" strokeWidth="1.5"/>
-                <circle cx="9" cy="9" r="1" fill="white"/>
-                <line x1="9" y1="2" x2="14" y2="5" stroke="white" strokeWidth="1.5" strokeLinecap="round"/>
-              </svg>
-            </div>
-            <div>
-              <div style={{ fontSize: 20, fontWeight: 800, color: C.text, letterSpacing: "-0.02em", lineHeight: 1.1 }}>Nebenkosten<span style={{ color: C.green }}>Radar</span></div>
-              <div style={{ fontSize: 10, color: C.muted, fontWeight: 500, letterSpacing: "0.04em" }}>Unabhängige Abrechnungsprüfung</div>
-            </div>
-          </div>
+          {logo}
           <div style={{ display: "flex", alignItems: "center", gap: 2 }}>
             {items.map(item => (
               <button key={item.label}
@@ -746,7 +779,6 @@ export default function App() {
       </div>
     );
   }
-
   // ── WELCOME ──────────────────────────────────────────────────────────────────
   if (step === "welcome") return (
     <div style={root}>
@@ -862,7 +894,6 @@ export default function App() {
             <LegalFooter setStep={setStep} setPrevStep={setPrevStep} currentStep="welcome" />
     </div>
   );
-
   // ── WOHNUNG ───────────────────────────────────────────────────────────────────
   if (step === "wohnung") {
     const diff = wohnung.vorauszahlung && total > 0 ? total - toNum(wohnung.vorauszahlung) : null;
@@ -904,7 +935,6 @@ export default function App() {
       </div>
     );
   }
-
   // ── POSTEN ────────────────────────────────────────────────────────────────────
   if (step === "posten") return (
     <div style={root}>
@@ -967,7 +997,6 @@ export default function App() {
       </div>
     </div>
   );
-
   // ── LOADING ───────────────────────────────────────────────────────────────────
   if (step === "loading") return (
     <div style={{ ...root, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", minHeight: "100vh", padding: 32 }}>
@@ -991,7 +1020,6 @@ export default function App() {
       </div>
     </div>
   );
-
   // ── RESULT ────────────────────────────────────────────────────────────────────
   if (step === "result") {
     if (!result) return <div style={{ ...root, padding: 40, textAlign: "center" }}><p>Kein Ergebnis.</p><Btn onClick={() => setStep("posten")} style={{ width: "auto", padding: "12px 28px" }}>Zurück</Btn></div>;
@@ -1169,7 +1197,6 @@ export default function App() {
       </div>
     );
   }
-
   // ── ADRESSEN ──────────────────────────────────────────────────────────────────
   if (step === "adressen") return (
     <div style={root}>
@@ -1203,7 +1230,6 @@ export default function App() {
       </div>
     </div>
   );
-
   // ── DOKUMENT ──────────────────────────────────────────────────────────────────
   if (step === "dokument") {
     const gruende = result ? (result.widerspruchsgruende || []) : [];
@@ -1376,7 +1402,6 @@ export default function App() {
       </div>
     );
   }
-
   // ── BERICHT ───────────────────────────────────────────────────────────────────
   if (step === "bericht") return (
     <div style={root}>
@@ -1406,7 +1431,6 @@ export default function App() {
       </div>
     </div>
   );
-
   // ── DANKE ─────────────────────────────────────────────────────────────────────
   if (step === "danke" || window.location.pathname === "/danke") return (
     <div style={{ ...root, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", minHeight: "100vh", padding: "40px 20px" }}>
@@ -1424,8 +1448,11 @@ export default function App() {
       </div>
     </div>
   );
-
   // ── IMPRESSUM ─────────────────────────────────────────────────────────────────
+  // Fix: zweiter Kontaktweg (Kontaktformular) neben E-Mail ergänzt, damit § 5 DDG
+  // (vormals § 5 TMG) — Pflicht zu zwei Kontaktmöglichkeiten laut EuGH-Rechtsprechung —
+  // erfüllt ist. Zusätzlich: veralteter EU-ODR-Plattform-Verweis entfernt (Plattform
+  // seit 20.07.2025 endgültig abgeschaltet), § 36 VSBG-Erklärung beibehalten.
   if (step === "impressum") return (
     <div style={root}>
       <div style={{ background: C.surface, padding: "20px 20px 16px", borderBottom: "1px solid " + C.border }}>
@@ -1434,12 +1461,12 @@ export default function App() {
       </div>
       <div style={{ padding: "24px 20px 60px" }}>
         {[
-          { t: "Angaben gemäß § 5 TMG", brand: true, lines: ["NebenkostenRadar — nebenkostenradar.com", "Inhaber: Stefan Hennig", "Ludwigstr. 33-37", "60327 Frankfurt am Main"] },
-          { t: "Kontakt", lines: ["", "E-Mail: support@nebenkostenradar.com"] },
+          { t: "Angaben gemäß § 5 DDG", brand: true, lines: ["NebenkostenRadar — nebenkostenradar.com", "Inhaber: Stefan Hennig", "Ludwigstr. 33-37", "60327 Frankfurt am Main"] },
+          { t: "Kontakt", lines: ["E-Mail: support@nebenkostenradar.com", "Für eine schnelle Antwort nutzen Sie bitte auch unser Kontaktformular unten auf dieser Seite."] },
           { t: "Verantwortlich für den Inhalt nach § 55 Abs. 2 RStV", lines: ["Inhaber: Stefan Hennig", "Ludwigstr. 33-37", "60327 Frankfurt am Main"] },
           { t: "Haftungsausschluss", lines: ["Die Inhalte dieser Website wurden mit größter Sorgfalt erstellt. Für die Richtigkeit, Vollständigkeit und Aktualität können wir keine Gewähr übernehmen."] },
           { t: "Haftung für Links", lines: ["Unser Angebot enthält Links zu externen Websites Dritter, auf deren Inhalte wir keinen Einfluss haben."] },
-          { t: "Streitschlichtung", lines: ["Die Europäische Kommission stellt eine Plattform zur Online-Streitbeilegung bereit: https://ec.europa.eu/consumers/odr/", "Wir nehmen nicht an Streitbeilegungsverfahren vor einer Verbraucherschlichtungsstelle teil."] },
+          { t: "Streitschlichtung", lines: ["Wir sind nicht bereit und nicht verpflichtet, an Streitbeilegungsverfahren vor einer Verbraucherschlichtungsstelle teilzunehmen (§ 36 VSBG)."] },
         ].map((s, i) => (
           <div key={i} style={{ marginBottom: 24 }}>
             <div style={{ fontSize: 13, fontWeight: 700, color: C.gold, marginBottom: 8, textTransform: "uppercase", letterSpacing: "0.08em" }}>{s.t}</div>
@@ -1450,13 +1477,37 @@ export default function App() {
             })}
           </div>
         ))}
-        <div style={{ background: C.amberBg, border: "1px solid " + C.amber + "30", borderLeft: "3px solid " + C.amber, borderRadius: 10, padding: "12px 16px", fontSize: 12, color: C.amber, lineHeight: 1.7 }}>
-
+        {/* Kontaktformular — zweiter Kontaktweg neben E-Mail */}
+        <div style={{ marginTop: 8, background: C.surface, border: "1px solid " + C.border, borderRadius: 12, padding: "20px" }}>
+          <div style={{ fontSize: 13, fontWeight: 700, color: C.gold, marginBottom: 4, textTransform: "uppercase", letterSpacing: "0.08em" }}>Kontaktformular</div>
+          <p style={{ fontSize: 12, color: C.muted, margin: "0 0 16px", lineHeight: 1.6 }}>Schreiben Sie uns direkt — wir antworten in der Regel innerhalb weniger Werktage.</p>
+          {contactSent ? (
+            <div style={{ background: C.greenBg, border: "1px solid " + C.green + "40", borderRadius: 8, padding: "14px 16px" }}>
+              <div style={{ fontSize: 13, color: C.green, fontWeight: 700 }}>✓ Nachricht wurde gesendet</div>
+              <div style={{ fontSize: 12, color: C.muted, marginTop: 4, lineHeight: 1.6 }}>Vielen Dank für Ihre Nachricht. Wir melden uns so bald wie möglich bei Ihnen.</div>
+            </div>
+          ) : (
+            <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+              <Field label="Name (optional)" value={contactName} onChange={setContactName} placeholder="Ihr Name" />
+              <Field label="E-Mail-Adresse" value={contactEmail} onChange={v => { setContactEmail(v); setContactError(""); }} type="email" placeholder="ihre@email.de" required />
+              <div>
+                <label style={{ fontSize: 11, color: C.muted, letterSpacing: "0.1em", textTransform: "uppercase", display: "block", marginBottom: 5 }}>
+                  Nachricht<span style={{ color: C.gold, marginLeft: 3 }}>*</span>
+                </label>
+                <textarea value={contactMessage} onChange={e => { setContactMessage(e.target.value); setContactError(""); }} rows={5} placeholder="Ihre Nachricht an uns"
+                  style={{ width: "100%", boxSizing: "border-box", background: "#ffffff", border: "1.5px solid " + C.border, borderRadius: 10, padding: "12px 14px", fontSize: 14, fontFamily: "inherit", color: C.text, outline: "none", resize: "vertical" }} />
+              </div>
+              {contactError && <div style={{ fontSize: 12, color: C.red }}>⚠ {contactError}</div>}
+              <button onClick={handleContactSenden} disabled={contactSending}
+                style={{ background: contactSending ? C.border : C.green, color: contactSending ? C.dim : "#fff", border: "none", borderRadius: 10, padding: "13px 16px", fontSize: 14, fontFamily: "inherit", fontWeight: 700, cursor: contactSending ? "not-allowed" : "pointer" }}>
+                {contactSending ? "Wird gesendet..." : "Nachricht senden"}
+              </button>
+            </div>
+          )}
         </div>
       </div>
     </div>
   );
-
   // ── DATENSCHUTZ ───────────────────────────────────────────────────────────────
   if (step === "datenschutz") return (
     <div style={root}>
@@ -1473,9 +1524,10 @@ export default function App() {
           { t: "5. Zahlungsabwicklung (Stripe)", lines: ["Bei Kauf eines Vollberichts leiten wir Sie zur Zahlungsseite von Stripe Payments Europe, Ltd. (1 Grand Canal Street Lower, Dublin D02 H210, Irland) weiter. Dabei werden Name, E-Mail-Adresse und Zahlungsdaten an Stripe übermittelt. Stripe verarbeitet diese Daten gemäß eigener Datenschutzerklärung: stripe.com/de/privacy. Rechtsgrundlage: Art. 6 Abs. 1 lit. b DSGVO (Vertragserfüllung). Datenübermittlung in die USA auf Basis von Standardvertragsklauseln (Art. 46 Abs. 2 lit. c DSGVO)."] },
           { t: "6. Analyse-Service (Anthropic)", lines: ["Für die automatische Prüfung werden die eingegebenen Kostenpositionen (KEINE personenbezogenen Daten) an die API von Anthropic PBC, USA übermittelt. Die Daten werden nicht dauerhaft gespeichert und nicht für KI-Training genutzt. Rechtsgrundlage: Art. 6 Abs. 1 lit. b DSGVO. Datenübermittlung in die USA auf Basis von Standardvertragsklauseln (Art. 46 Abs. 2 lit. c DSGVO)."] },
           { t: "7. Bildmaterial (Unsplash)", lines: ["Einige Bilder in den Ratgeber-Artikeln werden direkt von Unsplash (Unsplash Inc., 500 rue Notre-Dame Ouest, Montréal, QC H2Y 1T8, Kanada / Akamai CDN, USA) geladen. Dabei wird Ihre IP-Adresse an die Server von Unsplash übermittelt. Rechtsgrundlage: Art. 6 Abs. 1 lit. f DSGVO (berechtigtes Interesse an der Darstellung von Bildmaterial). Datenschutzerklärung Unsplash: unsplash.com/privacy"] },
-          { t: "8. Ihre Rechte (Art. 15–22 DSGVO)", lines: ["Auskunft (Art. 15) · Berichtigung (Art. 16) · Löschung (Art. 17) · Einschränkung (Art. 18) · Datenübertragbarkeit (Art. 20) · Widerspruch (Art. 21)", "Kontakt für Datenschutzanfragen und Ausübung Ihrer Betroffenenrechte: support@nebenkostenradar.com (Antwort innerhalb von 30 Tagen gemäß Art. 12 Abs. 3 DSGVO)"] },
-          { t: "9. Beschwerderecht", lines: ["Sie haben das Recht, sich bei einer Datenschutz-Aufsichtsbehörde zu beschweren. Zuständig für Hessen: Der Hessische Beauftragte für Datenschutz und Informationsfreiheit, Postfach 3163, 65021 Wiesbaden."] },
-          { t: "10. Aktualität", lines: ["Diese Datenschutzerklärung gilt ab " + new Date().toLocaleDateString("de-DE") + "."] },
+          { t: "8. Kontaktformular", lines: ["Wenn Sie das Kontaktformular im Impressum nutzen, übermitteln wir Ihre Angaben (Name optional, E-Mail-Adresse, Nachricht) per E-Mail an support@nebenkostenradar.com über den Dienstleister Resend (Resend, Inc., USA). Rechtsgrundlage: Art. 6 Abs. 1 lit. f DSGVO (berechtigtes Interesse an der Bearbeitung Ihrer Anfrage) bzw. lit. b DSGVO, sofern die Anfrage vorvertraglichen Charakter hat. Die Daten werden nur zur Bearbeitung Ihrer Anfrage verwendet und nicht dauerhaft gespeichert."] },
+          { t: "9. Ihre Rechte (Art. 15–22 DSGVO)", lines: ["Auskunft (Art. 15) · Berichtigung (Art. 16) · Löschung (Art. 17) · Einschränkung (Art. 18) · Datenübertragbarkeit (Art. 20) · Widerspruch (Art. 21)", "Kontakt für Datenschutzanfragen und Ausübung Ihrer Betroffenenrechte: support@nebenkostenradar.com (Antwort innerhalb von 30 Tagen gemäß Art. 12 Abs. 3 DSGVO)"] },
+          { t: "10. Beschwerderecht", lines: ["Sie haben das Recht, sich bei einer Datenschutz-Aufsichtsbehörde zu beschweren. Zuständig für Hessen: Der Hessische Beauftragte für Datenschutz und Informationsfreiheit, Postfach 3163, 65021 Wiesbaden."] },
+          { t: "11. Aktualität", lines: ["Diese Datenschutzerklärung gilt ab " + new Date().toLocaleDateString("de-DE") + "."] },
         ].map((s, i) => (
           <div key={i} style={{ marginBottom: 24 }}>
             <div style={{ fontSize: 13, fontWeight: 700, color: C.gold, marginBottom: 8, textTransform: "uppercase", letterSpacing: "0.08em" }}>{s.t}</div>
@@ -1486,13 +1538,9 @@ export default function App() {
             })}
           </div>
         ))}
-        <div style={{ background: C.amberBg, border: "1px solid " + C.amber + "30", borderLeft: "3px solid " + C.amber, borderRadius: 10, padding: "12px 16px", fontSize: 12, color: C.amber, lineHeight: 1.7 }}>
-          Datenschutzerklärung vollständig. Aufsichtsbehörde: Hessen (korrekt für Frankfurt). GA4, Unsplash und Anthropic SCC ergänzt.
-        </div>
       </div>
     </div>
   );
-
   if (step === "agb") return (
     <div style={root}>
       <div style={{ background: C.surface, padding: "20px 20px 16px", borderBottom: "1px solid " + C.border }}>
@@ -1553,7 +1601,6 @@ export default function App() {
       </div>
     </div>
   );
-
   // ════════════════════════════════════════════════════════════════════════════
   // RATGEBER ÜBERSICHT
   // ════════════════════════════════════════════════════════════════════════════
@@ -1589,7 +1636,6 @@ export default function App() {
       <LegalFooter setStep={setStep} setPrevStep={setPrevStep} currentStep="ratgeber" />
     </div>
   );
-
   // ── ARTIKEL ──────────────────────────────────────────────────────────────────
   if (step === "artikel") {
     const artikel = ARTIKEL.find(a => a.id === ratgeberArtikel);
@@ -1715,7 +1761,6 @@ export default function App() {
       </div>
     );
   }
-
   // ── ÜBER UNS ─────────────────────────────────────────────────────────────────
   if (step === "ueberuns") return (
     <div style={root}>
@@ -1764,6 +1809,5 @@ export default function App() {
       <LegalFooter setStep={setStep} setPrevStep={setPrevStep} currentStep="ueberuns" />
     </div>
   );
-
   return null;
 }
