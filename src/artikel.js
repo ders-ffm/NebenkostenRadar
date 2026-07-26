@@ -4,6 +4,331 @@
 // Alte Artikel NIEMALS löschen — sie ranken bei Google weiter.
 export const ARTIKEL = [
     {
+      id: "heizkostenabrechnung-vermieterfehler-2026-leitfaden",
+      titel: "Heizkostenabrechnung 2026: Die häufigsten Fehler der Vermieter – und wie Sie als Mieter reagieren",
+      teaser: "Fast jede zweite Heizkostenabrechnung enthält Fehler, die Mieter bares Geld kosten. Dieser Leitfaden zeigt die typischen Stolperfallen 2026 und erklärt, wie Sie Ihre Abrechnung Schritt für Schritt prüfen.",
+      datum: "Juli 2026",
+      lesezeit: "8 Min.",
+      bild: "https://images.unsplash.com/photo-1669725341213-7379ff6c90d5?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w5NzcyMzl8MHwxfHNlYXJjaHwxfHxyYWRpYXRvciUyMGhlYXRpbmclMjBiaWxsJTIwaW52b2ljZXxlbnwxfDB8fHwxNzg1MDYzODk2fDA&ixlib=rb-4.1.0&q=80&w=1080&utm_source=nebenkostenradar&utm_medium=referral",
+      bildAlt: "Heizkostenabrechnung 2026: Die häufigsten Fehler der Vermieter – und wie Sie als Mieter reagieren",
+      kategorie: "Mietrecht",
+      keywords: [],
+      inhalt: [
+        {
+                "typ": "intro",
+                "text": "Jedes Jahr flattert sie ins Haus: die Heizkostenabrechnung. Und jedes Jahr sorgt sie für Kopfschmerzen – nicht nur wegen der Höhe der Nachzahlung, sondern weil sich in vielen Abrechnungen handfeste Fehler verstecken. Studien und Verbraucherzentralen gehen davon aus, dass ein erheblicher Teil aller Abrechnungen fehlerhaft ist. Dieser Ratgeber erklärt verständlich, welche Fehler Vermieter 2026 am häufigsten machen und wie Sie als Mieter davon profitieren können."
+        },
+        {
+                "typ": "h2",
+                "text": "Wie häufig sind Fehler in der Heizkostenabrechnung wirklich?"
+        },
+        {
+                "typ": "text",
+                "text": "Die Zahlen schwanken je nach Quelle, doch der Trend ist eindeutig: Ein sehr großer Teil der Abrechnungen weist Mängel auf. Verbraucherschützer sprechen konservativ von jeder zweiten Abrechnung, andere Auswertungen kommen sogar auf deutlich höhere Fehlerquoten. Wichtig für Sie: Nicht jeder Fehler ist böswillig – oft entstehen Ungenauigkeiten schlicht durch die komplizierte Rechtslage, die sich in den letzten Jahren durch CO2-Kostenaufteilung, neue Zählerpflichten und Änderungen bei den Nebenkosten spürbar verschärft hat."
+        },
+        {
+                "typ": "h2",
+                "text": "Fehler 1: Die 12-Monats-Frist wird nicht eingehalten"
+        },
+        {
+                "typ": "text",
+                "text": "Vermieter müssen die Heizkostenabrechnung fristgerecht zustellen. Wird diese Frist versäumt, hat das für Sie als Mieter erhebliche Vorteile."
+        },
+        {
+                "typ": "liste",
+                "items": [
+                        "Die Abrechnung muss dem Mieter spätestens 12 Monate nach Ende des Abrechnungszeitraums vorliegen (§ 556 Abs. 3 BGB)",
+                        "Verpasst der Vermieter diese Frist, verfällt sein Anspruch auf Nachzahlung",
+                        "Ein bestehendes Guthaben muss dem Mieter aber trotzdem ausgezahlt werden"
+                ]
+        },
+        {
+                "typ": "text",
+                "text": "Prüfen Sie also als Erstes das Datum: Für den Abrechnungszeitraum bis zum 31. Dezember 2025 muss die Abrechnung beispielsweise bis spätestens 31.12.2026 beim Mieter eingegangen sein. Kommt sie später, können Sie eine Nachzahlung verweigern."
+        },
+        {
+                "typ": "h2",
+                "text": "Fehler 2: Falscher Verteilerschlüssel zwischen Grund- und Verbrauchskosten"
+        },
+        {
+                "typ": "text",
+                "text": "Die Heizkostenverordnung schreibt eine feste Bandbreite vor, nach der Heizkosten aufgeteilt werden müssen. Viele Vermieter setzen hier einen falschen oder unzulässigen Wert an."
+        },
+        {
+                "typ": "liste",
+                "items": [
+                        "Verbrauchsabhängige Abrechnung ist Pflicht: 50 bis 70 Prozent der Heiz- und Warmwasserkosten müssen nach erfasstem Verbrauch abgerechnet werden, der Rest nach Wohnfläche (§ 7 HeizkV)",
+                        "Eine reine Verbrauchsabrechnung oder eine reine Flächenabrechnung ist unzulässig und kann auch nicht per Mietvertrag ausgeschlossen werden",
+                        "Häufigster konkreter Schlüssel in der Praxis ist die 70/30-Aufteilung, die sparsames Heizen am stärksten belohnt"
+                ]
+        },
+        {
+                "typ": "hinweis",
+                "text": "Verstößt der Vermieter gegen die Vorgaben der Heizkostenverordnung, haben Sie ein Kürzungsrecht: Die Heizkostenabrechnung darf um pauschal 15 Prozent gekürzt werden – und zwar unabhängig davon, ob Ihnen dadurch tatsächlich ein Nachteil entstanden ist. Dieses Recht ist in § 12 HeizkostenV verankert."
+        },
+        {
+                "typ": "h2",
+                "text": "Fehler 3: CO2-Kosten werden komplett auf den Mieter abgewälzt"
+        },
+        {
+                "typ": "text",
+                "text": "Seit der Einführung des CO2-Kostenaufteilungsgesetzes müssen sich Vermieter und Mieter die CO2-Abgabe je nach energetischem Zustand des Gebäudes teilen. Genau hier passiert 2026 noch immer einer der häufigsten Fehler."
+        },
+        {
+                "typ": "liste",
+                "items": [
+                        "Seit dem 01.01.2023 muss die CO2-Abgabe nach dem CO2-Kostenaufteilungsgesetz zwischen Mieter und Vermieter aufgeteilt werden, abhängig vom energetischen Zustand des Gebäudes",
+                        "§ 5 CO2KostAufG schreibt eine 10-Stufen-Tabelle vor: Bei sehr schlecht gedämmten Gebäuden trägt der Vermieter bis zu 95 Prozent der CO2-Kosten, bei energetisch sehr guten Gebäuden 0 Prozent",
+                        "Die Aufteilung muss in der Heizkostenabrechnung gesondert ausgewiesen werden (§ 8 CO2KostAufG)"
+                ]
+        },
+        {
+                "typ": "text",
+                "text": "Viele Vermieter legen die CO2-Abgabe schlicht komplett als Teil der Brennstoffkosten um, ohne den eigenen Pflichtanteil abzuziehen – das ist rechtswidrig und kann zu Rückforderungen führen. Prüfen Sie deshalb genau, ob in Ihrer Abrechnung überhaupt eine gesonderte CO2-Kostenaufteilung ausgewiesen ist."
+        },
+        {
+                "typ": "h2",
+                "text": "Fehler 4: Warmwasser- und Heizkosten werden nicht sauber getrennt"
+        },
+        {
+                "typ": "text",
+                "text": "Besonders bei sogenannten Verbundanlagen, bei denen eine Heizungsanlage gleichzeitig Warmwasser erzeugt, passieren Rechenfehler. Nach der Heizkostenverordnung müssen Heizkosten und Warmwasserkosten getrennt abgerechnet werden, wenn die zentrale Wärmeanlage mit der zentralen Warmwasserversorgung verbunden ist, wobei die Aufteilung nach dem jeweiligen Energieverbrauch erfolgt. Wird hier geschätzt statt korrekt nach der gesetzlich vorgeschriebenen Formel gerechnet, ist die Abrechnung angreifbar."
+        },
+        {
+                "typ": "h2",
+                "text": "Fehler 5: Fehlende oder verspätete Verbrauchsinformationen"
+        },
+        {
+                "typ": "text",
+                "text": "Bei fernablesbaren Geräten gilt eine zusätzliche Informationspflicht: Seit Dezember 2021 müssen Vermieter bei fernablesbaren Heizkostenverteilern und Wasserzählern den Mietern monatlich eine Verbrauchsinformation bereitstellen. Fehlt diese monatliche Information dauerhaft, kann dies neben dem Kürzungsrecht nach § 12 HeizkV zusätzliche Ansprüche begründen. Bis Ende 2026 müssen zudem alle Messgeräte in Wohngebäuden auf fernauslesbare Technik umgerüstet sein – ein Punkt, der viele Vermieter aktuell noch beschäftigt."
+        },
+        {
+                "typ": "h2",
+                "text": "Fehler 6: Nicht umlagefähige Kosten werden versteckt mit abgerechnet"
+        },
+        {
+                "typ": "text",
+                "text": "Ein Klassiker, der nicht direkt die Heizung betrifft, aber häufig in derselben Abrechnung auftaucht: Kosten, die gesetzlich gar nicht auf Mieter umgelegt werden dürfen, etwa Verwaltungskosten oder Instandhaltungsaufwand. Ein bekanntes Beispiel der letzten Jahre sind Kabelanschlussgebühren, die seit der Abschaffung des sogenannten Nebenkostenprivilegs nicht mehr umlagefähig sind, aber in manchen Abrechnungen trotzdem weiter auftauchen."
+        },
+        {
+                "typ": "verweis",
+                "ziel": "kabelanschluss-nicht-umlagefaehig",
+                "text": "Wie Sie erkennen, ob TV-Kabelgebühren zu Unrecht in Ihrer Abrechnung stehen und wie Sie zu viel gezahltes Geld zurückfordern, erfahren Sie im Detailartikel zum Kabelanschluss."
+        },
+        {
+                "typ": "h2",
+                "text": "Was tun, wenn Sie einen Fehler entdeckt haben?"
+        },
+        {
+                "typ": "text",
+                "text": "Haben Sie einen oder mehrere der genannten Fehler in Ihrer Abrechnung gefunden, sollten Sie nicht einfach zahlen. Sie haben das Recht, innerhalb von zwölf Monaten nach Zugang schriftlich Einwände zu erheben und Einsicht in die zugrunde liegenden Belege zu verlangen."
+        },
+        {
+                "typ": "verweis",
+                "ziel": "widerspruch-nebenkostenabrechnung",
+                "text": "Eine Schritt-für-Schritt-Anleitung samt Musterschreiben für Ihren Widerspruch und die geltenden Fristen finden Sie im Artikel zum Widerspruch gegen die Nebenkostenabrechnung."
+        },
+        {
+                "typ": "verweis",
+                "ziel": "betriebskostenspiegel-2024",
+                "text": "Um einzuschätzen, ob Ihre Heizkosten überhaupt im üblichen Rahmen liegen, hilft ein Blick in den Betriebskostenspiegel als Vergleichswert."
+        },
+        {
+                "typ": "h2",
+                "text": "Rückendeckung durch aktuelle Rechtsprechung"
+        },
+        {
+                "typ": "text",
+                "text": "Auch die Gerichte haben in den letzten Jahren mehrfach zugunsten von Mietern entschieden, etwa bei Fragen zum Wirtschaftlichkeitsgebot oder zur korrekten Anwendung des Kürzungsrechts. Diese Urteile stärken Ihre Position, wenn Sie gegen eine fehlerhafte Abrechnung vorgehen möchten."
+        },
+        {
+                "typ": "verweis",
+                "ziel": "bgh-urteile-mietrecht-nebenkosten-2026",
+                "text": "Welche aktuellen BGH-Entscheidungen 2026 Ihre Rechte bei der Nebenkostenabrechnung stärken, lesen Sie im Überblick zu den wichtigsten Urteilen."
+        },
+        {
+                "typ": "verweis",
+                "ziel": "bgh-urteile-mietrecht-nebenkosten-2026-ratgeber",
+                "text": "Eine ergänzende Zusammenfassung mit Praxistipps zu den neuesten Gerichtsentscheidungen finden Sie im vertiefenden Ratgeber zu den BGH-Urteilen."
+        },
+        {
+                "typ": "verweis",
+                "ziel": "heizkostenabrechnung-fehler-vermieter-checkliste-2026",
+                "text": "Für eine kompakte Punkt-für-Punkt-Checkliste, mit der Sie Ihre eigene Abrechnung selbst durchgehen können, eignet sich die separate Fehler-Checkliste."
+        },
+        {
+                "typ": "verweis",
+                "ziel": "heizkostenabrechnung-haeufigste-fehler-vermieter-2026",
+                "text": "Einen zusätzlichen Überblick über weitere typische Fehlerquellen bietet unser verwandter Artikel zu den häufigsten Vermieterfehlern."
+        },
+        {
+                "typ": "hinweis",
+                "text": "Auch wenn viele Fehler auf Unwissen statt Absicht beruhen, ändert das nichts an Ihrem Recht auf eine korrekte Abrechnung. Prüfen Sie im Zweifel jede Position genau, bevor Sie eine Nachzahlung leisten."
+        },
+        {
+                "typ": "cta",
+                "text": "Jetzt Abrechnung kostenlos prüfen lassen."
+        }
+],
+    },
+    {
+      id: "bgh-urteile-mietrecht-nebenkosten-2026-ratgeber",
+      titel: "Aktuelle BGH-Urteile Mietrecht Nebenkosten 2026: Diese Rechte haben Mieter jetzt",
+      teaser: "Der Bundesgerichtshof hat 2026 mehrere wichtige Entscheidungen zu Betriebskosten getroffen – von der Wärmelieferung bis zum Wirtschaftlichkeitsgebot. Wir erklären verständlich, was das für Ihre Nebenkostenabrechnung bedeutet.",
+      datum: "Juli 2026",
+      lesezeit: "8 Min.",
+      bild: "https://images.unsplash.com/photo-1735053142121-12db6035b99d?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w5NzcyMzl8MHwxfHNlYXJjaHwxfHxnZXJtYW4lMjBjb3VydGhvdXNlJTIwbGF3JTIwYm9va3MlMjBhcGFydG1lbnR8ZW58MXwwfHx8MTc4NTA2MzgzOHww&ixlib=rb-4.1.0&q=80&w=1080&utm_source=nebenkostenradar&utm_medium=referral",
+      bildAlt: "Aktuelle BGH-Urteile Mietrecht Nebenkosten 2026: Diese Rechte haben Mieter jetzt",
+      kategorie: "Mietrecht",
+      keywords: [],
+      inhalt: [
+        {
+                "typ": "intro",
+                "text": "Jedes Jahr entscheidet der Bundesgerichtshof (BGH) über strittige Fragen rund um die Nebenkostenabrechnung – und 2026 ist dabei besonders ereignisreich. Gleich mehrere Urteile aus dem Frühjahr und Sommer 2026 betreffen Themen, die Millionen Mieter in Deutschland direkt betreffen: von der Umlage neuer Wärmelieferverträge über das sogenannte Wirtschaftlichkeitsgebot bis hin zur Einsicht in Originalbelege. Dieser Ratgeber fasst die wichtigsten Entscheidungen zusammen und zeigt Ihnen, wie Sie diese für Ihren eigenen Widerspruch nutzen können."
+        },
+        {
+                "typ": "h2",
+                "text": "Warum BGH-Urteile für Ihre Nebenkostenabrechnung so wichtig sind"
+        },
+        {
+                "typ": "text",
+                "text": "Der Bundesgerichtshof ist die höchste Instanz für Zivilrecht in Deutschland – seine Urteile zum Mietrecht sind für alle Amts- und Landgerichte bindend orientierend. Wenn Sie in einem Widerspruch gegen Ihre Nebenkostenabrechnung auf ein passendes BGH-Urteil verweisen, erhöht das Ihre Erfolgschancen erheblich, weil Vermieter und Hausverwaltungen wissen, dass ein Gerichtsverfahren für sie riskant wäre."
+        },
+        {
+                "typ": "h2",
+                "text": "Neues Gesetz, alte Kontrollrechte: Der Rahmen 2026"
+        },
+        {
+                "typ": "text",
+                "text": "Im Juni 2026 hat der Bundestag ein Bürokratierückbaugesetz verabschiedet, das Vermietern und Hausverwaltungen administrative Erleichterungen bringen soll. <cite index=\"1-6,1-7\">Im Juni 2026 wurde ein Bürokratierückbaugesetz verabschiedet, das Verwaltern administrative Erleichterungen bringen soll – doch die hohen Anforderungen an korrekte Betriebskostenabrechnungen bleiben bestehen.</cite> Für Sie als Mieter heißt das: Die Substanz Ihrer Rechte bleibt unverändert. <cite index=\"1-8\">Aktuelle Urteile zeigen weiterhin, dass Mieter weitreichende Kontrollrechte haben.</cite>"
+        },
+        {
+                "typ": "h2",
+                "text": "Das Wirtschaftlichkeitsgebot-Urteil vom Mai 2026 (VIII ZR 6/24)"
+        },
+        {
+                "typ": "text",
+                "text": "Eine der praxisrelevantesten Entscheidungen des Jahres betrifft die Frage, ob Vermieter vor der Beauftragung von Dienstleistern wie Hausmeister, Gartenpflege oder Gebäudereinigung Vergleichsangebote einholen müssen. <cite index=\"4-5,4-6,4-7\">Der Bundesgerichtshof hat mit seinem Urteil vom 20. Mai 2026 (Az. VIII ZR 6/24) Klarheit zum sogenannten Wirtschaftlichkeitsgebot geschaffen.</cite> Das Ergebnis überrascht viele Mieter: <cite index=\"2-3\">Das Wirtschaftlichkeitsgebot bei Betriebskosten ist nicht schon dann verletzt, wenn der Vermieter vor der Beauftragung von Dienstleistungen keine Vergleichsangebote eingeholt hat.</cite>"
+        },
+        {
+                "typ": "text",
+                "text": "Was bedeutet das konkret für Sie? <cite index=\"4-1,4-2\">Ein Widerspruch gegen die Betriebskostenabrechnung muss gut und konkret begründet sein – der bloße Hinweis, der Vermieter hätte vergleichen müssen, reicht nicht aus.</cite> Sie müssen also mit belastbaren Zahlen oder Vergleichswerten argumentieren, nicht nur mit einer allgemeinen Vermutung."
+        },
+        {
+                "typ": "liste",
+                "items": [
+                        "Ein pauschaler Verdacht auf überhöhte Kosten reicht als Widerspruchsgrund nicht mehr aus",
+                        "Konkrete Vergleichszahlen aus dem Betriebskostenspiegel stärken Ihre Position deutlich",
+                        "Bei sehr langfristigen oder besonders teuren Verträgen bleibt eine genauere gerichtliche Prüfung möglich"
+                ]
+        },
+        {
+                "typ": "verweis",
+                "ziel": "betriebskostenspiegel-2024",
+                "text": "Um zu beurteilen, ob Ihre Kosten wirklich zu hoch sind, hilft ein Blick auf die bundesweiten Vergleichswerte im Betriebskostenspiegel."
+        },
+        {
+                "typ": "h2",
+                "text": "Grundsteuer-Einspruch verlängert die Abrechnungsfrist"
+        },
+        {
+                "typ": "text",
+                "text": "Im selben Verfahren hat der BGH auch eine wichtige Frage zur Abrechnungsfrist geklärt: <cite index=\"2-4\">Hat ein Vermieter gegen den einer Grundsteuerfestsetzung zugrunde liegenden Bescheid Einspruch eingelegt, läuft die Frist für die nachträgliche Abrechnung gegenüber dem Mieter erst, wenn über den Einspruch entschieden ist.</cite> Normalerweise muss eine Nebenkostenabrechnung innerhalb von zwölf Monaten nach Ende des Abrechnungszeitraums zugehen – bei einem laufenden Grundsteuer-Einspruch kann sich dieser Zeitpunkt jedoch nach hinten verschieben."
+        },
+        {
+                "typ": "h2",
+                "text": "Wärmelieferung statt Eigenversorgung: Neue Grenzen für Vermieter"
+        },
+        {
+                "typ": "text",
+                "text": "Ein weiterer wichtiger Themenkomplex betrifft die Umstellung der Heizversorgung. Stellt ein Vermieter von einer bisherigen Selbstversorgung mit Heizöl oder Gas auf gewerbliche Wärmelieferung um, darf er die daraus entstehenden Kosten nicht automatisch auf die Mieter umlegen. <cite index=\"12-2,12-3\">Eine Umlage von Wärmelieferungskosten ist bei Umstellung von Selbstversorgung der Mieter auf gewerbliche Wärmelieferung nicht ohne Weiteres zulässig, da die mietrechtliche Vorschrift des § 556c BGB nur greift, wenn die Mieter schon vor der Umstellung Heizkosten als Betriebskosten getragen haben.</cite> Diese Klarstellung erfolgte in zwei parallelen Entscheidungen vom 20. Mai 2026 <cite index=\"12-4\">(BGH, Urteile v. 20.5.2026, VIII ZR 46/25 und VIII ZR 47/25)</cite>."
+        },
+        {
+                "typ": "text",
+                "text": "Für Mieter, die bisher eine Warmmiete oder eine andere Form der Heizkostentragung hatten, ist das ein wichtiger Prüfpunkt: Wurde die Umstellung auf gewerbliche Wärmelieferung korrekt vorgenommen, oder wurden Ihnen Kosten aufgebürdet, die eigentlich der Vermieter tragen müsste?"
+        },
+        {
+                "typ": "verweis",
+                "ziel": "heizkostenabrechnung-fehler-vermieter-checkliste-2026",
+                "text": "Welche typischen Fehler bei der Heizkostenabrechnung außerdem häufig vorkommen, erfahren Sie in unserer ausführlichen Checkliste."
+        },
+        {
+                "typ": "verweis",
+                "ziel": "heizkostenabrechnung-haeufigste-fehler-vermieter-2026",
+                "text": "Eine zweite Übersicht zeigt weitere häufige Vermieterfehler bei der Heizkostenabrechnung im Detail."
+        },
+        {
+                "typ": "h2",
+                "text": "Ihr Recht auf Einsicht in Originalbelege bleibt bestehen"
+        },
+        {
+                "typ": "text",
+                "text": "Auch wenn dieses Urteil bereits einige Jahre zurückliegt, wird es 2026 wieder häufiger zitiert, weil die Bürokratierückbau-Diskussion neu aufgeflammt ist. <cite index=\"1-1,1-2,1-3\">Ein Urteil des BGH vom 15. Dezember 2021 (VIII ZR 66/20) bestätigt: Mieter haben Anspruch auf Einsicht in die Originalbelege, Kopien gelten laut den Richtern nicht als gleichwertig.</cite>"
+        },
+        {
+                "typ": "text",
+                "text": "Besonders wichtig für Sie: <cite index=\"1-15,1-16,1-17\">Der Mieter muss für dieses Recht kein besonderes Interesse nachweisen, da sich die Einsicht aus der Rechenschaftspflicht des Vermieters ergibt. Nur in Ausnahmefällen – etwa bei Schikaneverdacht – sind Einschränkungen möglich.</cite> Sie können also grundsätzlich jederzeit verlangen, die Originalrechnungen zu Ihrer Abrechnung einzusehen, ohne dies besonders begründen zu müssen."
+        },
+        {
+                "typ": "hinweis",
+                "text": "Verlangen Sie die Belegeinsicht immer schriftlich und setzen Sie eine angemessene Frist von zwei bis drei Wochen. So haben Sie im Streitfall einen Nachweis, dass Sie Ihr Recht fristgerecht ausgeübt haben."
+        },
+        {
+                "typ": "h2",
+                "text": "Formelle Fehler machen die Abrechnung weiterhin unwirksam"
+        },
+        {
+                "typ": "text",
+                "text": "Auch 2026 gilt unverändert der Grundsatz, dass bestimmte formelle Mindestangaben in keiner Abrechnung fehlen dürfen. <cite index=\"7-7,7-8\">Der BGH hat wiederholt entschieden, dass formelle Fehler – etwa fehlende Angaben zu Abrechnungszeitraum, Gesamtkosten oder Verteilerschlüssel – die gesamte Abrechnung unwirksam machen können, sodass Sie in solchen Fällen die geforderte Nachzahlung nicht leisten müssen.</cite> Zusätzlich hat die Rechtsprechung klargestellt, dass ein kompletter Heizungsaustausch nicht über die Nebenkosten abgerechnet werden darf: <cite index=\"7-4\">Der BGH hat klargestellt, dass die Kosten für den Austausch von Heizungen grundsätzlich nicht als Betriebskosten umlegbar sind, sondern Modernisierungskosten darstellen.</cite>"
+        },
+        {
+                "typ": "verweis",
+                "ziel": "widerspruch-nebenkostenabrechnung",
+                "text": "Wie Sie einen Widerspruch mit Verweis auf aktuelle BGH-Urteile formulieren und welche Fristen dabei gelten, lesen Sie in unserer Schritt-für-Schritt-Anleitung."
+        },
+        {
+                "typ": "h2",
+                "text": "Ein Blick zurück: Kabelanschluss als Beispiel für sich ändernde Rechtslage"
+        },
+        {
+                "typ": "text",
+                "text": "Nicht alle rechtlichen Änderungen bei den Nebenkosten kommen direkt vom BGH – manche resultieren auch aus Gesetzesänderungen. Ein bekanntes Beispiel ist der Kabelanschluss, der seit einer gesetzlichen Neuregelung nicht mehr pauschal über die Betriebskosten umgelegt werden darf. Auch hier lohnt sich ein genauer Blick in Ihre Abrechnung, ob veraltete Positionen noch enthalten sind."
+        },
+        {
+                "typ": "verweis",
+                "ziel": "kabelanschluss-nicht-umlagefaehig",
+                "text": "Alle Details zur Rechtslage rund um Kabelanschlusskosten und wie Sie unzulässige Positionen erkennen, finden Sie in unserem Spezialartikel."
+        },
+        {
+                "typ": "h2",
+                "text": "So nutzen Sie die aktuellen BGH-Urteile für Ihren eigenen Fall"
+        },
+        {
+                "typ": "liste",
+                "items": [
+                        "Prüfen Sie, ob Ihre Abrechnung alle formellen Pflichtangaben enthält (Zeitraum, Gesamtkosten, Verteilerschlüssel, Ihr Anteil)",
+                        "Fordern Sie bei Zweifeln schriftlich Einsicht in die Originalbelege – ein besonderes Interesse müssen Sie nicht nachweisen",
+                        "Vergleichen Sie einzelne Kostenpositionen mit dem aktuellen Betriebskostenspiegel, bevor Sie das Wirtschaftlichkeitsgebot als Argument nutzen",
+                        "Prüfen Sie bei Heizkostenumstellungen, ob eine reine Verlagerung auf gewerbliche Wärmelieferung korrekt begründet wurde",
+                        "Achten Sie darauf, ob Modernisierungskosten wie ein Heizungsaustausch fälschlich in den Betriebskosten auftauchen"
+                ]
+        },
+        {
+                "typ": "verweis",
+                "ziel": "bgh-urteile-mietrecht-nebenkosten-2026",
+                "text": "Eine vertiefende Übersicht mit weiteren Detailentscheidungen zu diesem Themenkomplex finden Sie in unserem ergänzenden BGH-Sonderartikel."
+        },
+        {
+                "typ": "text",
+                "text": "Die Rechtsprechung zu Nebenkosten entwickelt sich ständig weiter, und einzelne Formulierungen in Urteilen können im Detail komplex sein. Bei einer konkreten Nachzahlungsforderung lohnt sich daher immer eine individuelle Prüfung Ihrer Abrechnung, bevor Sie zahlen oder widersprechen."
+        },
+        {
+                "typ": "cta",
+                "text": "Jetzt Abrechnung kostenlos prüfen lassen."
+        }
+],
+    },
+    {
       id: "heizkostenabrechnung-fehler-vermieter-checkliste-2026",
       titel: "Heizkostenabrechnung 2026: Die häufigsten Fehler der Vermieter erkennen",
       teaser: "Fast jede zweite Heizkostenabrechnung enthält Fehler – von falschen Verteilerschlüsseln bis zu unzulässig umgelegten CO2-Kosten. Wir zeigen, worauf Sie 2026 achten müssen, um zu viel gezahltes Geld zurückzuholen.",
