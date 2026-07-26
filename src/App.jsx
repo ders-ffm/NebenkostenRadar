@@ -11,16 +11,40 @@ const CONFIG = {
     aufzug: 0.18, schornstein: 0.04,
   },
 };
+// Lädt gtag.js und initialisiert GA4 dynamisch — NUR nach erteilter Einwilligung.
+// Wichtig: Vor dieser Session lud das Skript unbedingt im <head> von index.html
+// und feuerte dort sofort gtag('config', ...) bei jedem Seitenaufruf, unabhängig
+// vom Banner. Das löste bereits einen "Cookieless Ping" an Google-Server aus
+// (IP-Adresse u.a.), bevor überhaupt eine Einwilligung vorlag — ein bekannter
+// Abmahn-/Bußgeld-Risikopunkt. Jetzt wird das Skript erst hier injiziert.
+function ladeGA4() {
+  if (window.__nkrGaLoaded) return;
+  window.__nkrGaLoaded = true;
+  const script = document.createElement("script");
+  script.async = true;
+  script.src = "https://www.googletagmanager.com/gtag/js?id=G-KE9LWG22QW";
+  document.head.appendChild(script);
+  window.gtag("js", new Date());
+  window.gtag("config", "G-KE9LWG22QW");
+}
 function CookieBanner() {
   const [visible, setVisible] = useState(false);
   useEffect(() => {
-    if (!localStorage.getItem('nkr-ck')) setVisible(true);
+    const consent = localStorage.getItem('nkr-ck');
+    if (!consent) {
+      setVisible(true);
+    } else if (consent === '1') {
+      // Wiederkehrender Besucher mit vorheriger Zustimmung: GA4 direkt laden.
+      window.gtag && window.gtag('consent', 'update', { analytics_storage: 'granted' });
+      ladeGA4();
+    }
   }, []);
-function accept() {
-  localStorage.setItem('nkr-ck', '1');
-  setVisible(false);
-  window.gtag && window.gtag('consent', 'update', { analytics_storage: 'granted' });
-}
+  function accept() {
+    localStorage.setItem('nkr-ck', '1');
+    setVisible(false);
+    window.gtag && window.gtag('consent', 'update', { analytics_storage: 'granted' });
+    ladeGA4();
+  }
   function reject() {
     localStorage.setItem('nkr-ck', '0');
     setVisible(false);
@@ -1451,8 +1475,8 @@ export default function App() {
   // ── IMPRESSUM ─────────────────────────────────────────────────────────────────
   // Fix: zweiter Kontaktweg (Kontaktformular) neben E-Mail ergänzt, damit § 5 DDG
   // (vormals § 5 TMG) — Pflicht zu zwei Kontaktmöglichkeiten laut EuGH-Rechtsprechung —
-  // erfüllt ist. Zusätzlich: veralteter EU-ODR-Plattform-Verweis entfernt (Plattform
-  // seit 20.07.2025 endgültig abgeschaltet), § 36 VSBG-Erklärung beibehalten.
+  // erfüllt ist. Zusätzlich: veralteter EU-ODR-Verweis entfernt (Plattform seit
+  // 20.07.2025 endgültig abgeschaltet), § 36 VSBG-Erklärung beibehalten.
   if (step === "impressum") return (
     <div style={root}>
       <div style={{ background: C.surface, padding: "20px 20px 16px", borderBottom: "1px solid " + C.border }}>
@@ -1519,7 +1543,7 @@ export default function App() {
         {[
           { t: "1. Verantwortlicher", brand: true, lines: ["NebenkostenRadar — nebenkostenradar.com", "Inhaber: Stefan Hennig", "Ludwigstr. 33-37, 60327 Frankfurt am Main", "support@nebenkostenradar.com"] },
           { t: "2. Keine Datenspeicherung", lines: ["Diese Website speichert keine personenbezogenen Daten. Alle eingegebenen Werte (Nebenkostenposten, Wohnungsdaten) werden ausschließlich lokal in Ihrem Browser verarbeitet."] },
-          { t: "3. Cookies und Webanalyse", lines: ["Diese Website verwendet Google Analytics (Google Ireland Ltd., Gordon House, Barrow Street, Dublin 4, Irland). Google Analytics wird nur mit Ihrer ausdrücklichen Einwilligung aktiviert (§ 25 Abs. 1 TDDDG, Art. 6 Abs. 1 lit. a DSGVO). Sie können die Einwilligung im Cookie-Banner ablehnen — in diesem Fall werden keine Analysedaten erhoben. Technisch notwendige Cookies (z.B. Cookie-Banner-Einstellung) sind gemäß § 25 Abs. 2 TDDDG ohne Einwilligung zulässig. Google Analytics Datenschutzerklärung: policies.google.com/privacy"] },
+          { t: "3. Cookies und Webanalyse", lines: ["Diese Website verwendet Google Analytics (Google Ireland Ltd., Gordon House, Barrow Street, Dublin 4, Irland). Google Analytics wird nur mit Ihrer ausdrücklichen Einwilligung aktiviert (§ 25 Abs. 1 TDDDG, Art. 6 Abs. 1 lit. a DSGVO) — das Skript wird technisch erst nach Ihrer Zustimmung geladen. Sie können die Einwilligung im Cookie-Banner ablehnen — in diesem Fall werden keine Analysedaten erhoben. Technisch notwendige Cookies (z.B. Cookie-Banner-Einstellung) sind gemäß § 25 Abs. 2 TDDDG ohne Einwilligung zulässig. Google Analytics Datenschutzerklärung: policies.google.com/privacy"] },
           { t: "4. Hosting (Vercel)", lines: ["Unser Hosting-Anbieter Vercel (Vercel Inc., 340 S Lemon Ave, Walnut, CA 91789, USA) erhebt automatisch Server-Log-Dateien (IP-Adresse, Browser, Zeitstempel). Diese Daten werden nicht mit anderen Daten zusammengeführt. Rechtsgrundlage: Art. 6 Abs. 1 lit. f DSGVO (berechtigtes Interesse am technischen Betrieb). Datenschutzerklärung Vercel: vercel.com/legal/privacy-policy"] },
           { t: "5. Zahlungsabwicklung (Stripe)", lines: ["Bei Kauf eines Vollberichts leiten wir Sie zur Zahlungsseite von Stripe Payments Europe, Ltd. (1 Grand Canal Street Lower, Dublin D02 H210, Irland) weiter. Dabei werden Name, E-Mail-Adresse und Zahlungsdaten an Stripe übermittelt. Stripe verarbeitet diese Daten gemäß eigener Datenschutzerklärung: stripe.com/de/privacy. Rechtsgrundlage: Art. 6 Abs. 1 lit. b DSGVO (Vertragserfüllung). Datenübermittlung in die USA auf Basis von Standardvertragsklauseln (Art. 46 Abs. 2 lit. c DSGVO)."] },
           { t: "6. Analyse-Service (Anthropic)", lines: ["Für die automatische Prüfung werden die eingegebenen Kostenpositionen (KEINE personenbezogenen Daten) an die API von Anthropic PBC, USA übermittelt. Die Daten werden nicht dauerhaft gespeichert und nicht für KI-Training genutzt. Rechtsgrundlage: Art. 6 Abs. 1 lit. b DSGVO. Datenübermittlung in die USA auf Basis von Standardvertragsklauseln (Art. 46 Abs. 2 lit. c DSGVO)."] },
