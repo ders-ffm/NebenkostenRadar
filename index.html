@@ -1,23 +1,30 @@
 <!DOCTYPE html>
 <html lang="de">
   <head>
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-KE9LWG22QW"></script>
 <script>
+  // WICHTIG: Hier wird NUR der dataLayer-Stub initialisiert und der
+  // Consent-Status auf "denied" gesetzt. Das eigentliche gtag.js-Skript
+  // sowie der gtag('config', ...)-Aufruf werden NICHT mehr hier geladen,
+  // sondern erst dynamisch in src/App.jsx (Funktion ladeGA4), nachdem der
+  // Nutzer im Cookie-Banner auf "Akzeptieren" geklickt hat (oder bei einem
+  // Wiederbesuch mit bereits erteilter Einwilligung).
+  // Grund: Ein unbedingt ladendes gtag.js löst bei jedem Seitenaufruf einen
+  // "Cookieless Ping" an Google-Server aus (u.a. IP-Adresse), bevor überhaupt
+  // eine Einwilligung vorliegt — unabhängig davon, ob dabei ein Cookie
+  // gesetzt wird. Der dataLayer-Stub selbst setzt keine Cookies und keine
+  // personenbezogenen Daten frei, daher ist er unbedenklich vorab nötig,
+  // damit spätere gtag(...)-Aufrufe (z.B. consent update) nicht ins Leere laufen.
   window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
+  window.gtag = window.gtag || function(){dataLayer.push(arguments);};
   gtag('consent', 'default', { analytics_storage: 'denied' });
-  gtag('js', new Date());
-  gtag('config', 'G-KE9LWG22QW');
 </script>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-
     <!-- Primary SEO -->
     <title>Nebenkostenabrechnung prüfen — kostenlos | NebenkostenRadar</title>
     <meta name="description" content="Nebenkostenabrechnung kostenlos prüfen: NebenkostenRadar vergleicht jeden Posten mit dem DMB-Betriebskostenspiegel 2024, erkennt Fehler und erstellt einen versandfertigen Prüfbericht mit Mustertext. Sofort, ohne Registrierung." />
     <meta name="keywords" content="Nebenkostenabrechnung prüfen, Betriebskostenabrechnung, Widerspruch Nebenkosten, Nebenkostenspiegel, Mietrecht, BetrKV" />
     <link rel="canonical" href="https://nebenkostenradar.com/" />
-
     <!-- Open Graph -->
     <meta property="og:type" content="website" />
     <meta property="og:url" content="https://nebenkostenradar.com/" />
@@ -25,12 +32,10 @@
     <meta property="og:description" content="Nebenkostenabrechnung kostenlos prüfen. Fehler erkennen, Einwände formulieren — in 2 Minuten." />
     <meta property="og:locale" content="de_DE" />
     <meta property="og:site_name" content="NebenkostenRadar" />
-
     <!-- Twitter Card -->
     <meta name="twitter:card" content="summary" />
     <meta name="twitter:title" content="Nebenkostenabrechnung prüfen — NebenkostenRadar" />
     <meta name="twitter:description" content="Kostenlose Prüfung Ihrer Nebenkostenabrechnung nach aktuellem Mietrecht." />
-
     <!-- Strukturierte Daten (Schema.org) -->
     <script type="application/ld+json">
     {
@@ -69,7 +74,6 @@
       }
     }
     </script>
-
     <!-- FAQ Schema für Ratgeber-Artikel -->
     <script type="application/ld+json">
     {
@@ -103,13 +107,11 @@
       ]
     }
     </script>
-
     <!-- Inter Font — Self-Hosted (DSGVO-konform, keine Übermittlung an Google) -->
     <!-- npm install @fontsource/inter — dann in src/main.jsx importieren -->
     <style>
       body { font-family: 'Inter', 'Segoe UI', 'Helvetica Neue', Arial, sans-serif; }
     </style>
-
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <link rel="apple-touch-icon" href="/favicon.svg" />
     <meta name="theme-color" content="#2d7a4f" />
