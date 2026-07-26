@@ -13,6 +13,280 @@
 // scripts/rechtsmonitor.mjs umgesetzt (deterministische ID-Vergabe).
 export const ARTIKEL = [
     {
+      id: "wasserkosten-und-kaltwasserzaehler-in-der-nebenkostenabrechnung",
+      titel: "Wasserkosten und Kaltwasserzähler in der Nebenkostenabrechnung 2026: Was Mieter wissen müssen",
+      teaser: "Wasserkosten zählen zu den größten Posten in der Nebenkostenabrechnung – und Kaltwasserzähler sind dabei oft eine Fehlerquelle. Erfahren Sie, welche Kosten umlagefähig sind, wie die Eichpflicht funktioniert und wie Sie Ihre Abrechnung selbst prüfen.",
+      datum: "Juli 2026",
+      lesezeit: "8 Min.",
+      bild: "https://images.unsplash.com/photo-1460408037948-b89a5e837b41?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w5NzcyMzl8MHwxfHNlYXJjaHwxfHx3YXRlciUyMG1ldGVyJTIwYXBhcnRtZW50JTIwYnVpbGRpbmd8ZW58MXwwfHx8MTc4NTA2NTQ3NXww&ixlib=rb-4.1.0&q=80&w=1080&utm_source=nebenkostenradar&utm_medium=referral",
+      bildAlt: "Wasserkosten und Kaltwasserzähler in der Nebenkostenabrechnung 2026: Was Mieter wissen müssen",
+      kategorie: "Mietrecht",
+      keywords: [],
+      inhalt: [
+        {
+                "typ": "intro",
+                "text": "Nach den Heizkosten sind Wasserkosten der zweithäufigste Streitpunkt in der Nebenkostenabrechnung. Viele Mieter wissen nicht genau, welche Positionen rund um Kaltwasser und Kaltwasserzähler überhaupt umgelegt werden dürfen und worauf sie bei der Prüfung ihrer Abrechnung achten sollten. Dieser Ratgeber erklärt die aktuelle Rechtslage 2026 verständlich und zeigt, wie Sie typische Fehler erkennen."
+        },
+        {
+                "typ": "h2",
+                "text": "Welche Wasserkosten dürfen in der Nebenkostenabrechnung stehen?"
+        },
+        {
+                "typ": "text",
+                "text": "Die gesetzliche Grundlage für die Umlage von Wasserkosten bildet § 2 Nr. 2 der Betriebskostenverordnung (BetrKV). Danach dürfen die Kosten der Wasserversorgung auf Basis der Rechnung des Versorgers, Grundgebühren, die Miete für Wasserzähler sowie deren Ablesung auf die Mieter umgelegt werden. Ebenso zählen die Kosten der Verbrauchserfassung und -aufteilung durch externe Messdienstleister zu den umlagefähigen Positionen."
+        },
+        {
+                "typ": "liste",
+                "items": [
+                        "Frischwasserkosten laut Rechnung des kommunalen Wasserversorgers",
+                        "Grundgebühr für den Wasseranschluss",
+                        "Miete für Kaltwasserzähler und deren Ablesung",
+                        "Eichkosten für die Wasserzähler",
+                        "Kosten der Verbrauchserfassung durch externe Dienstleister (z. B. Ista, Techem, Minol)"
+                ]
+        },
+        {
+                "typ": "text",
+                "text": "Nicht umlagefähig sind dagegen einmalige Reparaturen an Wasserleitungen oder die Beseitigung von Wasserschäden, da es sich hierbei um Instandhaltungskosten handelt, die der Vermieter selbst tragen muss. Ebenfalls problematisch ist es, wenn Wasserkosten für ausschließlich gewerblich genutzte Flächen im selben Gebäude auf Wohnmieter mitverteilt werden, obwohl der Verbrauch klar zuordenbar wäre."
+        },
+        {
+                "typ": "h2",
+                "text": "Kaltwasserzähler: Eichpflicht und was bei abgelaufener Eichung gilt"
+        },
+        {
+                "typ": "text",
+                "text": "Kaltwasserzähler unterliegen einer gesetzlichen Eichpflicht nach dem Mess- und Eichgesetz (MessEG). Die Eichfrist für Kaltwasserzähler beträgt sechs Jahre, während Warmwasserzähler bereits nach fünf Jahren neu geeicht werden müssen. Ist diese Frist abgelaufen, gelten die abgelesenen Werte als anfechtbar, weil die Messgenauigkeit rechtlich nicht mehr gesichert ist."
+        },
+        {
+                "typ": "text",
+                "text": "Ist die Eichfrist bei den Zählern in Ihrer Wohnung überschritten, können Sie als Mieter die Abrechnung entsprechend kürzen. Verantwortlich für die rechtzeitige Erneuerung ist grundsätzlich der Vermieter beziehungsweise die von ihm beauftragte Hausverwaltung – ein abgelaufener Eichtermin geht nicht zulasten des Mieters."
+        },
+        {
+                "typ": "hinweis",
+                "text": "Prüfen Sie in Ihrer Abrechnung oder im Zählerprotokoll, ob ein Eichdatum bzw. Prüfjahr angegeben ist. Fehlt diese Angabe oder liegt sie mehr als sechs Jahre zurück, sollten Sie dies schriftlich gegenüber dem Vermieter ansprechen."
+        },
+        {
+                "typ": "h2",
+                "text": "Muss Kaltwasser überhaupt nach Verbrauch abgerechnet werden?"
+        },
+        {
+                "typ": "text",
+                "text": "Anders als bei Heizung und Warmwasser gibt es für Kaltwasser keine gesetzliche Pflicht zur verbrauchsabhängigen Abrechnung. Sind jedoch Wasserzähler in den Wohnungen installiert, sollte der tatsächliche Verbrauch als Verteilerschlüssel herangezogen werden, weil dies dem Wirtschaftlichkeitsgebot entspricht und die gerechteste Verteilung zwischen Wenig- und Vielverbrauchern ermöglicht."
+        },
+        {
+                "typ": "text",
+                "text": "Fehlen individuelle Wasserzähler, wird häufig ersatzweise nach der Personenzahl je Wohneinheit abgerechnet, da der Wasserverbrauch stark von der Anzahl der Bewohner abhängt. Eine Verteilung allein nach Wohnfläche ist zulässig, gilt aber als weniger gerecht, weil sie die tatsächliche Nutzung nicht berücksichtigt."
+        },
+        {
+                "typ": "liste",
+                "items": [
+                        "Verbrauch nach geeichtem Wasserzähler – fairster und empfohlener Maßstab",
+                        "Personenzahl pro Wohnung – gängiger Ersatzschlüssel ohne Einzelzähler",
+                        "Wohnfläche – zulässig, aber weniger verursachungsgerecht"
+                ]
+        },
+        {
+                "typ": "text",
+                "text": "Zur Orientierung: In Deutschland liegt der durchschnittliche Wasserverbrauch bei etwa 125 Litern pro Person und Tag, also rund 45 Kubikmetern im Jahr. Bei einem Durchschnittspreis von etwa 2,20 Euro pro Kubikmeter ergeben sich daraus grob geschätzte Kosten von rund 100 Euro pro Person und Jahr allein für Frischwasser – ein Wert, an dem Sie Ihre eigene Abrechnung grob spiegeln können."
+        },
+        {
+                "typ": "verweis",
+                "ziel": "betriebskostenspiegel-2024",
+                "text": "Wie sich Ihre Wasserkosten im bundesweiten Vergleich einordnen, zeigt der aktuelle DMB Betriebskostenspiegel mit Durchschnittswerten für alle Kostenarten."
+        },
+        {
+                "typ": "h2",
+                "text": "Typische Fehler in der Wasserkostenabrechnung"
+        },
+        {
+                "typ": "text",
+                "text": "Ein häufiger Streitpunkt ist der nachträgliche Wechsel des Verteilerschlüssels. Ein Wechsel während der laufenden Vertragslaufzeit ist unzulässig, wenn er nicht vertraglich gedeckt ist, und darf nicht einseitig zulasten des Mieters erfolgen. Ebenso problematisch ist die Umlage von Wasserkosten für leerstehende Wohnungen: Diese Kosten trägt der Vermieter, sie dürfen nicht anteilig auf die übrigen Mieter verteilt werden."
+        },
+        {
+                "typ": "liste",
+                "items": [
+                        "Verteilerschlüssel wurde ohne vertragliche Grundlage geändert",
+                        "Kosten für Gartenbewässerung oder Gewerbeflächen wurden mitabgerechnet",
+                        "Leerstehende Wohnungen wurden bei der Verteilung übergangen",
+                        "Zählerstände von Einzelzählern plus Allgemeinverbrauch stimmen nicht mit dem Hauptzähler überein",
+                        "Eichfrist der Kaltwasserzähler ist abgelaufen"
+                ]
+        },
+        {
+                "typ": "text",
+                "text": "Auch die formellen Anforderungen an die Abrechnung selbst spielen eine Rolle: Nach § 556 Abs. 3 Satz 2 BGB muss die Abrechnung verständlich und nachvollziehbar sein. Der Bundesgerichtshof hat in seiner Rechtsprechung hohe Anforderungen an diese Transparenz gestellt, sodass unklare oder unvollständige Angaben zu Wasserkosten formell angreifbar sein können."
+        },
+        {
+                "typ": "verweis",
+                "ziel": "bgh-urteile-mietrecht-nebenkosten-2026",
+                "text": "Welche weiteren aktuellen BGH-Entscheidungen für Nebenkostenabrechnungen relevant sind, lesen Sie in unserer Übersicht der wichtigsten Urteile 2026."
+        },
+        {
+                "typ": "h2",
+                "text": "Was tun bei Zweifeln an der Wasserkostenabrechnung?"
+        },
+        {
+                "typ": "text",
+                "text": "Wenn Ihnen die Wasserkosten in Ihrer Abrechnung zu hoch erscheinen oder Sie einen der oben genannten Fehler vermuten, haben Sie als Mieter das Recht, Einsicht in die Belege zu verlangen. Fordern Sie die Rechnung des Wasserversorgers sowie das Ablese- und Eichprotokoll der Zähler an und vergleichen Sie die dort genannten Werte mit den Angaben in Ihrer Abrechnung."
+        },
+        {
+                "typ": "verweis",
+                "ziel": "widerspruch-nebenkostenabrechnung",
+                "text": "Wie Sie formal korrekt Widerspruch gegen eine fehlerhafte Abrechnung einlegen und welche Fristen dabei gelten, erklärt unsere ausführliche Anleitung mit Musterschreiben."
+        },
+        {
+                "typ": "verweis",
+                "ziel": "betriebskostenabrechnung-fristen-und-verjaehrung-2026",
+                "text": "Wie lange Ihr Vermieter überhaupt Zeit hat, die Abrechnung zu erstellen, und wann Nachforderungen verjähren, erfahren Sie in unserem Beitrag zu Fristen und Verjährung."
+        },
+        {
+                "typ": "text",
+                "text": "Da Warmwasserkosten häufig gemeinsam mit Heizkosten abgerechnet werden und ähnliche Fehlerquellen wie bei Kaltwasserzählern aufweisen, lohnt sich bei gemischten Anlagen auch ein Blick auf die Heizkostenabrechnung."
+        },
+        {
+                "typ": "verweis",
+                "ziel": "heizkostenabrechnung-vermieterfehler-2026-leitfaden",
+                "text": "Wenn Ihre Wohnung auch über eine zentrale Warmwasserversorgung verfügt, zeigt unser Leitfaden zu Vermieterfehlern bei der Heizkostenabrechnung weitere typische Stolperfallen."
+        },
+        {
+                "typ": "verweis",
+                "ziel": "kabelanschluss-nicht-umlagefaehig",
+                "text": "Nicht jede Position, die im Mietvertrag als Nebenkosten aufgeführt wird, darf tatsächlich umgelegt werden – ein Beispiel dafür ist der Kabelanschluss, der seit Juli 2024 nicht mehr umlagefähig ist."
+        },
+        {
+                "typ": "hinweis",
+                "text": "Dieser Artikel ersetzt keine individuelle Rechtsberatung. Bei komplexen oder strittigen Fällen empfiehlt sich der Gang zu einem Fachanwalt für Mietrecht oder zum örtlichen Mieterverein."
+        },
+        {
+                "typ": "cta",
+                "text": "Jetzt Abrechnung kostenlos prüfen lassen."
+        }
+],
+    },
+    {
+      id: "betriebskostenabrechnung-fristen-und-verjaehrung-2026",
+      titel: "Betriebskostenabrechnung 2026: Fristen und Verjährung – was Mieter wissen müssen",
+      teaser: "Wann muss der Vermieter abrechnen, wie lange können Sie widersprechen und ab wann sind Nachforderungen verjährt? Der komplette Überblick über alle Fristen rund um die Betriebskostenabrechnung 2026.",
+      datum: "Juli 2026",
+      lesezeit: "9 Min.",
+      bild: "https://images.unsplash.com/photo-1633526543814-9718c8922b7a?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w5NzcyMzl8MHwxfHNlYXJjaHwxfHxjYWxlbmRhciUyMGRlYWRsaW5lJTIwZG9jdW1lbnRzfGVufDF8MHx8fDE3ODUwNjU0MDd8MA&ixlib=rb-4.1.0&q=80&w=1080&utm_source=nebenkostenradar&utm_medium=referral",
+      bildAlt: "Betriebskostenabrechnung 2026: Fristen und Verjährung – was Mieter wissen müssen",
+      kategorie: "Mietrecht",
+      keywords: [],
+      inhalt: [
+        {
+                "typ": "intro",
+                "text": "Die Betriebskostenabrechnung ist für viele Mieterinnen und Mieter ein jährliches Ärgernis: Zu spät zugestellt, unverständlich aufgebaut oder mit einer überraschenden Nachforderung versehen. Doch das Gesetz gibt klare Fristen vor, an die sich sowohl Vermieter als auch Mieter halten müssen. Wer diese Fristen kennt, kann unberechtigte Nachzahlungen abwehren und weiß genau, wie lange er selbst noch Ansprüche geltend machen kann."
+        },
+        {
+                "typ": "h2",
+                "text": "Die 12-Monats-Frist: Wann muss der Vermieter abrechnen?"
+        },
+        {
+                "typ": "text",
+                "text": "Grundlage für alle Fristen rund um die Betriebskostenabrechnung ist § 556 Abs. 3 BGB. Danach muss der Vermieter über die geleisteten Vorauszahlungen jährlich abrechnen und die Abrechnung dem Mieter spätestens bis zum Ablauf des zwölften Monats nach Ende des Abrechnungszeitraums zukommen lassen. Endet der Abrechnungszeitraum beispielsweise am 31. Dezember 2025, muss die Abrechnung spätestens am 31. Dezember 2026 im Briefkasten des Mieters liegen. Entscheidend ist dabei nicht das Datum auf der Abrechnung oder der Poststempel, sondern der tatsächliche Zugang beim Mieter."
+        },
+        {
+                "typ": "text",
+                "text": "Diese Zwölf-Monats-Frist ist eine sogenannte Ausschlussfrist. Das bedeutet: Es gibt keine Kulanz, keine automatische Verlängerung und keine Gnadenfrist. Versäumt der Vermieter diesen Termin, verliert er grundsätzlich das Recht, eine Nachzahlung von Ihnen zu verlangen – selbst wenn die Abrechnung inhaltlich korrekt wäre."
+        },
+        {
+                "typ": "h2",
+                "text": "Was passiert bei Fristversäumnis des Vermieters?"
+        },
+        {
+                "typ": "text",
+                "text": "Kommt die Betriebskostenabrechnung erst nach Ablauf der Zwölf-Monats-Frist bei Ihnen an, sind eventuelle Nachforderungen ausgeschlossen. Ein Guthaben aus derselben Abrechnung steht Ihnen als Mieter hingegen weiterhin zu – die Frist schützt nur Sie, nicht den Vermieter. Eine Ausnahme gilt nur dann, wenn der Vermieter die Verspätung nachweislich nicht zu vertreten hat, etwa weil ein Energieversorger selbst extrem spät abgerechnet hat. Solche Fälle sind in der Praxis jedoch selten und müssen vom Vermieter konkret belegt werden."
+        },
+        {
+                "typ": "hinweis",
+                "text": "Zahlen Sie eine verspätet zugestellte Nachforderung aus Unwissenheit, können Sie das Geld später zurückverlangen. Prüfen Sie daher bei jeder Abrechnung zuerst das Zugangsdatum, bevor Sie überweisen."
+        },
+        {
+                "typ": "verweis",
+                "ziel": "bgh-urteile-mietrecht-nebenkosten-2026",
+                "text": "Wie der Bundesgerichtshof die Ausschlussfrist in der Praxis auslegt und welche aktuellen Urteile Mieter kennen sollten, erfahren Sie im Überblick zu den neuesten BGH-Entscheidungen zu Nebenkosten."
+        },
+        {
+                "typ": "h2",
+                "text": "Die Widerspruchsfrist: Wie lange können Sie sich wehren?"
+        },
+        {
+                "typ": "text",
+                "text": "Neben der Frist für den Vermieter gibt es auch eine Frist für Sie als Mieter: Sie haben ab Zugang der Abrechnung zwölf Monate Zeit, um formell oder inhaltlich begründete Einwendungen zu erheben, etwa wenn Kostenpositionen falsch berechnet, nicht umlagefähige Posten enthalten sind oder der Verteilerschlüssel nicht stimmt. Lassen Sie diese Frist verstreichen, gilt die Abrechnung grundsätzlich als anerkannt, auch wenn sie tatsächlich fehlerhaft war."
+        },
+        {
+                "typ": "verweis",
+                "ziel": "widerspruch-nebenkostenabrechnung",
+                "text": "Eine konkrete Anleitung samt Musterformulierung für einen fristgerechten Widerspruch finden Sie im Ratgeber zum Widerspruch gegen die Nebenkostenabrechnung."
+        },
+        {
+                "typ": "h2",
+                "text": "Verjährung: Wann sind Ansprüche endgültig weg?"
+        },
+        {
+                "typ": "text",
+                "text": "Neben der Ausschlussfrist des § 556 BGB gibt es eine zweite, oft übersehene zeitliche Grenze: die reguläre Verjährung nach § 195 BGB. Sie beträgt drei Jahre und gilt sowohl für Nachforderungen des Vermieters als auch für Guthabenansprüche des Mieters. Der Fristbeginn richtet sich nach § 199 BGB und startet nicht mit dem Zugang der Abrechnung, sondern erst zum Ende des Kalenderjahres, in dem der Anspruch entstanden ist und die Gegenseite davon Kenntnis hatte oder hätte haben müssen."
+        },
+        {
+                "typ": "liste",
+                "items": [
+                        "Beispiel: Die Abrechnung geht dem Mieter im Juni 2024 zu, der Zahlungsanspruch entsteht damit 2024.",
+                        "Die dreijährige Verjährungsfrist beginnt zum 1. Januar 2025 und endet am 31. Dezember 2027.",
+                        "Danach kann weder der Vermieter eine offene Nachzahlung noch der Mieter ein offenes Guthaben gerichtlich durchsetzen.",
+                        "Verjährung tritt nicht automatisch ein – sie muss von der betroffenen Partei aktiv eingewendet werden.",
+                        "Verhandlungen zwischen Mieter und Vermieter über die Abrechnung können die Verjährung vorübergehend hemmen, eine einfache Mahnung reicht dafür jedoch nicht aus."
+                ]
+        },
+        {
+                "typ": "hinweis",
+                "text": "Wichtig für die Praxis: Die Zwölf-Monats-Ausschlussfrist und die dreijährige Verjährung sind zwei unterschiedliche Dinge und laufen unabhängig voneinander. Eine fristgerecht zugestellte Abrechnung mit berechtigter Nachforderung bleibt bis zu drei Jahre lang durchsetzbar – auch wenn seit Zustellung schon viel Zeit vergangen ist."
+        },
+        {
+                "typ": "h2",
+                "text": "Sonderfall: Auszug und Umzug"
+        },
+        {
+                "typ": "text",
+                "text": "Auch wenn Sie bereits ausgezogen sind, ändert sich an den Fristen grundsätzlich nichts. Der Vermieter hat weiterhin zwölf Monate nach Ende des Abrechnungszeitraums Zeit, Ihnen die Abrechnung an Ihre neue Adresse zuzustellen. Eine bereits zurückgezahlte Kaution schützt Sie dabei nicht automatisch vor einer fristgerecht geltend gemachten Nachforderung. Verjährte Ansprüche darf der Vermieter allerdings nicht mehr mit einer noch einbehaltenen Kaution verrechnen."
+        },
+        {
+                "typ": "h2",
+                "text": "Checkliste: So behalten Sie den Überblick"
+        },
+        {
+                "typ": "liste",
+                "items": [
+                        "Zugangsdatum der Abrechnung sofort notieren – es ist der Startpunkt für Ihre Widerspruchsfrist.",
+                        "Prüfen, ob der Abrechnungszeitraum korrekt zwölf Monate umfasst und ob die Zwölf-Monats-Frist des Vermieters eingehalten wurde.",
+                        "Bei verspäteter Zustellung schriftlich und nachweisbar auf die Ausschlussfrist hinweisen, bevor Sie zahlen.",
+                        "Einzelne Kostenpositionen mit üblichen Vergleichswerten abgleichen, um auffällig hohe Posten zu erkennen.",
+                        "Innerhalb von zwölf Monaten nach Zugang schriftlich widersprechen, wenn Fehler auffallen.",
+                        "Bei älteren Nachforderungen zusätzlich die dreijährige Verjährungsfrist im Blick behalten."
+                ]
+        },
+        {
+                "typ": "verweis",
+                "ziel": "betriebskostenspiegel-2024",
+                "text": "Ob Ihre Kostenpositionen im üblichen Rahmen liegen oder auffällig hoch sind, lässt sich am besten mit aktuellen Vergleichswerten aus dem Betriebskostenspiegel prüfen."
+        },
+        {
+                "typ": "verweis",
+                "ziel": "heizkostenabrechnung-vermieterfehler-2026-leitfaden",
+                "text": "Da die Heizkostenabrechnung besonders fehleranfällig ist, lohnt sich ein Blick in den Leitfaden zu den häufigsten Vermieterfehlern bei der Heizkostenabrechnung, bevor die Widerspruchsfrist abläuft."
+        },
+        {
+                "typ": "verweis",
+                "ziel": "kabelanschluss-nicht-umlagefaehig",
+                "text": "Tauchen in Ihrer Abrechnung noch Kosten für den Kabelanschluss auf, sollten Sie prüfen, ob diese seit der Gesetzesänderung überhaupt noch umlagefähig sind."
+        },
+        {
+                "typ": "cta",
+                "text": "Jetzt Abrechnung kostenlos prüfen lassen."
+        }
+],
+    },
+    {
       id: "heizkostenabrechnung-vermieterfehler-2026-leitfaden",
       titel: "Heizkostenabrechnung 2026: Die häufigsten Fehler der Vermieter – und wie Sie als Mieter reagieren",
       teaser: "Fast jede zweite Heizkostenabrechnung enthält Fehler, die Mieter bares Geld kosten. Dieser Leitfaden zeigt die typischen Stolperfallen 2026 und erklärt, wie Sie Ihre Abrechnung Schritt für Schritt prüfen.",
