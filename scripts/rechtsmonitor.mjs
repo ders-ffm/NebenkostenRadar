@@ -37,6 +37,10 @@
  *   JSON geschrieben hat ("Ich werde den Artikel jetzt liefern..."), was
  *   das reine JSON.parse gebrochen hat. max_tokens zusätzlich auf 12000
  *   erhöht als Puffer für Suchschritte.
+ *   25.07.2026 — Verweis-Anweisung verschärft: KI hat bei 2 Testartikeln
+ *   trotz thematischer Nähe (z.B. "häufigste Fehler" ↔ "Widerspruch")
+ *   keinen einzigen verweis-Block gesetzt, weil die alte Formulierung
+ *   ("nur wenn wirklich gut passt") zu zurückhaltend war.
  */
 import fetch from 'node-fetch';
 import { readFileSync, writeFileSync, existsSync } from 'fs';
@@ -136,14 +140,17 @@ Wichtig:
 - Sachlich, verständlich, vertrauenswürdig
 - Aktuelle Rechtslage 2026 berücksichtigen (nutze Websuche sparsam)
 
-Bestehende Artikel auf der Seite (für interne Verlinkung):
+Bestehende Artikel auf der Seite (für interne Verlinkung — PFLICHTSCHRITT):
 ${artikelListe}
 
-Falls einer dieser bestehenden Artikel thematisch wirklich gut zum neuen Artikel passt,
-füge an einer sinnvollen Stelle im "inhalt"-Array ein bis zwei Blöcke vom Typ "verweis" ein:
+Geh die Liste oben Punkt für Punkt durch und prüfe für JEDEN bestehenden Artikel, ob er
+auch nur entfernt thematisch mit dem neuen Artikel zusammenhängt (gleiche Kostenart, gleiches
+Rechtsgebiet, angrenzendes Thema — nicht nur bei exakter Übereinstimmung). Interne Verlinkung
+ist für SEO wichtig, deshalb: verlinke im Zweifel eher zu viel als zu wenig.
+Füge für jeden thematisch verwandten bestehenden Artikel einen Block ein:
 {"typ":"verweis","ziel":"<exakte id aus der Liste oben>","text":"1 Satz, warum der Leser dort weiterlesen sollte"}
-Nutze "ziel" NUR mit einer ID exakt aus der Liste oben. Wenn kein Artikel wirklich passt,
-lass "verweis"-Blöcke einfach komplett weg — erzwinge keine Verlinkung.
+Nutze "ziel" NUR mit einer ID exakt aus der Liste oben. Nur wenn WIRKLICH KEIN einziger
+bestehender Artikel einen erkennbaren Bezug hat, lass "verweis"-Blöcke komplett weg.
 
 Antworte NUR mit diesem JSON, keine Backticks, kein einleitender Satz:
 {
