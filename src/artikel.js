@@ -13,6 +13,312 @@
 // scripts/rechtsmonitor.mjs umgesetzt (deterministische ID-Vergabe).
 export const ARTIKEL = [
     {
+      id: "hausmeisterkosten-in-der-nebenkostenabrechnung-was-ist-umlagefaehig",
+      titel: "Hausmeisterkosten in der Nebenkostenabrechnung 2026: Was ist umlagefähig – und was nicht?",
+      teaser: "Hausmeisterkosten zählen zu den häufigsten Streitpunkten in der Nebenkostenabrechnung, weil Vermieter oft Verwaltungs- und Reparaturarbeiten mit einrechnen, die Mieter gar nicht zahlen müssen. Dieser Ratgeber zeigt, welche Tätigkeiten wirklich umlagefähig sind und wie Sie typische Fehler in Ihrer Abrechnung erkennen.",
+      datum: "August 2026",
+      lesezeit: "8 Min.",
+      bild: "https://images.unsplash.com/photo-1621905251918-48416bd8575a?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w5NzcyMzl8MHwxfHNlYXJjaHwxfHxidWlsZGluZyUyMGNhcmV0YWtlciUyMG1haW50ZW5hbmNlfGVufDF8MHx8fDE3ODU1ODQ5NTR8MA&ixlib=rb-4.1.0&q=80&w=1080&utm_source=nebenkostenradar&utm_medium=referral",
+      bildAlt: "Hausmeisterkosten in der Nebenkostenabrechnung 2026: Was ist umlagefähig – und was nicht?",
+      kategorie: "Mietrecht",
+      keywords: [],
+      inhalt: [
+        {
+                "typ": "intro",
+                "text": "Kaum eine Position in der Nebenkostenabrechnung sorgt für so viel Verwirrung wie die Hausmeisterkosten. Das liegt daran, dass ein Hausmeister ganz unterschiedliche Aufgaben übernimmt – manche davon dürfen auf Sie als Mieter umgelegt werden, andere ausdrücklich nicht. Wer die Grenzen kennt, kann seine Abrechnung gezielt prüfen und überzahlte Beträge zurückfordern."
+        },
+        {
+                "typ": "h2",
+                "text": "Die rechtliche Grundlage: § 2 Nr. 14 BetrKV"
+        },
+        {
+                "typ": "text",
+                "text": "Die Umlage von Hausmeisterkosten stützt sich auf § 2 Nr. 14 der Betriebskostenverordnung. Die Vorschrift erlaubt ausdrücklich die Umlage der Kosten des Hauswarts, definiert jedoch gleichzeitig eine wichtige Einschränkung: Nur solche Tätigkeiten sind umlagefähig, die nicht bereits unter andere Betriebskostenpositionen fallen und keine Verwaltungs- oder Instandhaltungsarbeiten darstellen. Ergänzend gilt § 556 BGB, wonach nur vertraglich vereinbarte und tatsächlich laufend anfallende Betriebskosten auf Mieter umgelegt werden dürfen."
+        },
+        {
+                "typ": "text",
+                "text": "Wichtig ist außerdem der Grundsatz der Wirtschaftlichkeit: Die Kosten für den Hauswart dürfen nur umgelegt werden, wenn dieser Grundsatz eingehalten ist – schaltet der Vermieter eine externe Hausmeisterfirma ein, muss er auch dieses Gebot beachten. Überhöhte oder unangemessene Kosten können Mieter also grundsätzlich beanstanden."
+        },
+        {
+                "typ": "h2",
+                "text": "Diese Hausmeistertätigkeiten dürfen umgelegt werden"
+        },
+        {
+                "typ": "text",
+                "text": "Umlagefähig sind nach der Rechtsprechung nur Tätigkeiten, die laufend anfallen und dem Betrieb des Gebäudes dienen, nicht der Verwaltung oder der Instandsetzung. Als umlagefähige Kosten des Hauswarts kommen dabei Aufwendungen für bestimmte Wartungs-, Reinigungs- und Pflegetätigkeiten in Betracht, etwa die Überwachung, dass Rettungs- oder Fluchtwege frei bleiben, Außentüren ordnungsgemäß schließen, die Beleuchtung von Gemeinschaftsflächen funktioniert und haustechnische Anlagen in ordnungsgemäßem Zustand sind."
+        },
+        {
+                "typ": "liste",
+                "items": [
+                        "Kontrolle und Überwachung technischer Anlagen (Heizung, Aufzug, Beleuchtung, Wasserversorgung)",
+                        "Reinigung und Pflege von Treppenhaus, Gemeinschaftsflächen und Außenanlagen",
+                        "Gartenpflege und Winterdienst, soweit vom Hausmeister übernommen",
+                        "Kontrollgänge zur Verkehrssicherung (Frostschutz, Brandschutz, freie Fluchtwege)",
+                        "Einweisung von Handwerkern im Rahmen umlagefähiger Wartungs- und Pflegearbeiten"
+                ]
+        },
+        {
+                "typ": "h2",
+                "text": "Diese Kosten sind nicht umlagefähig"
+        },
+        {
+                "typ": "text",
+                "text": "Führt der Hauswart hingegen notwendige Reparaturen und Verwaltungstätigkeiten durch, so gehört dies zwar an sich zu seinem Aufgabenkreis, doch diese Tätigkeitsbereiche sind nicht umlagefähig. Verwaltungstätigkeiten werden auch nicht dadurch zu Betriebskosten, dass sie unter dem Sammelbegriff 'Hausmeister' abgerechnet werden."
+        },
+        {
+                "typ": "liste",
+                "items": [
+                        "Verwaltungsaufgaben: Mieterwechsel organisieren, Schriftverkehr mit Behörden oder Mietern, Wohnungsabnahmen",
+                        "Reparaturen und Instandhaltung: defekte Türen, Rohre oder Malerarbeiten im Treppenhaus",
+                        "Bereitschafts- oder Notdienstpauschalen für die Entgegennahme von Störungsmeldungen außerhalb der regulären Arbeitszeit"
+                ]
+        },
+        {
+                "typ": "text",
+                "text": "Besonders die Notdienstpauschale beschäftigt regelmäßig die Gerichte. Der BGH hat klargestellt, dass eine Notdienstpauschale des Hausmeisters nicht zu den umlagefähigen Betriebskosten zählt, da mit ihr Tätigkeiten abgegolten werden, die der Grundstücksverwaltung und nicht dem Sicherheits- oder Ordnungsbereich zuzuordnen sind. Ausnahmsweise können Notrufbereitschaften umlagefähig sein, soweit diese die Überwachung von Aufzügen betreffen, da hierfür besondere Sicherheitsvorschriften gelten."
+        },
+        {
+                "typ": "h2",
+                "text": "Doppelabrechnung: Der häufigste Fehler in der Praxis"
+        },
+        {
+                "typ": "text",
+                "text": "Übernimmt der Hausmeister zusätzlich die Gartenpflege oder die Treppenhausreinigung, dürfen diese Kosten zwar grundsätzlich umgelegt werden – aber nur einmal. Wenn der Hausmeister etwa die Treppenhausreinigung übernimmt, darf der Vermieter entweder die Reinigungskosten als Teil der Hausmeisterkosten abrechnen oder die Position Gebäudereinigung separat aufführen, nicht beides gleichzeitig. Findet sich in Ihrer Abrechnung sowohl eine eigene Position 'Gartenpflege' oder 'Reinigung' als auch Hausmeisterkosten, die diese Leistungen mit umfassen, sollten Sie genau nachrechnen."
+        },
+        {
+                "typ": "h2",
+                "text": "Gemischte Tätigkeiten: Aufteilung ist Pflicht"
+        },
+        {
+                "typ": "text",
+                "text": "Übernimmt der Hausmeister sowohl umlagefähige als auch nicht umlagefähige Aufgaben, muss der Vermieter die Kosten sachgerecht aufteilen. Wird eine klare Abgrenzung zwischen umlagefähigen und nicht umlagefähigen Tätigkeiten des Hauswarts nicht vorgenommen und ist dies für das Gericht nicht erkennbar, sind die vollständig angesetzten Kosten für den Hauswart insgesamt nicht umlagefähig. In Streitfällen muss der Vermieter den umlagefähigen Anteil nachvollziehbar darlegen und beweisen, üblicherweise über Zeitnachweise oder eine plausible Schätzung."
+        },
+        {
+                "typ": "hinweis",
+                "text": "Fehlt in Ihrer Abrechnung jede Erläuterung, wie sich die Hausmeisterkosten zusammensetzen, oder wirkt die Position im Vergleich zu ähnlichen Objekten auffällig hoch, ist das ein starkes Indiz für eine fehlerhafte Abrechnung. Prüfen Sie in diesem Fall Ihr Recht auf Belegeinsicht."
+        },
+        {
+                "typ": "verweis",
+                "ziel": "betriebskostenspiegel-2024",
+                "text": "Mit dem DMB Betriebskostenspiegel können Sie einschätzen, ob die in Ihrer Abrechnung ausgewiesenen Hausmeisterkosten der Höhe nach überhaupt plausibel sind."
+        },
+        {
+                "typ": "h2",
+                "text": "Was Sie als Mieter tun können"
+        },
+        {
+                "typ": "liste",
+                "items": [
+                        "Fordern Sie eine Aufschlüsselung der Hausmeistertätigkeiten, falls diese in der Abrechnung fehlt",
+                        "Prüfen Sie, ob Reinigungs- oder Gartenpflegekosten doppelt abgerechnet werden",
+                        "Achten Sie auf versteckte Notdienst- oder Bereitschaftspauschalen",
+                        "Vergleichen Sie die Höhe mit dem örtlichen Betriebskostenspiegel",
+                        "Legen Sie bei Zweifeln fristgerecht Widerspruch ein"
+                ]
+        },
+        {
+                "typ": "verweis",
+                "ziel": "widerspruch-nebenkostenabrechnung",
+                "text": "Wie Sie bei fehlerhaften Hausmeisterkosten formal richtig Widerspruch einlegen, erklärt unsere ausführliche Anleitung mit Muster."
+        },
+        {
+                "typ": "verweis",
+                "ziel": "betriebskostenabrechnung-fristen-und-verjaehrung-2026",
+                "text": "Welche Fristen für Ihren Einwand gegen zu hohe Hausmeisterkosten gelten und wann Nachforderungen verjähren, lesen Sie im Beitrag zu Fristen und Verjährung."
+        },
+        {
+                "typ": "verweis",
+                "ziel": "bgh-urteile-mietrecht-nebenkosten-2026",
+                "text": "Weitere aktuelle Gerichtsentscheidungen rund um umlagefähige und nicht umlagefähige Nebenkosten finden Sie in unserer Übersicht der wichtigsten BGH-Urteile."
+        },
+        {
+                "typ": "verweis",
+                "ziel": "heizkostenabrechnung-vermieterfehler-2026-leitfaden",
+                "text": "Ähnlich wie bei den Hausmeisterkosten schleichen sich auch bei der Heizkostenabrechnung häufig typische Vermieterfehler ein – ein Vergleich lohnt sich."
+        },
+        {
+                "typ": "verweis",
+                "ziel": "muellgebuehren-und-abfallentsorgung-als-betriebskosten-2026",
+                "text": "Auch bei den Müllgebühren gibt es klare Grenzen der Umlagefähigkeit, die Sie parallel zu den Hausmeisterkosten prüfen sollten."
+        },
+        {
+                "typ": "verweis",
+                "ziel": "kabelanschluss-nicht-umlagefaehig",
+                "text": "Dass nicht jede vertraute Nebenkostenposition automatisch umlagefähig bleibt, zeigt auch die Rechtsänderung beim Kabelanschluss."
+        },
+        {
+                "typ": "verweis",
+                "ziel": "wasserkosten-und-kaltwasserzaehler-in-der-nebenkostenabrechnung",
+                "text": "Wenn Sie Ihre gesamte Nebenkostenabrechnung Position für Position prüfen möchten, hilft Ihnen auch unser Ratgeber zu Wasserkosten und Kaltwasserzählern weiter."
+        },
+        {
+                "typ": "cta",
+                "text": "Jetzt Abrechnung kostenlos prüfen lassen."
+        }
+],
+    },
+    {
+      id: "muellgebuehren-und-abfallentsorgung-als-betriebskosten-2026",
+      titel: "Müllgebühren und Abfallentsorgung als Betriebskosten 2026: Was Mieter zahlen müssen – und was nicht",
+      teaser: "Müllgebühren gehören zu den Nebenkosten, die fast jede Abrechnung enthält – doch nicht jede Position darf der Vermieter umlegen. Dieser Ratgeber zeigt, was 2026 rechtlich zulässig ist, welche Kosten Vermieter selbst tragen müssen und wie Sie eine überhöhte Müllabrechnung erkennen.",
+      datum: "August 2026",
+      lesezeit: "8 Min.",
+      bild: "https://images.unsplash.com/photo-1761494651769-1228c3791dc3?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w5NzcyMzl8MHwxfHNlYXJjaHwxfHx0cmFzaCUyMGJpbnMlMjByZWN5Y2xpbmclMjBjb250YWluZXJzJTIwYXBhcnRtZW50JTIwYnVpbGRpbmd8ZW58MXwwfHx8MTc4NTU4NDg5NXww&ixlib=rb-4.1.0&q=80&w=1080&utm_source=nebenkostenradar&utm_medium=referral",
+      bildAlt: "Müllgebühren und Abfallentsorgung als Betriebskosten 2026: Was Mieter zahlen müssen – und was nicht",
+      kategorie: "Mietrecht",
+      keywords: [],
+      inhalt: [
+        {
+                "typ": "intro",
+                "text": "Kaum eine Position taucht in der Nebenkostenabrechnung so zuverlässig auf wie die Müllgebühren. Gleichzeitig zählt die Abfallentsorgung zu den Kostenarten, bei denen Mieter häufig zu viel zahlen – etwa weil ein falscher Verteilerschlüssel verwendet wird oder Kosten abgerechnet werden, die eigentlich der Vermieter tragen müsste. Dieser Artikel erklärt verständlich, welche Müllkosten 2026 umlagefähig sind, welche nicht, und wie Sie als Mieter reagieren, wenn etwas nicht stimmt."
+        },
+        {
+                "typ": "h2",
+                "text": "Rechtsgrundlage: Warum Müllgebühren überhaupt Nebenkosten sind"
+        },
+        {
+                "typ": "text",
+                "text": "Die gesetzliche Grundlage für die Umlage von Müllkosten findet sich in der Betriebskostenverordnung. Nach dieser Vorschrift zählen Müllgebühren zu den umlagefähigen Betriebskosten, wobei Voraussetzung eine wirksame Vereinbarung im Mietvertrag ist. Das bedeutet konkret: Nur wenn im Mietvertrag ausdrücklich Betriebskosten vereinbart wurden, auf die Betriebskostenverordnung verwiesen wird oder Müllgebühren dort konkret genannt sind, darf der Vermieter diese Kosten überhaupt auf Sie umlegen. Fehlt eine solche Klausel, sind Müllkosten grundsätzlich nicht umlagefähig und müssen vom Vermieter selbst getragen werden."
+        },
+        {
+                "typ": "h2",
+                "text": "Was gehört zu den umlagefähigen Müllkosten?"
+        },
+        {
+                "typ": "text",
+                "text": "Zu den umlagefähigen Kosten der Müllbeseitigung zählen die eigentliche Müllabfuhr durch kommunale Betriebe oder private Entsorger sowie nicht-öffentliche Maßnahmen zur Müllbeseitigung, der Betrieb von Müllkompressoren, Müllschluckern, Müllabsauganlagen und Müllmengenerfassungsanlagen einschließlich der Kosten für Berechnung und Aufteilung. Auch die Entsorgung von Gartenabfällen und die Reinigung der Mülltonnen bei Mietverträgen ab dem 1. Januar 2004 gehören dazu."
+        },
+        {
+                "typ": "liste",
+                "items": [
+                        "Gebühren der kommunalen Müllabfuhr für Restmüll-, Bio- und Papiertonnen",
+                        "Kosten privater Entsorgungsunternehmen, sofern beauftragt",
+                        "Betrieb und Wartung von Müllkompressoren, Müllschluckern und Absauganlagen",
+                        "Reinigung des Müllstandplatzes und der Tonnen",
+                        "Entsorgung von Gartenabfällen auf dem Grundstück",
+                        "Regelmäßige Sperrmüllabholungen, wenn Verursacher nicht ermittelbar sind"
+                ]
+        },
+        {
+                "typ": "h2",
+                "text": "Was der Vermieter nicht umlegen darf"
+        },
+        {
+                "typ": "text",
+                "text": "Nicht alles rund um die Mülltonne darf abgerechnet werden. Nicht umlagefähig sind Anschaffungskosten für Mülltonnen, der Ersatz beschädigter Container, Bußgelder wegen falscher Mülltrennung oder einmalige Sondermaßnahmen wie Entrümpelungen. Auch Container für Gelben Sack oder Altpapier, die keiner Gebührenpflicht unterliegen, sind in der Regel nicht Bestandteil der umlagefähigen Müllkosten, da für diese meist kein direktes Entgelt anfällt."
+        },
+        {
+                "typ": "liste",
+                "items": [
+                        "Anschaffung neuer Mülltonnen oder Container",
+                        "Reparatur oder Ersatz beschädigter Behälter",
+                        "Bußgelder wegen fehlerhafter Mülltrennung",
+                        "Einmalige Entrümpelungen oder Sonderentsorgungen ohne erkennbaren Verursacher",
+                        "Kosten, die durch unwirtschaftliches Handeln des Vermieters entstehen"
+                ]
+        },
+        {
+                "typ": "h2",
+                "text": "Fehlwurf-Kontrollen und Mülltrennung: Was der BGH 2022 entschieden hat"
+        },
+        {
+                "typ": "text",
+                "text": "Ein praxisrelevantes Urteil betrifft die Kontrolle der Mülltrennung: Die Kosten eines externen Dienstleisters für die regelmäßige Kontrolle der Restmüllbehälter auf Einhaltung der satzungsmäßigen Vorgaben zur Mülltrennung und für die bei fehlerhafter Trennung erfolgende Nachsortierung von Hand sind im Wohnraummietverhältnis nach § 2 Nr. 8 der Betriebskostenverordnung umlegbare Betriebskosten. Diese Entscheidung geht auf ein BGH-Urteil vom 5. Oktober 2022 zurück. Für Mieter bedeutet das: Auch wenn Sie selbst korrekt trennen, können Sie über die Umlage indirekt an den Kosten beteiligt werden, die durch das Fehlverhalten anderer Hausbewohner entstehen."
+        },
+        {
+                "typ": "verweis",
+                "ziel": "bgh-urteile-mietrecht-nebenkosten-2026",
+                "text": "Eine Übersicht weiterer aktueller Gerichtsentscheidungen zu Nebenkosten – nicht nur zu Müll, sondern zu allen Betriebskostenarten – finden Sie in unserer Zusammenfassung der wichtigsten BGH-Urteile."
+        },
+        {
+                "typ": "h2",
+                "text": "Der richtige Verteilerschlüssel: Wohnfläche, Personenzahl oder Tonnen?"
+        },
+        {
+                "typ": "text",
+                "text": "Ein häufiger Streitpunkt bei Müllgebühren ist der gewählte Verteilerschlüssel. Das Gesetz schreibt hierfür keinen festen Maßstab vor. Zulässig sind unter anderem die Verteilung nach Wohnfläche, nach Personenzahl oder nach Tonnen beziehungsweise Leerungen. Dabei gilt die Verteilung nach Personenzahl oft als sachgerechter, da das Müllaufkommen meist stärker von der Bewohnerzahl als von der Wohnungsgröße abhängt. Wichtig ist in jedem Fall, dass der einmal gewählte Schlüssel konsequent und einheitlich auf alle Mieteinheiten angewendet wird."
+        },
+        {
+                "typ": "verweis",
+                "ziel": "wasserkosten-und-kaltwasserzaehler-in-der-nebenkostenabrechnung",
+                "text": "Wie Verteilerschlüssel bei einer anderen verbrauchsabhängigen Kostenart korrekt angewendet werden, erfahren Sie in unserem Ratgeber zu Wasserkosten und Kaltwasserzählern."
+        },
+        {
+                "typ": "h2",
+                "text": "Sonderfall: Direkte Gebührenveranlagung durch die Gemeinde"
+        },
+        {
+                "typ": "text",
+                "text": "In manchen Kommunen erhält jede Wohneinheit eine eigene Müllgebührenveranlagung direkt von der Gemeinde. In diesem Fall entfällt die Umlage über die Nebenkostenabrechnung, und Sie zahlen die Gebühr direkt an die Gemeinde, ohne dass ein weiterer Posten in der Abrechnung erscheint. Prüfen Sie daher, ob Ihre Kommune dieses Modell anwendet – dann sollte in der Nebenkostenabrechnung Ihres Vermieters keine zusätzliche Müllposition auftauchen."
+        },
+        {
+                "typ": "h2",
+                "text": "Wirtschaftlichkeitsgebot: Wenn der Vermieter unnötig teuer entsorgt"
+        },
+        {
+                "typ": "text",
+                "text": "Vermieter sind an das sogenannte Wirtschaftlichkeitsgebot gebunden. Bestellt der Vermieter zusätzliche Mülltonnen oder häufigere Leerungen, ohne dass dies erforderlich ist, kann dies gegen dieses Gebot verstoßen, und überhöhte Kosten sind als Klärungspunkt in der Abrechnung aufzunehmen. Auch der Einsatz eines externen Müllmanagements ist nur dann umlagefähig, wenn dieser tatsächlich zu einer Kostenersparnis führt – lässt sich das nicht nachweisen, muss der Vermieter die Mehrkosten selbst tragen."
+        },
+        {
+                "typ": "verweis",
+                "ziel": "heizkostenabrechnung-vermieterfehler-2026-leitfaden",
+                "text": "Ähnliche Fehlerquellen wie unwirtschaftliches Handeln des Vermieters treten auch bei der Heizkostenabrechnung häufig auf – unser Leitfaden zeigt, wie Sie diese erkennen."
+        },
+        {
+                "typ": "h2",
+                "text": "Was ist ein normaler Betrag für Müllgebühren?"
+        },
+        {
+                "typ": "text",
+                "text": "Um einzuschätzen, ob Ihre Müllkosten im üblichen Rahmen liegen, hilft ein Blick auf regionale und bundesweite Vergleichswerte. Diese schwanken je nach Kommune, Objektgröße und Entsorgungsmodell teils deutlich, geben aber eine erste Orientierung, ob eine Nachforderung plausibel erscheint."
+        },
+        {
+                "typ": "verweis",
+                "ziel": "betriebskostenspiegel-2024",
+                "text": "Im DMB Betriebskostenspiegel finden Sie bundesweite Durchschnittswerte, mit denen Sie Ihre eigenen Müllkosten realistisch einordnen können."
+        },
+        {
+                "typ": "h2",
+                "text": "Auch andere Betriebskostenarten verändern sich"
+        },
+        {
+                "typ": "text",
+                "text": "Nicht nur bei den Müllgebühren gibt es regelmäßig Änderungen in der Umlagefähigkeit einzelner Kostenpositionen. Ein bekanntes Beispiel aus jüngerer Zeit betrifft eine ganz andere Kostenart, die seit einer Gesetzesänderung nicht mehr pauschal umgelegt werden darf."
+        },
+        {
+                "typ": "verweis",
+                "ziel": "kabelanschluss-nicht-umlagefaehig",
+                "text": "Welche Kostenart seit Juli 2024 nicht mehr auf Mieter umgelegt werden darf, lesen Sie in unserem Artikel zum Kabelanschluss."
+        },
+        {
+                "typ": "h2",
+                "text": "Was tun bei überhöhten oder unklaren Müllkosten?"
+        },
+        {
+                "typ": "text",
+                "text": "Wenn Sie den Eindruck haben, dass Ihre Müllkosten zu hoch angesetzt sind, ein falscher Verteilerschlüssel verwendet wurde oder nicht umlagefähige Posten enthalten sind, sollten Sie die Abrechnung genau prüfen und gegebenenfalls fristgerecht widersprechen. Wichtig ist dabei, die gesetzlichen Fristen im Blick zu behalten, da ein verspäteter Widerspruch Ihre Erfolgschancen erheblich mindern kann."
+        },
+        {
+                "typ": "verweis",
+                "ziel": "widerspruch-nebenkostenabrechnung",
+                "text": "Eine konkrete Anleitung samt Musterformulierung für Ihren Widerspruch finden Sie in unserem Ratgeber zum Widerspruch gegen die Nebenkostenabrechnung."
+        },
+        {
+                "typ": "verweis",
+                "ziel": "betriebskostenabrechnung-fristen-und-verjaehrung-2026",
+                "text": "Welche Fristen für Vermieter und Mieter bei der gesamten Betriebskostenabrechnung gelten, erklären wir ausführlich in unserem Fristen-Ratgeber."
+        },
+        {
+                "typ": "hinweis",
+                "text": "Prüfen Sie bei Ihrer nächsten Nebenkostenabrechnung gezielt, ob die Position Müll im Mietvertrag als umlagefähig genannt ist, welcher Verteilerschlüssel angewendet wurde und ob einmalige oder nicht umlagefähige Posten wie Bußgelder oder Anschaffungskosten enthalten sind."
+        },
+        {
+                "typ": "cta",
+                "text": "Jetzt Abrechnung kostenlos prüfen lassen."
+        }
+],
+    },
+    {
       id: "wasserkosten-und-kaltwasserzaehler-in-der-nebenkostenabrechnung",
       titel: "Wasserkosten und Kaltwasserzähler in der Nebenkostenabrechnung 2026: Was Mieter wissen müssen",
       teaser: "Wasserkosten zählen zu den größten Posten in der Nebenkostenabrechnung – und Kaltwasserzähler sind dabei oft eine Fehlerquelle. Erfahren Sie, welche Kosten umlagefähig sind, wie die Eichpflicht funktioniert und wie Sie Ihre Abrechnung selbst prüfen.",
