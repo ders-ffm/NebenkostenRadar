@@ -126,7 +126,8 @@ Alle wesentlichen Änderungen an diesem Projekt, mit Datum und Begründung. Dien
 - Sauberer Fix: `hyphens: auto` auf `h1, h2, h3, p` ergänzt (nutzt `lang="de"` auf `<html>` für sprachbewusste, echte Silbentrennung mit Bindestrich an korrekter Stelle). `overflow-wrap` bleibt als reines Sicherheitsnetz für Extremfälle erhalten, greift aber im Normalfall nicht mehr vor `hyphens`.
 - Zusätzlich: Hero-Überschrift auf der Startseite bekommt unter 420px Breite eine kleinere Schriftgröße (25px statt 30px, per `@media`-Query), damit "Nebenkostenabrechnung" auf den meisten Handys gar nicht erst getrennt werden muss.
 - Punkt nach "Deine Nebenkostenabrechnung" entfernt (Kundenwunsch).
-- Auf Kundenwunsch zusätzlich pragmatisch gelöst: Hero-Überschrift von "Deine Nebenkostenabrechnung" auf "Deine Abrechnung" gekürzt — vermeidet das lange Kompositum in der Überschrift von vornherein, unabhängig von CSS-Lösungen. `hyphens`/Media-Query bleiben trotzdem als generelle Absicherung für andere lange Wörter auf der Seite (Ratgeber-Artikel etc.).
+- Auf Kundenwunsch zusätzlich pragmatisch gelöst: Hero-Überschrift von "Deine Nebenkostenabrechnung" auf "Deine Abrechnung" gekürzt — vermeidet das lange Kompositum in der Überschrift von vornherein, unabhängig von CSS-Lösungen. `hyphens` in `index.html` bleibt trotzdem als generelle Absicherung für andere lange Wörter auf der Seite (Ratgeber-Artikel etc.).
+- Die mobile Schriftgrößen-Reduzierung (30px→25px unter 420px) ist mit dem kürzeren Text nicht mehr nötig und wurde wieder entfernt — wirkte sonst kleiner als beabsichtigt, obwohl "Deine Abrechnung" auch bei voller Größe problemlos passt.
 
 ## Frühere Änderungen
 
