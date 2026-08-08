@@ -1,0 +1,36 @@
+# ─────────────────────────────────────────────────────────────────────────
+# Prüft monatlich, ob eine neue DMB-Betriebskostenspiegel-Ausgabe erschienen
+# ist, und legt bei Abweichung ein GitHub Issue an (kein automatisches
+# Überschreiben der Richtwerte). Siehe scripts/richtwerte-monitor.mjs.
+#
+# WICHTIG: Dieser Workflow fehlte bisher komplett — richtwerte-monitor.mjs
+# lag zwar im Repo, wurde aber nie automatisch ausgeführt. Ohne diese Datei
+# lief die "künftig immer automatisch aktuell"-Zusage aus dem Projekt-Chat
+# technisch ins Leere.
+#
+# Benötigt keine zusätzlichen Secrets außer dem automatisch vorhandenen
+# GITHUB_TOKEN (für das Anlegen des Issues bei Abweichung).
+# ─────────────────────────────────────────────────────────────────────────
+name: Richtwerte-Monitor
+
+on:
+  schedule:
+    - cron: "0 6 1 * *" # monatlich am 1. um 06:00 UTC
+  workflow_dispatch: {} # manueller Start zum Testen (Actions-Tab → "Run workflow")
+
+permissions:
+  issues: write
+
+jobs:
+  pruefen:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+      - name: Richtwerte gegen DMB-Quelle prüfen
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_REPO: ${{ github.repository }}
+        run: node scripts/richtwerte-monitor.mjs
