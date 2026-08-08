@@ -24,7 +24,7 @@ export default function Welcome({ navigateTo, IS_DEMO }) {
               bricht bei Bedarf unabhängig um, statt dass ein harter
               Zeilenumbruch die erste Zeile auf schmalen Screens zu breit
               werden lässt (08/2026, Layout-Audit). */}
-          <div>Deine Nebenkostenabrechnung.</div>
+          <div>Deine Nebenkostenabrechnung</div>
           <div style={{ color: C.brand }}>Geprüft. Transparent. Rechtssicher.</div>
         </h1>
         <p style={{ fontSize: 16, color: C.textMuted, margin: "0 0 32px", lineHeight: 1.7, maxWidth: 520, marginLeft: "auto", marginRight: "auto" }}>
