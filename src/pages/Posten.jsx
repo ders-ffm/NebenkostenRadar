@@ -35,8 +35,8 @@ export default function Posten({ navigateTo, werte, setWerte, runAnalyse }) {
         </div>
       </div>
       <div style={{ padding: "14px 20px 0", maxWidth: THEME.layout.formMax, margin: "0 auto", boxSizing: "border-box" }}>
-        <h2 style={{ fontFamily: THEME.font.heading, fontSize: 20, fontWeight: 600, margin: "0 0 4px" }}>Posten aus deiner Abrechnung</h2>
-        <p style={{ fontSize: 12, color: C.textMuted, margin: "0 0 12px" }}>Trage die Beträge so ein wie sie auf der Abrechnung stehen. ✦ = Pflichtfeld. Bei den grau hinterlegten Zahlen handelt es sich um Beispielzahlen.</p>
+        <h2 style={{ fontFamily: THEME.font.heading, fontSize: 20, fontWeight: 600, margin: "0 0 4px", textAlign: "center" }}>Posten aus deiner Abrechnung</h2>
+        <p style={{ fontSize: 12, color: C.textMuted, margin: "0 0 12px", textAlign: "center" }}>Trage die Beträge so ein wie sie auf der Abrechnung stehen. ✦ = Pflichtfeld. Bei den grau hinterlegten Zahlen handelt es sich um Beispielzahlen.</p>
         <div style={{ background: C.surface, border: "1px solid " + (total > 0 ? C.brand : C.border), borderRadius: THEME.radius.md, padding: "11px 16px", marginBottom: 12, display: "flex", justifyContent: "space-between", alignItems: "center" }}>
           <div>
             <div style={{ fontSize: 10, color: C.textMuted, textTransform: "uppercase" }}>Eingegeben</div>

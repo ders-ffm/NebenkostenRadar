@@ -50,8 +50,8 @@ export default function Adressen({ navigateTo, adressen, setAdressen, stufe, wer
         </div>
       </div>
       <div style={{ padding: "22px 20px 40px", maxWidth: THEME.layout.formMax, margin: "0 auto", boxSizing: "border-box" }}>
-        <h2 style={{ fontFamily: THEME.font.heading, fontSize: 21, fontWeight: 600, margin: "0 0 6px" }}>Angaben für dein PDF</h2>
-        <p style={{ fontSize: 13, color: C.textMuted, margin: "0 0 22px" }}>Für dein PDF und den Versand per E-Mail. Speicherdauer maximal 12 Monate, siehe Datenschutzerklärung.</p>
+        <h2 style={{ fontFamily: THEME.font.heading, fontSize: 21, fontWeight: 600, margin: "0 0 6px", textAlign: "center" }}>Angaben für dein PDF</h2>
+        <p style={{ fontSize: 13, color: C.textMuted, margin: "0 0 22px", textAlign: "center" }}>Für dein PDF und den Versand per E-Mail. Speicherdauer maximal 12 Monate, siehe Datenschutzerklärung.</p>
 
         <div style={{ background: C.surface, border: "1px solid " + C.border, borderRadius: THEME.radius.lg, padding: "16px", marginBottom: 14 }}>
           <div style={{ fontSize: 11, color: C.accent, fontWeight: 700, letterSpacing: "0.1em", textTransform: "uppercase", marginBottom: 14 }}>Kontakt</div>

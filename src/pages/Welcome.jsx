@@ -20,8 +20,12 @@ export default function Welcome({ navigateTo, IS_DEMO }) {
           Unabhängige Prüfung · Keine versteckten Kosten
         </div>
         <h1 style={{ fontFamily: THEME.font.heading, fontSize: 30, fontWeight: 600, lineHeight: 1.35, margin: "0 0 14px", color: C.text, maxWidth: 520, marginLeft: "auto", marginRight: "auto" }}>
-          Deine Nebenkostenabrechnung.<br />
-          <span style={{ color: C.brand }}>Geprüft. Transparent. Rechtssicher.</span>
+          {/* Zwei eigenständige Blöcke statt Text+<br/>+Text: jeder Block
+              bricht bei Bedarf unabhängig um, statt dass ein harter
+              Zeilenumbruch die erste Zeile auf schmalen Screens zu breit
+              werden lässt (08/2026, Layout-Audit). */}
+          <div>Deine Nebenkostenabrechnung.</div>
+          <div style={{ color: C.brand }}>Geprüft. Transparent. Rechtssicher.</div>
         </h1>
         <p style={{ fontSize: 16, color: C.textMuted, margin: "0 0 32px", lineHeight: 1.7, maxWidth: 520, marginLeft: "auto", marginRight: "auto" }}>
           Prüfe deine Nebenkosten in wenigen Schritten. Vollautomatisch, nachvollziehbar, ohne juristische Vorkenntnisse.
