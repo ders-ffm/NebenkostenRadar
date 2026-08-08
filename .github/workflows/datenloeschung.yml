@@ -1,0 +1,24 @@
+# ─────────────────────────────────────────────────────────────────────────
+# Löscht wöchentlich Daten, die älter als 12 Monate sind (siehe
+# scripts/datenloeschung.mjs und Datenschutzerklärung Abschnitt 2).
+# ─────────────────────────────────────────────────────────────────────────
+name: Datenlöschung nach 12 Monaten
+
+on:
+  schedule:
+    - cron: "0 4 * * 1" # wöchentlich montags 04:00 UTC
+  workflow_dispatch: {}
+
+jobs:
+  loeschen:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+      - name: Alte Daten löschen
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+        run: node scripts/datenloeschung.mjs
