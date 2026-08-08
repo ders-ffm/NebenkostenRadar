@@ -149,3 +149,5 @@ Alle wesentlichen Änderungen an diesem Projekt, mit Datum und Begründung. Dien
 ## Frühere Änderungen
 
 Siehe Kommentar-Historie in `scripts/rechtsmonitor.mjs` für die Entwicklung des SEO-Artikel-Systems (25.–26.07.2026: JSON-Extraktion, deterministische Artikel-IDs, Duplikat-Vermeidung).
+## 08.08.2026 — Testkauf-Branch
+   Branch `test-kauf` angelegt für Stripe-Test-Modus-Durchlauf ohne Auswirkung auf Produktion.
