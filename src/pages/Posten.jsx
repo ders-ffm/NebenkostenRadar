@@ -28,11 +28,13 @@ export default function Posten({ navigateTo, werte, setWerte, runAnalyse }) {
 
   return (
     <div style={{ fontFamily: THEME.font.body, background: C.bg, color: C.text, minHeight: "100vh" }}>
-      <div style={{ background: C.surface, padding: "20px 20px 0", borderBottom: "1px solid " + C.border }}>
-        <button onClick={() => navigateTo("wohnung")} style={{ background: "none", border: "none", color: C.textMuted, cursor: "pointer", fontSize: 13, padding: "0 0 12px", fontFamily: THEME.font.body }}>← Zurück</button>
-        <StepBar current={2} total={3} label="Kostenposten" />
+      <div style={{ background: C.surface, borderBottom: "1px solid " + C.border }}>
+        <div style={{ padding: "20px 20px 0", maxWidth: THEME.layout.formMax, margin: "0 auto", boxSizing: "border-box" }}>
+          <button onClick={() => navigateTo("wohnung")} style={{ background: "none", border: "none", color: C.textMuted, cursor: "pointer", fontSize: 13, padding: "0 0 12px", fontFamily: THEME.font.body }}>← Zurück</button>
+          <StepBar current={2} total={3} label="Kostenposten" />
+        </div>
       </div>
-      <div style={{ padding: "14px 20px 0" }}>
+      <div style={{ padding: "14px 20px 0", maxWidth: THEME.layout.formMax, margin: "0 auto", boxSizing: "border-box" }}>
         <h2 style={{ fontFamily: THEME.font.heading, fontSize: 20, fontWeight: 600, margin: "0 0 4px" }}>Posten aus deiner Abrechnung</h2>
         <p style={{ fontSize: 12, color: C.textMuted, margin: "0 0 12px" }}>Trage die Beträge so ein wie sie auf der Abrechnung stehen. ✦ = Pflichtfeld. Bei den grau hinterlegten Zahlen handelt es sich um Beispielzahlen.</p>
         <div style={{ background: C.surface, border: "1px solid " + (total > 0 ? C.brand : C.border), borderRadius: THEME.radius.md, padding: "11px 16px", marginBottom: 12, display: "flex", justifyContent: "space-between", alignItems: "center" }}>
@@ -51,7 +53,7 @@ export default function Posten({ navigateTo, werte, setWerte, runAnalyse }) {
           </div>
         )}
       </div>
-      <div style={{ padding: "0 20px 120px" }}>
+      <div style={{ padding: "0 20px 120px", maxWidth: THEME.layout.formMax, margin: "0 auto", boxSizing: "border-box" }}>
         {POSTEN_GRUPPEN.map(gruppe => {
           const groupSum = gruppe.posten.reduce((s, p) => s + toNum(werte[p.key]), 0);
           const isOpen = openGruppe === gruppe.id;
@@ -80,12 +82,14 @@ export default function Posten({ navigateTo, werte, setWerte, runAnalyse }) {
           );
         })}
       </div>
-      <div style={{ position: "fixed", bottom: 0, left: 0, right: 0, background: C.surface, padding: "20px 20px 24px", borderTop: "1px solid " + C.border, boxShadow: "0 -4px 20px rgba(0,0,0,0.06)" }}>
-        <button
-          onClick={() => { if (validate()) runAnalyse(); }}
-          style={{ width: "100%", background: filledPosten > 0 ? C.accent : C.border, color: filledPosten > 0 ? C.accentText : C.textDim, border: "none", borderRadius: THEME.radius.lg, padding: "16px", fontSize: 15, fontFamily: THEME.font.heading, fontWeight: 600, cursor: filledPosten > 0 ? "pointer" : "default" }}>
-          {filledPosten === 0 ? "Posten eingeben um fortzufahren" : filledPosten + " Posten analysieren →"}
-        </button>
+      <div style={{ position: "fixed", bottom: 0, left: 0, right: 0, background: C.surface, borderTop: "1px solid " + C.border, boxShadow: "0 -4px 20px rgba(0,0,0,0.06)" }}>
+        <div style={{ padding: "20px 20px 24px", maxWidth: THEME.layout.formMax, margin: "0 auto", boxSizing: "border-box" }}>
+          <button
+            onClick={() => { if (validate()) runAnalyse(); }}
+            style={{ width: "100%", background: filledPosten > 0 ? C.accent : C.border, color: filledPosten > 0 ? C.accentText : C.textDim, border: "none", borderRadius: THEME.radius.lg, padding: "16px", fontSize: 15, fontFamily: THEME.font.heading, fontWeight: 600, cursor: filledPosten > 0 ? "pointer" : "default" }}>
+            {filledPosten === 0 ? "Posten eingeben um fortzufahren" : filledPosten + " Posten analysieren →"}
+          </button>
+        </div>
       </div>
     </div>
   );

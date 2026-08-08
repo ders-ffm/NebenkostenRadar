@@ -39,11 +39,13 @@ export default function Wohnung({ navigateTo, wohnung, setWohnung }) {
 
   return (
     <div style={{ fontFamily: THEME.font.body, background: C.bg, color: C.text, minHeight: "100vh" }}>
-      <div style={{ background: C.surface, padding: "20px 20px 0", borderBottom: "1px solid " + C.border }}>
-        <button onClick={() => navigateTo("welcome")} style={{ background: "none", border: "none", color: C.textMuted, cursor: "pointer", fontSize: 13, padding: "0 0 12px", fontFamily: THEME.font.body }}>← Zurück</button>
-        <StepBar current={1} total={3} label="Wohnungsdaten" />
+      <div style={{ background: C.surface, borderBottom: "1px solid " + C.border }}>
+        <div style={{ padding: "20px 20px 0", maxWidth: THEME.layout.formMax, margin: "0 auto", boxSizing: "border-box" }}>
+          <button onClick={() => navigateTo("welcome")} style={{ background: "none", border: "none", color: C.textMuted, cursor: "pointer", fontSize: 13, padding: "0 0 12px", fontFamily: THEME.font.body }}>← Zurück</button>
+          <StepBar current={1} total={3} label="Wohnungsdaten" />
+        </div>
       </div>
-      <div style={{ padding: "22px 20px 40px" }}>
+      <div style={{ padding: "22px 20px 40px", maxWidth: THEME.layout.formMax, margin: "0 auto", boxSizing: "border-box" }}>
         <h2 style={{ fontFamily: THEME.font.heading, fontSize: 21, fontWeight: 600, margin: "0 0 6px" }}>Angaben zur Mietsache</h2>
         <p style={{ fontSize: 13, color: C.textMuted, margin: "0 0 16px", lineHeight: 1.55 }}>Steht auf dem Deckblatt deiner Abrechnung.</p>
         <div style={{ background: C.brandBg, borderRadius: THEME.radius.md, padding: "13px 14px", marginBottom: 20, fontSize: 12, color: C.textMuted, lineHeight: 1.75 }}>

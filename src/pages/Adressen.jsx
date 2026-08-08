@@ -43,11 +43,13 @@ export default function Adressen({ navigateTo, adressen, setAdressen, stufe, wer
 
   return (
     <div style={{ fontFamily: THEME.font.body, background: C.bg, color: C.text, minHeight: "100vh" }}>
-      <div style={{ background: C.surface, padding: "20px 20px 0", borderBottom: "1px solid " + C.border }}>
-        <button onClick={() => navigateTo("result")} style={{ background: "none", border: "none", color: C.textMuted, cursor: "pointer", fontSize: 13, padding: "0 0 12px", fontFamily: THEME.font.body }}>← Zurück</button>
-        <StepBar current={3} total={3} label="Absender" />
+      <div style={{ background: C.surface, borderBottom: "1px solid " + C.border }}>
+        <div style={{ padding: "20px 20px 0", maxWidth: THEME.layout.formMax, margin: "0 auto", boxSizing: "border-box" }}>
+          <button onClick={() => navigateTo("result")} style={{ background: "none", border: "none", color: C.textMuted, cursor: "pointer", fontSize: 13, padding: "0 0 12px", fontFamily: THEME.font.body }}>← Zurück</button>
+          <StepBar current={3} total={3} label="Absender" />
+        </div>
       </div>
-      <div style={{ padding: "22px 20px 40px", maxWidth: 560, margin: "0 auto" }}>
+      <div style={{ padding: "22px 20px 40px", maxWidth: THEME.layout.formMax, margin: "0 auto", boxSizing: "border-box" }}>
         <h2 style={{ fontFamily: THEME.font.heading, fontSize: 21, fontWeight: 600, margin: "0 0 6px" }}>Angaben für dein PDF</h2>
         <p style={{ fontSize: 13, color: C.textMuted, margin: "0 0 22px" }}>Für dein PDF und den Versand per E-Mail. Speicherdauer maximal 12 Monate, siehe Datenschutzerklärung.</p>
 

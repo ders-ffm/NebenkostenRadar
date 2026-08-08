@@ -61,6 +61,7 @@ export const THEME = {
 
   layout: {
     pageMax: 1200,
+    formMax: 560, // einspaltige Formular-Schritte (Wohnung/Posten/Adressen) — schmaler als pageMax, nach Vorbild Taxfix
     mobileBreakpoint: 760,
   },
 };
