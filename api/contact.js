@@ -2,16 +2,17 @@
 // Zweiter Kontaktweg neben der direkten E-Mail-Adresse, Pflicht nach § 5 DDG
 // (EuGH-Rechtsprechung: zwei Kontaktmöglichkeiten erforderlich).
 // Vercel Environment Variable: RESEND_API_KEY (bereits gesetzt, gleiche wie send-email.js)
+//
+// UNVERÄNDERT übernommen (08/2026) — passt exakt zum Datenformat, das
+// src/pages/Impressum.jsx sendet ({ name, email, message }). Keine Anpassung nötig.
 export default async function handler(req, res) {
   res.setHeader('Access-Control-Allow-Origin', 'https://nebenkostenradar.com');
   res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
   if (req.method === 'OPTIONS') return res.status(200).end();
   if (req.method !== 'POST') return res.status(405).end();
-
   const { name, email, message } = req.body || {};
   const resendKey = process.env.RESEND_API_KEY;
-
   if (!email || !resendKey) {
     return res.status(400).json({ error: 'E-Mail oder API Key fehlt' });
   }
@@ -21,12 +22,10 @@ export default async function handler(req, res) {
   if (!message || !message.trim()) {
     return res.status(400).json({ error: 'Nachricht fehlt' });
   }
-
   // Einfacher Schutz gegen übermäßig lange Eingaben (kein Rate-Limiting, aber genügt für 1-Personen-Betrieb)
   const safeName = String(name || 'Kein Name angegeben').slice(0, 200).replace(/</g, '&lt;').replace(/>/g, '&gt;');
   const safeEmail = String(email).slice(0, 200).replace(/</g, '&lt;').replace(/>/g, '&gt;');
   const safeMessage = String(message).slice(0, 5000).replace(/</g, '&lt;').replace(/>/g, '&gt;');
-
   const html = `<!DOCTYPE html>
 <html lang="de">
 <head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0"></head>
@@ -37,8 +36,8 @@ export default async function handler(req, res) {
   <tr><td style="background:#ffffff;border-radius:12px 12px 0 0;padding:24px 32px;border-bottom:2px solid #dde1e7;">
     <table width="100%" cellpadding="0" cellspacing="0"><tr>
       <td><table cellpadding="0" cellspacing="0"><tr>
-        <td style="background:#2d7a4f;border-radius:8px;width:38px;height:38px;text-align:center;vertical-align:middle;">
-          <span style="color:#fff;font-size:20px;font-weight:bold;">&#9679;</span>
+        <td style="width:38px;height:38px;">
+          <img src="https://nebenkostenradar.com/logo-email.png" width="38" height="38" alt="NebenkostenRadar" style="display:block;border-radius:8px;">
         </td>
         <td style="padding-left:10px;">
           <div style="font-size:17px;font-weight:800;color:#1a1a1a;">Nebenkosten<span style="color:#2d7a4f;">Radar</span></div>
@@ -48,8 +47,8 @@ export default async function handler(req, res) {
     </tr></table>
   </td></tr>
   <tr><td style="background:#ffffff;padding:28px 32px;">
-    <div style="background:#eaf4ee;border-left:4px solid #2d7a4f;border-radius:8px;padding:14px 18px;margin-bottom:20px;">
-      <div style="font-size:15px;font-weight:700;color:#1a1a1a;margin-bottom:3px;">Neue Nachricht über das Kontaktformular</div>
+    <div style="background:#F3ECDC;border:1px solid #E3D9C6;border-radius:8px;padding:14px 18px;margin-bottom:20px;">
+      <div style="font-size:15px;font-weight:700;color:#2d7a4f;margin-bottom:3px;">Neue Nachricht über das Kontaktformular</div>
       <div style="font-size:12px;color:#555e68;">Eingegangen über nebenkostenradar.com/impressum</div>
     </div>
     <table width="100%" cellpadding="0" cellspacing="0" style="margin-bottom:16px;">
@@ -71,7 +70,6 @@ export default async function handler(req, res) {
 </table>
 </body>
 </html>`;
-
   try {
     const response = await fetch('https://api.resend.com/emails', {
       method: 'POST',

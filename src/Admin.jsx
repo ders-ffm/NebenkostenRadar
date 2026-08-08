@@ -1,11 +1,15 @@
 import { useState, useEffect } from "react";
-
 // ─────────────────────────────────────────────────────────────────────────────
 // NebenkostenRadar · Admin Panel
 // Erreichbar unter: nebenkostenradar.com/admin
 // Passwort: wird in Vercel als ADMIN_PASSWORD Umgebungsvariable gesetzt
+//
+// UNVERÄNDERT übernommen (08/2026) — Verbindung zu einer echten Datenbank
+// (statt localStorage) ist bewusst als eigener, separater Schritt zurückgestellt
+// (siehe Projekt-Chat 08/2026). Aktuell speichert "Speichern" nur im Browser
+// des jeweiligen Admins — wirkt sich NICHT auf die echte Website aus (Preise,
+// Texte, Richtwerte kommen weiterhin aus src/config/business.js).
 // ─────────────────────────────────────────────────────────────────────────────
-
 const C = {
   bg: "#0f0f0f", surface: "#1a1a1a", surfaceHigh: "#222",
   border: "#2e2e2e", gold: "#c9a84c", goldDim: "#8a6f2e", goldBg: "#1c1800",
@@ -14,7 +18,6 @@ const C = {
   red: "#e05252", redBg: "#180808",
   blue: "#5ba4e0", blueBg: "#0a1520",
 };
-
 const DEFAULT_CONFIG = {
   preis: 7.99,
   stripeLink: "",
@@ -51,10 +54,8 @@ const DEFAULT_CONFIG = {
   wartungsmodus: false,
   wartungstext: "NebenkostenRadar wird gerade aktualisiert. Bitte in Kürze erneut versuchen.",
 };
-
 // Storage Key für Vercel KV oder localStorage (Demo)
 const STORAGE_KEY = "nebenkostenradar_config";
-
 function loadConfig() {
   try {
     const stored = localStorage.getItem(STORAGE_KEY);
@@ -62,12 +63,10 @@ function loadConfig() {
   } catch {}
   return DEFAULT_CONFIG;
 }
-
 function saveConfig(cfg) {
   try { localStorage.setItem(STORAGE_KEY, JSON.stringify(cfg)); return true; }
   catch { return false; }
 }
-
 // ── Komponenten ───────────────────────────────────────────────────────────────
 function Card({ title, icon, children }) {
   return (
@@ -80,7 +79,6 @@ function Card({ title, icon, children }) {
     </div>
   );
 }
-
 function Field({ label, value, onChange, type = "text", placeholder, hint }) {
   return (
     <div style={{ marginBottom: 16 }}>
@@ -97,7 +95,6 @@ function Field({ label, value, onChange, type = "text", placeholder, hint }) {
     </div>
   );
 }
-
 function StatBox({ label, value, sub, color = C.gold }) {
   return (
     <div style={{ background: C.surfaceHigh, border: `1px solid ${C.border}`, borderRadius: 10, padding: "16px", flex: 1 }}>
@@ -107,7 +104,6 @@ function StatBox({ label, value, sub, color = C.gold }) {
     </div>
   );
 }
-
 function SaveBtn({ onClick, saved }) {
   return (
     <button onClick={onClick} style={{
@@ -120,7 +116,6 @@ function SaveBtn({ onClick, saved }) {
     </button>
   );
 }
-
 // ── Haupt-Admin-App ───────────────────────────────────────────────────────────
 export default function Admin() {
   const [authed, setAuthed] = useState(() => sessionStorage.getItem("admin_auth") === "true");
@@ -129,7 +124,6 @@ export default function Admin() {
   const [config, setConfig] = useState(loadConfig);
   const [activeTab, setActiveTab] = useState("stats");
   const [saved, setSaved] = useState({});
-
   // Das Passwort wird gegen eine Umgebungsvariable geprüft.
   // In der Demo (lokale Entwicklung ohne Backend) funktioniert: "admin"
   // In Produktion: ADMIN_PASSWORD in Vercel setzen, dann /api/admin-auth nutzen
@@ -158,7 +152,6 @@ export default function Admin() {
       }
     }
   }
-
   function updateConfig(path, value) {
     setConfig(prev => {
       const next = JSON.parse(JSON.stringify(prev));
@@ -169,21 +162,17 @@ export default function Admin() {
       return next;
     });
   }
-
   function save(section) {
     if (saveConfig(config)) {
       setSaved(s => ({ ...s, [section]: true }));
       setTimeout(() => setSaved(s => ({ ...s, [section]: false })), 2000);
     }
   }
-
   function logout() {
     sessionStorage.removeItem("admin_auth");
     setAuthed(false);
   }
-
   const root = { fontFamily: "'Georgia','Times New Roman',serif", background: C.bg, color: C.text, minHeight: "100vh" };
-
   // ── Login Screen ────────────────────────────────────────────────────────────
   if (!authed) return (
     <div style={{ ...root, display: "flex", alignItems: "center", justifyContent: "center", minHeight: "100vh" }}>
@@ -211,7 +200,6 @@ export default function Admin() {
       </div>
     </div>
   );
-
   const TABS = [
     { id: "stats",      label: "Statistiken",  icon: "📊" },
     { id: "texte",      label: "Texte",        icon: "✏️" },
@@ -219,7 +207,6 @@ export default function Admin() {
     { id: "richtwerte", label: "Richtwerte",   icon: "⚖️" },
     { id: "wartung",    label: "Wartung",      icon: "🔧" },
   ];
-
   return (
     <div style={root}>
       {/* Header */}
@@ -236,7 +223,6 @@ export default function Admin() {
           <button onClick={logout} style={{ background: C.surfaceHigh, border: `1px solid ${C.border}`, color: C.muted, borderRadius: 6, padding: "6px 12px", fontSize: 12, fontFamily: "inherit", cursor: "pointer" }}>Abmelden</button>
         </div>
       </div>
-
       {/* Tab Navigation */}
       <div style={{ background: C.surface, borderBottom: `1px solid ${C.border}`, padding: "0 20px", display: "flex", gap: 4, overflowX: "auto" }}>
         {TABS.map(t => (
@@ -246,9 +232,7 @@ export default function Admin() {
           </button>
         ))}
       </div>
-
       <div style={{ maxWidth: 720, margin: "0 auto", padding: "20px 20px 60px" }}>
-
         {/* ── STATISTIKEN ─────────────────────────────────────────────────── */}
         {activeTab === "stats" && (
           <>
@@ -257,7 +241,6 @@ export default function Admin() {
               <StatBox label="Käufe gesamt" value={config.stats.kaeufe_gesamt.toLocaleString("de")} sub="Vollberichte" color={C.green} />
               <StatBox label="Umsatz gesamt" value={`€${config.stats.umsatz_gesamt.toFixed(2)}`} sub="brutto" color={C.blue} />
             </div>
-
             <Card title="Conversion Rate" icon="📈">
               <div style={{ display: "flex", gap: 20, alignItems: "center" }}>
                 <div style={{ flex: 1, height: 8, background: C.surfaceHigh, borderRadius: 4, overflow: "hidden" }}>
@@ -269,14 +252,12 @@ export default function Admin() {
               </div>
               <div style={{ fontSize: 11, color: C.dim, marginTop: 8 }}>Ziel: 10% · Branchenschnitt: 3–8%</div>
             </Card>
-
             <Card title="Letzte Aktivitäten" icon="🕐">
               <div style={{ fontSize: 13, color: C.muted, lineHeight: 2 }}>
                 <div>Letzte Analyse: <span style={{ color: C.text }}>{config.stats.letzte_analyse || "–"}</span></div>
                 <div>Letzter Kauf: <span style={{ color: C.text }}>{config.stats.letzter_kauf || "–"}</span></div>
               </div>
             </Card>
-
             <Card title="Statistiken manuell anpassen" icon="✏️">
               <div style={{ display: "flex", gap: 10 }}>
                 <div style={{ flex: 1 }}>
@@ -296,7 +277,6 @@ export default function Admin() {
             </Card>
           </>
         )}
-
         {/* ── TEXTE ───────────────────────────────────────────────────────── */}
         {activeTab === "texte" && (
           <Card title="Texte & Inhalte bearbeiten" icon="✏️">
@@ -317,7 +297,6 @@ export default function Admin() {
             <SaveBtn onClick={() => save("texte")} saved={saved.texte} />
           </Card>
         )}
-
         {/* ── PREISE ──────────────────────────────────────────────────────── */}
         {activeTab === "preise" && (
           <>
@@ -334,7 +313,6 @@ export default function Admin() {
               </div>
               <SaveBtn onClick={() => save("preise")} saved={saved.preise} />
             </Card>
-
             <Card title="Preisrechner" icon="🧮">
               <div style={{ fontSize: 13, color: C.muted, lineHeight: 2 }}>
                 <div>Bruttopreis: <span style={{ color: C.text, fontWeight: 700 }}>€{config.preis.toFixed(2)}</span></div>
@@ -347,7 +325,6 @@ export default function Admin() {
             </Card>
           </>
         )}
-
         {/* ── RICHTWERTE ──────────────────────────────────────────────────── */}
         {activeTab === "richtwerte" && (
           <>
@@ -389,7 +366,6 @@ export default function Admin() {
             </Card>
           </>
         )}
-
         {/* ── WARTUNG ─────────────────────────────────────────────────────── */}
         {activeTab === "wartung" && (
           <>
@@ -409,7 +385,6 @@ export default function Admin() {
                 onChange={v => updateConfig("wartungstext", v)} />
               <SaveBtn onClick={() => save("wartung")} saved={saved.wartung} />
             </Card>
-
             <Card title="System-Informationen" icon="ℹ️">
               <div style={{ fontSize: 13, color: C.muted, lineHeight: 2 }}>
                 <div>Version: <span style={{ color: C.text }}>1.0.0</span></div>
@@ -419,7 +394,6 @@ export default function Admin() {
                 <div>Admin-URL: <span style={{ color: C.gold }}>nebenkostenradar.com/admin</span></div>
               </div>
             </Card>
-
             <Card title="Gefährliche Aktionen" icon="⚠️">
               <button onClick={() => {
                 if (window.confirm("Wirklich alle Statistiken zurücksetzen?")) {

@@ -1,12 +1,21 @@
 {
   "rewrites": [
-    { "source": "/api/v1/messages", "destination": "/api/messages" },
     { "source": "/admin",           "destination": "/index.html" },
     { "source": "/admin/(.*)",      "destination": "/index.html" },
     { "source": "/danke",           "destination": "/index.html" },
     { "source": "/ratgeber",        "destination": "/index.html" },
     { "source": "/ratgeber/(.*)",   "destination": "/index.html" },
-    { "source": "/ueber-uns",       "destination": "/index.html" }
+    { "source": "/ueber-uns",       "destination": "/index.html" },
+    { "source": "/pruefen/wohnung", "destination": "/index.html" },
+    { "source": "/pruefen/posten",  "destination": "/index.html" },
+    { "source": "/pruefen/ergebnis","destination": "/index.html" },
+    { "source": "/pruefen/absender","destination": "/index.html" },
+    { "source": "/pruefen/download","destination": "/index.html" },
+    { "source": "/pruefen/konto",   "destination": "/index.html" },
+    { "source": "/login",           "destination": "/index.html" },
+    { "source": "/impressum",       "destination": "/index.html" },
+    { "source": "/agb",             "destination": "/index.html" },
+    { "source": "/datenschutz",     "destination": "/index.html" }
   ],
   "headers": [
     {
@@ -25,7 +34,6 @@
     }
   ],
   "functions": {
-    "api/messages.js":    { "maxDuration": 30 },
     "api/admin-auth.js":  { "maxDuration": 5  }
   }
 }
