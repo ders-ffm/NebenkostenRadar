@@ -11,17 +11,30 @@
     daraus eine seitlich wegziehbare Seite wird — wirkt sonst unfertig.
   -->
   <style>
-    html, body { max-width: 100%; overflow-x: hidden; }
+    /*
+      #root zusätzlich zu html/body abgesichert: bekannte iOS-Safari-Lücke,
+      bei der der Body trotz overflow-x:hidden durch elastisches
+      "Rubber-Band"-Scrollen seitlich wegziehbar bleiben kann, wenn nicht
+      auch der eigentliche App-Container begrenzt ist (08/2026).
+    */
+    html, body, #root { max-width: 100%; overflow-x: hidden; }
     /*
       Lange deutsche Komposita (z.B. "Nebenkostenabrechnung") haben keine
       Leerzeichen, an denen der Browser normalerweise umbricht — ohne diese
       Regel wird ein zu langes Wort auf schmalen Screens NICHT umgebrochen,
       sondern läuft über den Container hinaus (wurde durch overflow-x:hidden
       oben dann unsichtbar/abgeschnitten statt seitlich wegziehbar — Symptom
-      geändert, Ursache blieb). Diese Regel erlaubt als letzten Ausweg einen
-      Umbruch mitten im Wort, aber nur wenn es sonst nicht passt.
+      geändert, Ursache blieb). overflow-wrap bleibt als letzter Sicherheitsnetz
+      erhalten, ist aber allein hässlich: bricht irgendwo im Wort, ohne
+      Bindestrich, ohne Rücksicht auf Silben ("Nebenkostenabrec-hnung").
+      hyphens:auto (zusammen mit lang="de" oben auf <html>) trennt stattdessen
+      sprachbewusst an echten Silbengrenzen MIT Bindestrich — das ist der
+      eigentlich richtige Fix, overflow-wrap greift nur noch in Extremfällen,
+      die selbst Silbentrennung nicht lösen kann (z.B. ein einzelnes extrem
+      langes Fantasiewort ohne Silbengrenzen).
     */
     * { overflow-wrap: break-word; }
+    h1, h2, h3, p { hyphens: auto; -webkit-hyphens: auto; }
   </style>
   <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
   <link rel="canonical" href="https://nebenkostenradar.com/" />

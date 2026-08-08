@@ -129,6 +129,10 @@ Alle wesentlichen Änderungen an diesem Projekt, mit Datum und Begründung. Dien
 - Auf Kundenwunsch zusätzlich pragmatisch gelöst: Hero-Überschrift von "Deine Nebenkostenabrechnung" auf "Deine Abrechnung" gekürzt — vermeidet das lange Kompositum in der Überschrift von vornherein, unabhängig von CSS-Lösungen. `hyphens` in `index.html` bleibt trotzdem als generelle Absicherung für andere lange Wörter auf der Seite (Ratgeber-Artikel etc.).
 - Die mobile Schriftgrößen-Reduzierung (30px→25px unter 420px) ist mit dem kürzeren Text nicht mehr nötig und wurde wieder entfernt — wirkte sonst kleiner als beabsichtigt, obwohl "Deine Abrechnung" auch bei voller Größe problemlos passt.
 
+### Zusätzliche Absicherung gegen horizontales Scrollen (08/2026)
+- Stefan meldete erneut seitliches Scrollen auf Mobil, obwohl `overflow-x:hidden` auf `html, body` bereits gesetzt war (Code lokal verifiziert, Regel war korrekt vorhanden). Wahrscheinlichste Ursache weiterhin: Deployment-Verzug wie zuvor bei diesem Projekt beobachtet (GitHub-Push und Vercel-Production-Deploy liefen zeitlich auseinander).
+- Zusätzlich, unabhängig vom Deployment-Verdacht, eine bekannte iOS-Safari-Lücke geschlossen: `overflow-x:hidden` auf `body` allein verhindert bei elastischem Rubber-Band-Scrollen nicht immer zuverlässig das seitliche Wegziehen — jetzt zusätzlich auf `#root` (den eigentlichen React-App-Container) angewendet.
+
 ## Frühere Änderungen
 
 Siehe Kommentar-Historie in `scripts/rechtsmonitor.mjs` für die Entwicklung des SEO-Artikel-Systems (25.–26.07.2026: JSON-Extraktion, deterministische Artikel-IDs, Duplikat-Vermeidung).
