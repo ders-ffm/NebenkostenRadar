@@ -12,6 +12,16 @@
   -->
   <style>
     html, body { max-width: 100%; overflow-x: hidden; }
+    /*
+      Lange deutsche Komposita (z.B. "Nebenkostenabrechnung") haben keine
+      Leerzeichen, an denen der Browser normalerweise umbricht — ohne diese
+      Regel wird ein zu langes Wort auf schmalen Screens NICHT umgebrochen,
+      sondern läuft über den Container hinaus (wurde durch overflow-x:hidden
+      oben dann unsichtbar/abgeschnitten statt seitlich wegziehbar — Symptom
+      geändert, Ursache blieb). Diese Regel erlaubt als letzten Ausweg einen
+      Umbruch mitten im Wort, aber nur wenn es sonst nicht passt.
+    */
+    * { overflow-wrap: break-word; }
   </style>
   <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
   <link rel="canonical" href="https://nebenkostenradar.com/" />
