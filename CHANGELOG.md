@@ -141,6 +141,11 @@ Alle wesentlichen Änderungen an diesem Projekt, mit Datum und Begründung. Dien
 - Tatsächliche Ursache: iOS Safaris eingebautes elastisches "Rubber-Band"-Scrollverhalten ist standardmäßig in beide Richtungen aktiv, auch ohne echten Überlauf — beim Wischen über den Rand hinaus wird kurz weiße Fläche sichtbar. Seiten wie Taxfix schalten das gezielt nur horizontal ab.
 - Fix: `overscroll-behavior-x: none` auf `html, body` (moderne, zweckgebundene CSS-Eigenschaft dafür) plus `touch-action: pan-y` als zusätzliche Absicherung auf Gesten-Ebene. Vertikales Scrollen/Bouncen bleibt normal erhalten, nur die horizontale Achse ist gesperrt.
 
+### JS-Workaround für iOS-Rubber-Band, da CSS-Lösung wirkungslos ist (08/2026)
+- Recherche bestätigt: `overscroll-behavior`/`overscroll-behavior-x` wird von WebKit/Safari für das Unterdrücken des elastischen Bounce am Dokumentrand nicht implementiert (offener WebKit-Bug 176454, seit Jahren ungelöst) — der vorherige CSS-Fix konnte technisch gar nicht wirken, unabhängig von korrekter Umsetzung oder Deployment. Stand bleibt unklar, ob die alte (vor dem Redesign entfernte) Version das Problem hatte — Code dazu existiert nicht mehr, keine Vermutung dazu aufgestellt.
+- Fix: `touchstart`/`touchmove`-Listener in `index.html` ergänzt. Ermittelt pro Berührung, ob die Bewegung überwiegend horizontal ist (dx > dy), und unterdrückt nur dann das Standardverhalten — vertikales Scrollen bleibt unangetastet. Berührungen, die innerhalb von 24px vom linken/rechten Bildschirmrand starten, sind ausgenommen, damit Safaris native Zurück/Vor-Wischgeste (Browser-Verlauf) weiter funktioniert.
+- CSS-Regeln (`overscroll-behavior-x`, `touch-action: pan-y`) bleiben zusätzlich stehen — schaden nicht, helfen aber nur in Chrome/Firefox auf Android, nicht auf iOS.
+
 ## Frühere Änderungen
 
 Siehe Kommentar-Historie in `scripts/rechtsmonitor.mjs` für die Entwicklung des SEO-Artikel-Systems (25.–26.07.2026: JSON-Extraktion, deterministische Artikel-IDs, Duplikat-Vermeidung).
