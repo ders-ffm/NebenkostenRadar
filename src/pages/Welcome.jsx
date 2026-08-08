@@ -16,15 +16,23 @@ export default function Welcome({ navigateTo, IS_DEMO }) {
       <Nav activeStep="welcome" navigateTo={navigateTo} />
 
       <div style={{ padding: "56px 24px 48px", borderBottom: "1px solid " + C.border, textAlign: "center", maxWidth: PAGE_MAX, margin: "0 auto", boxSizing: "border-box" }}>
+        {/* Schriftgröße der Hero-Überschrift auf schmalen Screens reduziert,
+            damit "Nebenkostenabrechnung" möglichst gar nicht getrennt werden
+            muss (08/2026, zusammen mit hyphens:auto in index.html). */}
+        <style>{`
+          @media (max-width: 420px) {
+            .nkr-hero-h1 { font-size: 25px !important; }
+          }
+        `}</style>
         <div style={{ display: "inline-block", background: C.brandBg, borderRadius: 4, padding: "4px 12px", fontSize: 11, color: C.brand, fontWeight: 700, marginBottom: 20, textTransform: "uppercase" }}>
           Unabhängige Prüfung · Keine versteckten Kosten
         </div>
-        <h1 style={{ fontFamily: THEME.font.heading, fontSize: 30, fontWeight: 600, lineHeight: 1.35, margin: "0 0 14px", color: C.text, maxWidth: 520, marginLeft: "auto", marginRight: "auto" }}>
+        <h1 className="nkr-hero-h1" style={{ fontFamily: THEME.font.heading, fontSize: 30, fontWeight: 600, lineHeight: 1.35, margin: "0 0 14px", color: C.text, maxWidth: 520, marginLeft: "auto", marginRight: "auto" }}>
           {/* Zwei eigenständige Blöcke statt Text+<br/>+Text: jeder Block
               bricht bei Bedarf unabhängig um, statt dass ein harter
               Zeilenumbruch die erste Zeile auf schmalen Screens zu breit
               werden lässt (08/2026, Layout-Audit). */}
-          <div>Deine Nebenkostenabrechnung</div>
+          <div>Deine Abrechnung</div>
           <div style={{ color: C.brand }}>Geprüft. Transparent. Rechtssicher.</div>
         </h1>
         <p style={{ fontSize: 16, color: C.textMuted, margin: "0 0 32px", lineHeight: 1.7, maxWidth: 520, marginLeft: "auto", marginRight: "auto" }}>

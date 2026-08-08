@@ -116,6 +116,18 @@ Alle wesentlichen Änderungen an diesem Projekt, mit Datum und Begründung. Dien
 - **Kein horizontales Scrollen auf Mobil, global abgesichert:** `index.html` bekommt `html, body { max-width: 100%; overflow-x: hidden; }` als Sicherheitsnetz gegen jede Art von seitlichem Überlauf, unabhängig von der Ursache.
 - **Wahrscheinlichster konkreter Auslöser behoben:** Die H1-Überschrift der Startseite nutzte einen harten `<br />` zwischen "Deine Nebenkostenabrechnung." und dem grünen Teil — auf sehr schmalen Viewports kann eine so lange erste Zeile (bei 30px Schrift ca. 490px Textbreite) knapp werden. Ersetzt durch zwei eigenständige Block-Elemente, die unabhängig voneinander sicher umbrechen, statt sich auf einen festen Umbruchpunkt zu verlassen.
 
+### Echte Ursache des Mobil-Abschneidens gefunden (08/2026)
+- Nach dem `overflow-x:hidden`-Fix änderte sich das Symptom von "Seite seitlich wegziehbar" zu "Text mitten im Wort abgeschnitten" (auf echtem iPhone verifiziert) — das bestätigte: der vorherige Fix (Block-Elemente statt `<br/>`) hatte die eigentliche Ursache nicht getroffen.
+- Ursache: "Nebenkostenabrechnung." ist ein langes deutsches Kompositum ohne Leerzeichen. Browser brechen Wörter ohne Leerzeichen standardmäßig nicht um, selbst wenn sie breiter sind als der verfügbare Platz — auf einem 375px-Screen bei 30px Schrift war das Wort schlicht zu breit für eine Zeile.
+- Fix: `overflow-wrap: break-word` global in `index.html` ergänzt (erlaubt als letzten Ausweg einen Umbruch mitten im Wort, nur wenn nötig). Betrifft nicht nur die Startseiten-Überschrift, sondern schützt vor demselben Problem bei jedem künftigen langen Wort (z.B. in Ratgeber-Artikeln, Fehlermeldungen).
+
+### Silbentrennung statt hässlichem Wortabbruch (08/2026)
+- `overflow-wrap: break-word` behob zwar das Abschneiden, brach aber mitten im Wort ohne Bindestrich und ohne Rücksicht auf Silbengrenzen ("Nebenkostenabrec-hnung") — technisch kein Überlauf mehr, optisch aber schlechter als vorher.
+- Sauberer Fix: `hyphens: auto` auf `h1, h2, h3, p` ergänzt (nutzt `lang="de"` auf `<html>` für sprachbewusste, echte Silbentrennung mit Bindestrich an korrekter Stelle). `overflow-wrap` bleibt als reines Sicherheitsnetz für Extremfälle erhalten, greift aber im Normalfall nicht mehr vor `hyphens`.
+- Zusätzlich: Hero-Überschrift auf der Startseite bekommt unter 420px Breite eine kleinere Schriftgröße (25px statt 30px, per `@media`-Query), damit "Nebenkostenabrechnung" auf den meisten Handys gar nicht erst getrennt werden muss.
+- Punkt nach "Deine Nebenkostenabrechnung" entfernt (Kundenwunsch).
+- Auf Kundenwunsch zusätzlich pragmatisch gelöst: Hero-Überschrift von "Deine Nebenkostenabrechnung" auf "Deine Abrechnung" gekürzt — vermeidet das lange Kompositum in der Überschrift von vornherein, unabhängig von CSS-Lösungen. `hyphens`/Media-Query bleiben trotzdem als generelle Absicherung für andere lange Wörter auf der Seite (Ratgeber-Artikel etc.).
+
 ## Frühere Änderungen
 
 Siehe Kommentar-Historie in `scripts/rechtsmonitor.mjs` für die Entwicklung des SEO-Artikel-Systems (25.–26.07.2026: JSON-Extraktion, deterministische Artikel-IDs, Duplikat-Vermeidung).
