@@ -19,22 +19,27 @@
     */
     html, body, #root { max-width: 100%; overflow-x: hidden; }
     /*
-      Lange deutsche Komposita (z.B. "Nebenkostenabrechnung") haben keine
-      Leerzeichen, an denen der Browser normalerweise umbricht — ohne diese
-      Regel wird ein zu langes Wort auf schmalen Screens NICHT umgebrochen,
-      sondern läuft über den Container hinaus (wurde durch overflow-x:hidden
-      oben dann unsichtbar/abgeschnitten statt seitlich wegziehbar — Symptom
-      geändert, Ursache blieb). overflow-wrap bleibt als letzter Sicherheitsnetz
-      erhalten, ist aber allein hässlich: bricht irgendwo im Wort, ohne
-      Bindestrich, ohne Rücksicht auf Silben ("Nebenkostenabrec-hnung").
-      hyphens:auto (zusammen mit lang="de" oben auf <html>) trennt stattdessen
-      sprachbewusst an echten Silbengrenzen MIT Bindestrich — das ist der
-      eigentlich richtige Fix, overflow-wrap greift nur noch in Extremfällen,
-      die selbst Silbentrennung nicht lösen kann (z.B. ein einzelnes extrem
-      langes Fantasiewort ohne Silbengrenzen).
+      Kein echter Überlauf vorhanden (per Konsolen-Check bestätigt) — das
+      seitliche "Hin- und Herschubsen" war iOS Safaris eingebautes
+      elastisches Rubber-Band-Verhalten, das standardmäßig auch ohne
+      überlaufenden Inhalt aktiv ist. overscroll-behavior-x schaltet gezielt
+      nur die horizontale Achse ab, vertikales Scrollen/Bouncen bleibt normal
+      erhalten (wie bei Taxfix u.ä.). touch-action ergänzt das auf
+      Touch-Geräten zusätzlich auf Gesten-Ebene (08/2026).
+    */
+    html, body { overscroll-behavior-x: none; touch-action: pan-y; }
+    /*
+      Reines Sicherheitsnetz für sehr lange, unbrechbare Wörter (z.B. in
+      Ratgeber-Artikeln) — bricht im Extremfall mitten im Wort um, statt
+      über den Container hinauszulaufen. `hyphens:auto` wurde bewusst NICHT
+      global gesetzt: hat auf der Startseite "Transparent" unerwünscht zu
+      "Transpa-rent" getrennt, obwohl gar keine Not dazu bestand (Browser
+      trennen bei knappem Platz teils schon vorsorglich, nicht nur im
+      Notfall). Die ursprüngliche Ursache (langes Wort "Nebenkostenab-
+      rechnung" in der Hero-Überschrift) ist ohnehin durch die kürzere
+      Formulierung "Deine Abrechnung" behoben (08/2026).
     */
     * { overflow-wrap: break-word; }
-    h1, h2, h3, p { hyphens: auto; -webkit-hyphens: auto; }
   </style>
   <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
   <link rel="canonical" href="https://nebenkostenradar.com/" />

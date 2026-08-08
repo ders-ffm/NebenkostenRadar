@@ -133,6 +133,14 @@ Alle wesentlichen Änderungen an diesem Projekt, mit Datum und Begründung. Dien
 - Stefan meldete erneut seitliches Scrollen auf Mobil, obwohl `overflow-x:hidden` auf `html, body` bereits gesetzt war (Code lokal verifiziert, Regel war korrekt vorhanden). Wahrscheinlichste Ursache weiterhin: Deployment-Verzug wie zuvor bei diesem Projekt beobachtet (GitHub-Push und Vercel-Production-Deploy liefen zeitlich auseinander).
 - Zusätzlich, unabhängig vom Deployment-Verdacht, eine bekannte iOS-Safari-Lücke geschlossen: `overflow-x:hidden` auf `body` allein verhindert bei elastischem Rubber-Band-Scrollen nicht immer zuverlässig das seitliche Wegziehen — jetzt zusätzlich auf `#root` (den eigentlichen React-App-Container) angewendet.
 
+### hyphens:auto wieder entfernt — unerwünschte Trennung auf der Startseite (08/2026)
+- Screenshot zeigte: "Transparent" wurde zu "Transpa-rent" getrennt, obwohl genug Platz vorhanden gewesen wäre — Browser trennen mit `hyphens:auto` teils schon vorsorglich bei knappem Zeilenumbruch, nicht nur im echten Notfall. Da der ursprüngliche Auslöser (lange Hero-Überschrift) längst durch die Kürzung auf "Deine Abrechnung" behoben ist, war die Regel nur noch Risiko ohne Nutzen — entfernt. `overflow-wrap:break-word` bleibt als reines Notfall-Sicherheitsnetz (verhindert Container-Überlauf, erzwingt aber keine Trennung wie `hyphens` es tut).
+
+### Echte Ursache des seitlichen Scrollens: kein Layout-Fehler, sondern iOS-Rubber-Band (08/2026)
+- Stefan hat per Konsolen-Check bestätigt: kein Element läuft über den Viewport hinaus (`scrollWidth > clientWidth` traf auf nichts zu). Alle vorherigen Layout-Fixes (overflow-x:hidden auf html/body/#root etc.) waren daher wirkungslos, weil sie das falsche Problem adressierten.
+- Tatsächliche Ursache: iOS Safaris eingebautes elastisches "Rubber-Band"-Scrollverhalten ist standardmäßig in beide Richtungen aktiv, auch ohne echten Überlauf — beim Wischen über den Rand hinaus wird kurz weiße Fläche sichtbar. Seiten wie Taxfix schalten das gezielt nur horizontal ab.
+- Fix: `overscroll-behavior-x: none` auf `html, body` (moderne, zweckgebundene CSS-Eigenschaft dafür) plus `touch-action: pan-y` als zusätzliche Absicherung auf Gesten-Ebene. Vertikales Scrollen/Bouncen bleibt normal erhalten, nur die horizontale Achse ist gesperrt.
+
 ## Frühere Änderungen
 
 Siehe Kommentar-Historie in `scripts/rechtsmonitor.mjs` für die Entwicklung des SEO-Artikel-Systems (25.–26.07.2026: JSON-Extraktion, deterministische Artikel-IDs, Duplikat-Vermeidung).
