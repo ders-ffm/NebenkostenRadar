@@ -133,7 +133,7 @@ export const POSTEN_GRUPPEN = [
   { id: "technik", label: "Gemeinschaftsantenne, Kabel und Waschräume", paragraf: "§ 2 Nr. 15 BetrKV", icon: "⚙️",
     posten: [
       { key: "gemeinschaftsantenne", label: "Gemeinschafts-Antenne / SAT-Anlage", tip: "Umlagefähig wenn Gemeinschaftsanlage", beispiel: "50,00", aliases: ["Antennenanlage"], selten: true },
-      { key: "kabelanschluss", label: "Kabelanschluss / TV-Versorgung", tip: "Seit 01.07.2024 NICHT mehr umlagefähig!", aliases: ["Breitbandkabelanschluss", "TV-Kabel"] },
+      { key: "kabelanschluss", label: "Kabelanschluss / TV-Versorgung", tip: "Seit 01.07.2024 grundsätzlich nicht mehr umlagefähig — bei Abrechnungsjahr vor 2024 regulär zulässig", aliases: ["Breitbandkabelanschluss", "TV-Kabel"] },
       { key: "gemeinschaftswaschmaschine", label: "Waschmaschinen / Trockenräume", tip: "Betrieb der Gemeinschaftsgeräte", beispiel: "25,00", aliases: ["Waschküche", "Trockenraum"], selten: true },
       { key: "tiefgarage", label: "Tiefgaragenbelüftung / -entwässerung", tip: "Wenn im Mietvertrag vereinbart", beispiel: "40,00", aliases: ["Tiefgarage"], selten: true },
     ]},
@@ -166,11 +166,33 @@ export function analysierePosten(w, wohn) {
   const widerspruch = [];
   const posten_bewertung = [];
 
-  // Kabelanschluss — seit 01.07.2024 grundsätzlich nicht mehr umlagefähig
+  // Kabelanschluss — seit 01.07.2024 durch die TKG-Novelle grundsätzlich nicht
+  // mehr umlagefähig ("Nebenkostenprivileg" abgeschafft). WICHTIG: Wir erfassen
+  // nur einen JAHRESBETRAG, keinen Abrechnungszeitraum pro Position. Bei einer
+  // Abrechnung fürs Übergangsjahr 2024 sieht ein korrekt nur anteilig bis
+  // 30.06.2024 abgerechneter Betrag identisch aus wie ein zu Unrecht fürs
+  // ganze Jahr abgerechneter — beides ergibt nur EINE Zahl im Formular. Bestä-
+  // tigter Praxisfall (siehe CHANGELOG.md, Stefans Testabrechnung 2024): dort
+  // korrekt nur bis 30.06.2024 abgerechnet, die vorherige pauschale "voller
+  // Betrag rückforderbar"-Behauptung wäre hier schlicht falsch gewesen.
+  // Deshalb nach Abrechnungsjahr gestaffelt statt einer einzigen Pauschalregel:
   if (toNum(w.kabelanschluss) > 0) {
     const b = toNum(w.kabelanschluss);
-    posten_bewertung.push({ posten: "Kabelanschluss", betrag: b, richtwert: 0, abweichung_prozent: 100, status: "nicht_umlagefaehig", hinweis: "Seit 01.07.2024 nicht mehr umlagefähig. Voller Betrag rückforderbar.", paragraf: "§ 2 Nr. 15b TKG" });
-    widerspruch.push("Kabelanschlusskosten " + fmt(b) + ": Nicht umlagefähig seit 01.07.2024 (§ 2 Nr. 15b TKG). Rückforderung des vollen Betrags.");
+    const jahrNum = parseInt(wohn.jahr, 10);
+    if (jahrNum && jahrNum < 2024) {
+      // Vor der Gesetzesänderung regulär umlagefähig, keine Beanstandung.
+      posten_bewertung.push({ posten: "Kabelanschluss", betrag: b, richtwert: 0, abweichung_prozent: 0, status: "ok", hinweis: "Vor der Gesetzesänderung zum 01.07.2024 regulär umlagefähig.", paragraf: "§ 2 Nr. 15 BetrKV a.F." });
+    } else if (!jahrNum || jahrNum === 2024) {
+      // Übergangsjahr bzw. Jahr nicht sicher bekannt: keine sichere Behauptung möglich,
+      // ohne den genauen Abrechnungszeitraum dieser einen Position zu kennen.
+      posten_bewertung.push({ posten: "Kabelanschluss", betrag: b, richtwert: 0, abweichung_prozent: 0, status: "pruefen", hinweis: "Seit 01.07.2024 nicht mehr umlagefähig (§ 2 Nr. 15b TKG). Prüfe den auf der Abrechnung angegebenen Zeitraum: Anteil bis 30.06.2024 zulässig, danach nicht mehr.", paragraf: "§ 2 Nr. 15b TKG" });
+      widerspruch.push("Kabelanschlusskosten " + fmt(b) + ": Prüfe den abgerechneten Zeitraum auf der Abrechnung. Seit 01.07.2024 nicht mehr umlagefähig (§ 2 Nr. 15b TKG), nur der Anteil bis 30.06.2024 ist noch zulässig.");
+    } else {
+      // Abrechnungsjahr vollständig nach der Gesetzesänderung — hier ist die
+      // Pauschalaussage tatsächlich sicher.
+      posten_bewertung.push({ posten: "Kabelanschluss", betrag: b, richtwert: 0, abweichung_prozent: 100, status: "nicht_umlagefaehig", hinweis: "Seit 01.07.2024 nicht mehr umlagefähig. Voller Betrag rückforderbar.", paragraf: "§ 2 Nr. 15b TKG" });
+      widerspruch.push("Kabelanschlusskosten " + fmt(b) + ": Nicht umlagefähig seit 01.07.2024 (§ 2 Nr. 15b TKG). Rückforderung des vollen Betrags.");
+    }
   }
 
   // Heizung + Warmwasser — DMB weist nur einen KOMBINIERTEN Wert aus, daher hier

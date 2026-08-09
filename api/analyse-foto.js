@@ -169,8 +169,21 @@ const TOOLS = [{
           flaeche: { type: "string", description: "Wohnfläche in m² als Zahl-String, z.B. \"75.5\", oder \"\" wenn nicht gefunden" },
           jahr: { type: "string", description: "Abrechnungsjahr, 4-stellig, z.B. \"2024\", oder \"\" wenn nicht gefunden" },
           vorauszahlung: { type: "string", description: "Summe der geleisteten Vorauszahlungen/Abschläge als Zahl-String, z.B. \"2400\", oder \"\" wenn nicht gefunden" },
+          gesamtsummeLautAbrechnung: { type: "string", description: "Die GEDRUCKTE Gesamt-/Endsumme aller umlagefähigen Kosten laut Abrechnungsergebnis (z.B. Zeile 'Summe' oder 'Gesamtkosten' im Abrechnungsergebnis, meist auf der ersten Seite). Nur eintragen, wenn eine einzelne, eindeutige Endsumme klar aufgedruckt ist — NICHT selbst berechnen oder aus Einzelposten zusammenzählen. Wenn es KEINE einzelne Gesamtsumme gibt, hier \"\" lassen und stattdessen teilsummenLautAbrechnung befüllen." },
+          teilsummenLautAbrechnung: {
+            type: "array",
+            description: "NUR falls es KEINE einzelne Gesamtsumme gibt (siehe oben): Liste der auf der Abrechnung gedruckten Kategorie-Zwischensummen, z.B. 'Betriebskosten', 'Heizkosten/Wasserkosten', 'Kaltwasserkosten' — jede mit ihrer Bezeichnung wie gedruckt und ihrem Betrag. NUR eindeutig gedruckte Zwischensummen-Zeilen, NIEMALS selbst berechnete Summen. Wenn es sowohl eine Gesamtsumme als auch solche Kategorie-Zwischensummen gibt, hier ein leeres Array lassen (sonst würde beim Aufaddieren doppelt gezählt, da die Gesamtsumme diese Kategorien meist schon enthält). Leeres Array, wenn auch das nicht zu finden ist.",
+            items: {
+              type: "object",
+              properties: {
+                label: { type: "string", description: "Bezeichnung der Zwischensumme wie auf der Abrechnung gedruckt, z.B. \"Betriebskosten\"" },
+                betrag: { type: "string", description: "Betrag als Zahl-String, z.B. \"1722.56\"" },
+              },
+              required: ["label", "betrag"],
+            },
+          },
         },
-        required: ["flaeche", "jahr", "vorauszahlung"],
+        required: ["flaeche", "jahr", "vorauszahlung", "gesamtsummeLautAbrechnung", "teilsummenLautAbrechnung"],
       },
       werte: {
         type: "object",
@@ -233,10 +246,13 @@ Für "werte" darfst du AUSSCHLIESSLICH die folgenden Keys verwenden, gewählt na
 ${posteneKatalogFuerPrompt()}
 
 Wichtige Regeln:
-- Wenn ein Posten auf der Abrechnung in "Grundanteil" + "Verbrauchsanteil" aufgeteilt ist (z.B. bei Heizung oder Warmwasser), addiere beide zu einem Gesamtbetrag für den jeweiligen Key.
+- Nebenkostenabrechnungen zeigen pro Zeile oft MEHRERE Beträge nebeneinander (z.B. "Gesamtkosten" für das ganze Gebäude/alle Einheiten, dann Umlageschlüssel/Verteilerangaben, dann erst der Anteil DIESES Mieters). Verwende IMMER nur die Spalte mit dem Anteil dieses einen Mieters (oft die letzte/rechte Spalte, beschriftet z.B. "Ihre Kosten", "Ihr Anteil", "Kosten Mieter" o.ä.). Verwende NIEMALS die Gesamtkosten-Spalte für das ganze Gebäude, auch wenn sie optisch näher an der Postenbezeichnung steht.
+- Wenn ein Posten auf der Abrechnung in "Grundanteil" + "Verbrauchsanteil" aufgeteilt ist (z.B. bei Heizung oder Warmwasser), addiere beide zu einem Gesamtbetrag für den jeweiligen Key — aber NUR die Zeilen, die zu genau diesem einen Key gehören (z.B. nur "Heizung Grundanteil" + "Heizung Verbrauchsanteil" für Heizkosten, nur "Warmwasser Grundanteil" + "Warmwasser Verbrauchsanteil" für Warmwasser).
+- Manche Abrechnungen drucken zusätzlich eine gemeinsame Zwischensumme, die mehrere unserer Keys zusammenfasst (z.B. eine Zeile "Summe Heizkosten/Warmwasserkosten", die Heizung UND Warmwasser gemeinsam enthält). Verwende eine solche gemeinsame Zwischensumme NIEMALS direkt als Wert für einen einzelnen Key — sie ist keine Erkennung für "Heizkosten" allein. Berechne stattdessen jeden Key ausschließlich aus seinen eigenen, klar mit ihm beschrifteten Unterzeilen. Wenn sich ein Betrag nur der gemeinsamen Zwischensumme entnehmen lässt, aber nicht den einzelnen Unterzeilen der betroffenen Keys, gilt die Regel unten (Key weglassen statt schätzen).
 - Wenn du bei einem Betrag unsicher bist, welchem Key er zugeordnet werden soll, ODER wenn ein Gesamtbetrag auf mehrere unserer Keys aufgeteilt werden müsste, ohne dass die Abrechnung diese Aufteilung selbst vorgibt: LASS ALLE betroffenen Keys WEG statt zu schätzen oder zu raten. Ein fehlender Wert ist besser als ein falsch zugeordneter oder geschätzter.
 - Erfinde keine Werte, die nicht auf den Fotos zu erkennen sind. Ein geschätzter Wert ist keine Erkennung.
 - Zahlen im deutschen Format (z.B. "1.234,56") in reine Dezimalzahlen mit Punkt umwandeln (1234.56).
+- Trage zusätzlich "gesamtsummeLautAbrechnung" ein, falls im Abrechnungsergebnis eine einzelne, eindeutig aufgedruckte Endsumme aller Kosten steht (oft ganz oben oder in einer Ergebnistabelle, Zeile "Summe"/"Gesamtkosten"/"Gesamtergebnis"). Diese Zahl dient NUR einem separaten Abgleich im Formular und beeinflusst "werte" nicht — verwende sie NICHT als Grundlage, um einzelne Keys in "werte" zu befüllen oder zu berechnen.
 
 Lesbarkeit prüfen, aber die Hinweise EINFACH halten (wichtig, das lesen normale Nutzer, keine Techniker): Prüfe jedes Foto/jede PDF-Seite darauf, ob es vollständig lesbar ist. Bei Problemen (unscharf, zu dunkel, abgeschnitten, schräg fotografiert, überlagert, Beträge nicht eindeutig zuordenbar) trage GENAU EINEN kurzen Hinweis pro betroffener Datei in "hinweise" ein. Strikte Vorgaben für jeden Hinweis:
 - Maximal 12 Wörter, ein einzelner kurzer Satz.
@@ -313,10 +329,23 @@ Wenn dadurch einzelne Beträge unsicher sind, nimm sie NICHT in "werte" auf. Wen
     }
 
     const w = parsed.wohnung || {};
+    // Gesamtsumme fürs Formular (siehe Wohnung.jsx/Posten.jsx): bevorzugt die
+    // direkt gedruckte Gesamtsumme, falls vorhanden. Viele Abrechnungen haben
+    // aber KEINE einzelne Endsumme, sondern nur Zwischensummen pro Kategorie
+    // (z.B. "Betriebskosten", "Heizkosten/Wasserkosten") — in dem Fall werden
+    // diese stattdessen aufaddiert. Der Prompt weist die KI ausdrücklich an,
+    // nur EINE der beiden Quellen zu befüllen, nie beide gleichzeitig (sonst
+    // Doppelzählung, wenn die Gesamtsumme die Kategorien schon enthält).
+    const teilsummen = Array.isArray(w.teilsummenLautAbrechnung) ? w.teilsummenLautAbrechnung : [];
+    const teilsummenSumme = teilsummen.reduce((s, t) => s + toNum(t?.betrag), 0);
+    const gesamtsummeDirekt = toNum(w.gesamtsummeLautAbrechnung);
+    const gesamtsummeLautAbrechnung = gesamtsummeDirekt > 0 ? gesamtsummeDirekt : teilsummenSumme;
+
     const wohnung = {
       flaeche: toNum(w.flaeche) > 0 ? String(toNum(w.flaeche)) : "",
       jahr: /^\d{4}$/.test(String(w.jahr || "").trim()) ? String(w.jahr).trim() : "",
       vorauszahlung: toNum(w.vorauszahlung) > 0 ? String(toNum(w.vorauszahlung)) : "",
+      gesamtsummeLautAbrechnung: gesamtsummeLautAbrechnung > 0 ? String(gesamtsummeLautAbrechnung) : "",
     };
 
     // Hinweise zur Bildqualität: nur Strings, auf plausible Länge/Anzahl

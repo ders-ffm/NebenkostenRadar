@@ -112,6 +112,13 @@ export default function App() {
   // Gemeinsamer Zustand
   const [wohnung, setWohnung] = useState({ flaeche: "", jahr: String(new Date().getFullYear() - 1), vorauszahlung: "" });
   const [werte, setWerte] = useState({});
+  // Gesamtsumme laut Abrechnung (08/2026, siehe CHANGELOG.md): vorher reiner
+  // lokaler State in Posten.jsx, nur manuell befüllbar. Jetzt hier oben, damit
+  // die Foto-/PDF-Erkennung (Wohnung.jsx) sie ebenfalls setzen kann — macht den
+  // ohnehin schon vorhandenen Plausibilitäts-Abgleich in Posten.jsx automatisch
+  // wirksam, auch wenn die Werte per Foto vorausgefüllt wurden, nicht nur bei
+  // manueller Eingabe.
+  const [gesamtsummeAbrechnung, setGesamtsummeAbrechnung] = useState("");
   const [adressen, setAdressen] = useState({ email: "", mieterName: "", mieterStrasse: "", mieterPlz: "", mieterOrt: "", vermieterName: "", vermieterStrasse: "", vermieterPlz: "", vermieterOrt: "", datum: new Date().toLocaleDateString("de-DE") });
   // Opt-in für Rabatt-Mail 10 Monate nach Kauf (Art. 6 Abs. 1 lit. a DSGVO — siehe Datenschutz.jsx Abschnitt 3a).
   // Bewusst NICHT vorausgewählt (echtes Opt-in, keine Vorbelegung).
@@ -132,12 +139,13 @@ export default function App() {
 
   function resetAll() {
     navigateTo("welcome");
-    setResult(null); setWerte({}); setGekauft(false); setStufe(null);
+    setResult(null); setWerte({}); setGekauft(false); setStufe(null); setGesamtsummeAbrechnung("");
   }
 
   const pageProps = {
     navigateTo, navigateToArtikel,
     wohnung, setWohnung, werte, setWerte, adressen, setAdressen,
+    gesamtsummeAbrechnung, setGesamtsummeAbrechnung,
     result, setResult, runAnalyse, resetAll,
     gekauft, setGekauft, stufe, setStufe,
     marketingOptIn, setMarketingOptIn,

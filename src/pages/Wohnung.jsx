@@ -84,7 +84,7 @@ function pdfAufBase64(file) {
   });
 }
 
-export default function Wohnung({ navigateTo, wohnung, setWohnung, werte, setWerte }) {
+export default function Wohnung({ navigateTo, wohnung, setWohnung, werte, setWerte, gesamtsummeAbrechnung, setGesamtsummeAbrechnung }) {
   const C = THEME.color;
   const [errors, setErrors] = useState({});
 
@@ -208,6 +208,14 @@ export default function Wohnung({ navigateTo, wohnung, setWohnung, werte, setWer
         ...(data.wohnung?.vorauszahlung ? { vorauszahlung: data.wohnung.vorauszahlung } : {}),
       }));
       if (setWerte && data.werte) setWerte(p => ({ ...p, ...data.werte }));
+      // Gesamtsumme laut Abrechnung (08/2026, siehe CHANGELOG.md): macht den
+      // bereits vorhandenen Plausibilitäts-Abgleich in Posten.jsx automatisch
+      // wirksam, auch bei per Foto vorausgefüllten Werten — genau der
+      // Abgleich, der Stefans gemeldeten Doppelzählungs-Fehler beim nächsten
+      // Mal automatisch sichtbar gemacht hätte, statt erst beim Ergebnis.
+      if (setGesamtsummeAbrechnung && data.wohnung?.gesamtsummeLautAbrechnung) {
+        setGesamtsummeAbrechnung(data.wohnung.gesamtsummeLautAbrechnung);
+      }
       setFotoAnzahl(data.anzahlErkannt || 0);
       setHinweise(data.hinweise || []);
       setFotoStatus("fertig");
@@ -355,7 +363,16 @@ export default function Wohnung({ navigateTo, wohnung, setWohnung, werte, setWer
             </div>
           )}
 
-          {dateien.length < MAX_DATEIEN && (
+          {/* Upload- und Analysieren-Button verschwinden, sobald fotoStatus
+              "fertig" ist (08/2026, siehe CHANGELOG.md — Stefans Meldung: ohne
+              diese Sperre ließ sich "analysieren" beliebig oft erneut klicken,
+              jedes Mal ein neuer, echter API-Aufruf mit echten Kosten, obwohl
+              das Ergebnis schon vorlag). Statt die Karte komplett zu sperren,
+              gibt es einen bewussten zweiten Schritt ("Andere Datei hochladen"),
+              der fotoStatus zurück auf "idle" setzt — ein versehentlicher
+              Doppelklick löst dadurch nichts mehr aus, ein ABSICHTLICHES "ich
+              will nochmal" bleibt aber möglich. */}
+          {dateien.length < MAX_DATEIEN && fotoStatus !== "fertig" && (
             <label
               htmlFor="foto-upload-input"
               style={{
@@ -386,11 +403,13 @@ export default function Wohnung({ navigateTo, wohnung, setWohnung, werte, setWer
           <input id="foto-upload-input" type="file" accept="image/*,application/pdf" multiple onChange={handleDateiAuswahl}
             style={{ display: "none" }} />
 
-          <div style={{ fontSize: 11, color: C.textDim, marginTop: 8 }}>
-            {dateien.length} von {MAX_DATEIEN} Dateien ausgewählt{dateien.length >= MAX_DATEIEN ? " · Maximum erreicht" : ""}
-          </div>
+          {fotoStatus !== "fertig" && (
+            <div style={{ fontSize: 11, color: C.textDim, marginTop: 8 }}>
+              {dateien.length} von {MAX_DATEIEN} Dateien ausgewählt{dateien.length >= MAX_DATEIEN ? " · Maximum erreicht" : ""}
+            </div>
+          )}
 
-          {dateien.some(f => f.status === "bereit") && (
+          {dateien.some(f => f.status === "bereit") && fotoStatus !== "fertig" && (
             <button
               onClick={handleAnalysieren}
               disabled={fotoStatus === "analysiere"}
@@ -408,8 +427,20 @@ export default function Wohnung({ navigateTo, wohnung, setWohnung, werte, setWer
           )}
 
           {fotoStatus === "fertig" && (
-            <div style={{ marginTop: 10, fontSize: 12, color: C.brand, fontWeight: 600 }}>
-              ✓ {fotoAnzahl > 0 ? fotoAnzahl + " Posten erkannt und unten ausgefüllt." : "Wohnungsdaten übernommen, aber keine Posten sicher erkannt."} Bitte prüfen.
+            <div style={{ marginTop: 10 }}>
+              <div style={{ fontSize: 12, color: C.brand, fontWeight: 600 }}>
+                ✓ {fotoAnzahl > 0 ? fotoAnzahl + " Posten erkannt und unten ausgefüllt." : "Wohnungsdaten übernommen, aber keine Posten sicher erkannt."} Bitte prüfen.
+              </div>
+              <button
+                onClick={() => setFotoStatus("idle")}
+                style={{
+                  marginTop: 8, background: "none", border: "none", padding: 0,
+                  color: C.textMuted, fontSize: 12, textDecoration: "underline",
+                  cursor: "pointer", fontFamily: THEME.font.body,
+                }}
+              >
+                Andere Datei hochladen / erneut analysieren
+              </button>
             </div>
           )}
           {fotoStatus === "fehler" && (

@@ -143,6 +143,7 @@ create index if not exists nkr_foto_ratelimit_ip_zeit on nkr_foto_ratelimit (ip_
 
 ## Phase 2 — Code hochladen
 
+- [ ] **Vor jedem Upload, Pflichtschritt — DSGVO-/Rechts-Check:** Bevor Code hochgeladen wird, wird geprüft, ob sich seit dem letzten Upload die tatsächliche Datenverarbeitung geändert hat (neue Supabase-Tabelle/-Spalte, neuer externer Dienst, neuer Datenfluss an Dritte wie Anthropic/Stripe/Resend, neues Tracking-/Cookie-Script) — und ob `Datenschutz.jsx`, `Impressum.jsx`, `AGB.jsx` das noch korrekt widerspiegeln. Das ist eine feste Regel in diesem Projekt (siehe Stefans Vorgaben), kein optionaler Schritt. Ergebnis kurz hier oder im Chat festhalten, damit nachvollziehbar bleibt, was geprüft wurde.
 - [ ] **Vor dem Upload:** In `src/config/business.js` bei `STRIPE_LINK_AUSWERTUNG` den in 1.3 notierten Link eintragen.
 - [ ] **Vor dem Upload:** In `package.json` zu `dependencies` ergänzen:
   ```json

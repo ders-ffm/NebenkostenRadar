@@ -5,9 +5,15 @@
 // - Abschnitt "Keine Datenspeicherung" ist NICHT MEHR ZUTREFFEND und wurde
 //   entfernt. Seit der Kundenkonto-/PDF-Funktion werden Eingabedaten für
 //   bis zu 1 Jahr in Supabase gespeichert (siehe Abschnitt 2 unten).
-// - Abschnitt "Analyse-Service (Anthropic)" wurde ENTFERNT: Die Analyse
-//   läuft seit dem Redesign 08/2026 vollständig regelbasiert im Browser,
-//   es werden keine Nebenkosten-Daten mehr an Anthropic übermittelt.
+// - KORREKTUR 08/2026 (vorheriger Kommentar hier war veraltet/falsch, siehe
+//   CHANGELOG.md): Die Foto-/PDF-Erkennung wurde im selben Monat neu gebaut
+//   und sendet Abrechnungsfotos SEHR WOHL an Anthropic (siehe Abschnitt 2a
+//   unten) — die frühere Aussage "keine Daten mehr an Anthropic übermittelt"
+//   bezog sich auf die REGELBASIERTE Analyse (buildResult() in lib/analyse.js,
+//   läuft weiterhin komplett lokal im Browser), nicht auf die optionale
+//   Foto-Erkennung, die als separates, neueres Feature hinzukam. Beide
+//   Aussagen unabhängig voneinander korrekt, der alte Kommentar hier hat das
+//   nur missverständlich vermischt.
 // Diese Datei MUSS aktuell gehalten werden, wenn sich an der Datenverarbeitung
 // etwas ändert — siehe CHANGELOG.md für die Historie.
 // ─────────────────────────────────────────────────────────────────────────
@@ -33,6 +39,7 @@ const ABSCHNITTE = [
     "Auf der ersten Seite des Prüfformulars kannst du freiwillig ein oder mehrere Fotos oder eine PDF-Datei deiner Abrechnung hochladen, damit die Wohnungsdaten und Kostenpositionen automatisch vorausgefüllt werden. Diese Funktion ist eine reine Erleichterung, du musst sie nicht nutzen, alle Felder lassen sich auch komplett manuell ausfüllen.",
     "Nutzt du diese Funktion, werden die Fotos bzw. die PDF-Datei zur Texterkennung an Anthropic PBC (USA) übermittelt. Anthropic verarbeitet die Daten ausschließlich zur Erkennung der Beträge für diese eine Anfrage, nicht zum Training eigener KI-Modelle (gemäß Anthropics Nutzungsbedingungen für die API). Rechtsgrundlage: Art. 6 Abs. 1 lit. b DSGVO (auf deinen Wunsch hin ausgeführte, vorvertragliche Maßnahme). Datenübermittlung in die USA auf Basis von Standardvertragsklauseln der EU-Kommission (Art. 46 Abs. 2 lit. c DSGVO).",
     "Die hochgeladenen Fotos bzw. die PDF-Datei selbst speichern wir nicht, weder bei uns noch bei Anthropic über die Dauer der Anfrage hinaus. Nach der Erkennung werden nur die daraus abgeleiteten Zahlenwerte in deinem Browser in die Formularfelder übernommen, die du wie jede andere Eingabe prüfen und korrigieren kannst.",
+    "Um Kosten-Missbrauch dieser Funktion zu verhindern (z. B. automatisierte Massenabfragen), speichern wir zusätzlich einen Einweg-Hash deiner IP-Adresse (kein Klartext) für maximal 24 Stunden in unserer Datenbank, um die Anzahl deiner Anfragen pro Stunde zu begrenzen. Rechtsgrundlage: Art. 6 Abs. 1 lit. f DSGVO (berechtigtes Interesse an Kosten-/Missbrauchsschutz). Diese Prüfung ist bewusst fehlertolerant: Funktioniert sie technisch nicht, wird die Foto-Erkennung trotzdem ausgeführt, sie ist eine Kosten-Bremse, keine Zugangskontrolle.",
   ]},
   { t: "3. Kundenkonto (Magic-Link)", lines: [
     "Über \"Anmelden\" kannst du dich jederzeit mit deiner E-Mail-Adresse einloggen — per Bestätigungslink (Magic-Link), ohne Passwort. Dort siehst du alle Berichte, die mit dieser E-Mail-Adresse gekauft wurden, und kannst sie erneut als PDF herunterladen, z. B. falls die Bestell-E-Mail im Spam-Ordner gelandet ist.",

@@ -20,15 +20,16 @@ function normalisiere(s) {
   return (s || "").toLowerCase();
 }
 
-export default function Posten({ navigateTo, werte, setWerte, runAnalyse }) {
+export default function Posten({ navigateTo, werte, setWerte, runAnalyse, gesamtsummeAbrechnung, setGesamtsummeAbrechnung }) {
   const C = THEME.color;
   const [errors, setErrors] = useState({});
   const [suche, setSuche] = useState("");
   const [expandedGruppen, setExpandedGruppen] = useState(() => new Set());
   // Gesamtsumme laut Abrechnung — rein informativer Abgleich (siehe Kommentar
-  // weiter unten bei der Hinweis-Anzeige). Bewusst eigener State, NICHT Teil
-  // von `werte`/`errors` — darf niemals in validate() einfließen.
-  const [gesamtsummeAbrechnung, setGesamtsummeAbrechnung] = useState("");
+  // weiter unten bei der Hinweis-Anzeige). Bewusst eigener State in App.jsx,
+  // NICHT Teil von `werte`/`errors` — darf niemals in validate() einfließen.
+  // Seit 08/2026 in App.jsx gehoben (siehe CHANGELOG.md), damit die Foto-/
+  // PDF-Erkennung in Wohnung.jsx diesen Wert ebenfalls automatisch setzen kann.
   const setPosten = (k, v) => setWerte(p => ({ ...p, [k]: v }));
 
   const total = ALLE_POSTEN.reduce((s, p) => s + toNum(werte[p.key]), 0);
