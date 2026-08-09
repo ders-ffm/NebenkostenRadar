@@ -382,6 +382,19 @@ Behoben in `api/analyse-foto.js`:
 
 **Risiko, offen:** Ob mit `tool_choice:"auto"` tatsächlich Denken stattfindet (thinking_tokens > 0) und ob sich die Zeilen-Zuordnung dadurch verbessert, ist noch nicht getestet — nächster Live-Test entscheidet. Sollte auch das nichts bringen, ist die wahrscheinlichste nächste Erklärung, dass das Problem nicht am fehlenden Denken liegt, sondern an der visuellen Lesegenauigkeit selbst bei dieser Art eng gedruckter Liste — dann wäre ein grundsätzlich anderer Ansatz nötig (z.B. Vorverarbeitung der Fotos, oder Zerlegen in mehrere kleinere Anfragen pro Seite statt einer großen).
 
+### Foto-Erkennung: effort:max zu langsam (2+ Min.) + Truncation, auf effort:high + Fortschrittsanzeige umgestellt (08/2026)
+
+Test mit `tool_choice:"auto"` + `effort:"max"` (siehe voriger Eintrag) lief 2 Min. 18 Sek. und endete trotzdem mit "kein gültiger Tool-Aufruf" (502) — starkes Indiz für `stop_reason:"max_tokens"`: das Denken bekam jetzt offenbar tatsächlich Raum (Beweis, dass die tool_choice-Umstellung gewirkt hat), aber so viel, dass selbst 16.000 Tokens nicht reichten. Unabhängig vom Ergebnis: 2+ Minuten Wartezeit ohne jede Rückmeldung wirkt auf Nutzer wie ein aufgehängtes Tool (Stefans berechtigter Einwand).
+
+Behoben, `api/analyse-foto.js`:
+- `effort` von `"max"` auf `"high"` heruntergestuft — Sonnet 5s Standardstufe, laut Doku weiterhin "fast immer Denken, tiefes Schlussfolgern bei komplexen Aufgaben", aber ohne die unbegrenzte Denktiefe von `"max"`. Für ein synchrones Web-Formular auf dem Handy ist unbegrenzte Wartezeit nicht vertretbar, selbst wenn es die Genauigkeit verbessern sollte.
+- `max_tokens` von 16000 auf 20000 als zusätzliche Sicherheitsmarge.
+
+Behoben, `src/pages/Wohnung.jsx`:
+- Der Analyse-Button änderte bisher nur seinen Text ("Wird analysiert …") — bei 30 Sek. bis über 2 Min. Wartezeit unzureichend. Neuer eigener Fortschritts-Block (gleiches Gestaltungsmuster wie `Loading.jsx`): Spinner, Sekunden-Zähler, rotierende Zwischenmeldungen an den tatsächlichen Zwei-Schritt-Ablauf im Prompt angelehnt, plus expliziter Hinweis "kann bis zu 2 Minuten dauern, Seite offen lassen".
+
+**Offenes Risiko, nicht in diesem Fix behoben:** Bei einer wirklich 1-2 Minuten dauernden Anfrage auf dem Handy kann iOS Safari den Tab bei Bildschirmsperre oder App-Wechsel in den Hintergrund/Ruhezustand versetzen und den laufenden `fetch`-Request abbrechen. Das ist unabhängig von der neuen Fortschrittsanzeige — die zeigt nur ehrlich an, dass es dauert, verhindert aber nicht, dass ein Nutzer währenddessen das Handy sperrt. Sollte sich das als echtes Problem zeigen, bräuchte es einen asynchronen Ablauf (Analyse im Hintergrund starten, Ergebnis später abholen) statt der aktuellen synchronen Anfrage — deutlich größerer Umbau, aktuell nicht umgesetzt.
+
 ## Frühere Änderungen
 
 Siehe Kommentar-Historie in `scripts/rechtsmonitor.mjs` für die Entwicklung des SEO-Artikel-Systems (25.–26.07.2026: JSON-Extraktion, deterministische Artikel-IDs, Duplikat-Vermeidung).

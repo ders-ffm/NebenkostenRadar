@@ -321,33 +321,30 @@ Wenn dadurch einzelne Beträge unsicher sind, nimm sie NICHT in "werte" auf. Wen
       },
       body: JSON.stringify({
         model: "claude-sonnet-5",
-        // 16000 statt vorher 4096 (08/2026, siehe CHANGELOG.md): notwendig
-        // geworden durch "effort: max" unten — bei max-Effort denkt das
-        // Modell spürbar mehr nach, und diese Denk-Tokens zählen laut
-        // Anthropic-Doku VOLL auf max_tokens (Denken + sichtbare Antwort
-        // zusammen). Bei zu knappem Limit bricht die Antwort mitten im
-        // Tool-Aufruf ab (stop_reason "max_tokens", siehe Fehlerbehandlung
-        // unten) — das wäre bei max-Effort mit den alten 4096 fast sicher
-        // passiert. Kosten/Dauer sind vertretbar: dieser Endpoint ist ohnehin
-        // auf 8 Aufrufe/Stunde/IP begrenzt (RATE_LIMIT_MAX_AUFRUFE oben) plus
-        // hartes Spending Limit in der Anthropic Console (siehe CHANGELOG.md).
-        max_tokens: 16000,
-        // effort: "max" (08/2026, siehe CHANGELOG.md) — direkte Reaktion auf
-        // Stefans berechtigten Einwand, dass Bild-zu-Text-Erkennung generell
-        // funktioniert (siehe dieser Chat: Fotos werden hier korrekt gelesen)
-        // und die bisherigen Fehler kein Erkennungs-, sondern ein
-        // Zuordnungsproblem sind. ERSTER VERSUCH (verworfen): effort:"max"
-        // zusammen mit erzwungenem tool_choice, in der Annahme, "Adaptive
-        // Thinking" liefe laut Doku auch dann mit. Live-Test widerlegte das:
-        // thinking_tokens lag bei mehreren Aufrufen konstant bei 0. Grund
-        // vermutlich die von Anthropic dokumentierte Prefill-Mechanik bei
-        // erzwungenem tool_choice, die Inhalte vor dem Tool-Aufruf unterdrückt
-        // — "unterstützt" laut Doku heißt offenbar nur "kein Fehler", nicht
-        // "Denken passiert tatsächlich". Deshalb jetzt zusätzlich tool_choice
-        // auf "auto" umgestellt (siehe Kommentar bei TOOLS oben) — effort
-        // bleibt auf "max", da Genauigkeit wichtiger ist als Tempo/Kosten und
-        // das Volumen ohnehin über das Rate-Limit gedeckelt ist.
-        output_config: { effort: "max" },
+        // 20000 statt vorher 16000 (08/2026, siehe CHANGELOG.md): mit
+        // tool_choice:"auto" (unten) + effort:"max" dauerte ein Testaufruf
+        // 2 Min. 18 Sek. und endete trotzdem mit "kein gültiger Tool-Aufruf"
+        // — starkes Indiz für stop_reason "max_tokens" (Denken hat jetzt
+        // offenbar so viel Raum bekommen, dass selbst 16000 nicht reichten).
+        // Da gleichzeitig effort von "max" auf "high" heruntergestuft wurde
+        // (siehe unten), sollte der Denkanteil jetzt spürbar kleiner sein —
+        // 20000 als Sicherheitsmarge, falls trotzdem mehr gebraucht wird.
+        max_tokens: 20000,
+        // effort: "high" statt "max" (08/2026, siehe CHANGELOG.md) — direkte
+        // Reaktion auf Stefans zweiten berechtigten Einwand: 2+ Minuten
+        // Wartezeit ohne jede Rückmeldung wirkt auf Nutzer wie ein
+        // aufgehängtes Tool, unabhängig davon, ob das Ergebnis am Ende
+        // stimmt. "max" bedeutet laut Doku "keine Einschränkung der
+        // Denktiefe" — das ist für ein synchrones Web-Formular auf dem
+        // Handy nicht vertretbar, selbst wenn es die Genauigkeit verbessern
+        // sollte. "high" ist Sonnet 5s Standardstufe und laut Doku ausdrück-
+        // lich für "komplexes Schlussfolgern, wenn Qualität wichtiger ist
+        // als Tempo" gedacht — also weiterhin klar mehr Denken als das
+        // vorherige (versehentlich wirkungslose) Setup, nur ohne die
+        // unbegrenzte Tiefe von "max". Muss erneut getestet werden: sowohl
+        // Dauer als auch ob thinking_tokens jetzt > 0 UND die Zuordnung
+        // besser wird.
+        output_config: { effort: "high" },
         tools: TOOLS,
         // tool_choice NICHT mehr erzwungen (08/2026, siehe CHANGELOG.md und
         // Kommentar bei TOOLS oben) — "auto" lässt das Modell selbst

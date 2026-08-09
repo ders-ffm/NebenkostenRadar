@@ -39,6 +39,18 @@ const MIN_AUFLOESUNG = 500; // px, kürzere Seite — darunter ist Text erfahrun
 // nötig ist (siehe Fehlermeldung unten).
 const MAX_PDF_MB = 3;
 
+// Rotierende Zwischenmeldungen während der Foto-Analyse (08/2026, siehe
+// CHANGELOG.md und Kommentar bei analyseSek unten) — inhaltlich an das
+// tatsächliche Zwei-Schritt-Vorgehen aus dem Prompt (api/analyse-foto.js)
+// angelehnt, damit die Anzeige nicht frei erfunden wirkt.
+const ANALYSE_MSGS = [
+  "Fotos werden gelesen…",
+  "Jede Kostenzeile wird einzeln erfasst…",
+  "Beträge werden den passenden Positionen zugeordnet…",
+  "Kaltwasser- und Heizkosten werden geprüft…",
+  "Fast fertig…",
+];
+
 function bildAufBase64(file, maxDim = 1800, quality = 0.82) {
   return new Promise((resolve, reject) => {
     const img = new Image();
@@ -111,6 +123,23 @@ export default function Wohnung({ navigateTo, wohnung, setWohnung, werte, setWer
   const [analyseFehler, setAnalyseFehler] = useState(""); // konkrete Server-/Netzwerk-Fehlermeldung statt generischem Text
   const [hinweise, setHinweise] = useState([]); // Bild-/Lesbarkeitsprobleme laut KI-Antwort
   const setW = (k, v) => setWohnung(p => ({ ...p, [k]: v }));
+
+  // Fortschrittsanzeige während der Foto-Analyse (08/2026, siehe CHANGELOG.md):
+  // Stefans berechtigter Einwand — seit effort:"high"/"max" kann ein Aufruf
+  // 30 Sek. bis über 2 Min. dauern, vorher waren es 1-3 Sek. Ohne sichtbaren
+  // Fortschritt wirkt das wie ein hängengebliebenes Tool. Sekunden-Zähler +
+  // rotierende Zwischenmeldungen (gleiches Muster wie Loading.jsx) schaffen
+  // Transparenz, dass im Hintergrund noch gearbeitet wird.
+  const [analyseSek, setAnalyseSek] = useState(0);
+  const [analyseMsgIdx, setAnalyseMsgIdx] = useState(0);
+  useEffect(() => {
+    if (fotoStatus !== "analysiere") { setAnalyseSek(0); setAnalyseMsgIdx(0); return; }
+    const sekIv = setInterval(() => setAnalyseSek(s => s + 1), 1000);
+    // Bleibt bei der letzten Meldung stehen (kein Zurückspringen), auch wenn
+    // die Analyse länger dauert als die Summe der Intervalle unten.
+    const msgIv = setInterval(() => setAnalyseMsgIdx(i => Math.min(i + 1, ANALYSE_MSGS.length - 1)), 8000);
+    return () => { clearInterval(sekIv); clearInterval(msgIv); };
+  }, [fotoStatus]);
 
   // Blob-URLs (für die Vorschaubilder) beim Verlassen der Seite wieder
   // freigeben, statt sie bis zum Tab-Schließen im Speicher zu halten.
@@ -416,21 +445,46 @@ export default function Wohnung({ navigateTo, wohnung, setWohnung, werte, setWer
             </div>
           )}
 
-          {dateien.some(f => f.status === "bereit") && fotoStatus !== "fertig" && (
+          {dateien.some(f => f.status === "bereit") && fotoStatus !== "fertig" && fotoStatus !== "analysiere" && (
             <button
               onClick={handleAnalysieren}
-              disabled={fotoStatus === "analysiere"}
               style={{
                 marginTop: 10, width: "100%",
-                background: fotoStatus === "analysiere" ? C.border : C.brand,
-                color: fotoStatus === "analysiere" ? C.textDim : "#fff",
+                background: C.brand, color: "#fff",
                 border: "none", borderRadius: THEME.radius.md, padding: "13px",
                 fontSize: 14, fontWeight: 600, fontFamily: THEME.font.heading,
-                cursor: fotoStatus === "analysiere" ? "default" : "pointer",
+                cursor: "pointer",
               }}
             >
-              {fotoStatus === "analysiere" ? "Wird analysiert …" : "✓ " + dateien.filter(f => f.status === "bereit").length + " Datei(en) analysieren"}
+              ✓ {dateien.filter(f => f.status === "bereit").length} Datei(en) analysieren
             </button>
+          )}
+
+          {/* Eigener Fortschritts-Block statt nur geänderter Button-Text
+              (08/2026, siehe CHANGELOG.md): seit effort:"high" kann ein
+              Durchlauf 30 Sek. bis über 2 Min. dauern (vorher 1-3 Sek.) —
+              ohne sichtbaren Fortschritt sieht das nach einem hängenden Tool
+              aus. Sekunden-Zähler ist bewusst grob (volle Sekunden reichen),
+              rotierende Meldungen sind an den tatsächlichen Prompt-Ablauf
+              angelehnt (siehe ANALYSE_MSGS oben). */}
+          {fotoStatus === "analysiere" && (
+            <div style={{ marginTop: 10, background: C.brandBg, borderRadius: THEME.radius.md, padding: "14px 16px", textAlign: "center" }}>
+              <style>{`
+                @keyframes nkrFotoSpin { to { transform: rotate(360deg); } }
+              `}</style>
+              <div style={{
+                width: 22, height: 22, margin: "0 auto 10px", borderRadius: "50%",
+                border: "3px solid " + C.border, borderTopColor: C.brand,
+                animation: "nkrFotoSpin 0.8s linear infinite",
+              }} />
+              <div style={{ fontSize: 13, fontWeight: 600, color: C.text, marginBottom: 4 }}>
+                Wird analysiert … ({analyseSek}s)
+              </div>
+              <div style={{ fontSize: 12, color: C.textMuted, minHeight: 16 }}>{ANALYSE_MSGS[analyseMsgIdx]}</div>
+              <div style={{ fontSize: 11, color: C.textDim, marginTop: 8 }}>
+                Das kann bis zu 2 Minuten dauern — wir prüfen jede Zeile einzeln, um Verwechslungen zu vermeiden. Bitte die Seite offen lassen.
+              </div>
+            </div>
           )}
 
           {fotoStatus === "fertig" && (
