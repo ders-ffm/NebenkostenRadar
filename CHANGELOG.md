@@ -302,6 +302,42 @@ Stefan bemerkte beim ersten erfolgreich erzeugten Test-PDF: Der Satz "Eine event
 
 Behoben: `buildResult()` gibt jetzt zusätzlich `saldo` zurück (> 0 Nachzahlung, < 0 Guthaben, `null` falls keine Vorauszahlung angegeben). `BriefPDF.jsx` zeigt den Vorbehalts-Satz nur noch, wenn `saldo > 0` ist.
 
+### PLZ-Feld: keine Längenbegrenzung beim Tippen (08/2026)
+
+Stefan bemerkte: In den PLZ-Feldern (`Adressen.jsx`) ließen sich beim Tippen beliebig viele Ziffern eingeben — die Prüfung auf genau 5 Ziffern griff erst beim Absenden (`/^\d{5}$/` in `validate()`), nicht während der Eingabe. Ursache: `Field.jsx` unterstützte kein `maxLength`. Ergänzt: neue `maxLength`-Prop, an beiden PLZ-Feldern auf 5 gesetzt.
+
+**Separat geprüft, kein Fehler:** Führende Nullen (z. B. PLZ 01099 Dresden) gehen nicht verloren — die Felder sind reine Textfelder (`type="text"`), keine Zahlen-Umwandlung, die eine führende 0 verschlucken würde.
+
+### Ergebnis-Seite: Rückforderung von Guthaben/Nachzahlung nicht klar abgegrenzt (08/2026)
+
+Stefans Nachfrage: Könnte ein Kunde die "Mögliche Rückforderung" (Summe der beanstandeten Positionen) mit seinem ohnehin bestehenden Guthaben verwechseln — z. B. denken, die angezeigten 300 € SEIEN das Guthaben, das er laut Vermieter sowieso zurückbekommt? Das wäre potenziell vertrauensschädigend ("fatal", O-Ton).
+
+**Rechnerisch geprüft, kein Fehler:** `moegliche_ersparnis` (Summe der Richtwert-Abweichungen einzelner Posten) und `saldo` (Gesamtkosten minus Vorauszahlung, siehe Fix weiter oben) werden in `buildResult()` komplett unabhängig voneinander berechnet — keine Überschneidung in der Mathematik.
+
+**Aber ein echtes Kommunikationsproblem gefunden:** Auf `Result.jsx` stand die Rückforderung als eigene Zahl, das Guthaben nur beiläufig im Fließtext der Zusammenfassung weiter oben — nirgends der klare Hinweis, dass beide Beträge sich addieren, nicht überschneiden. Behoben: Klarstellender Satz direkt bei der Rückforderungs-Anzeige ergänzt ("Zusätzlich zu deiner Nachzahlung/deinem Guthaben laut Abrechnung … — nicht Teil davon, sondern obendrauf"), nutzt das neue `result.saldo`-Feld.
+
+### Foto-Erkennung: Zeilen-Verwechslung, Kaltwasser-Verteilung, Zufallsstreuung, Mediathek-Mehrfachauswahl (08/2026)
+
+Stefan testete mit seiner echten 4-seitigen Abrechnung (Fotos, direkt gegen die Originalbilder verifiziert) zweimal hintereinander — beide Male mit unterschiedlichen, teils falschen Ergebnissen.
+
+**Fund 1, gegen die Originalfotos verifiziert:** Drei benachbarte Zeilen der Betriebskosten-Liste (Kabelanschluss, Hausreinigung, Wartung Rauchwarnmelder) hatten rotiert die jeweils falschen Beträge der Nachbarzeile bekommen (Kabelanschluss zeigte den Hausreinigung-Betrag, Hausreinigung den Rauchwarnmelder-Betrag, Rauchwarnmelder den Kabelanschluss-Betrag) — Werte an sich alle echt, nur der falschen Zeile zugeordnet.
+
+**Fund 2:** Von den vier Kaltwasser-Teilbeträgen (Kaltwasser-Grundbetrag 266,38 + Gerätemiete 25,56 + Kanal 168,86 + Servicegebühren 4,95 = 465,75, exakt wie in `Testdaten/testfall-2024-heizung-warmwasser-kabel.md`) wurden drei einzeln auf `wasserzaehler`/`entwaesserung` verteilt, der größte Teilbetrag (266,38 €, der reine Kaltwasser-Grundbetrag) fehlte komplett — der finanziell relevanteste Fehler dieses Tests.
+
+**Fund 3:** Zweiter Testlauf mit identischen Fotos ergab ein wieder anderes, ebenfalls fehlerhaftes Ergebnis (Warmwasser fehlte komplett) — reine Zufallsstreuung der API, keine Prompt-Frage.
+
+**Fund 4 (Stefans eigene Beobachtung):** Mehrfachauswahl aus der iOS-Fotomediathek funktionierte nicht, nur Einzelauswahl möglich.
+
+Behoben, `api/analyse-foto.js`:
+- Neue Prompt-Regel gegen Zeilen-Verwechslung: Zeile-für-Zeile-Prüfung bei langen Listen benachbarter Kostenpositionen, explizite Selbstkontroll-Aufforderung vor der Abgabe.
+- Neue Prompt-Regel: aufgesplittete Kaltwasserkosten (mehrere Teilbeträge, gemeinsame Endsumme wie "Summe Kaltwasserkosten") IMMER komplett addieren und ausschließlich in `kaltwasser` eintragen, nie einzelne Teilbeträge auf `wasserzaehler`/`entwaesserung` verteilen.
+- `temperature: 0` gesetzt (vorher API-Standard, der bewusst Variation zulässt) — reduziert Zufallsstreuung zwischen Durchläufen mit denselben Fotos, macht Ergebnisse aber nicht zu 100% identisch (Vision-Modelle bleiben nie perfekt deterministisch) und behebt Zuordnungsfehler nicht von allein.
+
+Behoben, `src/pages/Wohnung.jsx`:
+- `accept`-Attribut des Datei-Inputs von kommagetrennt (`"image/*,application/pdf"`) auf leerzeichengetrennt (`"image/* application/pdf"`) geändert — dokumentierter iOS-Safari-Bug, bei dem kommagetrennte MIME-Typen die Mehrfachauswahl aus der Fotomediathek einschränken können. Noch nicht erneut auf dem iPhone verifiziert.
+
+**Einordnung, ehrlich:** Foto-Erkennung per Vision-KI wird bei komplexen, mehrseitigen Abrechnungen nie 100% fehlerfrei sein — das ist der Grund, warum der Nutzer nach der Erkennung immer im editierbaren Formular landet und die Werte bestätigen muss (siehe Kommentar oben in `analyse-foto.js`), nie eine automatische Auswertung ohne diesen Zwischenschritt. Der Gesamtsumme-Abgleich in `Posten.jsx` bleibt das wichtigste Sicherheitsnetz gegen genau solche Fehler.
+
 ## Frühere Änderungen
 
 Siehe Kommentar-Historie in `scripts/rechtsmonitor.mjs` für die Entwicklung des SEO-Artikel-Systems (25.–26.07.2026: JSON-Extraktion, deterministische Artikel-IDs, Duplikat-Vermeidung).

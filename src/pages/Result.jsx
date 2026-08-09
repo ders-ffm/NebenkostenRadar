@@ -152,6 +152,19 @@ export default function Result({ navigateTo, result, wohnung, setStufe, resetAll
           {result.moegliche_ersparnis > 0 && (
             <div style={{ background: C.brandBg, borderLeft: "3px solid " + C.brand, borderRadius: 8, padding: "10px 14px", fontSize: 12, color: C.brand, marginBottom: 14 }}>
               Mögliche Rückforderung laut Analyse: <strong>{fmt(result.moegliche_ersparnis)}</strong>
+              {/* Klarstellung gegen ein echtes Missverständnisrisiko (08/2026,
+                  Stefans Hinweis): Ohne diesen Satz könnte ein Kunde mit
+                  eigenem Guthaben denken, die Rückforderung SEI sein
+                  Guthaben, statt zusätzlich dazu — rechnerisch sind beide
+                  Werte unabhängig (result.saldo vs. moegliche_ersparnis),
+                  aber das stand bisher nirgends klar da. */}
+              {result.saldo != null && (
+                <div style={{ fontWeight: 400, marginTop: 4 }}>
+                  {result.saldo > 0
+                    ? "Zusätzlich zu deiner Nachzahlung laut Abrechnung (" + fmt(result.saldo) + ") — bei Erfolg würde sich deine Nachzahlung um diesen Betrag verringern."
+                    : "Zusätzlich zu deinem Guthaben laut Abrechnung (" + fmt(Math.abs(result.saldo)) + ") — nicht Teil davon, sondern obendrauf."}
+                </div>
+              )}
             </div>
           )}
 

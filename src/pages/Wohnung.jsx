@@ -400,7 +400,14 @@ export default function Wohnung({ navigateTo, wohnung, setWohnung, werte, setWer
               denselben nativen Dialog aus (Kamera direkt fotografieren, aus der Galerie wählen
               ODER eine Datei/PDF wählen), mit großem, gut sichtbarem Tap-Ziel. onChange FÜGT der
               Liste oben hinzu, statt sofort zu analysieren — siehe Kommentar bei handleDateiAuswahl(). */}
-          <input id="foto-upload-input" type="file" accept="image/*,application/pdf" multiple onChange={handleDateiAuswahl}
+          {/* accept mit LEERZEICHEN statt Komma getrennt (08/2026, siehe
+              CHANGELOG.md): Stefan konnte in der iOS-Fotomediathek nur ein
+              Foto auf einmal auswählen statt mehrere. Dokumentierter iOS-
+              Safari-Bug: bei kommagetrennten MIME-Typen im accept-Attribut
+              fällt iOS teils auf einen eingeschränkten Auswahl-Modus zurück,
+              leerzeichen-getrennt funktioniert zuverlässiger. Noch nicht
+              erneut auf dem iPhone verifiziert. */}
+          <input id="foto-upload-input" type="file" accept="image/* application/pdf" multiple onChange={handleDateiAuswahl}
             style={{ display: "none" }} />
 
           {fotoStatus !== "fertig" && (

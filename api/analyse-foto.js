@@ -250,6 +250,8 @@ Wichtige Regeln:
 - Wenn ein Posten auf der Abrechnung in "Grundanteil" + "Verbrauchsanteil" aufgeteilt ist (z.B. bei Heizung oder Warmwasser), addiere beide zu einem Gesamtbetrag für den jeweiligen Key — aber NUR die Zeilen, die zu genau diesem einen Key gehören (z.B. nur "Heizung Grundanteil" + "Heizung Verbrauchsanteil" für Heizkosten, nur "Warmwasser Grundanteil" + "Warmwasser Verbrauchsanteil" für Warmwasser).
 - Manche Abrechnungen drucken zusätzlich eine gemeinsame Zwischensumme, die mehrere unserer Keys zusammenfasst (z.B. eine Zeile "Summe Heizkosten/Warmwasserkosten", die Heizung UND Warmwasser gemeinsam enthält). Verwende eine solche gemeinsame Zwischensumme NIEMALS direkt als Wert für einen einzelnen Key — sie ist keine Erkennung für "Heizkosten" allein. Berechne stattdessen jeden Key ausschließlich aus seinen eigenen, klar mit ihm beschrifteten Unterzeilen. Wenn sich ein Betrag nur der gemeinsamen Zwischensumme entnehmen lässt, aber nicht den einzelnen Unterzeilen der betroffenen Keys, gilt die Regel unten (Key weglassen statt schätzen).
 - Wenn du bei einem Betrag unsicher bist, welchem Key er zugeordnet werden soll, ODER wenn ein Gesamtbetrag auf mehrere unserer Keys aufgeteilt werden müsste, ohne dass die Abrechnung diese Aufteilung selbst vorgibt: LASS ALLE betroffenen Keys WEG statt zu schätzen oder zu raten. Ein fehlender Wert ist besser als ein falsch zugeordneter oder geschätzter.
+- Bei einer LANGEN LISTE von Kostenzeilen direkt untereinander (typisch bei Betriebskosten-Einzelpositionen): Ordne jeden Betrag GENAU der Beschriftung IN DERSELBEN ZEILE zu, Zeile für Zeile einzeln geprüft. Verwechsle niemals den Betrag einer Zeile mit dem einer benachbarten Zeile darüber oder darunter — das ist ein bekannter, bereits beobachteter Fehler bei eng gedruckten Listen. Prüfe vor der Abgabe zur Sicherheit: passt jeder eingetragene Betrag wirklich zu der Bezeichnung, mit der du ihn verknüpft hast?
+- Kaltwasser-/Wasserkosten stehen auf manchen Abrechnungen in mehrere Teilbeträge aufgesplittet, teils auf einer eigenen Extra-Seite (z.B. Kaltwasser-Grundbetrag + Gerätemiete + Kanal + Servicegebühren als eigene Zeilen, erkennbar an einer gemeinsamen Endsumme wie "Summe Kaltwasserkosten" oder "Gesamtergebnis Kaltwasserkosten"). In diesem Fall: addiere ALLE diese Teilbeträge und trage NUR die Summe in den Key "kaltwasser" ein. Verwende NIEMALS "wasserzaehler" oder "entwaesserung" für einzelne Teilbeträge, die bereits Teil dieser gemeinsamen Kaltwasserkosten-Endsumme sind — auch wenn eine der Teilzeilen "Kanal" oder "Gerätemiete" heißt. "wasserzaehler"/"entwaesserung" nur verwenden, wenn die Abrechnung sie als eigenständige Position AUSSERHALB der Kaltwasserkosten-Endsumme ausweist.
 - Erfinde keine Werte, die nicht auf den Fotos zu erkennen sind. Ein geschätzter Wert ist keine Erkennung.
 - Zahlen im deutschen Format (z.B. "1.234,56") in reine Dezimalzahlen mit Punkt umwandeln (1234.56).
 - Trage zusätzlich "gesamtsummeLautAbrechnung" ein, falls im Abrechnungsergebnis eine einzelne, eindeutig aufgedruckte Endsumme aller Kosten steht (oft ganz oben oder in einer Ergebnistabelle, Zeile "Summe"/"Gesamtkosten"/"Gesamtergebnis"). Diese Zahl dient NUR einem separaten Abgleich im Formular und beeinflusst "werte" nicht — verwende sie NICHT als Grundlage, um einzelne Keys in "werte" zu befüllen oder zu berechnen.
@@ -286,6 +288,17 @@ Wenn dadurch einzelne Beträge unsicher sind, nimm sie NICHT in "werte" auf. Wen
         // mit vielen Posten braucht die strukturierte Antwort spürbar mehr
         // Platz als bei Testfotos ohne Abrechnungsinhalt.
         max_tokens: 4096,
+        // temperature 0 (08/2026, siehe CHANGELOG.md): Stefan bekam beim
+        // zweiten Testlauf mit DENSELBEN Fotos ein wieder anderes Ergebnis
+        // (diesmal fehlte Warmwasser komplett). Das ist keine Prompt-Frage,
+        // sondern die Standard-Zufallsstreuung der API (Default-Temperatur
+        // lässt bewusst Variation zu, sinnvoll für kreative Aufgaben, aber
+        // nicht für eine strukturierte Zahlen-Extraktion, wo Konsistenz
+        // wichtiger ist als Kreativität). 0 = maximal deterministisch/
+        // konsistent, macht Ergebnisse aber nicht zu 100% identisch bei
+        // jedem Lauf (Vision-Modelle bleiben nie perfekt deterministisch)
+        // und behebt die oben behobenen Zuordnungsfehler nicht von allein.
+        temperature: 0,
         tools: TOOLS,
         tool_choice: { type: "tool", name: TOOL_NAME }, // erzwingt den Tool-Aufruf, keine freie Textantwort möglich
         messages: [{ role: "user", content }],

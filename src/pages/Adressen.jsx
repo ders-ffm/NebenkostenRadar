@@ -64,7 +64,7 @@ export default function Adressen({ navigateTo, adressen, setAdressen, stufe, wer
           <Field label="Vor- und Nachname" value={adressen.mieterName} onChange={v => setA("mieterName", v)} placeholder="Max Mustermann" required error={errors.mieterName} />
           <Field label="Straße und Hausnummer" value={adressen.mieterStrasse} onChange={v => setA("mieterStrasse", v)} placeholder="Musterstraße 12" required error={errors.mieterStrasse} />
           <div style={{ display: "grid", gridTemplateColumns: "100px 1fr", gap: 10 }}>
-            <Field label="PLZ" value={adressen.mieterPlz} onChange={v => setA("mieterPlz", v)} placeholder="12345" required error={errors.mieterPlz} />
+            <Field label="PLZ" value={adressen.mieterPlz} onChange={v => setA("mieterPlz", v)} placeholder="12345" required error={errors.mieterPlz} maxLength={5} />
             <Field label="Ort" value={adressen.mieterOrt} onChange={v => setA("mieterOrt", v)} placeholder="Musterstadt" required error={errors.mieterOrt} />
           </div>
         </div>
@@ -75,7 +75,7 @@ export default function Adressen({ navigateTo, adressen, setAdressen, stufe, wer
             <Field label="Name oder Firma" value={adressen.vermieterName} onChange={v => setA("vermieterName", v)} placeholder="Muster Verwaltungs GmbH" required error={errors.vermieterName} />
             <Field label="Straße und Hausnummer" value={adressen.vermieterStrasse} onChange={v => setA("vermieterStrasse", v)} placeholder="Verwalterstraße 1" required error={errors.vermieterStrasse} />
             <div style={{ display: "grid", gridTemplateColumns: "100px 1fr", gap: 10 }}>
-              <Field label="PLZ" value={adressen.vermieterPlz} onChange={v => setA("vermieterPlz", v)} placeholder="12345" required error={errors.vermieterPlz} />
+              <Field label="PLZ" value={adressen.vermieterPlz} onChange={v => setA("vermieterPlz", v)} placeholder="12345" required error={errors.vermieterPlz} maxLength={5} />
               <Field label="Ort" value={adressen.vermieterOrt} onChange={v => setA("vermieterOrt", v)} placeholder="Musterstadt" required error={errors.vermieterOrt} />
             </div>
           </div>
