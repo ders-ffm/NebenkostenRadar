@@ -29,6 +29,11 @@ const ABSCHNITTE = [
     "Speicherdauer: maximal 12 Monate ab Kaufdatum, danach automatisierte Löschung (Grundsatz der Speicherbegrenzung, Art. 5 Abs. 1 lit. e DSGVO).",
     "Nutzt du nur die kostenlose Basis-Analyse ohne Kauf, werden deine Eingaben ausschließlich lokal in deinem Browser verarbeitet und nicht an uns übermittelt.",
   ]},
+  { t: "2a. Foto-Erkennung deiner Abrechnung (optional)", lines: [
+    "Auf der ersten Seite des Prüfformulars kannst du freiwillig ein oder mehrere Fotos deiner Abrechnung hochladen, damit die Wohnungsdaten und Kostenpositionen automatisch vorausgefüllt werden. Diese Funktion ist eine reine Erleichterung — du musst sie nicht nutzen, alle Felder lassen sich auch komplett manuell ausfüllen.",
+    "Nutzt du den Foto-Upload, werden die Bilder zur Texterkennung an Anthropic PBC (USA) übermittelt. Anthropic verarbeitet die Bilder ausschließlich zur Erkennung der Beträge für diese eine Anfrage — nicht zum Training eigener KI-Modelle (gemäß Anthropics Nutzungsbedingungen für die API). Rechtsgrundlage: Art. 6 Abs. 1 lit. b DSGVO (auf deinen Wunsch hin ausgeführte, vorvertragliche Maßnahme). Datenübermittlung in die USA auf Basis von Standardvertragsklauseln der EU-Kommission (Art. 46 Abs. 2 lit. c DSGVO).",
+    "Die hochgeladenen Fotos selbst speichern wir nicht — weder bei uns noch bei Anthropic über die Dauer der Anfrage hinaus. Nach der Erkennung werden nur die daraus abgeleiteten Zahlenwerte in deinem Browser in die Formularfelder übernommen, die du wie jede andere Eingabe prüfen und korrigieren kannst.",
+  ]},
   { t: "3. Kundenkonto (Magic-Link)", lines: [
     "Über \"Anmelden\" kannst du dich jederzeit mit deiner E-Mail-Adresse einloggen — per Bestätigungslink (Magic-Link), ohne Passwort. Dort siehst du alle Berichte, die mit dieser E-Mail-Adresse gekauft wurden, und kannst sie erneut als PDF herunterladen, z. B. falls die Bestell-E-Mail im Spam-Ordner gelandet ist.",
     "Für den Login-Vorgang selbst nutzen wir Supabase Auth (gleicher Anbieter wie unsere Datenbank, siehe Abschnitt 2). Es findet keine separate Registrierung mit Passwort statt. Rechtsgrundlage: Art. 6 Abs. 1 lit. b DSGVO.",
