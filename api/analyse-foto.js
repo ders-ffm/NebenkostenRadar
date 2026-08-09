@@ -201,7 +201,8 @@ ${posteneKatalogFuerPrompt()}
 Wichtige Regeln:
 - Wenn ein Posten auf der Abrechnung in "Grundanteil" + "Verbrauchsanteil" aufgeteilt ist (z.B. bei Heizung oder Warmwasser), addiere beide zu einem Gesamtbetrag für den jeweiligen Key.
 - Wenn du bei einem Betrag unsicher bist, welchem Key er zugeordnet werden soll, LASS IHN WEG statt zu raten. Ein fehlender Wert ist besser als ein falsch zugeordneter.
-- Erfinde keine Werte, die nicht auf den Fotos zu erkennen sind.
+- Wenn ein Gesamtbetrag auf mehrere unserer Keys aufgeteilt werden müsste (z.B. eine kombinierte Wasserrechnung, die sowohl Frischwasser als auch Abwasser/Kanal enthält), die Abrechnung aber KEINE explizite Aufschlüsselung nach Keys zeigt: SCHÄTZE NICHT. Lass in diesem Fall ALLE betroffenen Keys weg und nenne stattdessen in "hinweise" den ungeteilten Gesamtbetrag und welche Keys ihn beträfen, damit der Nutzer ihn selbst korrekt zuordnen kann.
+- Erfinde keine Werte, die nicht auf den Fotos zu erkennen sind. Ein geschätzter Wert ist keine Erkennung.
 - Zahlen im deutschen Format (z.B. "1.234,56") in reine Dezimalzahlen mit Punkt umwandeln (1234.56).
 
 Bild-Qualität aktiv prüfen (wichtig): Prüfe jedes Foto darauf, ob es vollständig lesbar ist. Falls ein Foto unscharf, zu dunkel, abgeschnitten, aus zu großem Winkel fotografiert oder aus einem anderen Grund teilweise nicht lesbar ist, trage dazu einen kurzen, konkreten Satz in "hinweise" ein (z.B. "Foto 2: unscharf, Beträge in der rechten Spalte nicht sicher lesbar" oder "Foto 3: oberer Rand abgeschnitten, Kopfdaten evtl. unvollständig"). Wenn dadurch einzelne Beträge unsicher sind, nimm sie NICHT in "werte" auf, sondern erwähne sie im jeweiligen Hinweis. Wenn alle Fotos gut lesbar sind, gib ein leeres Array für "hinweise" zurück. Melde außerdem, falls eine für die Prüfung zentrale Angabe (Wohnfläche, Abrechnungsjahr, Vorauszahlung, oder die Kostenaufstellung selbst) auf keinem der Fotos zu finden war.`;
