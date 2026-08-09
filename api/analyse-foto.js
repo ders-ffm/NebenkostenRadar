@@ -288,17 +288,16 @@ Wenn dadurch einzelne Beträge unsicher sind, nimm sie NICHT in "werte" auf. Wen
         // mit vielen Posten braucht die strukturierte Antwort spürbar mehr
         // Platz als bei Testfotos ohne Abrechnungsinhalt.
         max_tokens: 4096,
-        // temperature 0 (08/2026, siehe CHANGELOG.md): Stefan bekam beim
-        // zweiten Testlauf mit DENSELBEN Fotos ein wieder anderes Ergebnis
-        // (diesmal fehlte Warmwasser komplett). Das ist keine Prompt-Frage,
-        // sondern die Standard-Zufallsstreuung der API (Default-Temperatur
-        // lässt bewusst Variation zu, sinnvoll für kreative Aufgaben, aber
-        // nicht für eine strukturierte Zahlen-Extraktion, wo Konsistenz
-        // wichtiger ist als Kreativität). 0 = maximal deterministisch/
-        // konsistent, macht Ergebnisse aber nicht zu 100% identisch bei
-        // jedem Lauf (Vision-Modelle bleiben nie perfekt deterministisch)
-        // und behebt die oben behobenen Zuordnungsfehler nicht von allein.
-        temperature: 0,
+        // KEIN "temperature"-Parameter (08/2026, siehe CHANGELOG.md): war
+        // testweise auf 0 gesetzt, um die von Stefan beobachtete Zufalls-
+        // streuung zwischen zwei Läufen mit denselben Fotos zu reduzieren.
+        // Anthropic lehnt den Parameter für "claude-sonnet-5" aber komplett
+        // ab ("'temperature' is deprecated for this model", 400-Fehler) —
+        // dadurch schlug JEDE Foto-Analyse fehl, nicht nur die betroffenen
+        // Randfälle. Sofort wieder entfernt. Die Zufallsstreuung bleibt also
+        // vorerst bestehen und wird stattdessen ausschließlich über die
+        // Prompt-Regeln oben (Zeilen-Zuordnung, Kaltwasser-Konsolidierung)
+        // sowie durch die Bestätigungspflicht im Formular abgefedert.
         tools: TOOLS,
         tool_choice: { type: "tool", name: TOOL_NAME }, // erzwingt den Tool-Aufruf, keine freie Textantwort möglich
         messages: [{ role: "user", content }],
