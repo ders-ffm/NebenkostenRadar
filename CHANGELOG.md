@@ -357,6 +357,17 @@ Umgesetzt in `api/analyse-foto.js`:
 
 **Einordnung, ehrlich:** Das ist die best-begründete Änderung bisher (Primärquellen statt Vermutung), aber keine Garantie — die genaue Ursache der Zeilen-Verwechslung bei diesem spezifischen Modell/dieser Aufgabe ist von außen nicht sicher nachweisbar, nur durch erneuten Live-Test mit Blick auf das neue Diagnose-Log zu prüfen. Spürbar höhere Laufzeit/Kosten pro Analyse sind die bewusst in Kauf genommene Kehrseite.
 
+### Preisänderung 7,99/9,99 € → 9,99/12,99 € + business.js lokal wiederhergestellt (08/2026)
+
+`src/config/business.js` fehlte im lokalen iCloud-Ordner (vermutlich nie zurück von GitHub heruntergeladen, seit Preis-/Stripe-Änderungen dort direkt im Web-Editor gemacht wurden), obwohl sieben Dateien sie importieren. Vor der Preisänderung Wettbewerbsvergleich gemacht (Stefans ausdrücklicher Wunsch, nicht blind übernehmen): NebenkostenPro 7,90 €/14,90 € (sehr ähnliche Zwei-Stufen-Struktur), HeizkostenChecker 9,99 € (Einzeltarif), Mineko 49–89 € (manuelle Prüfung), Mieterverein ~65–138 €/Jahr. 9,99/12,99 € liegt im Band der automatisierten Vergleichsanbieter, beim Brief-Tarif sogar unter dem nächstvergleichbaren Anbieter — keine Einwände.
+
+Datei von Stefan aus dem aktuellen Stand eingefügt, dann `PREIS_AUSWERTUNG` 7.99→9.99 und `PREIS_VOLL` 9.99→12.99 geändert. Dabei zwei Kommentarstellen mitkorrigiert, die sonst durch die Preisänderung sofort falsch geworden wären (alte Preise in Kommentartext, veraltete "Link fehlt noch"-Warnung obwohl beide Stripe-Links längst existieren).
+
+**Wichtig, noch offen (kein Code, sondern Stripe-Dashboard-Arbeit):**
+- Beide Payment Links sind fest an die ALTEN Beträge gebunden (Stripe erlaubt keine nachträgliche Preisänderung an einem bestehenden Payment Link) — vor dem Live-Gang müssen zwei NEUE Payment Links mit 9,99 €/12,99 € angelegt und in `business.js` eingetragen werden.
+- `STRIPE_LINK_VOLL` zeigt aktuell noch auf den Test-Modus-Link (test-kauf-Testing) — unbedingt vor einem Live-Update prüfen/zurücksetzen.
+- Der für 2028 geplante Bestandskunden-Rabattcode (`MARKETING_RABATT_CODE`, fester Euro-Betrag statt Prozent, siehe Kommentar in `business.js`) muss bei der finalen Preiserhöhung auf die dann aktuelle Differenz eingestellt werden — durch die jetzige Änderung verschiebt sich die Referenzbasis.
+
 ## Frühere Änderungen
 
 Siehe Kommentar-Historie in `scripts/rechtsmonitor.mjs` für die Entwicklung des SEO-Artikel-Systems (25.–26.07.2026: JSON-Extraktion, deterministische Artikel-IDs, Duplikat-Vermeidung).
