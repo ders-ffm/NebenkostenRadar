@@ -185,9 +185,29 @@ const TOOLS = [{
         },
         required: ["flaeche", "jahr", "vorauszahlung", "gesamtsummeLautAbrechnung", "teilsummenLautAbrechnung"],
       },
+      // NEU 08/2026 (siehe CHANGELOG.md): Pflichtfeld VOR "werte", erzwingt eine
+      // reine Abschrift jeder Zeile, BEVOR irgendeine Zuordnung zu unseren Keys
+      // passiert. Grund: wiederholt beobachteter Fehler, bei dem Beträge der
+      // FALSCHEN Nachbarzeile zugeordnet wurden (Lesen und Zuordnen in einem
+      // Schritt vermischt). Die Trennung in zwei Schritte erzwingt, dass jede
+      // Zeile einzeln erfasst wird, bevor die Kategorisierung beginnt — "werte"
+      // MUSS laut Prompt ausschließlich aus diesem Feld abgeleitet werden, nicht
+      // erneut direkt vom Bild.
+      zeilenErfasst: {
+        type: "array",
+        description: "PFLICHT, ZUERST auszufüllen, vor 'werte': Reine Abschrift JEDER einzelnen Kostenzeile, die auf den Fotos/PDF-Seiten zu sehen ist, in der abgedruckten Reihenfolge. Bezeichnung GENAU wie gedruckt übernehmen, noch KEINE Zuordnung zu unseren Keys. Trage wirklich jede sichtbare Zeile ein, auch Posten, die später keinem Key zugeordnet werden können.",
+        items: {
+          type: "object",
+          properties: {
+            bezeichnungLautAbrechnung: { type: "string", description: "Bezeichnung/Beschriftung der Zeile, exakt wie auf der Abrechnung gedruckt" },
+            betrag: { type: "string", description: "Der dieser Zeile zugeordnete Betrag, als Zahl-String, z.B. \"437.15\"" },
+          },
+          required: ["bezeichnungLautAbrechnung", "betrag"],
+        },
+      },
       werte: {
         type: "object",
-        description: "Erkannte Kostenpositionen. NUR die im Prompt genannten Keys verwenden, nur mit tatsächlich gefundenem Betrag > 0. Betrag als Zahl-String mit Punkt als Dezimaltrennzeichen, z.B. \"437.15\".",
+        description: "Erkannte Kostenpositionen. NUR die im Prompt genannten Keys verwenden, nur mit tatsächlich gefundenem Betrag > 0. Betrag als Zahl-String mit Punkt als Dezimaltrennzeichen, z.B. \"437.15\". MUSS ausschließlich aus 'zeilenErfasst' abgeleitet werden (nicht erneut unabhängig vom Bild bestimmt) — jeder Betrag hier muss einem Eintrag dort entsprechen.",
         additionalProperties: { type: "string" },
       },
       hinweise: {
@@ -196,7 +216,7 @@ const TOOLS = [{
         items: { type: "string" },
       },
     },
-    required: ["wohnung", "werte", "hinweise"],
+    required: ["wohnung", "zeilenErfasst", "werte", "hinweise"],
   },
 }];
 
@@ -241,6 +261,10 @@ export default async function handler(req, res) {
 
   const prompt = `Du liest Fotos und/oder PDF-Seiten einer deutschen Nebenkostenabrechnung (Betriebskostenabrechnung) und extrahierst daraus strukturierte Daten. Trage das Ergebnis über das Werkzeug "${TOOL_NAME}" ein.
 
+Das ist eine anspruchsvolle Aufgabe mit vielen ähnlichen, eng gedruckten Zeilen, bei der schon mehrfach Beträge der falschen Zeile zugeordnet wurden. Denke deshalb gründlich und in zwei getrennten Schritten nach, bevor du das Werkzeug aufrufst:
+1. ERFASSEN: Fülle zuerst "zeilenErfasst" vollständig aus — eine reine, unkommentierte Abschrift jeder einzelnen Kostenzeile in der abgedruckten Reihenfolge, noch OHNE Zuordnung zu unseren Keys.
+2. ZUORDNEN: Leite "werte" danach ausschließlich aus deiner eigenen Abschrift in "zeilenErfasst" ab, nicht erneut unabhängig vom Bild. Prüfe dabei jeden Eintrag einzeln: passt der Key wirklich zur Bezeichnung dieser einen Zeile?
+
 Für "werte" darfst du AUSSCHLIESSLICH die folgenden Keys verwenden, gewählt nach der Bezeichnung/den Alternativbegriffen, wie sie auf der Abrechnung stehen. Nur Keys mit tatsächlich gefundenem Betrag > 0 aufnehmen, alle anderen weglassen:
 
 ${posteneKatalogFuerPrompt()}
@@ -284,20 +308,36 @@ Wenn dadurch einzelne Beträge unsicher sind, nimm sie NICHT in "werte" auf. Wen
       },
       body: JSON.stringify({
         model: "claude-sonnet-5",
-        // 4096 statt ursprünglich 3000 — bei echten, vollständigen Abrechnungen
-        // mit vielen Posten braucht die strukturierte Antwort spürbar mehr
-        // Platz als bei Testfotos ohne Abrechnungsinhalt.
-        max_tokens: 4096,
-        // KEIN "temperature"-Parameter (08/2026, siehe CHANGELOG.md): war
-        // testweise auf 0 gesetzt, um die von Stefan beobachtete Zufalls-
-        // streuung zwischen zwei Läufen mit denselben Fotos zu reduzieren.
-        // Anthropic lehnt den Parameter für "claude-sonnet-5" aber komplett
-        // ab ("'temperature' is deprecated for this model", 400-Fehler) —
-        // dadurch schlug JEDE Foto-Analyse fehl, nicht nur die betroffenen
-        // Randfälle. Sofort wieder entfernt. Die Zufallsstreuung bleibt also
-        // vorerst bestehen und wird stattdessen ausschließlich über die
-        // Prompt-Regeln oben (Zeilen-Zuordnung, Kaltwasser-Konsolidierung)
-        // sowie durch die Bestätigungspflicht im Formular abgefedert.
+        // 16000 statt vorher 4096 (08/2026, siehe CHANGELOG.md): notwendig
+        // geworden durch "effort: max" unten — bei max-Effort denkt das
+        // Modell spürbar mehr nach, und diese Denk-Tokens zählen laut
+        // Anthropic-Doku VOLL auf max_tokens (Denken + sichtbare Antwort
+        // zusammen). Bei zu knappem Limit bricht die Antwort mitten im
+        // Tool-Aufruf ab (stop_reason "max_tokens", siehe Fehlerbehandlung
+        // unten) — das wäre bei max-Effort mit den alten 4096 fast sicher
+        // passiert. Kosten/Dauer sind vertretbar: dieser Endpoint ist ohnehin
+        // auf 8 Aufrufe/Stunde/IP begrenzt (RATE_LIMIT_MAX_AUFRUFE oben) plus
+        // hartes Spending Limit in der Anthropic Console (siehe CHANGELOG.md).
+        max_tokens: 16000,
+        // effort: "max" (08/2026, siehe CHANGELOG.md) — direkte Reaktion auf
+        // Stefans berechtigten Einwand, dass Bild-zu-Text-Erkennung generell
+        // funktioniert (siehe dieser Chat: Fotos werden hier korrekt gelesen)
+        // und die bisherigen Fehler kein Erkennungs-, sondern ein
+        // Zuordnungsproblem sind. Recherche in Anthropics offizieller Doku
+        // (platform.claude.com, siehe CHANGELOG.md für Quellen) ergab: Bei
+        // erzwungenem tool_choice (unten) generiert Claude normalerweise
+        // KEINEN sichtbaren Text/Denkschritt vor dem Tool-Aufruf — anders als
+        // in diesem Chat, wo ich die Abrechnung Zeile für Zeile durchgehe,
+        // bevor ich antworte. "Adaptive Thinking" (Sonnet 5 denkt je nach
+        // effort-Stufe intern nach, auch bei erzwungenem Tool-Aufruf — laut
+        // Doku explizit die einzige mit tool_choice:"tool" kompatible Denk-
+        // Variante) ist per effort steuerbar, OHNE die Tool-Erzwingung
+        // aufzugeben (die wiederum das JSON-Parsing-Problem von früher löst,
+        // siehe Kommentar bei TOOLS oben). effort:"max" = stärkste verfügbare
+        // Stufe, offiziell für claude-sonnet-5 unterstützt. Vertretbarer
+        // Mehraufwand an Zeit/Kosten, da Erkennungsgenauigkeit hier wichtiger
+        // ist als Geschwindigkeit und das Volumen ohnehin gedeckelt ist.
+        output_config: { effort: "max" },
         tools: TOOLS,
         tool_choice: { type: "tool", name: TOOL_NAME }, // erzwingt den Tool-Aufruf, keine freie Textantwort möglich
         messages: [{ role: "user", content }],
@@ -312,6 +352,17 @@ Wenn dadurch einzelne Beträge unsicher sind, nimm sie NICHT in "werte" auf. Wen
 
     const aiJson = await aiRes.json();
     const stopReason = aiJson?.stop_reason;
+    // Diagnose-Log (08/2026, siehe CHANGELOG.md): protokolliert, wie viele der
+    // verbrauchten Tokens tatsächlich fürs interne Nachdenken (Adaptive
+    // Thinking bei effort:"max") draufgingen — bisher unsichtbar, jetzt bei
+    // jedem Aufruf im Vercel-Log nachprüfbar. Kein console.error (kein
+    // Fehler), bewusst normales Log, nur für die Erfolgskontrolle nach dem
+    // effort-Fix gedacht.
+    console.log(
+      "analyse-foto: stop_reason=" + stopReason +
+      ", thinking_tokens=" + (aiJson?.usage?.output_tokens_details?.thinking_tokens ?? "n/a") +
+      ", output_tokens=" + (aiJson?.usage?.output_tokens ?? "n/a")
+    );
     // Bei erzwungenem tool_choice liefert Anthropic das Ergebnis als bereits
     // von Anthropic selbst validiertes JSON-Objekt im "input"-Feld des
     // tool_use-Blocks — kein eigenes Parsen von Freitext mehr nötig (siehe

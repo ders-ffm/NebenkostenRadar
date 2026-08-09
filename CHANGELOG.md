@@ -338,6 +338,25 @@ Behoben, `src/pages/Wohnung.jsx`:
 
 **Einordnung, ehrlich:** Foto-Erkennung per Vision-KI wird bei komplexen, mehrseitigen Abrechnungen nie 100% fehlerfrei sein — das ist der Grund, warum der Nutzer nach der Erkennung immer im editierbaren Formular landet und die Werte bestätigen muss (siehe Kommentar oben in `analyse-foto.js`), nie eine automatische Auswertung ohne diesen Zwischenschritt. Der Gesamtsumme-Abgleich in `Posten.jsx` bleibt das wichtigste Sicherheitsnetz gegen genau solche Fehler.
 
+### Foto-Erkennung: Recherche zu Ursache der Zuordnungsfehler + effort:max + Zwei-Schritt-Schema (08/2026)
+
+Stefans berechtigter Einwand nach dem letzten, besonders schlechten Testergebnis (nur 5 von 17 Positionen korrekt, siehe vorheriger Eintrag): "Du kannst alles auf der Abrechnung lesen [im Chat] — das sollte die Bilderkennung auch können. Wir probieren die ganze Zeit, aber anscheinend weißt du auch nicht was zum Erfolg führt." Zu Recht — die letzten beiden Fixversuche waren reine Prompt-Textregeln ohne geprüfte Grundlage. Auf Wunsch, wie es "im Idealfall" bzw. bei anderen funktioniert, in Anthropics offizieller Doku recherchiert statt weiter zu raten:
+
+- [Define tools – Claude Platform Docs](https://platform.claude.com/docs/en/agents-and-tools/tool-use/define-tools) (Primärquelle)
+- [Effort – Claude Platform Docs](https://platform.claude.com/docs/en/build-with-claude/effort) (Primärquelle)
+- [Steering thinking – Claude Platform Docs](https://platform.claude.com/docs/en/build-with-claude/thinking-steering-and-cost) (Primärquelle)
+
+**Zentraler Befund (aus "Define tools"):** Bei erzwungenem `tool_choice` (unser Fall, siehe TOOLS-Kommentar) generiert Claude normalerweise KEINEN sichtbaren Text/Denkschritt vor dem Tool-Aufruf — anders als in diesem Chat, wo die Abrechnung Zeile für Zeile durchgegangen wird, bevor geantwortet wird. Genau das ist der plausibelste Unterschied zwischen "im Chat lesbar" und "API-Aufruf falsch zugeordnet". Wichtige Ausnahme laut Doku: "Adaptive Thinking" (Sonnet 5 denkt, abhängig von der `effort`-Stufe, intern nach) ist ausdrücklich die einzige mit erzwungenem `tool_choice` kompatible Denk-Variante — anders als "manual extended thinking", das mit erzwungenem tool_choice einen 400-Fehler auslöst. `effort` ist außerdem KOMPATIBEL mit erzwungenem tool_choice und steuert laut Doku direkt "wie oft und wie tief" gedacht wird.
+
+Umgesetzt in `api/analyse-foto.js`:
+- `output_config: { effort: "max" }` gesetzt (laut Doku-Kompatibilitätstabelle offiziell für `claude-sonnet-5` unterstützt) — vorher lief die API implizit auf `"high"` (Standardwert), jetzt bewusst auf der höchsten verfügbaren Stufe, da Genauigkeit hier wichtiger ist als Tempo/Kosten und das Volumen ohnehin über das Rate-Limit (8/Std./IP) gedeckelt ist.
+- `max_tokens` von 4096 auf 16000 erhöht — notwendig, weil Denk-Tokens bei `effort:"max"` laut Doku voll auf `max_tokens` angerechnet werden; bei unverändertem Limit hätte das Modell mit sehr hoher Wahrscheinlichkeit mitten im Tool-Aufruf abgebrochen (`stop_reason: "max_tokens"`).
+- Neues Pflichtfeld `zeilenErfasst` im Tool-Schema, VOR `werte` platziert: erzwingt eine reine Abschrift jeder Kostenzeile (Bezeichnung + Betrag, wie gedruckt), bevor überhaupt eine Zuordnung zu unseren Keys passiert. `werte` muss laut Prompt ausschließlich aus dieser Abschrift abgeleitet werden, nicht erneut unabhängig vom Bild. Ergänzt die effort-Änderung um eine strukturelle Absicherung, die nicht davon abhängt, ob/wie viel das Modell tatsächlich "denkt" — zusätzlicher Schutz, kein Ersatz.
+- Prompt um eine ausdrückliche Denk-Aufforderung ergänzt (Formulierung an Anthropics eigenem Beispiel "Think carefully before responding" orientiert), plus explizite Zwei-Schritte-Anweisung (erst erfassen, dann zuordnen).
+- Diagnose-Log ergänzt (`thinking_tokens`, `output_tokens`, `stop_reason` bei jedem Aufruf) — macht ab sofort in den Vercel-Logs nachprüfbar, ob und wie viel tatsächlich gedacht wurde, statt weiter zu raten.
+
+**Einordnung, ehrlich:** Das ist die best-begründete Änderung bisher (Primärquellen statt Vermutung), aber keine Garantie — die genaue Ursache der Zeilen-Verwechslung bei diesem spezifischen Modell/dieser Aufgabe ist von außen nicht sicher nachweisbar, nur durch erneuten Live-Test mit Blick auf das neue Diagnose-Log zu prüfen. Spürbar höhere Laufzeit/Kosten pro Analyse sind die bewusst in Kauf genommene Kehrseite.
+
 ## Frühere Änderungen
 
 Siehe Kommentar-Historie in `scripts/rechtsmonitor.mjs` für die Entwicklung des SEO-Artikel-Systems (25.–26.07.2026: JSON-Extraktion, deterministische Artikel-IDs, Duplikat-Vermeidung).
