@@ -8,7 +8,7 @@
 // sich auf In-Memory-State zu verlassen.
 // ─────────────────────────────────────────────────────────────────────────
 import { useState, useEffect, useRef } from "react";
-import { PDFDownloadLink, pdf } from "@react-pdf/renderer";
+import { pdf } from "@react-pdf/renderer";
 import { THEME } from "../config/theme.js";
 import { buildResult } from "../lib/analyse.js";
 import PruefberichtDocument from "../pdf/PruefberichtDocument.jsx";
@@ -28,6 +28,7 @@ export default function Download({ navigateTo }) {
   const C = THEME.color;
   const [status, setStatus] = useState("laden"); // laden | bereit | fehler
   const [daten, setDaten] = useState(null);
+  const [pdfWirdErstellt, setPdfWirdErstellt] = useState(false);
   const emailVersendetRef = useRef(false); // verhindert Doppelversand bei Re-Render/StrictMode
 
   useEffect(() => {
@@ -77,6 +78,38 @@ export default function Download({ navigateTo }) {
     })();
   }, [status, daten]);
 
+  // PDF-Button: bewusst KEIN <a download> / PDFDownloadLink mehr (siehe unten).
+  // iOS Safari (jeder Browser auf iOS läuft auf WebKit) unterstützt das
+  // HTML-"download"-Attribut grundsätzlich nicht — ein Tap tat vorher
+  // schlicht nichts, unabhängig von den Daten (bestätigtes WebKit-Verhalten,
+  // siehe react-pdf-Projekt-Diskussion #1743). Stattdessen: leeren Tab SOFORT
+  // im Klick-Handler öffnen (das braucht Safaris Popup-Blocker, ein window.open()
+  // NACH einem await wird sonst als Popup geblockt), danach die fertige
+  // PDF-Blob-URL in diesen Tab nachladen, sobald sie erzeugt ist. Funktioniert
+  // browserübergreifend, nicht nur auf iOS.
+  async function handlePdfDownload() {
+    setPdfWirdErstellt(true);
+    const neuesFenster = window.open("", "_blank");
+    try {
+      const blob = await pdf(
+        <PruefberichtDocument result={daten.result} wohnung={daten.wohnung} adressen={daten.adressen} stufe={daten.stufe} />
+      ).toBlob();
+      const url = URL.createObjectURL(blob);
+      if (neuesFenster) {
+        neuesFenster.location.href = url;
+      } else {
+        // Auch der leere Tab wurde geblockt (selten) — Fallback: aktuelle Seite.
+        window.location.href = url;
+      }
+    } catch (e) {
+      console.error("PDF-Erstellung fehlgeschlagen:", e);
+      if (neuesFenster) neuesFenster.close();
+      alert("Das PDF konnte nicht erstellt werden. Bitte schreib uns kurz: support@nebenkostenradar.com");
+    } finally {
+      setPdfWirdErstellt(false);
+    }
+  }
+
   return (
     <div style={{ fontFamily: THEME.font.body, background: C.bg, color: C.text, minHeight: "100vh", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", padding: 32 }}>
       <div style={{ maxWidth: 460, width: "100%", textAlign: "center" }}>
@@ -96,14 +129,9 @@ export default function Download({ navigateTo }) {
             <p style={{ fontSize: 14, color: C.textMuted, marginBottom: 22 }}>
               Dein PDF ist fertig.{daten.email ? " Zusätzlich schicken wir es dir gerade an deine E-Mail-Adresse." : ""}
             </p>
-            <PDFDownloadLink
-              document={<PruefberichtDocument result={daten.result} wohnung={daten.wohnung} adressen={daten.adressen} stufe={daten.stufe} />}
-              fileName={"Nebenkosten-Pruefbericht_" + daten.wohnung.jahr + ".pdf"}
-            >
-              {({ loading }) => (
-                <Btn>{loading ? "PDF wird erstellt …" : "PDF herunterladen"}</Btn>
-              )}
-            </PDFDownloadLink>
+            <Btn onClick={handlePdfDownload} disabled={pdfWirdErstellt}>
+              {pdfWirdErstellt ? "PDF wird erstellt …" : "PDF herunterladen"}
+            </Btn>
 
             {daten.email && (
               <p style={{ fontSize: 12, color: C.textDim, lineHeight: 1.6, marginTop: 16 }}>
