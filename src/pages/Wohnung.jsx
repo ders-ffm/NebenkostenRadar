@@ -9,7 +9,7 @@
 // sie unter Vercels 4,5-MB-Body-Limit bleiben, und nach der Erkennung nicht
 // weiter aufbewahrt (weder hier noch serverseitig, siehe analyse-foto.js).
 // ─────────────────────────────────────────────────────────────────────────
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import { THEME } from "../config/theme.js";
 import { BUSINESS } from "../config/business.js";
 import { toNum, fmt } from "../lib/format.js";
@@ -61,46 +61,108 @@ function bildAufBase64(file, maxDim = 1800, quality = 0.82) {
 export default function Wohnung({ navigateTo, wohnung, setWohnung, werte, setWerte }) {
   const C = THEME.color;
   const [errors, setErrors] = useState({});
-  const [fotoStatus, setFotoStatus] = useState("idle"); // idle | laden | fertig | fehler
+
+  // Foto-Upload 08/2026, Überarbeitung nach Praxistest von Stefan (siehe
+  // CHANGELOG.md): Ursprünglich löste jede Dateiauswahl SOFORT eine Analyse
+  // aus. Auf dem Handy bedeutet das: ein Kamera-Foto = ein sofortiger,
+  // isolierter API-Aufruf — es gab keine Möglichkeit, mehrere Fotos (z.B.
+  // Seite für Seite fotografiert) erst zu sammeln, zu sehen was schon
+  // ausgewählt ist, und dann gemeinsam auszuwerten. Das führte zu genau der
+  // Verwirrung, die gemeldet wurde ("welches Foto ist jetzt im Upload?").
+  // Jetzt zweistufig: 1) Fotos sammeln (mit sichtbarer Vorschau + Status pro
+  // Foto, mehrfach nacheinander möglich), 2) explizit "Fotos analysieren".
+  const [fotos, setFotos] = useState([]); // { id, name, previewUrl, status: 'laedt'|'bereit'|'fehler', fehlerText, base64 }
+  const [fotoStatus, setFotoStatus] = useState("idle"); // idle | analysiert | fertig | fehler — bezieht sich nur noch auf den Analyse-Schritt
   const [fotoAnzahl, setFotoAnzahl] = useState(0);
-  const [hinweise, setHinweise] = useState([]); // Bild-/Lesbarkeitsprobleme, client- und serverseitig
+  const [analyseFehler, setAnalyseFehler] = useState(""); // konkrete Server-/Netzwerk-Fehlermeldung statt generischem Text
+  const [hinweise, setHinweise] = useState([]); // Bild-/Lesbarkeitsprobleme laut KI-Antwort
   const setW = (k, v) => setWohnung(p => ({ ...p, [k]: v }));
 
-  async function handleFotoUpload(e) {
-    const files = Array.from(e.target.files || []).slice(0, MAX_BILDER);
-    if (files.length === 0) return;
-    setFotoStatus("laden");
+  // Blob-URLs (für die Vorschaubilder) beim Verlassen der Seite wieder
+  // freigeben, statt sie bis zum Tab-Schließen im Speicher zu halten.
+  const fotosRef = useRef(fotos);
+  useEffect(() => { fotosRef.current = fotos; }, [fotos]);
+  useEffect(() => () => { fotosRef.current.forEach(f => URL.revokeObjectURL(f.previewUrl)); }, []);
+
+  function neueFotoId() {
+    return (typeof crypto !== "undefined" && crypto.randomUUID) ? crypto.randomUUID() : String(Date.now() + Math.random());
+  }
+
+  // Nimmt neu ausgewählte Dateien entgegen (Kamera-Aufnahme = 1 Datei, Galerie-
+  // Mehrfachauswahl = mehrere) und FÜGT sie der bestehenden Liste hinzu, statt
+  // sie sofort zu verschicken. Jedes Foto wird unabhängig von den anderen
+  // client-seitig verkleinert/geprüft, damit ein einzelnes schlechtes Foto
+  // die Bearbeitung der übrigen nicht verzögert oder blockiert.
+  function handleDateiAuswahl(e) {
+    const neueDateien = Array.from(e.target.files || []);
+    e.target.value = ""; // sofort zurücksetzen — sonst lässt sich dieselbe Datei kein zweites Mal auswählen
+    if (neueDateien.length === 0) return;
+
+    const freiePlaetze = MAX_BILDER - fotos.length;
+    if (freiePlaetze <= 0) return;
+    const zuVerarbeiten = neueDateien.slice(0, freiePlaetze);
+
+    const neueEintraege = zuVerarbeiten.map(file => ({
+      id: neueFotoId(),
+      name: file.name,
+      previewUrl: URL.createObjectURL(file),
+      status: "laedt",
+      fehlerText: "",
+      base64: null,
+    }));
+    setFotos(prev => [...prev, ...neueEintraege]);
+    // Wie bei entferneFoto(): ein vorheriges Analyse-Ergebnis bezieht sich auf
+    // eine jetzt andere Foto-Zusammenstellung und sollte nicht mehr als aktuell
+    // erscheinen, bis neu analysiert wurde.
+    if (fotoStatus === "fertig" || fotoStatus === "fehler") setFotoStatus("idle");
+
+    neueEintraege.forEach((eintrag, i) => {
+      bildAufBase64(zuVerarbeiten[i])
+        .then(base64 => {
+          setFotos(prev => prev.map(f => f.id === eintrag.id ? { ...f, status: "bereit", base64 } : f));
+        })
+        .catch(err => {
+          const text = err?.message === "zu_niedrig_aufgeloest"
+            ? "Auflösung zu niedrig — bitte näher heran und schärfer fotografieren."
+            : "Konnte nicht gelesen werden.";
+          setFotos(prev => prev.map(f => f.id === eintrag.id ? { ...f, status: "fehler", fehlerText: text } : f));
+        });
+    });
+  }
+
+  function entferneFoto(id) {
+    setFotos(prev => {
+      const eintrag = prev.find(f => f.id === id);
+      if (eintrag) URL.revokeObjectURL(eintrag.previewUrl);
+      return prev.filter(f => f.id !== id);
+    });
+    // Ergebnis eines vorherigen Durchlaufs nicht mehr als aktuell ausweisen,
+    // sobald sich die Foto-Auswahl ändert — verhindert veraltete "✓ erkannt"-
+    // Anzeige, die sich auf eine inzwischen andere Foto-Zusammenstellung bezieht.
+    if (fotoStatus === "fertig" || fotoStatus === "fehler") setFotoStatus("idle");
+  }
+
+  async function handleAnalysieren() {
+    const bereite = fotos.filter(f => f.status === "bereit");
+    if (bereite.length === 0) return;
+    setFotoStatus("analysiere");
+    setAnalyseFehler("");
     setHinweise([]);
     try {
-      // allSettled statt all: ein einzelnes unscharfes/zu kleines Foto soll
-      // nicht den ganzen Durchlauf abbrechen, sondern nur für sich selbst
-      // einen Hinweis erzeugen — die restlichen, guten Fotos werden trotzdem
-      // ausgewertet (siehe "wenn Fotos unscharf sind, muss das geprüft werden").
-      const ergebnisse = await Promise.allSettled(files.map(f => bildAufBase64(f)));
-      const bilder = [];
-      const clientHinweise = [];
-      ergebnisse.forEach((r, i) => {
-        if (r.status === "fulfilled") bilder.push(r.value);
-        else clientHinweise.push(
-          "Foto " + (i + 1) + ": " + (r.reason?.message === "zu_niedrig_aufgeloest"
-            ? "Auflösung zu niedrig — bitte näher heran und schärfer fotografieren."
-            : "konnte nicht gelesen werden.")
-        );
-      });
-
-      if (bilder.length === 0) {
-        setHinweise(clientHinweise);
-        setFotoStatus("fehler");
-        return;
-      }
-
       const res = await fetch("/api/analyse-foto", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ bilder }),
+        body: JSON.stringify({ bilder: bereite.map(f => f.base64) }),
       });
-      if (!res.ok) throw new Error("Erkennung fehlgeschlagen");
-      const data = await res.json();
+      // Antwort-Body auch bei Fehlern lesen — die API liefert dort eine
+      // konkrete Fehlermeldung (siehe analyse-foto.js), die bisher verworfen
+      // und durch einen generischen Text ersetzt wurde. Genau das machte die
+      // Fehlersuche unnötig schwer ("Foto konnte nicht gelesen werden" auch
+      // dann, wenn z.B. die Antwort der KI abgeschnitten war).
+      let data = null;
+      try { data = await res.json(); } catch { /* keine/kein gültiges JSON, z.B. bei Timeout-Fehlerseite */ }
+      if (!res.ok) throw new Error(data?.error || "Die Erkennung ist fehlgeschlagen.");
+
       setWohnung(p => ({
         ...p,
         ...(data.wohnung?.flaeche ? { flaeche: data.wohnung.flaeche } : {}),
@@ -109,13 +171,12 @@ export default function Wohnung({ navigateTo, wohnung, setWohnung, werte, setWer
       }));
       if (setWerte && data.werte) setWerte(p => ({ ...p, ...data.werte }));
       setFotoAnzahl(data.anzahlErkannt || 0);
-      setHinweise([...clientHinweise, ...(data.hinweise || [])]);
+      setHinweise(data.hinweise || []);
       setFotoStatus("fertig");
     } catch (err) {
       console.error("Foto-Erkennung fehlgeschlagen:", err.message);
+      setAnalyseFehler(err.message || "");
       setFotoStatus("fehler");
-    } finally {
-      e.target.value = "";
     }
   }
 
@@ -161,41 +222,93 @@ export default function Wohnung({ navigateTo, wohnung, setWohnung, werte, setWer
         <div style={{ background: C.surface, border: "1px solid " + (fotoStatus === "fertig" ? C.brand : C.border), borderRadius: THEME.radius.lg, padding: "16px", marginBottom: 16 }}>
           <div style={{ fontSize: 13, fontWeight: 600, color: C.text, marginBottom: 4, fontFamily: THEME.font.heading }}>📷 Abrechnung fotografieren (optional)</div>
           <div style={{ fontSize: 12, color: C.textMuted, marginBottom: 10, lineHeight: 1.6 }}>
-            Bis zu {MAX_BILDER} Fotos hochladen — wir füllen Wohnungsdaten und Posten automatisch aus, du prüfst und korrigierst danach wie gewohnt. Am besten die Übersichtsseite mit der Kostenaufstellung fotografieren (meist die ersten Seiten der Abrechnung), gerne zusätzlich weitere Seiten, falls z. B. CO2-Kosten separat aufgeführt sind. Die Fotos werden nur zur Erkennung genutzt, nicht gespeichert.
+            Bis zu {MAX_BILDER} Fotos hinzufügen — auch nacheinander, z. B. Seite für Seite. Am besten die Übersichtsseite mit der Kostenaufstellung fotografieren (meist die ersten Seiten der Abrechnung), gerne zusätzlich weitere Seiten, falls z. B. CO2-Kosten separat aufgeführt sind. Sobald alle Fotos da sind, unten auf "Fotos analysieren" tippen. Die Fotos werden nur zur Erkennung genutzt, nicht gespeichert.
           </div>
-          <label
-            htmlFor="foto-upload-input"
-            style={{
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              gap: 8,
-              background: fotoStatus === "laden" ? C.textDim : C.accent,
-              color: C.accentText,
-              fontFamily: THEME.font.heading,
-              fontWeight: 600,
-              fontSize: 14,
-              padding: "14px 20px",
-              borderRadius: THEME.radius.md,
-              cursor: fotoStatus === "laden" ? "default" : "pointer",
-              opacity: fotoStatus === "laden" ? 0.75 : 1,
-              userSelect: "none",
-              boxSizing: "border-box",
-              WebkitTapHighlightColor: "transparent",
-            }}
-          >
-            📷 Foto aufnehmen oder auswählen
-          </label>
+
+          {fotos.length > 0 && (
+            <div style={{ display: "flex", flexWrap: "wrap", gap: 8, marginBottom: 10 }}>
+              {fotos.map((f, i) => (
+                <div key={f.id} style={{ position: "relative", width: 60, height: 60, borderRadius: THEME.radius.sm, overflow: "hidden", border: "1px solid " + C.border, flexShrink: 0 }}>
+                  <img src={f.previewUrl} alt={"Foto " + (i + 1)} style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }} />
+                  <div title={f.status === "bereit" ? "Bereit" : f.status === "fehler" ? f.fehlerText : "Wird geprüft …"} style={{
+                    position: "absolute", top: 3, left: 3, width: 16, height: 16, borderRadius: "50%",
+                    background: f.status === "bereit" ? C.brand : f.status === "fehler" ? C.warn : C.textDim,
+                    color: "#fff", fontSize: 10, fontWeight: 700, display: "flex", alignItems: "center", justifyContent: "center", lineHeight: 1,
+                  }}>
+                    {f.status === "bereit" ? "✓" : f.status === "fehler" ? "!" : "…"}
+                  </div>
+                  <button
+                    onClick={() => entferneFoto(f.id)}
+                    aria-label={"Foto " + (i + 1) + " entfernen"}
+                    style={{
+                      position: "absolute", top: 3, right: 3, width: 18, height: 18, borderRadius: "50%",
+                      background: "rgba(0,0,0,0.6)", color: "#fff", border: "none", fontSize: 12, lineHeight: "17px",
+                      cursor: "pointer", padding: 0, fontFamily: "system-ui, sans-serif",
+                    }}
+                  >×</button>
+                </div>
+              ))}
+            </div>
+          )}
+
+          {fotos.some(f => f.status === "fehler") && (
+            <div style={{ marginBottom: 10, fontSize: 12, color: C.warn, lineHeight: 1.7 }}>
+              {fotos.map((f, i) => f.status === "fehler" ? <div key={f.id}>⚠ Foto {i + 1}: {f.fehlerText}</div> : null)}
+            </div>
+          )}
+
+          {fotos.length < MAX_BILDER && (
+            <label
+              htmlFor="foto-upload-input"
+              style={{
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                gap: 8,
+                background: C.accent,
+                color: C.accentText,
+                fontFamily: THEME.font.heading,
+                fontWeight: 600,
+                fontSize: 14,
+                padding: "14px 20px",
+                borderRadius: THEME.radius.md,
+                cursor: "pointer",
+                userSelect: "none",
+                boxSizing: "border-box",
+                WebkitTapHighlightColor: "transparent",
+              }}
+            >
+              📷 {fotos.length === 0 ? "Foto aufnehmen oder auswählen" : "Weiteres Foto hinzufügen"}
+            </label>
+          )}
           {/* Label+input-Kopplung statt Klick-Handler in JS: löst auf iOS/Android zuverlässig
               denselben nativen Dialog aus (Kamera direkt fotografieren ODER aus der Galerie
-              wählen), aber mit deutlich größerem, gut sichtbarem Tap-Ziel als das nackte
-              System-<input type=file> vorher — wichtig, da der Großteil der Nutzer laut
-              Stefan über Smartphone kommt (siehe CHANGELOG.md für die Einordnung der 75%-These). */}
-          <input id="foto-upload-input" type="file" accept="image/*" multiple onChange={handleFotoUpload} disabled={fotoStatus === "laden"}
+              wählen), mit großem, gut sichtbarem Tap-Ziel. onChange FÜGT der Liste oben hinzu,
+              statt sofort zu analysieren — siehe Kommentar bei handleDateiAuswahl(). */}
+          <input id="foto-upload-input" type="file" accept="image/*" multiple onChange={handleDateiAuswahl}
             style={{ display: "none" }} />
-          {fotoStatus === "laden" && (
-            <div style={{ marginTop: 10, fontSize: 12, color: C.textMuted }}>Abrechnung wird gelesen …</div>
+
+          <div style={{ fontSize: 11, color: C.textDim, marginTop: 8 }}>
+            {fotos.length} von {MAX_BILDER} Fotos ausgewählt{fotos.length >= MAX_BILDER ? " — Maximum erreicht" : ""}
+          </div>
+
+          {fotos.some(f => f.status === "bereit") && (
+            <button
+              onClick={handleAnalysieren}
+              disabled={fotoStatus === "analysiere"}
+              style={{
+                marginTop: 10, width: "100%",
+                background: fotoStatus === "analysiere" ? C.border : C.brand,
+                color: fotoStatus === "analysiere" ? C.textDim : "#fff",
+                border: "none", borderRadius: THEME.radius.md, padding: "13px",
+                fontSize: 14, fontWeight: 600, fontFamily: THEME.font.heading,
+                cursor: fotoStatus === "analysiere" ? "default" : "pointer",
+              }}
+            >
+              {fotoStatus === "analysiere" ? "Wird analysiert …" : "✓ " + fotos.filter(f => f.status === "bereit").length + " Foto(s) analysieren"}
+            </button>
           )}
+
           {fotoStatus === "fertig" && (
             <div style={{ marginTop: 10, fontSize: 12, color: C.brand, fontWeight: 600 }}>
               ✓ {fotoAnzahl > 0 ? fotoAnzahl + " Posten erkannt und unten ausgefüllt" : "Wohnungsdaten übernommen, aber keine Posten sicher erkannt"} — bitte prüfen.
@@ -203,7 +316,7 @@ export default function Wohnung({ navigateTo, wohnung, setWohnung, werte, setWer
           )}
           {fotoStatus === "fehler" && (
             <div style={{ marginTop: 10, fontSize: 12, color: C.warn }}>
-              Foto konnte nicht gelesen werden. Bitte Werte manuell eingeben (unten und auf der nächsten Seite) oder ein anderes Foto versuchen.
+              {analyseFehler || "Erkennung fehlgeschlagen."} Bitte Werte manuell eingeben (unten und auf der nächsten Seite) oder erneut versuchen.
             </div>
           )}
           {hinweise.length > 0 && (

@@ -37,7 +37,22 @@
 // Kein neues npm-Package: reiner fetch-Aufruf an die Anthropic-REST-API,
 // analog zu allen anderen api/*.js-Dateien in diesem Projekt (siehe z.B.
 // get-report.js für den Stripe-Aufruf nach demselben Muster).
+//
+// RATE-LIMITING (08/2026, siehe CHANGELOG.md): Dieser Endpoint war bis
+// dahin öffentlich ohne jede Begrenzung erreichbar — jeder Aufruf kostet
+// echtes Geld (Anthropic-API), unabhängig davon, ob am Ende gekauft wird.
+// Der CORS-Header oben schützt NICHT davor: er wird nur vom Browser bei
+// Aufrufen AUS einer Webseite heraus beachtet, nicht von direkten Skript-
+// Aufrufen (curl o.ä.). Deshalb serverseitiges IP-basiertes Limit über die
+// Supabase-Tabelle nkr_foto_ratelimit (siehe ANLEITUNG-UPLOAD.md 1.1 für
+// das SQL). Bewusst FAIL-OPEN: schlägt die Limit-Prüfung selbst technisch
+// fehl (z.B. Tabelle noch nicht angelegt), wird der Aufruf trotzdem
+// durchgelassen statt die ganze Funktion lahmzulegen — das Limit ist eine
+// Kosten-Bremse, kein Sicherheitsmerkmal, und soll die Kernfunktion nicht
+// gefährden. Zusätzlich empfohlen (nicht Teil des Codes): ein Spending
+// Limit direkt in der Anthropic Console als harte Obergrenze.
 // ─────────────────────────────────────────────────────────────────────────
+import crypto from "crypto";
 import { ALLE_POSTEN } from "../src/lib/analyse.js";
 import { toNum } from "../src/lib/format.js";
 
@@ -46,6 +61,56 @@ export const config = {
 };
 
 const GUELTIGE_KEYS = new Set(ALLE_POSTEN.map(p => p.key));
+
+const RATE_LIMIT_MAX_AUFRUFE = 8;   // Analysen pro IP...
+const RATE_LIMIT_FENSTER_MIN = 60;  // ...innerhalb dieser Zeitspanne (Minuten)
+
+// Rohe IP-Adressen sind personenbezogene Daten (DSGVO) — statt sie im Klartext
+// zu speichern, wird nur ein Einweg-Hash abgelegt. Kein dediziertes Secret
+// als Salt nötig: Zweck ist Kosten-/Missbrauchsschutz, keine kryptografische
+// Anonymisierung, und Zeilen werden ohnehin nach 24h wieder gelöscht (unten).
+function ipHash(ip) {
+  return crypto.createHash("sha256").update("nkr-ratelimit-2026:" + ip).digest("hex");
+}
+
+async function pruefeUndProtokolliereRateLimit(ip) {
+  const supabaseUrl = process.env.SUPABASE_URL;
+  const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
+  if (!supabaseUrl || !supabaseKey) return { erlaubt: true }; // fail-open, siehe Kommentar oben
+
+  const hash = ipHash(ip);
+  const headers = { apikey: supabaseKey, Authorization: "Bearer " + supabaseKey, "Content-Type": "application/json" };
+
+  try {
+    const seit = new Date(Date.now() - RATE_LIMIT_FENSTER_MIN * 60 * 1000).toISOString();
+    const zaehlRes = await fetch(
+      supabaseUrl + "/rest/v1/nkr_foto_ratelimit?ip_hash=eq." + hash + "&created_at=gte." + encodeURIComponent(seit) + "&select=id",
+      { headers }
+    );
+    if (zaehlRes.ok) {
+      const rows = await zaehlRes.json();
+      if (rows.length >= RATE_LIMIT_MAX_AUFRUFE) return { erlaubt: false };
+    }
+
+    // Aufruf protokollieren (für die nächste Prüfung) — bewusst NICHT awaiten
+    // lassen, das Ergebnis blockiert die Kernfunktion nicht.
+    fetch(supabaseUrl + "/rest/v1/nkr_foto_ratelimit", {
+      method: "POST", headers, body: JSON.stringify({ ip_hash: hash }),
+    }).catch(() => {});
+
+    // Best-effort-Aufräumen alter Zeilen (>24h) — kein eigener Cron-Job nötig,
+    // läuft einfach bei Gelegenheit mit, Fehler hier sind unkritisch.
+    const cutoff = new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString();
+    fetch(supabaseUrl + "/rest/v1/nkr_foto_ratelimit?created_at=lt." + encodeURIComponent(cutoff), {
+      method: "DELETE", headers,
+    }).catch(() => {});
+
+    return { erlaubt: true };
+  } catch (err) {
+    console.error("Rate-Limit-Prüfung fehlgeschlagen (fail-open):", err.message);
+    return { erlaubt: true };
+  }
+}
 
 function posteneKatalogFuerPrompt() {
   return ALLE_POSTEN
@@ -79,6 +144,12 @@ export default async function handler(req, res) {
   }
   if (bilder.length > 6) {
     return res.status(400).json({ error: "Maximal 6 Fotos pro Durchlauf" });
+  }
+
+  const clientIp = (req.headers["x-forwarded-for"] || "").split(",")[0].trim() || req.socket?.remoteAddress || "unbekannt";
+  const rateLimit = await pruefeUndProtokolliereRateLimit(clientIp);
+  if (!rateLimit.erlaubt) {
+    return res.status(429).json({ error: "Zu viele Foto-Analysen von dieser Verbindung. Bitte in einer Stunde erneut versuchen oder die Werte manuell eingeben." });
   }
 
   const prompt = `Du liest Fotos einer deutschen Nebenkostenabrechnung (Betriebskostenabrechnung) und extrahierst daraus strukturierte Daten.
@@ -126,7 +197,13 @@ Gib nur das JSON-Objekt zurück, sonst nichts.`;
       },
       body: JSON.stringify({
         model: "claude-sonnet-5",
-        max_tokens: 3000,
+        // War 3000 — bei echten, vollständigen Abrechnungen mit vielen Posten
+        // (anders als bei Testfotos ohne Abrechnungsinhalt) reichte das nicht
+        // immer aus: die Antwort wurde mitten im JSON abgeschnitten, dadurch
+        // schlug extrahiereJSON() fehl und der Nutzer bekam eine generische
+        // "Foto konnte nicht gelesen werden"-Meldung ohne erkennbaren Grund.
+        // Auf 4096 angehoben, um dafür ausreichend Reserve zu haben.
+        max_tokens: 4096,
         messages: [{ role: "user", content }],
       }),
     });
@@ -134,13 +211,26 @@ Gib nur das JSON-Objekt zurück, sonst nichts.`;
     if (!aiRes.ok) {
       const errText = await aiRes.text();
       console.error("Anthropic API Fehler:", aiRes.status, errText);
-      return res.status(502).json({ error: "Foto-Erkennung fehlgeschlagen" });
+      return res.status(502).json({ error: "Die Erkennung war überlastet oder nicht erreichbar. Bitte erneut versuchen." });
     }
 
     const aiJson = await aiRes.json();
     const text = aiJson?.content?.[0]?.text || "";
+    const stopReason = aiJson?.stop_reason;
     const parsed = extrahiereJSON(text);
-    if (!parsed) return res.status(502).json({ error: "Antwort konnte nicht gelesen werden" });
+    if (!parsed) {
+      // Diagnose fürs Vercel-Log: stop_reason "max_tokens" bedeutet, die Antwort
+      // wurde trotz Erhöhung erneut mitten im JSON abgeschnitten (z.B. bei sehr
+      // vielen Fotos/Posten gleichzeitig) — dann hilft nur eine weitere Anhebung
+      // oder weniger Fotos pro Durchlauf. Jeder andere Grund deutet eher auf ein
+      // unerwartetes Antwortformat der KI hin.
+      console.error("analyse-foto: JSON-Extraktion fehlgeschlagen. stop_reason:", stopReason, "Textlänge:", text.length);
+      return res.status(502).json({
+        error: stopReason === "max_tokens"
+          ? "Die Abrechnung war zu umfangreich für einen Durchlauf. Bitte weniger Fotos gleichzeitig hochladen."
+          : "Antwort konnte nicht gelesen werden. Bitte erneut versuchen.",
+      });
+    }
 
     // Serverseitige Absicherung: nur bekannte Keys, nur gültige Zahlen > 0 übernehmen.
     const werte = {};

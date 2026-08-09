@@ -42,6 +42,18 @@ alter table nkr_purchases enable row level security;
 - [ ] Ausgeführt
 - [ ] Alte Tabelle `marketing_optins` gelöscht, falls sie aus einem früheren Versuch existiert (ersetzt durch `nkr_purchases`)
 
+**Zusätzlich, 08/2026 — Rate-Limit-Tabelle für die Foto-Erkennung:**
+```sql
+create table if not exists nkr_foto_ratelimit (
+  id bigint generated always as identity primary key,
+  ip_hash text not null,
+  created_at timestamptz not null default now()
+);
+alter table nkr_foto_ratelimit enable row level security;
+create index if not exists nkr_foto_ratelimit_ip_zeit on nkr_foto_ratelimit (ip_hash, created_at);
+```
+- [ ] Ausgeführt — ohne diese Tabelle läuft `api/analyse-foto.js` weiter (fail-open), aber ohne jede Kosten-Bremse gegen Missbrauch
+
 **Warum `enable row level security` ohne zusätzliche Policy:** Der öffentliche Anon-Key (`VITE_SUPABASE_ANON_KEY`) liegt im Browser-Code und ist damit für jeden einsehbar. Ohne RLS könnte theoretisch jeder mit diesem Key direkt per REST-API auf `nkr_reports`/`nkr_purchases` zugreifen — vorbei an `get-report.js`/`my-reports.js` und deren eingebauten Prüfungen (Stripe-Zahlungsstatus, verifizierte E-Mail). Mit RLS aktiviert und ohne Policy kann der Anon-Key gar nichts lesen/schreiben; nur der `SUPABASE_SERVICE_ROLE_KEY` (den ausschließlich unsere serverseitigen `api/*.js`-Funktionen verwenden, nie der Browser) umgeht RLS automatisch. Genau das gewünschte Verhalten — kein zusätzlicher Schritt nötig.
 
 ### 1.2 Supabase — Auth (Magic-Link-Login)
