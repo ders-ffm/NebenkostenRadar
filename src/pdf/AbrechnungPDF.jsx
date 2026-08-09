@@ -13,30 +13,30 @@ import { fmt } from "../lib/format.js";
 
 // Poppins/Work Sans müssen für react-pdf als Font-Dateien registriert werden
 // (react-pdf kann keine Google-Fonts-<link>-Tags der Website nutzen).
-// WICHTIG — Ursache eines echten Bugs (08/2026, siehe CHANGELOG): Google
-// Fonts verschiebt die Schriftdateien irgendwann auf eine neue Versionsnummer
-// (hier v19/v21 -> v24) und lässt die alte URL als 404 zurück, ohne
-// Vorwarnung. Das hat die komplette PDF-Erzeugung (Download-Button UND
-// Mailversand) lautlos scheitern lassen, weil react-pdf ohne Schriftdatei
-// nicht rendern kann. Aktuell gültige URLs stehen unten (Stand 08/2026,
-// geprüft über die Google-Fonts-CSS-API). Robuster gegen ein erneutes
-// Auftreten wäre, die vier .ttf-Dateien einmalig selbst in public/fonts/
-// abzulegen und hier auf "/fonts/WorkSans-Regular.ttf" etc. zu verweisen
-// (kein Abhängigkeit mehr von Googles URL-Struktur) — bisher nicht
-// umgesetzt, da das Sandbox-Netzwerk beim Beheben dieses Bugs keinen
-// Zugriff auf fonts.gstatic.com hatte, um die Dateien herunterzuladen.
+// WICHTIG — Ursache eines echten Bugs (08/2026, siehe CHANGELOG): Vorher
+// zeigten diese Font.register()-Aufrufe auf feste Google-Fonts-CDN-URLs
+// (fonts.gstatic.com). Google verschiebt Schriftdateien irgendwann auf eine
+// neue Versionsnummer und lässt die alte URL als 404 zurück, ohne
+// Vorwarnung — genau das ist am 08.08./09.08.2026 passiert (v19/v21 -> v24)
+// und hat die komplette PDF-Erzeugung (Download-Button UND Mailversand)
+// lautlos scheitern lassen, weil react-pdf ohne Schriftdatei nicht rendern
+// kann. Behoben, dauerhaft: die vier Schriftdateien liegen jetzt selbst im
+// Projekt unter public/fonts/ (aus dem offiziellen npm-Paket @fontsource/
+// work-sans bzw. @fontsource/poppins entnommen, nicht selbst erzeugt) und
+// werden von hier aus lokal referenziert. Damit hängt die PDF-Erzeugung von
+// keinem externen Dienst mehr ab — dieser Fehler kann so nicht wiederkehren.
 Font.register({
   family: "Work Sans",
   fonts: [
-    { src: "https://fonts.gstatic.com/s/worksans/v24/QGY_z_wNahGAdqQ43RhVcIgYT2Xz5u32K0nXNig.ttf", fontWeight: 400 },
-    { src: "https://fonts.gstatic.com/s/worksans/v24/QGY_z_wNahGAdqQ43RhVcIgYT2Xz5u32K3vXNig.ttf", fontWeight: 500 },
+    { src: "/fonts/WorkSans-Regular.woff2", fontWeight: 400 },
+    { src: "/fonts/WorkSans-Medium.woff2", fontWeight: 500 },
   ],
 });
 Font.register({
   family: "Poppins",
   fonts: [
-    { src: "https://fonts.gstatic.com/s/poppins/v24/pxiByp8kv8JHgFVrLGT9V1s.ttf", fontWeight: 500 },
-    { src: "https://fonts.gstatic.com/s/poppins/v24/pxiByp8kv8JHgFVrLEj6V1s.ttf", fontWeight: 600 },
+    { src: "/fonts/Poppins-Medium.woff2", fontWeight: 500 },
+    { src: "/fonts/Poppins-SemiBold.woff2", fontWeight: 600 },
   ],
 });
 
