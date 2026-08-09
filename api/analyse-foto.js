@@ -36,7 +36,9 @@
 //
 // Kein neues npm-Package: reiner fetch-Aufruf an die Anthropic-REST-API,
 // analog zu allen anderen api/*.js-Dateien in diesem Projekt (siehe z.B.
-// get-report.js für den Stripe-Aufruf nach demselben Muster).
+// get-report.js für den Stripe-Aufruf nach demselben Muster). Genutzt wird
+// die "tools"/tool_choice-Option der normalen Messages-API — kein separates
+// Produkt, keine zusätzliche Abhängigkeit, siehe Kommentar bei TOOLS unten.
 //
 // RATE-LIMITING (08/2026, siehe CHANGELOG.md): Dieser Endpoint war bis
 // dahin öffentlich ohne jede Begrenzung erreichbar — jeder Aufruf kostet
@@ -118,15 +120,53 @@ function posteneKatalogFuerPrompt() {
     .join("\n");
 }
 
-// Extrahiert das JSON-Objekt zwischen der ersten { und letzten } — überlebt
-// so überschüssigen Fließtext der KI drumherum (gleiches Vorgehen wie
-// extrahiereJSON() in scripts/rechtsmonitor.mjs).
-function extrahiereJSON(text) {
-  const start = text.indexOf("{");
-  const end = text.lastIndexOf("}");
-  if (start === -1 || end === -1 || end < start) return null;
-  try { return JSON.parse(text.slice(start, end + 1)); } catch { return null; }
-}
+// STRUKTURIERTE AUSGABE ÜBER TOOL-USE (08/2026, siehe CHANGELOG.md):
+// Der ursprüngliche Ansatz ("gib nur JSON zurück" als Textanweisung + selbst
+// die erste { bis letzte } aus dem Antworttext herausschneiden) scheiterte
+// bei Stefans zweitem Live-Test erneut — diesmal nachweislich NICHT wegen
+// abgeschnittener Antwort (stop_reason war nicht "max_tokens"), sondern
+// vermutlich wegen eines Formatierungs-Ausreißers im freien Text (z.B.
+// Markdown-Codeblock drumherum, ein Erklärsatz mit eigenen geschweiften
+// Klammern, oder ein nicht sauber escapetes Zeichen in einem "hinweise"-Satz).
+// Freitext-JSON ist strukturell fragil, das lässt sich nicht zuverlässig
+// per Prompt-Wortwahl beheben.
+// Stattdessen jetzt Anthropics "tool use": Der KI wird ein Werkzeug mit
+// festem Eingabe-Schema vorgegeben und per tool_choice erzwungen — die
+// Antwort kommt dann als von Anthropic selbst validiertes JSON-Objekt
+// zurück (aiJson.content[].input), kein eigenes Parsen aus Freitext mehr
+// nötig. Das ist der von Anthropic vorgesehene Weg für strukturierte
+// Datenextraktion, nicht nur eine bessere Prompt-Formulierung.
+const TOOL_NAME = "melde_abrechnungsdaten";
+const TOOLS = [{
+  name: TOOL_NAME,
+  description: "Trägt die aus den Fotos der Nebenkostenabrechnung erkannten Daten strukturiert ein.",
+  input_schema: {
+    type: "object",
+    properties: {
+      wohnung: {
+        type: "object",
+        description: "Angaben zur Wohnung, falls auf den Fotos erkennbar. Unbekannte Werte als leerer String.",
+        properties: {
+          flaeche: { type: "string", description: "Wohnfläche in m² als Zahl-String, z.B. \"75.5\", oder \"\" wenn nicht gefunden" },
+          jahr: { type: "string", description: "Abrechnungsjahr, 4-stellig, z.B. \"2024\", oder \"\" wenn nicht gefunden" },
+          vorauszahlung: { type: "string", description: "Summe der geleisteten Vorauszahlungen/Abschläge als Zahl-String, z.B. \"2400\", oder \"\" wenn nicht gefunden" },
+        },
+        required: ["flaeche", "jahr", "vorauszahlung"],
+      },
+      werte: {
+        type: "object",
+        description: "Erkannte Kostenpositionen. NUR die im Prompt genannten Keys verwenden, nur mit tatsächlich gefundenem Betrag > 0. Betrag als Zahl-String mit Punkt als Dezimaltrennzeichen, z.B. \"437.15\".",
+        additionalProperties: { type: "string" },
+      },
+      hinweise: {
+        type: "array",
+        description: "Kurze, konkrete Sätze zu Bild-/Lesbarkeitsproblemen einzelner Fotos. Leeres Array, wenn alle Fotos gut lesbar waren.",
+        items: { type: "string" },
+      },
+    },
+    required: ["wohnung", "werte", "hinweise"],
+  },
+}];
 
 export default async function handler(req, res) {
   res.setHeader("Access-Control-Allow-Origin", "https://nebenkostenradar.com");
@@ -152,21 +192,7 @@ export default async function handler(req, res) {
     return res.status(429).json({ error: "Zu viele Foto-Analysen von dieser Verbindung. Bitte in einer Stunde erneut versuchen oder die Werte manuell eingeben." });
   }
 
-  const prompt = `Du liest Fotos einer deutschen Nebenkostenabrechnung (Betriebskostenabrechnung) und extrahierst daraus strukturierte Daten.
-
-Gib AUSSCHLIESSLICH ein einziges JSON-Objekt zurück, keinen weiteren Text, kein Markdown, keine Erklärung. Format:
-
-{
-  "wohnung": {
-    "flaeche": "<Wohnfläche in m² als Zahl, z.B. 75.5, oder leer wenn nicht gefunden>",
-    "jahr": "<Abrechnungsjahr, 4-stellig, z.B. 2024>",
-    "vorauszahlung": "<Summe der geleisteten Vorauszahlungen/Abschläge als Zahl, z.B. 2400>"
-  },
-  "werte": {
-    "<posten_key>": "<Betrag als Zahl mit Punkt als Dezimaltrennzeichen, ohne Tausenderpunkte, z.B. 437.15>"
-  },
-  "hinweise": ["<kurzer Satz zu Bild-/Lesbarkeitsproblemen, siehe unten>"]
-}
+  const prompt = `Du liest Fotos einer deutschen Nebenkostenabrechnung (Betriebskostenabrechnung) und extrahierst daraus strukturierte Daten. Trage das Ergebnis über das Werkzeug "${TOOL_NAME}" ein.
 
 Für "werte" darfst du AUSSCHLIESSLICH die folgenden Keys verwenden, gewählt nach der Bezeichnung/den Alternativbegriffen, wie sie auf der Abrechnung stehen. Nur Keys mit tatsächlich gefundenem Betrag > 0 aufnehmen, alle anderen weglassen:
 
@@ -178,9 +204,7 @@ Wichtige Regeln:
 - Erfinde keine Werte, die nicht auf den Fotos zu erkennen sind.
 - Zahlen im deutschen Format (z.B. "1.234,56") in reine Dezimalzahlen mit Punkt umwandeln (1234.56).
 
-Bild-Qualität aktiv prüfen (wichtig): Prüfe jedes Foto darauf, ob es vollständig lesbar ist. Falls ein Foto unscharf, zu dunkel, abgeschnitten, aus zu großem Winkel fotografiert oder aus einem anderen Grund teilweise nicht lesbar ist, trage dazu einen kurzen, konkreten Satz in "hinweise" ein (z.B. "Foto 2: unscharf, Beträge in der rechten Spalte nicht sicher lesbar" oder "Foto 3: oberer Rand abgeschnitten, Kopfdaten evtl. unvollständig"). Wenn dadurch einzelne Beträge unsicher sind, nimm sie NICHT in "werte" auf, sondern erwähne sie im jeweiligen Hinweis. Wenn alle Fotos gut lesbar sind, gib ein leeres Array für "hinweise" zurück. Melde außerdem, falls eine für die Prüfung zentrale Angabe (Wohnfläche, Abrechnungsjahr, Vorauszahlung, oder die Kostenaufstellung selbst) auf keinem der Fotos zu finden war.
-
-Gib nur das JSON-Objekt zurück, sonst nichts.`;
+Bild-Qualität aktiv prüfen (wichtig): Prüfe jedes Foto darauf, ob es vollständig lesbar ist. Falls ein Foto unscharf, zu dunkel, abgeschnitten, aus zu großem Winkel fotografiert oder aus einem anderen Grund teilweise nicht lesbar ist, trage dazu einen kurzen, konkreten Satz in "hinweise" ein (z.B. "Foto 2: unscharf, Beträge in der rechten Spalte nicht sicher lesbar" oder "Foto 3: oberer Rand abgeschnitten, Kopfdaten evtl. unvollständig"). Wenn dadurch einzelne Beträge unsicher sind, nimm sie NICHT in "werte" auf, sondern erwähne sie im jeweiligen Hinweis. Wenn alle Fotos gut lesbar sind, gib ein leeres Array für "hinweise" zurück. Melde außerdem, falls eine für die Prüfung zentrale Angabe (Wohnfläche, Abrechnungsjahr, Vorauszahlung, oder die Kostenaufstellung selbst) auf keinem der Fotos zu finden war.`;
 
   const content = [
     { type: "text", text: prompt },
@@ -197,13 +221,12 @@ Gib nur das JSON-Objekt zurück, sonst nichts.`;
       },
       body: JSON.stringify({
         model: "claude-sonnet-5",
-        // War 3000 — bei echten, vollständigen Abrechnungen mit vielen Posten
-        // (anders als bei Testfotos ohne Abrechnungsinhalt) reichte das nicht
-        // immer aus: die Antwort wurde mitten im JSON abgeschnitten, dadurch
-        // schlug extrahiereJSON() fehl und der Nutzer bekam eine generische
-        // "Foto konnte nicht gelesen werden"-Meldung ohne erkennbaren Grund.
-        // Auf 4096 angehoben, um dafür ausreichend Reserve zu haben.
+        // 4096 statt ursprünglich 3000 — bei echten, vollständigen Abrechnungen
+        // mit vielen Posten braucht die strukturierte Antwort spürbar mehr
+        // Platz als bei Testfotos ohne Abrechnungsinhalt.
         max_tokens: 4096,
+        tools: TOOLS,
+        tool_choice: { type: "tool", name: TOOL_NAME }, // erzwingt den Tool-Aufruf, keine freie Textantwort möglich
         messages: [{ role: "user", content }],
       }),
     });
@@ -215,16 +238,20 @@ Gib nur das JSON-Objekt zurück, sonst nichts.`;
     }
 
     const aiJson = await aiRes.json();
-    const text = aiJson?.content?.[0]?.text || "";
     const stopReason = aiJson?.stop_reason;
-    const parsed = extrahiereJSON(text);
+    // Bei erzwungenem tool_choice liefert Anthropic das Ergebnis als bereits
+    // von Anthropic selbst validiertes JSON-Objekt im "input"-Feld des
+    // tool_use-Blocks — kein eigenes Parsen von Freitext mehr nötig (siehe
+    // Kommentar bei TOOLS oben, Grund für die Umstellung).
+    const toolUse = (aiJson?.content || []).find(b => b.type === "tool_use" && b.name === TOOL_NAME);
+    const parsed = toolUse?.input || null;
     if (!parsed) {
       // Diagnose fürs Vercel-Log: stop_reason "max_tokens" bedeutet, die Antwort
-      // wurde trotz Erhöhung erneut mitten im JSON abgeschnitten (z.B. bei sehr
-      // vielen Fotos/Posten gleichzeitig) — dann hilft nur eine weitere Anhebung
-      // oder weniger Fotos pro Durchlauf. Jeder andere Grund deutet eher auf ein
-      // unerwartetes Antwortformat der KI hin.
-      console.error("analyse-foto: JSON-Extraktion fehlgeschlagen. stop_reason:", stopReason, "Textlänge:", text.length);
+      // wurde mitten im Tool-Aufruf abgeschnitten (z.B. bei sehr vielen Fotos/
+      // Posten gleichzeitig) — dann hilft nur weniger Fotos pro Durchlauf.
+      // Jeder andere Grund ist bei erzwungenem Tool-Use unerwartet und sollte
+      // im Log genauer angeschaut werden.
+      console.error("analyse-foto: kein gültiger Tool-Aufruf in der Antwort. stop_reason:", stopReason);
       return res.status(502).json({
         error: stopReason === "max_tokens"
           ? "Die Abrechnung war zu umfangreich für einen Durchlauf. Bitte weniger Fotos gleichzeitig hochladen."

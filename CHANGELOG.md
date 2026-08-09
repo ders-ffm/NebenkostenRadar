@@ -194,6 +194,12 @@ Neu: IP-basiertes Rate-Limit (max. 8 Analysen pro Stunde pro IP-Adresse), umgese
 
 **Wichtig, nicht im Code lösbar:** Zusätzlich empfohlen, ein Spending Limit direkt in der Anthropic Console einzurichten — das ist die einzige harte Obergrenze, die auch bei einem Fehler im Rate-Limit-Code noch greift.
 
+### Foto-Erkennung auf Tool-Use umgestellt — Freitext-JSON war strukturell fragil (08/2026)
+
+Zweiter Live-Test von Stefan (4 Fotos einer echten, scharfen Abrechnung) scheiterte erneut mit "Antwort konnte nicht gelesen werden" — diesmal nachweislich NICHT durch die zuvor behobene `max_tokens`-Abschneidung (der Log-Wert `stop_reason` war nicht `"max_tokens"`). Der eigentliche Konstruktionsfehler lag tiefer: `api/analyse-foto.js` bat die KI per Textanweisung um "nur ein JSON-Objekt, kein weiterer Text" und schnitt die Antwort dann selbst zwischen der ersten `{` und letzten `}` heraus (`extrahiereJSON()`). Das ist strukturell anfällig — ein Markdown-Codeblock, ein zusätzlicher Erklärsatz mit eigenen Klammern oder ein nicht sauber escapetes Zeichen in einem `hinweise`-Satz reicht, um das Parsing kaputtzumachen, und lässt sich nicht zuverlässig durch bessere Prompt-Formulierung beheben.
+
+Behoben durch Umstellung auf Anthropics "tool use": Der KI wird ein Werkzeug (`melde_abrechnungsdaten`) mit festem `input_schema` vorgegeben und per `tool_choice` erzwungen. Die Antwort kommt dadurch als von Anthropic selbst validiertes JSON-Objekt zurück (`content[].input`) — kein eigenes Parsen von Freitext mehr. Das ist der von Anthropic vorgesehene Weg für strukturierte Datenextraktion, kein Workaround. `extrahiereJSON()` und die Text-basierte JSON-Formatanweisung im Prompt wurden entfernt, der Rest der Logik (Server-seitige Key-Allowlist, Wertprüfung, Hinweise-Begrenzung) blieb unverändert. Kein neues npm-Package — `tools`/`tool_choice` sind reguläre Parameter derselben Messages-API, die ohnehin schon per `fetch` angesprochen wird.
+
 ## Frühere Änderungen
 
 Siehe Kommentar-Historie in `scripts/rechtsmonitor.mjs` für die Entwicklung des SEO-Artikel-Systems (25.–26.07.2026: JSON-Extraktion, deterministische Artikel-IDs, Duplikat-Vermeidung).
