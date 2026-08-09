@@ -296,6 +296,12 @@ Erster echter End-to-End-Testkauf (Branch `test-kauf`, Stripe-Testmodus, siehe P
 
 **Eine weitere, unabhängige Erkenntnis aus demselben Testlauf:** Ein `src`-Ordner-Upload von Stefans lokalem Rechner auf den `test-kauf`-Branch überschreibt dort auch Dateien, die direkt auf GitHub testbranch-spezifisch bearbeitet wurden (hier: `business.js` mit dem auf Stripe-Testmodus umgestellten `STRIPE_LINK_VOLL`) — die lokale Version kennt diese Änderung nicht und setzt sie beim Hochladen zurück auf den Live-Link. Kein Bug, aber ein Risiko bei jedem künftigen `src`-Upload auf diesen Test-Branch, bis er nicht mehr gebraucht wird.
 
+### Musterbrief: "Nachzahlung unter Vorbehalt" stand auch bei Guthaben im Brief (08/2026)
+
+Stefan bemerkte beim ersten erfolgreich erzeugten Test-PDF: Der Satz "Eine eventuelle Nachzahlung leiste ich ausdrücklich unter Vorbehalt." stand im Musterbrief, obwohl das Testszenario ein Guthaben (keine Nachzahlung) ergab — inhaltlich falsch, der Satz ergibt nur bei tatsächlicher Nachzahlung Sinn. Ursache: `buildResult()` in `lib/analyse.js` berechnet den Saldo (Kosten minus Vorauszahlung) zwar intern, hat ihn aber nur in den Zusammenfassungs-Text eingebacken, nie als eigenes Feld zurückgegeben — `BriefPDF.jsx` hatte dadurch technisch gar keine Möglichkeit, zwischen den Fällen zu unterscheiden, und zeigte den Satz unbedingt.
+
+Behoben: `buildResult()` gibt jetzt zusätzlich `saldo` zurück (> 0 Nachzahlung, < 0 Guthaben, `null` falls keine Vorauszahlung angegeben). `BriefPDF.jsx` zeigt den Vorbehalts-Satz nur noch, wenn `saldo > 0` ist.
+
 ## Frühere Änderungen
 
 Siehe Kommentar-Historie in `scripts/rechtsmonitor.mjs` für die Entwicklung des SEO-Artikel-Systems (25.–26.07.2026: JSON-Extraktion, deterministische Artikel-IDs, Duplikat-Vermeidung).

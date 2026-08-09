@@ -354,6 +354,12 @@ export function buildResult(w, wohn) {
   return {
     gesamtbewertung: bew,
     gesamt,
+    // Saldo als eigenes Feld (nicht nur in zusammenfassung-Text eingebacken):
+    // > 0 = Nachzahlung, < 0 = Guthaben, null = keine Vorauszahlung angegeben.
+    // Wird von BriefPDF.jsx gebraucht, um den "Nachzahlung unter Vorbehalt"-
+    // Satz nur bei tatsächlicher Nachzahlung anzuzeigen (echter Bug, 08/2026:
+    // der Satz stand vorher immer im Brief, auch bei Guthaben, siehe CHANGELOG).
+    saldo,
     zusammenfassung: hatKritisch
       ? "Kritisch: " + widerspruch.length + " fehlerhafte Posten (" + fmt(gesamt) + ", " + fmt(proQmJahr) + "/m2/Jahr)." + saldoText
       : (hatSehrHoch || gesamtZuHoch)
