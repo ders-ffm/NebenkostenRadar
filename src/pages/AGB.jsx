@@ -15,7 +15,7 @@ export default function AGB({ navigateTo }) {
       "Gegenstand ist die einmalige Erstellung und Zusendung eines digitalen PDF-Prüfberichts zur Nebenkostenabrechnung, in zwei Ausführungen:",
       "Auswertung (" + BUSINESS.PREIS_AUSWERTUNG.toFixed(2) + " €): 1-seitiges PDF mit vollständiger Positionsübersicht, Richtwerten und Begründungen.",
       "Auswertung + Brief (" + BUSINESS.PREIS_VOLL.toFixed(2) + " €): zusätzlich ein 2. PDF-Seite mit versandfertigem Musterbrief an den Vermieter.",
-      "Zur Erleichterung der Eingabe kann optional ein Foto-Upload genutzt werden, der Kostenpositionen automatisiert vorausfüllt. Die vollständige manuelle Eingabe steht davon unabhängig immer zur Verfügung und ist nicht Voraussetzung für den Kauf.",
+      "Zur Erleichterung der Eingabe kann optional ein Foto- oder PDF-Upload genutzt werden, der Kostenpositionen automatisiert vorausfüllt. Die vollständige manuelle Eingabe steht davon unabhängig immer zur Verfügung und ist nicht Voraussetzung für den Kauf.",
     ]},
     { t: "§ 3 Vertragsschluss und Vertragsspeicherung", lines: [
       "Der Vertrag kommt mit Abschluss der Zahlung über Stripe zustande.",
@@ -38,7 +38,7 @@ export default function AGB({ navigateTo }) {
     { t: "§ 7 Haftungsausschluss", lines: [
       "Der Prüfbericht ersetzt keine Rechtsberatung im Sinne des RDG. Eine Haftung für rechtliche Richtigkeit oder Vollständigkeit der Analyseergebnisse wird ausgeschlossen.",
       "Für rechtssichere Prüfung empfehlen wir den Deutschen Mieterbund oder einen Rechtsanwalt.",
-      "Die optionale automatische Foto-Erkennung ist eine Ausfüllhilfe und ersetzt nicht die eigene Prüfung der Angaben durch den Käufer. Erkannte Werte werden vor dem Kauf im Formular angezeigt und müssen vom Käufer bestätigt bzw. korrigiert werden; für Fehler oder Auslassungen der automatischen Erkennung selbst wird keine Haftung übernommen.",
+      "Die optionale automatische Foto-/PDF-Erkennung ist eine Ausfüllhilfe und ersetzt nicht die eigene Prüfung der Angaben durch den Käufer. Erkannte Werte werden vor dem Kauf im Formular angezeigt und müssen vom Käufer bestätigt bzw. korrigiert werden; für Fehler oder Auslassungen der automatischen Erkennung selbst wird keine Haftung übernommen.",
     ]},
     { t: "§ 8 Schlussbestimmungen", lines: [
       "Es gilt deutsches Recht. Gerichtsstand ist Frankfurt am Main, sofern gesetzlich zulässig.",

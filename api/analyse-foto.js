@@ -59,7 +59,13 @@ import { ALLE_POSTEN } from "../src/lib/analyse.js";
 import { toNum } from "../src/lib/format.js";
 
 export const config = {
-  api: { bodyParser: { sizeLimit: "4mb" } },
+  // 4,5mb statt vorher 4mb: Vercels tatsächliches, festes Infrastruktur-Limit
+  // liegt bei 4,5 MB pro Anfrage (nicht änderbar). Mit PDF-Unterstützung
+  // (bis zu ~4 MB Base64 für eine 3-MB-PDF, siehe MAX_PDF_MB unten) sollte
+  // unser eigener bodyParser nicht enger sein als Vercels echte Grenze —
+  // sonst würde ein Body-Parser-Fehler die eigene, hilfreichere Fehlermeldung
+  // weiter unten verhindern.
+  api: { bodyParser: { sizeLimit: "4.5mb" } },
 };
 
 const GUELTIGE_KEYS = new Set(ALLE_POSTEN.map(p => p.key));
@@ -112,6 +118,19 @@ async function pruefeUndProtokolliereRateLimit(ip) {
     console.error("Rate-Limit-Prüfung fehlgeschlagen (fail-open):", err.message);
     return { erlaubt: true };
   }
+}
+
+// Kürzt einen Hinweistext bei Bedarf am letzten Wortende vor dem Limit statt
+// hart mitten im Wort (Ursache des früher gemeldeten "...und Feld heizu"-
+// Abbruchs). Der Prompt verlangt ohnehin kurze Sätze (max. 12 Wörter, ca.
+// 90-100 Zeichen) — 140 Zeichen lassen etwas Puffer, ohne dass diese
+// Sicherheitsnetz-Kürzung im Normalfall überhaupt greifen sollte.
+function kuerzeHinweis(text, max = 140) {
+  if (text.length <= max) return text;
+  const geschnitten = text.slice(0, max);
+  const letzterLeerraum = geschnitten.lastIndexOf(" ");
+  const basis = letzterLeerraum > 40 ? geschnitten.slice(0, letzterLeerraum) : geschnitten;
+  return basis.trim() + "…";
 }
 
 function posteneKatalogFuerPrompt() {
@@ -178,12 +197,27 @@ export default async function handler(req, res) {
   const apiKey = process.env.ANTHROPIC_API_KEY;
   if (!apiKey) return res.status(500).json({ error: "Foto-Erkennung ist derzeit nicht verfügbar." });
 
-  const { bilder } = req.body || {};
-  if (!Array.isArray(bilder) || bilder.length === 0) {
-    return res.status(400).json({ error: "Keine Bilder übermittelt" });
+  // "dateien" statt "bilder" (08/2026, siehe CHANGELOG.md) — PDF-Unterstützung
+  // dazugekommen, jeder Eintrag { typ: "bild"|"pdf", daten: base64 }.
+  const { dateien } = req.body || {};
+  if (!Array.isArray(dateien) || dateien.length === 0) {
+    return res.status(400).json({ error: "Keine Dateien übermittelt" });
   }
-  if (bilder.length > 6) {
-    return res.status(400).json({ error: "Maximal 6 Fotos pro Durchlauf" });
+  if (dateien.length > 6) {
+    return res.status(400).json({ error: "Maximal 6 Dateien pro Durchlauf" });
+  }
+  // Serverseitige Wiederholung der clientseitigen PDF-Größenprüfung (Wohnung.jsx,
+  // MAX_PDF_MB) — der Client-Check lässt sich umgehen (z.B. direkter API-Aufruf),
+  // hier greift er auf jeden Fall. Grenze: Vercels festes 4,5-MB-Body-Limit für
+  // die GESAMTE Anfrage, nicht nur diese eine Datei; 3 MB Rohgröße (~4 MB nach
+  // Base64) lässt Puffer für weitere Dateien im selben Durchlauf.
+  const MAX_PDF_MB = 3;
+  for (const d of dateien) {
+    if (d?.typ === "pdf" && typeof d.daten === "string" && d.daten.length > MAX_PDF_MB * 1024 * 1024 * 1.4) {
+      return res.status(400).json({
+        error: `Eine PDF-Datei ist über ${MAX_PDF_MB} MB groß. Bitte nur die Seite(n) mit der Kostenaufstellung hochladen, Einzel- oder Detailaufstellungen zu bestimmten Positionen werden für die Erkennung nicht benötigt.`,
+      });
+    }
   }
 
   const clientIp = (req.headers["x-forwarded-for"] || "").split(",")[0].trim() || req.socket?.remoteAddress || "unbekannt";
@@ -192,7 +226,7 @@ export default async function handler(req, res) {
     return res.status(429).json({ error: "Zu viele Foto-Analysen von dieser Verbindung. Bitte in einer Stunde erneut versuchen oder die Werte manuell eingeben." });
   }
 
-  const prompt = `Du liest Fotos einer deutschen Nebenkostenabrechnung (Betriebskostenabrechnung) und extrahierst daraus strukturierte Daten. Trage das Ergebnis über das Werkzeug "${TOOL_NAME}" ein.
+  const prompt = `Du liest Fotos und/oder PDF-Seiten einer deutschen Nebenkostenabrechnung (Betriebskostenabrechnung) und extrahierst daraus strukturierte Daten. Trage das Ergebnis über das Werkzeug "${TOOL_NAME}" ein.
 
 Für "werte" darfst du AUSSCHLIESSLICH die folgenden Keys verwenden, gewählt nach der Bezeichnung/den Alternativbegriffen, wie sie auf der Abrechnung stehen. Nur Keys mit tatsächlich gefundenem Betrag > 0 aufnehmen, alle anderen weglassen:
 
@@ -200,16 +234,26 @@ ${posteneKatalogFuerPrompt()}
 
 Wichtige Regeln:
 - Wenn ein Posten auf der Abrechnung in "Grundanteil" + "Verbrauchsanteil" aufgeteilt ist (z.B. bei Heizung oder Warmwasser), addiere beide zu einem Gesamtbetrag für den jeweiligen Key.
-- Wenn du bei einem Betrag unsicher bist, welchem Key er zugeordnet werden soll, LASS IHN WEG statt zu raten. Ein fehlender Wert ist besser als ein falsch zugeordneter.
-- Wenn ein Gesamtbetrag auf mehrere unserer Keys aufgeteilt werden müsste (z.B. eine kombinierte Wasserrechnung, die sowohl Frischwasser als auch Abwasser/Kanal enthält), die Abrechnung aber KEINE explizite Aufschlüsselung nach Keys zeigt: SCHÄTZE NICHT. Lass in diesem Fall ALLE betroffenen Keys weg und nenne stattdessen in "hinweise" den ungeteilten Gesamtbetrag und welche Keys ihn beträfen, damit der Nutzer ihn selbst korrekt zuordnen kann.
+- Wenn du bei einem Betrag unsicher bist, welchem Key er zugeordnet werden soll, ODER wenn ein Gesamtbetrag auf mehrere unserer Keys aufgeteilt werden müsste, ohne dass die Abrechnung diese Aufteilung selbst vorgibt: LASS ALLE betroffenen Keys WEG statt zu schätzen oder zu raten. Ein fehlender Wert ist besser als ein falsch zugeordneter oder geschätzter.
 - Erfinde keine Werte, die nicht auf den Fotos zu erkennen sind. Ein geschätzter Wert ist keine Erkennung.
 - Zahlen im deutschen Format (z.B. "1.234,56") in reine Dezimalzahlen mit Punkt umwandeln (1234.56).
 
-Bild-Qualität aktiv prüfen (wichtig): Prüfe jedes Foto darauf, ob es vollständig lesbar ist. Falls ein Foto unscharf, zu dunkel, abgeschnitten, aus zu großem Winkel fotografiert oder aus einem anderen Grund teilweise nicht lesbar ist, trage dazu einen kurzen, konkreten Satz in "hinweise" ein (z.B. "Foto 2: unscharf, Beträge in der rechten Spalte nicht sicher lesbar" oder "Foto 3: oberer Rand abgeschnitten, Kopfdaten evtl. unvollständig"). Wenn dadurch einzelne Beträge unsicher sind, nimm sie NICHT in "werte" auf, sondern erwähne sie im jeweiligen Hinweis. Wenn alle Fotos gut lesbar sind, gib ein leeres Array für "hinweise" zurück. Melde außerdem, falls eine für die Prüfung zentrale Angabe (Wohnfläche, Abrechnungsjahr, Vorauszahlung, oder die Kostenaufstellung selbst) auf keinem der Fotos zu finden war.`;
+Lesbarkeit prüfen, aber die Hinweise EINFACH halten (wichtig, das lesen normale Nutzer, keine Techniker): Prüfe jedes Foto/jede PDF-Seite darauf, ob es vollständig lesbar ist. Bei Problemen (unscharf, zu dunkel, abgeschnitten, schräg fotografiert, überlagert, Beträge nicht eindeutig zuordenbar) trage GENAU EINEN kurzen Hinweis pro betroffener Datei in "hinweise" ein. Strikte Vorgaben für jeden Hinweis:
+- Maximal 12 Wörter, ein einzelner kurzer Satz.
+- Format: "Foto <Nummer>: <ein Grund in Alltagssprache>."
+- KEINE Fachbegriffe, KEINE Posten-Namen, KEINE Beträge, KEINE Aufzählung mehrerer Probleme in einem Hinweis.
+- Beispiele für den richtigen Ton: "Foto 2: war unscharf, bitte Werte unten prüfen." / "Foto 3: ein Betrag war nicht eindeutig zuzuordnen, bitte ergänzen."
+Wenn dadurch einzelne Beträge unsicher sind, nimm sie NICHT in "werte" auf. Wenn alle Fotos gut lesbar sind, gib ein leeres Array für "hinweise" zurück. Falls eine zentrale Angabe (Wohnfläche, Abrechnungsjahr, Vorauszahlung, oder die Kostenaufstellung selbst) auf keinem Foto zu finden war, ebenfalls nur EIN kurzer Hinweis dazu, gleiche Vorgaben.`;
 
+  // Bilder als "image"-Block, PDFs als eigener "document"-Block — beides
+  // Standard-Content-Typen der Anthropic Messages API, Claude verarbeitet PDFs
+  // nativ (jede Seite wird intern als Bild+Text gelesen), kein Umweg über eine
+  // eigene PDF-zu-Bild-Konvertierung auf unserer Seite nötig.
   const content = [
     { type: "text", text: prompt },
-    ...bilder.map(b => ({ type: "image", source: { type: "base64", media_type: "image/jpeg", data: b } })),
+    ...dateien.map(d => d.typ === "pdf"
+      ? { type: "document", source: { type: "base64", media_type: "application/pdf", data: d.daten } }
+      : { type: "image", source: { type: "base64", media_type: "image/jpeg", data: d.daten } }),
   ];
 
   try {
@@ -276,9 +320,13 @@ Bild-Qualität aktiv prüfen (wichtig): Prüfe jedes Foto darauf, ob es vollstä
     };
 
     // Hinweise zur Bildqualität: nur Strings, auf plausible Länge/Anzahl
-    // begrenzt (Absicherung gegen unerwartete/übergroße Antworten).
+    // begrenzt (Absicherung gegen unerwartete/übergroße Antworten). Der
+    // Prompt verlangt jetzt ohnehin kurze, einfache Sätze (max. 12 Wörter) —
+    // dieses Limit ist nur noch das Sicherheitsnetz, falls sich die KI trotzdem
+    // nicht daran hält. Wichtig: mit sauberem Wortumbruch statt hartem
+    // slice() mitten im Wort (kam vor: "...und Feld heizu" abgeschnitten).
     const hinweise = Array.isArray(parsed.hinweise)
-      ? parsed.hinweise.filter(h => typeof h === "string" && h.trim()).slice(0, 10).map(h => h.trim().slice(0, 300))
+      ? parsed.hinweise.filter(h => typeof h === "string" && h.trim()).slice(0, 10).map(h => kuerzeHinweis(h.trim()))
       : [];
 
     const anzahlErkannt = Object.keys(werte).length;
