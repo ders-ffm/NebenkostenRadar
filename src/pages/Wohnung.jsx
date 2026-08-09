@@ -283,7 +283,7 @@ export default function Wohnung({ navigateTo, wohnung, setWohnung, werte, setWer
           >
             <div style={{ fontSize: 26, lineHeight: 1, flexShrink: 0 }}>📱</div>
             <div style={{ flex: 1, minWidth: 0 }}>
-              <div style={{ fontSize: 15, fontWeight: 700, color: C.text, fontFamily: THEME.font.heading }}>Keine Lust abzutippen? Mach Fotos!</div>
+              <div style={{ fontSize: 15, fontWeight: 700, color: C.text, fontFamily: THEME.font.heading }}>Keine Lust abzutippen?<br />Mach Fotos!</div>
               <div style={{ fontSize: 12, color: C.textMuted, marginTop: 2 }}>Optional. Felder automatisch ausfüllen lassen.</div>
             </div>
             <div style={{ fontSize: 16, color: C.textDim, flexShrink: 0, transform: aufgeklappt ? "rotate(180deg)" : "none", transition: "transform 0.15s" }}>⌄</div>

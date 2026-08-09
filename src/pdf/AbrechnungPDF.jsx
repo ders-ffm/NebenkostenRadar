@@ -13,18 +13,30 @@ import { fmt } from "../lib/format.js";
 
 // Poppins/Work Sans müssen für react-pdf als Font-Dateien registriert werden
 // (react-pdf kann keine Google-Fonts-<link>-Tags der Website nutzen).
+// WICHTIG — Ursache eines echten Bugs (08/2026, siehe CHANGELOG): Google
+// Fonts verschiebt die Schriftdateien irgendwann auf eine neue Versionsnummer
+// (hier v19/v21 -> v24) und lässt die alte URL als 404 zurück, ohne
+// Vorwarnung. Das hat die komplette PDF-Erzeugung (Download-Button UND
+// Mailversand) lautlos scheitern lassen, weil react-pdf ohne Schriftdatei
+// nicht rendern kann. Aktuell gültige URLs stehen unten (Stand 08/2026,
+// geprüft über die Google-Fonts-CSS-API). Robuster gegen ein erneutes
+// Auftreten wäre, die vier .ttf-Dateien einmalig selbst in public/fonts/
+// abzulegen und hier auf "/fonts/WorkSans-Regular.ttf" etc. zu verweisen
+// (kein Abhängigkeit mehr von Googles URL-Struktur) — bisher nicht
+// umgesetzt, da das Sandbox-Netzwerk beim Beheben dieses Bugs keinen
+// Zugriff auf fonts.gstatic.com hatte, um die Dateien herunterzuladen.
 Font.register({
   family: "Work Sans",
   fonts: [
-    { src: "https://fonts.gstatic.com/s/worksans/v19/QGYsz_wNahGAdqQ43Rh_fKDp.ttf", fontWeight: 400 },
-    { src: "https://fonts.gstatic.com/s/worksans/v19/QGYsz_wNahGAdqQ43RhVeqDp.ttf", fontWeight: 500 },
+    { src: "https://fonts.gstatic.com/s/worksans/v24/QGY_z_wNahGAdqQ43RhVcIgYT2Xz5u32K0nXNig.ttf", fontWeight: 400 },
+    { src: "https://fonts.gstatic.com/s/worksans/v24/QGY_z_wNahGAdqQ43RhVcIgYT2Xz5u32K3vXNig.ttf", fontWeight: 500 },
   ],
 });
 Font.register({
   family: "Poppins",
   fonts: [
-    { src: "https://fonts.gstatic.com/s/poppins/v21/pxiEyp8kv8JHgFVrJJnedA.ttf", fontWeight: 500 },
-    { src: "https://fonts.gstatic.com/s/poppins/v21/pxiByp8kv8JHgFVrLCz7Z1xlFQ.ttf", fontWeight: 600 },
+    { src: "https://fonts.gstatic.com/s/poppins/v24/pxiByp8kv8JHgFVrLGT9V1s.ttf", fontWeight: 500 },
+    { src: "https://fonts.gstatic.com/s/poppins/v24/pxiByp8kv8JHgFVrLEj6V1s.ttf", fontWeight: 600 },
   ],
 });
 
