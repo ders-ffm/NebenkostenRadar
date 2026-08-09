@@ -368,6 +368,20 @@ Datei von Stefan aus dem aktuellen Stand eingefügt, dann `PREIS_AUSWERTUNG` 7.9
 - `STRIPE_LINK_VOLL` zeigt aktuell noch auf den Test-Modus-Link (test-kauf-Testing) — unbedingt vor einem Live-Update prüfen/zurücksetzen.
 - Der für 2028 geplante Bestandskunden-Rabattcode (`MARKETING_RABATT_CODE`, fester Euro-Betrag statt Prozent, siehe Kommentar in `business.js`) muss bei der finalen Preiserhöhung auf die dann aktuelle Differenz eingestellt werden — durch die jetzige Änderung verschiebt sich die Referenzbasis.
 
+### Foto-Erkennung: effort:max unter erzwungenem tool_choice widerlegt, auf tool_choice:auto umgestellt (08/2026)
+
+Drei Live-Tests nach dem `effort:max`-Fix (siehe voriger Eintrag) lieferten alle exakt dieselben (falschen) Werte wie davor — Verdacht, dass der Fix wirkungslos war statt nur unzureichend. Per Diagnose-Log bestätigt: `thinking_tokens=0` bei allen drei Aufrufen, obwohl `effort:"max"` laut Doku durchgehendes Denken verspricht.
+
+**Schlussfolgerung:** Die Doku-Aussage "Adaptive Thinking unterstützt erzwungenen Tool-Aufruf" bedeutet offenbar nur, dass die Kombination keinen Fehler wirft — nicht, dass dabei tatsächlich gedacht wird. Vermutlich greift trotzdem die von Anthropic dokumentierte Prefill-Mechanik bei erzwungenem `tool_choice` (unterdrückt Inhalte vor dem Tool-Aufruf).
+
+Behoben in `api/analyse-foto.js`:
+- `tool_choice` von `{type:"tool", name:...}` (erzwungen) auf `{type:"auto"}` umgestellt — laut Doku das einzige mit Denken uneingeschränkt kompatible `tool_choice`.
+- Prompt um eine explizite Anweisung ergänzt, das Werkzeug trotzdem IMMER zu nutzen (Anthropics eigene empfohlene Kompensation für den Verlust der Erzwingung).
+- Bestehende Fehlerbehandlung (kein gültiger Tool-Aufruf → Fehlermeldung statt Absturz) deckt den Randfall ab, dass das Modell trotzdem keinen Tool-Aufruf macht — dafür war sie ursprünglich schon da, jetzt wieder relevant.
+- `effort:"max"` bleibt unverändert bestehen.
+
+**Risiko, offen:** Ob mit `tool_choice:"auto"` tatsächlich Denken stattfindet (thinking_tokens > 0) und ob sich die Zeilen-Zuordnung dadurch verbessert, ist noch nicht getestet — nächster Live-Test entscheidet. Sollte auch das nichts bringen, ist die wahrscheinlichste nächste Erklärung, dass das Problem nicht am fehlenden Denken liegt, sondern an der visuellen Lesegenauigkeit selbst bei dieser Art eng gedruckter Liste — dann wäre ein grundsätzlich anderer Ansatz nötig (z.B. Vorverarbeitung der Fotos, oder Zerlegen in mehrere kleinere Anfragen pro Seite statt einer großen).
+
 ## Frühere Änderungen
 
 Siehe Kommentar-Historie in `scripts/rechtsmonitor.mjs` für die Entwicklung des SEO-Artikel-Systems (25.–26.07.2026: JSON-Extraktion, deterministische Artikel-IDs, Duplikat-Vermeidung).

@@ -150,11 +150,24 @@ function posteneKatalogFuerPrompt() {
 // Freitext-JSON ist strukturell fragil, das lässt sich nicht zuverlässig
 // per Prompt-Wortwahl beheben.
 // Stattdessen jetzt Anthropics "tool use": Der KI wird ein Werkzeug mit
-// festem Eingabe-Schema vorgegeben und per tool_choice erzwungen — die
-// Antwort kommt dann als von Anthropic selbst validiertes JSON-Objekt
+// festem Eingabe-Schema vorgegeben — die Antwort kommt dann, WENN das
+// Werkzeug aufgerufen wird, als von Anthropic selbst validiertes JSON-Objekt
 // zurück (aiJson.content[].input), kein eigenes Parsen aus Freitext mehr
 // nötig. Das ist der von Anthropic vorgesehene Weg für strukturierte
 // Datenextraktion, nicht nur eine bessere Prompt-Formulierung.
+//
+// tool_choice bewusst NICHT mehr erzwungen (08/2026, siehe CHANGELOG.md):
+// War anfangs auf {type:"tool", name:...} erzwungen — das garantiert zwar
+// den Tool-Aufruf, unterdrückt laut Anthropics eigener Doku aber jedes
+// Nachdenken davor. Live bestätigt: mit erzwungenem tool_choice UND
+// effort:"max" lag thinking_tokens bei mehreren Tests konstant bei 0, obwohl
+// die Doku für max-Effort durchgehendes Denken verspricht. Jetzt tool_choice
+// "auto" (Standard) — damit ist Denken laut Doku uneingeschränkt kompatibel.
+// Risiko: das Modell könnte in seltenen Fällen das Werkzeug gar nicht
+// aufrufen (z.B. bei völlig unlesbaren Fotos) — dagegen zum einen die
+// Anweisung oben im Prompt ("Nutze IMMER das Werkzeug"), zum anderen die
+// bestehende Fehlerbehandlung unten (kein gültiger Tool-Aufruf → klare
+// Fehlermeldung statt Absturz), die genau für diesen Fall schon vorhanden war.
 const TOOL_NAME = "melde_abrechnungsdaten";
 const TOOLS = [{
   name: TOOL_NAME,
@@ -259,7 +272,7 @@ export default async function handler(req, res) {
     return res.status(429).json({ error: "Zu viele Foto-Analysen von dieser Verbindung. Bitte in einer Stunde erneut versuchen oder die Werte manuell eingeben." });
   }
 
-  const prompt = `Du liest Fotos und/oder PDF-Seiten einer deutschen Nebenkostenabrechnung (Betriebskostenabrechnung) und extrahierst daraus strukturierte Daten. Trage das Ergebnis über das Werkzeug "${TOOL_NAME}" ein.
+  const prompt = `Du liest Fotos und/oder PDF-Seiten einer deutschen Nebenkostenabrechnung (Betriebskostenabrechnung) und extrahierst daraus strukturierte Daten. Nutze für deine Antwort IMMER das Werkzeug "${TOOL_NAME}" — auch nach ausführlichem Nachdenken endet deine Antwort in einem Aufruf dieses Werkzeugs, nie in reinem Text.
 
 Das ist eine anspruchsvolle Aufgabe mit vielen ähnlichen, eng gedruckten Zeilen, bei der schon mehrfach Beträge der falschen Zeile zugeordnet wurden. Denke deshalb gründlich und in zwei getrennten Schritten nach, bevor du das Werkzeug aufrufst:
 1. ERFASSEN: Fülle zuerst "zeilenErfasst" vollständig aus — eine reine, unkommentierte Abschrift jeder einzelnen Kostenzeile in der abgedruckten Reihenfolge, noch OHNE Zuordnung zu unseren Keys.
@@ -323,23 +336,27 @@ Wenn dadurch einzelne Beträge unsicher sind, nimm sie NICHT in "werte" auf. Wen
         // Stefans berechtigten Einwand, dass Bild-zu-Text-Erkennung generell
         // funktioniert (siehe dieser Chat: Fotos werden hier korrekt gelesen)
         // und die bisherigen Fehler kein Erkennungs-, sondern ein
-        // Zuordnungsproblem sind. Recherche in Anthropics offizieller Doku
-        // (platform.claude.com, siehe CHANGELOG.md für Quellen) ergab: Bei
-        // erzwungenem tool_choice (unten) generiert Claude normalerweise
-        // KEINEN sichtbaren Text/Denkschritt vor dem Tool-Aufruf — anders als
-        // in diesem Chat, wo ich die Abrechnung Zeile für Zeile durchgehe,
-        // bevor ich antworte. "Adaptive Thinking" (Sonnet 5 denkt je nach
-        // effort-Stufe intern nach, auch bei erzwungenem Tool-Aufruf — laut
-        // Doku explizit die einzige mit tool_choice:"tool" kompatible Denk-
-        // Variante) ist per effort steuerbar, OHNE die Tool-Erzwingung
-        // aufzugeben (die wiederum das JSON-Parsing-Problem von früher löst,
-        // siehe Kommentar bei TOOLS oben). effort:"max" = stärkste verfügbare
-        // Stufe, offiziell für claude-sonnet-5 unterstützt. Vertretbarer
-        // Mehraufwand an Zeit/Kosten, da Erkennungsgenauigkeit hier wichtiger
-        // ist als Geschwindigkeit und das Volumen ohnehin gedeckelt ist.
+        // Zuordnungsproblem sind. ERSTER VERSUCH (verworfen): effort:"max"
+        // zusammen mit erzwungenem tool_choice, in der Annahme, "Adaptive
+        // Thinking" liefe laut Doku auch dann mit. Live-Test widerlegte das:
+        // thinking_tokens lag bei mehreren Aufrufen konstant bei 0. Grund
+        // vermutlich die von Anthropic dokumentierte Prefill-Mechanik bei
+        // erzwungenem tool_choice, die Inhalte vor dem Tool-Aufruf unterdrückt
+        // — "unterstützt" laut Doku heißt offenbar nur "kein Fehler", nicht
+        // "Denken passiert tatsächlich". Deshalb jetzt zusätzlich tool_choice
+        // auf "auto" umgestellt (siehe Kommentar bei TOOLS oben) — effort
+        // bleibt auf "max", da Genauigkeit wichtiger ist als Tempo/Kosten und
+        // das Volumen ohnehin über das Rate-Limit gedeckelt ist.
         output_config: { effort: "max" },
         tools: TOOLS,
-        tool_choice: { type: "tool", name: TOOL_NAME }, // erzwingt den Tool-Aufruf, keine freie Textantwort möglich
+        // tool_choice NICHT mehr erzwungen (08/2026, siehe CHANGELOG.md und
+        // Kommentar bei TOOLS oben) — "auto" lässt das Modell selbst
+        // entscheiden, ist aber das einzige mit Denken uneingeschränkt
+        // kompatible tool_choice. Prompt weist oben ausdrücklich an, immer
+        // dieses eine Werkzeug zu nutzen; Fehlerbehandlung unten fängt den
+        // (laut Anthropics eigener Aussage sehr seltenen) Fall ab, dass
+        // trotzdem kein Tool-Aufruf erfolgt.
+        tool_choice: { type: "auto" },
         messages: [{ role: "user", content }],
       }),
     });
@@ -363,18 +380,23 @@ Wenn dadurch einzelne Beträge unsicher sind, nimm sie NICHT in "werte" auf. Wen
       ", thinking_tokens=" + (aiJson?.usage?.output_tokens_details?.thinking_tokens ?? "n/a") +
       ", output_tokens=" + (aiJson?.usage?.output_tokens ?? "n/a")
     );
-    // Bei erzwungenem tool_choice liefert Anthropic das Ergebnis als bereits
-    // von Anthropic selbst validiertes JSON-Objekt im "input"-Feld des
-    // tool_use-Blocks — kein eigenes Parsen von Freitext mehr nötig (siehe
-    // Kommentar bei TOOLS oben, Grund für die Umstellung).
+    // Ruft das Modell das Werkzeug auf (Regelfall, siehe Prompt-Anweisung
+    // oben), liefert Anthropic das Ergebnis als bereits selbst validiertes
+    // JSON-Objekt im "input"-Feld des tool_use-Blocks — kein eigenes Parsen
+    // von Freitext nötig (siehe Kommentar bei TOOLS oben). Bei tool_choice
+    // "auto" (seit 08/2026, siehe CHANGELOG.md) kann content zusätzlich
+    // Text-/Denk-Blöcke VOR dem tool_use-Block enthalten — .find() filtert
+    // die zuverlässig heraus, keine Änderung an dieser Stelle nötig.
     const toolUse = (aiJson?.content || []).find(b => b.type === "tool_use" && b.name === TOOL_NAME);
     const parsed = toolUse?.input || null;
     if (!parsed) {
       // Diagnose fürs Vercel-Log: stop_reason "max_tokens" bedeutet, die Antwort
-      // wurde mitten im Tool-Aufruf abgeschnitten (z.B. bei sehr vielen Fotos/
-      // Posten gleichzeitig) — dann hilft nur weniger Fotos pro Durchlauf.
-      // Jeder andere Grund ist bei erzwungenem Tool-Use unerwartet und sollte
-      // im Log genauer angeschaut werden.
+      // wurde mitten im Tool-Aufruf (oder beim Denken) abgeschnitten — dann
+      // hilft weniger Fotos pro Durchlauf oder mehr max_tokens. stop_reason
+      // "end_turn" bedeutet, das Modell hat NICHT das Werkzeug aufgerufen
+      // (bei tool_choice "auto" möglich, laut Anthropic aber selten bei
+      // expliziter Anweisung im Prompt) — im Log genauer anzuschauen, falls
+      // das häufiger auftritt.
       console.error("analyse-foto: kein gültiger Tool-Aufruf in der Antwort. stop_reason:", stopReason);
       return res.status(502).json({
         error: stopReason === "max_tokens"
