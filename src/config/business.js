@@ -22,8 +22,8 @@ export const BUSINESS = {
   // "Gutschein-Code-Funktion"). Der bestehende Link unten ist der bisherige
   // 9,99-€-Link (STUFE_VOLL) — für STUFE_AUSWERTUNG (7,99 €) fehlt noch ein
   // zweiter Link, den du selbst in Stripe anlegen musst (siehe Anleitung am Ende).
-  STRIPE_LINK_VOLL: "https://buy.stripe.com/test_4gM28r2qn26hf7a0MzgUM00",
-  STRIPE_LINK_VOLL: "https://buy.stripe.com/test_4gM28r2qn26hf7a0MzgUM00",
+  STRIPE_LINK_AUSWERTUNG: "https://buy.stripe.com/4gM9AT4yvdOZe3666TgUM02",
+  STRIPE_LINK_VOLL: "https://buy.stripe.com/5kQeVdfd9h1b8IM1QDgUM01",
 
   // Zwei Preisstufen (siehe Projekt-Entscheidung 08/2026):
   //   Stufe 1: nur Auswertung als 1-seitiges PDF

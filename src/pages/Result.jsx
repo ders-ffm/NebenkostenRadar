@@ -19,7 +19,11 @@ const STATUS_LABEL = { ok: "✓ Unauffällig", hoch: "↑ Erhöht", sehr_hoch: "
 export default function Result({ navigateTo, result, wohnung, setStufe, resetAll }) {
   const C = THEME.color;
   const [widerrufOk, setWiderrufOk] = useState(false);
-  const [gewaehlteStufe, setGewaehlteStufe] = useState("voll");
+  // Vorauswahl "voll" (inkl. Musterbrief) nur, wenn es laut Analyse überhaupt
+  // etwas gibt, das ein Brief ansprechen könnte — bei "ok" wäre ein
+  // Widerspruchsbrief ohne Widerspruchsgrund unpassend, daher dort die
+  // günstigere Stufe ohne Brief vorausgewählt (Nutzer kann trotzdem wechseln).
+  const [gewaehlteStufe, setGewaehlteStufe] = useState(() => result?.gesamtbewertung === "ok" ? "auswertung" : "voll");
 
   if (!result) {
     return (
@@ -91,10 +95,37 @@ export default function Result({ navigateTo, result, wohnung, setStufe, resetAll
           ))}
         </div>
 
+        {/* Bewusst andere Rahmung, wenn nichts gefunden wurde (08/2026, siehe
+            CHANGELOG.md): "gesamtbewertung: ok" bedeutet laut buildResult()
+            in lib/analyse.js, dass es WIRKLICH keinen einzigen Widerspruchs-
+            grund gibt (kein hoch/sehr_hoch/pruefen/nicht_umlagefaehig, ≤ 1
+            Widerspruch). Ein Kauf würde in diesem Fall niemandem beim
+            Widerspruch helfen, es gäbe schlicht nichts, das ein Musterbrief
+            enthalten könnte. Stefans ausdrücklicher Wunsch: nicht verkaufen,
+            nur weil es technisch möglich ist, sondern ehrlich sagen, wenn ein
+            Kauf keinen Mehrwert hätte — das ist wichtiger als die Conversion. */}
+        {result.gesamtbewertung === "ok" && (
+          <div style={{ background: C.okBg, border: "1px solid " + C.ok, borderRadius: THEME.radius.lg, padding: "16px 18px", marginBottom: 14 }}>
+            <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 6 }}>
+              <span style={{ fontSize: 18 }}>✅</span>
+              <div style={{ fontSize: 14, fontWeight: 700, color: C.ok, fontFamily: THEME.font.heading }}>Kein Widerspruch nötig</div>
+            </div>
+            <div style={{ fontSize: 12, color: C.text, lineHeight: 1.6 }}>
+              Wir haben keine Position gefunden, die einen Widerspruch beim Vermieter rechtfertigen würde. Ein kostenpflichtiger Bericht bringt dir hier wahrscheinlich keinen zusätzlichen Nutzen, du bräuchtest ihn nur, wenn du die Prüfung trotzdem schriftlich dokumentieren möchtest.
+            </div>
+          </div>
+        )}
+
         <div style={{ background: C.surface, border: "2px solid " + C.text, borderRadius: THEME.radius.xl, padding: "20px 18px" }}>
           <div style={{ textAlign: "center", marginBottom: 16 }}>
-            <h3 style={{ margin: "0 0 6px", fontSize: 16, fontFamily: THEME.font.heading }}>Vollständige Auswertung als PDF</h3>
-            <p style={{ margin: 0, fontSize: 12, color: C.textMuted }}>Alle {result.posten_bewertung.length} Positionen mit Richtwerten und Begründungen</p>
+            <h3 style={{ margin: "0 0 6px", fontSize: 16, fontFamily: THEME.font.heading }}>
+              {result.gesamtbewertung === "ok" ? "Trotzdem als PDF dokumentieren" : "Vollständige Auswertung als PDF"}
+            </h3>
+            <p style={{ margin: 0, fontSize: 12, color: C.textMuted }}>
+              {result.gesamtbewertung === "ok"
+                ? "Optional — für deine eigenen Unterlagen, nicht für einen Widerspruch nötig"
+                : "Alle " + result.posten_bewertung.length + " Positionen mit Richtwerten und Begründungen"}
+            </p>
           </div>
 
           <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10, marginBottom: 16 }}>
@@ -106,7 +137,12 @@ export default function Result({ navigateTo, result, wohnung, setStufe, resetAll
             </button>
             <button onClick={() => setGewaehlteStufe("voll")}
               style={{ textAlign: "left", background: gewaehlteStufe === "voll" ? C.brandBg : C.bg, border: "2px solid " + (gewaehlteStufe === "voll" ? C.brand : C.border), borderRadius: THEME.radius.md, padding: "14px", cursor: "pointer", position: "relative" }}>
-              <div style={{ position: "absolute", top: -9, right: 10, background: C.accent, color: C.accentText, fontSize: 9, fontWeight: 700, padding: "2px 8px", borderRadius: 10 }}>Empfohlen</div>
+              {/* "Empfohlen"-Badge nur, wenn es laut Analyse auch etwas gibt, das ein
+                  Widerspruchsbrief ansprechen könnte — bei "ok" wäre der Brief ohne
+                  Widerspruchsgrund keine echte Empfehlung, siehe Kommentar oben. */}
+              {result.gesamtbewertung !== "ok" && (
+                <div style={{ position: "absolute", top: -9, right: 10, background: C.accent, color: C.accentText, fontSize: 9, fontWeight: 700, padding: "2px 8px", borderRadius: 10 }}>Empfohlen</div>
+              )}
               <div style={{ fontSize: 11, color: C.textMuted, marginBottom: 4 }}>Auswertung + Brief</div>
               <div style={{ fontFamily: THEME.font.heading, fontSize: 19, fontWeight: 600, color: C.text }}>{BUSINESS.PREIS_VOLL.toFixed(2)} €</div>
               <div style={{ fontSize: 10, color: C.textDim, marginTop: 4 }}>2-seitiges PDF inkl. Musterbrief</div>

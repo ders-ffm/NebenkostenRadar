@@ -1,25 +1,75 @@
 // ─────────────────────────────────────────────────────────────────────────
 // Posten.jsx — Formular Schritt 2: Kostenposten. URL: "/pruefen/posten"
+//
+// UMBAU 08/2026 (siehe CHANGELOG.md + Kommentar in lib/analyse.js): vorher
+// 7 einzeln auf-/zuklappbare Kategorien, die zum ständigen Umschalten
+// zwischen Formular-Kategorie und Abrechnungszeile zwangen. Jetzt eine
+// durchlaufende Liste in § 2 BetrKV-Reihenfolge (amtliche, vermieter-
+// unabhängige Gliederung) plus Live-Suche über Bezeichnung, Alternativ-
+// Begriffe (aliases) und Tipp-Text — damit findet man einen Posten unabhängig
+// davon, wie die eigene Abrechnung ihn nennt oder wo sie ihn einsortiert.
 // ─────────────────────────────────────────────────────────────────────────
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { THEME } from "../config/theme.js";
 import { toNum, fmt } from "../lib/format.js";
 import { POSTEN_GRUPPEN, ALLE_POSTEN } from "../lib/analyse.js";
 import EuroInput from "../components/ui/EuroInput.jsx";
 import StepBar from "../components/ui/StepBar.jsx";
 
-export default function Posten({ navigateTo, werte, setWerte, runAnalyse }) {
+function normalisiere(s) {
+  return (s || "").toLowerCase();
+}
+
+export default function Posten({ navigateTo, werte, setWerte, runAnalyse, gesamtsummeAbrechnung, setGesamtsummeAbrechnung }) {
   const C = THEME.color;
   const [errors, setErrors] = useState({});
-  const [openGruppe, setOpenGruppe] = useState("heizung");
+  const [suche, setSuche] = useState("");
+  const [expandedGruppen, setExpandedGruppen] = useState(() => new Set());
+  // Gesamtsumme laut Abrechnung — rein informativer Abgleich (siehe Kommentar
+  // weiter unten bei der Hinweis-Anzeige). Bewusst eigener State in App.jsx,
+  // NICHT Teil von `werte`/`errors` — darf niemals in validate() einfließen.
+  // Seit 08/2026 in App.jsx gehoben (siehe CHANGELOG.md), damit die Foto-/
+  // PDF-Erkennung in Wohnung.jsx diesen Wert ebenfalls automatisch setzen kann.
   const setPosten = (k, v) => setWerte(p => ({ ...p, [k]: v }));
 
   const total = ALLE_POSTEN.reduce((s, p) => s + toNum(werte[p.key]), 0);
   const filledPosten = ALLE_POSTEN.filter(p => toNum(werte[p.key]) > 0).length;
 
+  const sucheNorm = normalisiere(suche.trim());
+  const sucheAktiv = !!sucheNorm;
+  const gefilterteGruppen = useMemo(() => {
+    if (!sucheNorm) return POSTEN_GRUPPEN;
+    return POSTEN_GRUPPEN
+      .map(gruppe => ({
+        ...gruppe,
+        posten: gruppe.posten.filter(p => {
+          const haystack = [p.label, p.tip, ...(p.aliases || [])].map(normalisiere).join(" · ");
+          return haystack.includes(sucheNorm);
+        }),
+      }))
+      .filter(gruppe => gruppe.posten.length > 0);
+  }, [sucheNorm]);
+
+  // Abgleich mit der auf der Abrechnung aufgedruckten Gesamtsumme. Bewusst NUR
+  // ein Hinweis, KEIN Blocker: Eine Abrechnung kann selbst fehlerhaft/unplausibel
+  // sein — genau das ist oft der Grund, weshalb jemand prüfen lässt. Ein Kunde
+  // darf deshalb nie am Abschließen gehindert werden, nur weil seine Eingabe
+  // nicht zur (möglicherweise falschen) Summe des Vermieters passt.
+  const gesamtsummeNum = toNum(gesamtsummeAbrechnung);
+  const summenDiff = gesamtsummeNum > 0 && total > 0 ? Math.abs(gesamtsummeNum - total) : 0;
+  const summenAbweichung = summenDiff > 1;
+
+  function toggleGruppe(id) {
+    setExpandedGruppen(prev => {
+      const next = new Set(prev);
+      if (next.has(id)) next.delete(id); else next.add(id);
+      return next;
+    });
+  }
+
   function validate() {
     const e = {};
-    const pflichtfehlend = POSTEN_GRUPPEN[0].posten.filter(p => p.pflicht && toNum(werte[p.key]) <= 0);
+    const pflichtfehlend = ALLE_POSTEN.filter(p => p.pflicht && toNum(werte[p.key]) <= 0);
     if (pflichtfehlend.length > 0) e.pflicht = "Pflichtfelder fehlen: " + pflichtfehlend.map(p => p.label).join(", ");
     if (filledPosten === 0) e.gesamt = "Mindestens einen Posten eingeben";
     setErrors(e);
@@ -52,32 +102,70 @@ export default function Posten({ navigateTo, werte, setWerte, runAnalyse }) {
             {errors.pflicht || errors.gesamt}
           </div>
         )}
+        <div style={{ marginBottom: 12 }}>
+          <EuroInput label="Gesamtsumme laut Abrechnung" value={gesamtsummeAbrechnung} tip="Optional — steht meist oben auf der Abrechnung als 'Summe'. Dient nur dem Abgleich, hat keinen Einfluss aufs Fortfahren."
+            onChange={setGesamtsummeAbrechnung} />
+          {summenAbweichung && (
+            <div style={{ background: C.warnBg, borderLeft: "3px solid " + C.warn, borderRadius: THEME.radius.md, padding: "10px 14px", marginTop: -4, fontSize: 12, color: C.warn, lineHeight: 1.6 }}>
+              Hinweis: Deine eingetragenen Posten ({fmt(total)}) weichen von der Gesamtsumme laut Abrechnung ({fmt(gesamtsummeNum)}) ab — möglicherweise fehlt ein Posten. Reine Information, hindert dich nicht am Fortfahren: Eine Abrechnung kann auch selbst fehlerhaft sein, genau das würden wir dann prüfen.
+            </div>
+          )}
+        </div>
+        <div style={{ position: "relative", marginBottom: 4 }}>
+          <input
+            type="text"
+            value={suche}
+            onChange={e => setSuche(e.target.value)}
+            placeholder="Suche z. B. 'Sturm', 'Kabel', 'Müll' … oder Begriff von deiner Abrechnung"
+            style={{ width: "100%", boxSizing: "border-box", background: C.surface, border: "1px solid " + C.border, borderRadius: THEME.radius.md, padding: "11px 14px", fontSize: 13, fontFamily: THEME.font.body, color: C.text }}
+          />
+          {suche && (
+            <button onClick={() => setSuche("")} aria-label="Suche löschen"
+              style={{ position: "absolute", right: 8, top: "50%", transform: "translateY(-50%)", background: "none", border: "none", color: C.textDim, fontSize: 16, cursor: "pointer", padding: 4 }}>
+              ×
+            </button>
+          )}
+        </div>
       </div>
-      <div style={{ padding: "0 20px 120px", maxWidth: THEME.layout.formMax, margin: "0 auto", boxSizing: "border-box" }}>
-        {POSTEN_GRUPPEN.map(gruppe => {
+      <div style={{ padding: "10px 20px 120px", maxWidth: THEME.layout.formMax, margin: "0 auto", boxSizing: "border-box" }}>
+        {gefilterteGruppen.length === 0 && (
+          <div style={{ textAlign: "center", padding: "24px 12px", fontSize: 13, color: C.textMuted }}>
+            Kein Posten gefunden für "{suche}". Falls du den Begriff auf deiner Abrechnung nicht wiederfindest, trage ihn unter "Sonstige vereinbarte Betriebskosten" ein.
+          </div>
+        )}
+        {gefilterteGruppen.map(gruppe => {
           const groupSum = gruppe.posten.reduce((s, p) => s + toNum(werte[p.key]), 0);
-          const isOpen = openGruppe === gruppe.id;
+          // Seltene Posten (Aufzug, Tiefgarage, Glasversicherung u.Ä.) sind
+          // standardmäßig hinter einem Link versteckt, damit die Liste nicht
+          // erschlägt — außer die Suche ist aktiv (dann sollen Treffer immer
+          // sichtbar sein) oder die Gruppe wurde manuell aufgeklappt, oder
+          // bereits ein Wert eingetragen ist (sonst würde ein befüllter Posten
+          // beim Neuladen/Zurückkommen plötzlich "verschwinden").
+          const gruppeExpandiert = sucheAktiv || expandedGruppen.has(gruppe.id);
+          const sichtbarePosten = gruppe.posten.filter(p => !p.selten || gruppeExpandiert || toNum(werte[p.key]) > 0);
+          const versteckteAnzahl = gruppe.posten.length - sichtbarePosten.length;
           return (
-            <div key={gruppe.id} style={{ marginBottom: 8 }}>
-              <button onClick={() => setOpenGruppe(isOpen ? null : gruppe.id)}
-                style={{ width: "100%", background: C.surface, border: "1px solid " + (groupSum > 0 ? C.brand : C.border), borderRadius: isOpen ? "10px 10px 0 0" : THEME.radius.md, padding: "12px 14px", display: "flex", alignItems: "center", gap: 10, cursor: "pointer", textAlign: "left" }}>
-                <span style={{ fontSize: 19 }}>{gruppe.icon}</span>
-                <div style={{ flex: 1 }}>
-                  <div style={{ fontSize: 13, fontWeight: 600, color: C.text }}>{gruppe.label}</div>
-                  <div style={{ fontSize: 10, color: C.textDim, marginTop: 2 }}>{gruppe.hint}</div>
-                </div>
-                {groupSum > 0 && <span style={{ fontSize: 12, color: C.accent, fontWeight: 600 }}>{fmt(groupSum)}</span>}
-                <span style={{ color: C.textDim, fontSize: 15, transform: isOpen ? "rotate(90deg)" : "none" }}>›</span>
-              </button>
-              {isOpen && (
-                <div style={{ background: C.surface, border: "1px solid " + C.border, borderTop: "none", borderRadius: "0 0 10px 10px", padding: "10px 12px" }}>
-                  {gruppe.posten.map(p => (
-                    <EuroInput key={p.key} label={p.label} value={werte[p.key]} tip={p.tip} pflicht={p.pflicht} beispiel={p.beispiel}
-                      warn={p.key === "kabelanschluss" && toNum(werte[p.key]) > 0}
-                      onChange={v => setPosten(p.key, v)} />
-                  ))}
-                </div>
-              )}
+            <div key={gruppe.id} style={{ marginBottom: 18 }}>
+              <div style={{ display: "flex", alignItems: "baseline", gap: 8, padding: "0 2px", marginBottom: 6 }}>
+                <span style={{ fontSize: 15 }}>{gruppe.icon}</span>
+                <div style={{ fontSize: 12, fontWeight: 700, color: C.text, textTransform: "uppercase", letterSpacing: "0.03em" }}>{gruppe.label}</div>
+                <div style={{ fontSize: 10, color: C.textDim }}>{gruppe.paragraf}</div>
+                {groupSum > 0 && <div style={{ marginLeft: "auto", fontSize: 12, color: C.accent, fontWeight: 600 }}>{fmt(groupSum)}</div>}
+              </div>
+              {gruppe.hint && <div style={{ fontSize: 10, color: C.textDim, margin: "-2px 2px 8px" }}>{gruppe.hint}</div>}
+              <div style={{ background: C.surface, border: "1px solid " + (groupSum > 0 ? C.brand : C.border), borderRadius: THEME.radius.md, padding: "10px 12px" }}>
+                {sichtbarePosten.map(p => (
+                  <EuroInput key={p.key} label={p.label} value={werte[p.key]} tip={p.tip} pflicht={p.pflicht} beispiel={p.beispiel}
+                    warn={p.key === "kabelanschluss" && toNum(werte[p.key]) > 0}
+                    onChange={v => setPosten(p.key, v)} />
+                ))}
+                {versteckteAnzahl > 0 && (
+                  <button onClick={() => toggleGruppe(gruppe.id)}
+                    style={{ background: "none", border: "none", color: C.brand, fontSize: 12, fontWeight: 600, cursor: "pointer", padding: "4px 0 2px", fontFamily: THEME.font.body }}>
+                    + {versteckteAnzahl} weitere{versteckteAnzahl === 1 ? "r" : ""} Posten in dieser Kategorie anzeigen
+                  </button>
+                )}
+              </div>
             </div>
           );
         })}
