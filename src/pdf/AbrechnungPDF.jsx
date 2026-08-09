@@ -25,18 +25,23 @@ import { fmt } from "../lib/format.js";
 // work-sans bzw. @fontsource/poppins entnommen, nicht selbst erzeugt) und
 // werden von hier aus lokal referenziert. Damit hängt die PDF-Erzeugung von
 // keinem externen Dienst mehr ab — dieser Fehler kann so nicht wiederkehren.
+// WICHTIG — bewusst .woff statt .woff2: Ein erster Versuch mit .woff2
+// (Brotli-komprimiert) verursachte "RangeError: Out of bounds access" beim
+// PDF-Erzeugen im Browser — die von react-pdf genutzte fontkit-Bibliothek
+// entpackt Brotli client-seitig offenbar nicht zuverlässig. Das ältere,
+// unkomprimierte .woff-Format (zlib/deflate, breiter unterstützt) behebt das.
 Font.register({
   family: "Work Sans",
   fonts: [
-    { src: "/fonts/WorkSans-Regular.woff2", fontWeight: 400 },
-    { src: "/fonts/WorkSans-Medium.woff2", fontWeight: 500 },
+    { src: "/fonts/WorkSans-Regular.woff", fontWeight: 400 },
+    { src: "/fonts/WorkSans-Medium.woff", fontWeight: 500 },
   ],
 });
 Font.register({
   family: "Poppins",
   fonts: [
-    { src: "/fonts/Poppins-Medium.woff2", fontWeight: 500 },
-    { src: "/fonts/Poppins-SemiBold.woff2", fontWeight: 600 },
+    { src: "/fonts/Poppins-Medium.woff", fontWeight: 500 },
+    { src: "/fonts/Poppins-SemiBold.woff", fontWeight: 600 },
   ],
 });
 
