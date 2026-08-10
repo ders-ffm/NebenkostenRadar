@@ -74,7 +74,9 @@ export default function BriefPDF({ result, wohnung, adressen }) {
       <Text style={s.absatz}>
         Ich bitte um Übersendung der Originalbelege zur Einsichtnahme (§ 259 BGB), um nachvollziehbare Darlegung des Umlageschlüssels sowie um Korrektur der beanstandeten Positionen und Rückerstattung des zu viel gezahlten Betrags bis zum 30. September {fristJahr}.
       </Text>
-      <Text style={s.absatz}>Eine eventuelle Nachzahlung leiste ich ausdrücklich unter Vorbehalt.</Text>
+      {result.saldo > 0 && (
+        <Text style={s.absatz}>Eine eventuelle Nachzahlung leiste ich ausdrücklich unter Vorbehalt.</Text>
+      )}
       <Text style={s.absatz}>Ich bitte um schriftliche Stellungnahme innerhalb von 4 Wochen.</Text>
 
       <View style={s.gruss}>

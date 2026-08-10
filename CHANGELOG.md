@@ -282,6 +282,169 @@ Stefans Frage "ist die Seite komplett auf DSGVO und Rechtssicherheit geprüft?" 
 
 **Neue Standing-Regel, auf Stefans ausdrücklichen Wunsch:** In `ANLEITUNG-UPLOAD.md`, Phase 2, als Pflichtschritt vor jedem Upload ergänzt: Prüfung, ob sich die tatsächliche Datenverarbeitung seit dem letzten Upload geändert hat (neue Tabelle/Spalte, neuer externer Dienst, neuer Datenfluss, neues Tracking-Script) und ob `Datenschutz.jsx`/`Impressum.jsx`/`AGB.jsx` das noch korrekt abbilden. Grund für die Verankerung als Checklistenpunkt in einer Datei statt als reine Chat-Zusage: Ein KI-Assistent hat kein zuverlässiges Gedächtnis über einzelne Sitzungen hinweg, eine im Repo stehende Pflichtliste ist der robustere Mechanismus, um das tatsächlich künftig ohne erneute Rückfrage sicherzustellen.
 
+### Echter Testkauf im Stripe-Testmodus deckt PDF-Bug auf: Google-Fonts-URLs 404 (08/2026)
+
+Erster echter End-to-End-Testkauf (Branch `test-kauf`, Stripe-Testmodus, siehe Projekt-Chat) zeigte zwei Symptome gleichzeitig: der "PDF herunterladen"-Button auf `Download.jsx` tat nichts, und es kam keine Bestätigungsmail an. Über die Browser-Konsole (Web Inspector, von Stefan bereitgestellt) gefunden: `Failed to fetch font from https://fonts.gstatic.com/s/worksans/v19/...: 404` — Google hat die Schriftdatei-Version der in `AbrechnungPDF.jsx` fest verdrahteten URLs (Work Sans v19, Poppins v21) inzwischen auf v24 verschoben, die alten URLs liefern 404. `react-pdf` kann ohne Schriftdatei nicht rendern — das ließ `pdf(...).toBlob()` sowohl im Download-Button als auch im Mailversand-Code (beide nutzen dieselbe Funktion) lautlos scheitern, der Fehler wurde nur per `console.error` verschluckt, nirgends dem Nutzer angezeigt.
+
+**Sofort behoben:** URLs in `AbrechnungPDF.jsx` zunächst auf die aktuell gültigen v24-Pfade aktualisiert (geprüft über die Google-Fonts-CSS-API, Antwort-Status 200 bestätigt).
+
+**Dauerhaft behoben, auf Stefans Nachfrage ("können wir sicherstellen, dass das nicht nochmal passiert?"):** Die vier Schriftdateien (Work Sans 400/500, Poppins 500/600) liegen jetzt selbst im Projekt unter `public/fonts/`, entnommen aus den offiziellen npm-Paketen `@fontsource/work-sans` und `@fontsource/poppins` (nicht selbst erzeugt, keine Lizenzfragen). `Font.register()` in `AbrechnungPDF.jsx` verweist jetzt auf diese lokalen Pfade statt auf `fonts.gstatic.com`. Die PDF-Erzeugung hängt damit von keinem externen Dienst mehr ab — dieselbe Fehlerklasse (Google verschiebt die URL) kann strukturell nicht mehr auftreten.
+
+**Zwischenfall beim Umsetzen:** Der erste Versuch nutzte das komprimierte `.woff2`-Format und verursachte einen neuen, anderen Fehler (`RangeError: Out of bounds access`) — Testkauf auf `test-kauf` deckte das direkt auf. Ursache: die von react-pdf genutzte `fontkit`-Bibliothek entpackt die Brotli-Kompression von WOFF2 im Browser (anders als serverseitig unter Node) offenbar nicht zuverlässig. Auf das ältere, unkomprimierte `.woff`-Format gewechselt (zlib/deflate, breiter unterstützt) — behebt es. Einziger neuer Ordner: `public/fonts/`, muss einmalig mit hochgeladen werden.
+
+**Nebenbei behoben:** Der "PDF herunterladen"-Button nutzte `PDFDownloadLink` mit dem HTML-`download`-Attribut, das iOS Safari grundsätzlich nicht unterstützt (bestätigtes WebKit-Verhalten) — unabhängig vom Font-Bug ein zweiter, echter Grund, warum der Button auf dem iPhone nicht reagierte. In `Download.jsx` ersetzt durch einen Klick-Handler, der einen leeren Tab sofort synchron öffnet (überlebt Safaris Popup-Blocker) und die fertige PDF-Blob-URL nachträgt, sobald sie erzeugt ist.
+
+**Eine weitere, unabhängige Erkenntnis aus demselben Testlauf:** Ein `src`-Ordner-Upload von Stefans lokalem Rechner auf den `test-kauf`-Branch überschreibt dort auch Dateien, die direkt auf GitHub testbranch-spezifisch bearbeitet wurden (hier: `business.js` mit dem auf Stripe-Testmodus umgestellten `STRIPE_LINK_VOLL`) — die lokale Version kennt diese Änderung nicht und setzt sie beim Hochladen zurück auf den Live-Link. Kein Bug, aber ein Risiko bei jedem künftigen `src`-Upload auf diesen Test-Branch, bis er nicht mehr gebraucht wird.
+
+### Musterbrief: "Nachzahlung unter Vorbehalt" stand auch bei Guthaben im Brief (08/2026)
+
+Stefan bemerkte beim ersten erfolgreich erzeugten Test-PDF: Der Satz "Eine eventuelle Nachzahlung leiste ich ausdrücklich unter Vorbehalt." stand im Musterbrief, obwohl das Testszenario ein Guthaben (keine Nachzahlung) ergab — inhaltlich falsch, der Satz ergibt nur bei tatsächlicher Nachzahlung Sinn. Ursache: `buildResult()` in `lib/analyse.js` berechnet den Saldo (Kosten minus Vorauszahlung) zwar intern, hat ihn aber nur in den Zusammenfassungs-Text eingebacken, nie als eigenes Feld zurückgegeben — `BriefPDF.jsx` hatte dadurch technisch gar keine Möglichkeit, zwischen den Fällen zu unterscheiden, und zeigte den Satz unbedingt.
+
+Behoben: `buildResult()` gibt jetzt zusätzlich `saldo` zurück (> 0 Nachzahlung, < 0 Guthaben, `null` falls keine Vorauszahlung angegeben). `BriefPDF.jsx` zeigt den Vorbehalts-Satz nur noch, wenn `saldo > 0` ist.
+
+### PLZ-Feld: keine Längenbegrenzung beim Tippen (08/2026)
+
+Stefan bemerkte: In den PLZ-Feldern (`Adressen.jsx`) ließen sich beim Tippen beliebig viele Ziffern eingeben — die Prüfung auf genau 5 Ziffern griff erst beim Absenden (`/^\d{5}$/` in `validate()`), nicht während der Eingabe. Ursache: `Field.jsx` unterstützte kein `maxLength`. Ergänzt: neue `maxLength`-Prop, an beiden PLZ-Feldern auf 5 gesetzt.
+
+**Separat geprüft, kein Fehler:** Führende Nullen (z. B. PLZ 01099 Dresden) gehen nicht verloren — die Felder sind reine Textfelder (`type="text"`), keine Zahlen-Umwandlung, die eine führende 0 verschlucken würde.
+
+### Ergebnis-Seite: Rückforderung von Guthaben/Nachzahlung nicht klar abgegrenzt (08/2026)
+
+Stefans Nachfrage: Könnte ein Kunde die "Mögliche Rückforderung" (Summe der beanstandeten Positionen) mit seinem ohnehin bestehenden Guthaben verwechseln — z. B. denken, die angezeigten 300 € SEIEN das Guthaben, das er laut Vermieter sowieso zurückbekommt? Das wäre potenziell vertrauensschädigend ("fatal", O-Ton).
+
+**Rechnerisch geprüft, kein Fehler:** `moegliche_ersparnis` (Summe der Richtwert-Abweichungen einzelner Posten) und `saldo` (Gesamtkosten minus Vorauszahlung, siehe Fix weiter oben) werden in `buildResult()` komplett unabhängig voneinander berechnet — keine Überschneidung in der Mathematik.
+
+**Aber ein echtes Kommunikationsproblem gefunden:** Auf `Result.jsx` stand die Rückforderung als eigene Zahl, das Guthaben nur beiläufig im Fließtext der Zusammenfassung weiter oben — nirgends der klare Hinweis, dass beide Beträge sich addieren, nicht überschneiden. Behoben: Klarstellender Satz direkt bei der Rückforderungs-Anzeige ergänzt ("Zusätzlich zu deiner Nachzahlung/deinem Guthaben laut Abrechnung … — nicht Teil davon, sondern obendrauf"), nutzt das neue `result.saldo`-Feld.
+
+### Foto-Erkennung: Zeilen-Verwechslung, Kaltwasser-Verteilung, Zufallsstreuung, Mediathek-Mehrfachauswahl (08/2026)
+
+Stefan testete mit seiner echten 4-seitigen Abrechnung (Fotos, direkt gegen die Originalbilder verifiziert) zweimal hintereinander — beide Male mit unterschiedlichen, teils falschen Ergebnissen.
+
+**Fund 1, gegen die Originalfotos verifiziert:** Drei benachbarte Zeilen der Betriebskosten-Liste (Kabelanschluss, Hausreinigung, Wartung Rauchwarnmelder) hatten rotiert die jeweils falschen Beträge der Nachbarzeile bekommen (Kabelanschluss zeigte den Hausreinigung-Betrag, Hausreinigung den Rauchwarnmelder-Betrag, Rauchwarnmelder den Kabelanschluss-Betrag) — Werte an sich alle echt, nur der falschen Zeile zugeordnet.
+
+**Fund 2:** Von den vier Kaltwasser-Teilbeträgen (Kaltwasser-Grundbetrag 266,38 + Gerätemiete 25,56 + Kanal 168,86 + Servicegebühren 4,95 = 465,75, exakt wie in `Testdaten/testfall-2024-heizung-warmwasser-kabel.md`) wurden drei einzeln auf `wasserzaehler`/`entwaesserung` verteilt, der größte Teilbetrag (266,38 €, der reine Kaltwasser-Grundbetrag) fehlte komplett — der finanziell relevanteste Fehler dieses Tests.
+
+**Fund 3:** Zweiter Testlauf mit identischen Fotos ergab ein wieder anderes, ebenfalls fehlerhaftes Ergebnis (Warmwasser fehlte komplett) — reine Zufallsstreuung der API, keine Prompt-Frage.
+
+**Fund 4 (Stefans eigene Beobachtung):** Mehrfachauswahl aus der iOS-Fotomediathek funktionierte nicht, nur Einzelauswahl möglich.
+
+Behoben, `api/analyse-foto.js`:
+- Neue Prompt-Regel gegen Zeilen-Verwechslung: Zeile-für-Zeile-Prüfung bei langen Listen benachbarter Kostenpositionen, explizite Selbstkontroll-Aufforderung vor der Abgabe.
+- Neue Prompt-Regel: aufgesplittete Kaltwasserkosten (mehrere Teilbeträge, gemeinsame Endsumme wie "Summe Kaltwasserkosten") IMMER komplett addieren und ausschließlich in `kaltwasser` eintragen, nie einzelne Teilbeträge auf `wasserzaehler`/`entwaesserung` verteilen.
+- `temperature: 0` versuchsweise gesetzt, um Zufallsstreuung zwischen Durchläufen mit denselben Fotos zu reduzieren — **sofort wieder zurückgenommen**: Anthropic lehnt den Parameter für `claude-sonnet-5` komplett ab (`400 invalid_request_error`, `"'temperature' is deprecated for this model"`). Dadurch schlug beim ersten Live-Test nach dem Upload JEDE Foto-Analyse fehl (nicht nur Randfälle), gefunden über Vercel Function Logs. Fehler war rein clientseitig verursacht (mein Vorschlag), kein Bug im übrigen Code. Die Zufallsstreuung bleibt vorerst bestehen, wird nur noch über die Prompt-Regeln und die Bestätigungspflicht im Formular abgefedert.
+
+Behoben, `src/pages/Wohnung.jsx`:
+- `accept`-Attribut des Datei-Inputs von kommagetrennt (`"image/*,application/pdf"`) auf leerzeichengetrennt (`"image/* application/pdf"`) geändert — dokumentierter iOS-Safari-Bug, bei dem kommagetrennte MIME-Typen die Mehrfachauswahl aus der Fotomediathek einschränken können. Noch nicht erneut auf dem iPhone verifiziert.
+
+**Einordnung, ehrlich:** Foto-Erkennung per Vision-KI wird bei komplexen, mehrseitigen Abrechnungen nie 100% fehlerfrei sein — das ist der Grund, warum der Nutzer nach der Erkennung immer im editierbaren Formular landet und die Werte bestätigen muss (siehe Kommentar oben in `analyse-foto.js`), nie eine automatische Auswertung ohne diesen Zwischenschritt. Der Gesamtsumme-Abgleich in `Posten.jsx` bleibt das wichtigste Sicherheitsnetz gegen genau solche Fehler.
+
+### Foto-Erkennung: Recherche zu Ursache der Zuordnungsfehler + effort:max + Zwei-Schritt-Schema (08/2026)
+
+Stefans berechtigter Einwand nach dem letzten, besonders schlechten Testergebnis (nur 5 von 17 Positionen korrekt, siehe vorheriger Eintrag): "Du kannst alles auf der Abrechnung lesen [im Chat] — das sollte die Bilderkennung auch können. Wir probieren die ganze Zeit, aber anscheinend weißt du auch nicht was zum Erfolg führt." Zu Recht — die letzten beiden Fixversuche waren reine Prompt-Textregeln ohne geprüfte Grundlage. Auf Wunsch, wie es "im Idealfall" bzw. bei anderen funktioniert, in Anthropics offizieller Doku recherchiert statt weiter zu raten:
+
+- [Define tools – Claude Platform Docs](https://platform.claude.com/docs/en/agents-and-tools/tool-use/define-tools) (Primärquelle)
+- [Effort – Claude Platform Docs](https://platform.claude.com/docs/en/build-with-claude/effort) (Primärquelle)
+- [Steering thinking – Claude Platform Docs](https://platform.claude.com/docs/en/build-with-claude/thinking-steering-and-cost) (Primärquelle)
+
+**Zentraler Befund (aus "Define tools"):** Bei erzwungenem `tool_choice` (unser Fall, siehe TOOLS-Kommentar) generiert Claude normalerweise KEINEN sichtbaren Text/Denkschritt vor dem Tool-Aufruf — anders als in diesem Chat, wo die Abrechnung Zeile für Zeile durchgegangen wird, bevor geantwortet wird. Genau das ist der plausibelste Unterschied zwischen "im Chat lesbar" und "API-Aufruf falsch zugeordnet". Wichtige Ausnahme laut Doku: "Adaptive Thinking" (Sonnet 5 denkt, abhängig von der `effort`-Stufe, intern nach) ist ausdrücklich die einzige mit erzwungenem `tool_choice` kompatible Denk-Variante — anders als "manual extended thinking", das mit erzwungenem tool_choice einen 400-Fehler auslöst. `effort` ist außerdem KOMPATIBEL mit erzwungenem tool_choice und steuert laut Doku direkt "wie oft und wie tief" gedacht wird.
+
+Umgesetzt in `api/analyse-foto.js`:
+- `output_config: { effort: "max" }` gesetzt (laut Doku-Kompatibilitätstabelle offiziell für `claude-sonnet-5` unterstützt) — vorher lief die API implizit auf `"high"` (Standardwert), jetzt bewusst auf der höchsten verfügbaren Stufe, da Genauigkeit hier wichtiger ist als Tempo/Kosten und das Volumen ohnehin über das Rate-Limit (8/Std./IP) gedeckelt ist.
+- `max_tokens` von 4096 auf 16000 erhöht — notwendig, weil Denk-Tokens bei `effort:"max"` laut Doku voll auf `max_tokens` angerechnet werden; bei unverändertem Limit hätte das Modell mit sehr hoher Wahrscheinlichkeit mitten im Tool-Aufruf abgebrochen (`stop_reason: "max_tokens"`).
+- Neues Pflichtfeld `zeilenErfasst` im Tool-Schema, VOR `werte` platziert: erzwingt eine reine Abschrift jeder Kostenzeile (Bezeichnung + Betrag, wie gedruckt), bevor überhaupt eine Zuordnung zu unseren Keys passiert. `werte` muss laut Prompt ausschließlich aus dieser Abschrift abgeleitet werden, nicht erneut unabhängig vom Bild. Ergänzt die effort-Änderung um eine strukturelle Absicherung, die nicht davon abhängt, ob/wie viel das Modell tatsächlich "denkt" — zusätzlicher Schutz, kein Ersatz.
+- Prompt um eine ausdrückliche Denk-Aufforderung ergänzt (Formulierung an Anthropics eigenem Beispiel "Think carefully before responding" orientiert), plus explizite Zwei-Schritte-Anweisung (erst erfassen, dann zuordnen).
+- Diagnose-Log ergänzt (`thinking_tokens`, `output_tokens`, `stop_reason` bei jedem Aufruf) — macht ab sofort in den Vercel-Logs nachprüfbar, ob und wie viel tatsächlich gedacht wurde, statt weiter zu raten.
+
+**Einordnung, ehrlich:** Das ist die best-begründete Änderung bisher (Primärquellen statt Vermutung), aber keine Garantie — die genaue Ursache der Zeilen-Verwechslung bei diesem spezifischen Modell/dieser Aufgabe ist von außen nicht sicher nachweisbar, nur durch erneuten Live-Test mit Blick auf das neue Diagnose-Log zu prüfen. Spürbar höhere Laufzeit/Kosten pro Analyse sind die bewusst in Kauf genommene Kehrseite.
+
+### Preisänderung 7,99/9,99 € → 9,99/12,99 € + business.js lokal wiederhergestellt (08/2026)
+
+`src/config/business.js` fehlte im lokalen iCloud-Ordner (vermutlich nie zurück von GitHub heruntergeladen, seit Preis-/Stripe-Änderungen dort direkt im Web-Editor gemacht wurden), obwohl sieben Dateien sie importieren. Vor der Preisänderung Wettbewerbsvergleich gemacht (Stefans ausdrücklicher Wunsch, nicht blind übernehmen): NebenkostenPro 7,90 €/14,90 € (sehr ähnliche Zwei-Stufen-Struktur), HeizkostenChecker 9,99 € (Einzeltarif), Mineko 49–89 € (manuelle Prüfung), Mieterverein ~65–138 €/Jahr. 9,99/12,99 € liegt im Band der automatisierten Vergleichsanbieter, beim Brief-Tarif sogar unter dem nächstvergleichbaren Anbieter — keine Einwände.
+
+Datei von Stefan aus dem aktuellen Stand eingefügt, dann `PREIS_AUSWERTUNG` 7.99→9.99 und `PREIS_VOLL` 9.99→12.99 geändert. Dabei zwei Kommentarstellen mitkorrigiert, die sonst durch die Preisänderung sofort falsch geworden wären (alte Preise in Kommentartext, veraltete "Link fehlt noch"-Warnung obwohl beide Stripe-Links längst existieren).
+
+**Wichtig, noch offen (kein Code, sondern Stripe-Dashboard-Arbeit):**
+- Beide Payment Links sind fest an die ALTEN Beträge gebunden (Stripe erlaubt keine nachträgliche Preisänderung an einem bestehenden Payment Link) — vor dem Live-Gang müssen zwei NEUE Payment Links mit 9,99 €/12,99 € angelegt und in `business.js` eingetragen werden.
+- `STRIPE_LINK_VOLL` zeigt aktuell noch auf den Test-Modus-Link (test-kauf-Testing) — unbedingt vor einem Live-Update prüfen/zurücksetzen.
+- Der für 2028 geplante Bestandskunden-Rabattcode (`MARKETING_RABATT_CODE`, fester Euro-Betrag statt Prozent, siehe Kommentar in `business.js`) muss bei der finalen Preiserhöhung auf die dann aktuelle Differenz eingestellt werden — durch die jetzige Änderung verschiebt sich die Referenzbasis.
+
+### Foto-Erkennung: effort:max unter erzwungenem tool_choice widerlegt, auf tool_choice:auto umgestellt (08/2026)
+
+Drei Live-Tests nach dem `effort:max`-Fix (siehe voriger Eintrag) lieferten alle exakt dieselben (falschen) Werte wie davor — Verdacht, dass der Fix wirkungslos war statt nur unzureichend. Per Diagnose-Log bestätigt: `thinking_tokens=0` bei allen drei Aufrufen, obwohl `effort:"max"` laut Doku durchgehendes Denken verspricht.
+
+**Schlussfolgerung:** Die Doku-Aussage "Adaptive Thinking unterstützt erzwungenen Tool-Aufruf" bedeutet offenbar nur, dass die Kombination keinen Fehler wirft — nicht, dass dabei tatsächlich gedacht wird. Vermutlich greift trotzdem die von Anthropic dokumentierte Prefill-Mechanik bei erzwungenem `tool_choice` (unterdrückt Inhalte vor dem Tool-Aufruf).
+
+Behoben in `api/analyse-foto.js`:
+- `tool_choice` von `{type:"tool", name:...}` (erzwungen) auf `{type:"auto"}` umgestellt — laut Doku das einzige mit Denken uneingeschränkt kompatible `tool_choice`.
+- Prompt um eine explizite Anweisung ergänzt, das Werkzeug trotzdem IMMER zu nutzen (Anthropics eigene empfohlene Kompensation für den Verlust der Erzwingung).
+- Bestehende Fehlerbehandlung (kein gültiger Tool-Aufruf → Fehlermeldung statt Absturz) deckt den Randfall ab, dass das Modell trotzdem keinen Tool-Aufruf macht — dafür war sie ursprünglich schon da, jetzt wieder relevant.
+- `effort:"max"` bleibt unverändert bestehen.
+
+**Risiko, offen:** Ob mit `tool_choice:"auto"` tatsächlich Denken stattfindet (thinking_tokens > 0) und ob sich die Zeilen-Zuordnung dadurch verbessert, ist noch nicht getestet — nächster Live-Test entscheidet. Sollte auch das nichts bringen, ist die wahrscheinlichste nächste Erklärung, dass das Problem nicht am fehlenden Denken liegt, sondern an der visuellen Lesegenauigkeit selbst bei dieser Art eng gedruckter Liste — dann wäre ein grundsätzlich anderer Ansatz nötig (z.B. Vorverarbeitung der Fotos, oder Zerlegen in mehrere kleinere Anfragen pro Seite statt einer großen).
+
+### Foto-Erkennung: effort:max zu langsam (2+ Min.) + Truncation, auf effort:high + Fortschrittsanzeige umgestellt (08/2026)
+
+Test mit `tool_choice:"auto"` + `effort:"max"` (siehe voriger Eintrag) lief 2 Min. 18 Sek. und endete trotzdem mit "kein gültiger Tool-Aufruf" (502) — starkes Indiz für `stop_reason:"max_tokens"`: das Denken bekam jetzt offenbar tatsächlich Raum (Beweis, dass die tool_choice-Umstellung gewirkt hat), aber so viel, dass selbst 16.000 Tokens nicht reichten. Unabhängig vom Ergebnis: 2+ Minuten Wartezeit ohne jede Rückmeldung wirkt auf Nutzer wie ein aufgehängtes Tool (Stefans berechtigter Einwand).
+
+Behoben, `api/analyse-foto.js`:
+- `effort` von `"max"` auf `"high"` heruntergestuft — Sonnet 5s Standardstufe, laut Doku weiterhin "fast immer Denken, tiefes Schlussfolgern bei komplexen Aufgaben", aber ohne die unbegrenzte Denktiefe von `"max"`. Für ein synchrones Web-Formular auf dem Handy ist unbegrenzte Wartezeit nicht vertretbar, selbst wenn es die Genauigkeit verbessern sollte.
+- `max_tokens` von 16000 auf 20000 als zusätzliche Sicherheitsmarge.
+
+Behoben, `src/pages/Wohnung.jsx`:
+- Der Analyse-Button änderte bisher nur seinen Text ("Wird analysiert …") — bei 30 Sek. bis über 2 Min. Wartezeit unzureichend. Neuer eigener Fortschritts-Block (gleiches Gestaltungsmuster wie `Loading.jsx`): Spinner, Sekunden-Zähler, rotierende Zwischenmeldungen an den tatsächlichen Zwei-Schritt-Ablauf im Prompt angelehnt, plus expliziter Hinweis "kann bis zu 2 Minuten dauern, Seite offen lassen".
+
+**Offenes Risiko, nicht in diesem Fix behoben:** Bei einer wirklich 1-2 Minuten dauernden Anfrage auf dem Handy kann iOS Safari den Tab bei Bildschirmsperre oder App-Wechsel in den Hintergrund/Ruhezustand versetzen und den laufenden `fetch`-Request abbrechen. Das ist unabhängig von der neuen Fortschrittsanzeige — die zeigt nur ehrlich an, dass es dauert, verhindert aber nicht, dass ein Nutzer währenddessen das Handy sperrt. Sollte sich das als echtes Problem zeigen, bräuchte es einen asynchronen Ablauf (Analyse im Hintergrund starten, Ergebnis später abholen) statt der aktuellen synchronen Anfrage — deutlich größerer Umbau, aktuell nicht umgesetzt.
+
+### Login.jsx: doppelte E-Mail-Eingabe + Fortschrittsanzeige als simulierte Prozentleiste (08/2026)
+
+Stefan meldete nach einem Live-Test des Kundenkonto-Zugangs zwei Punkte:
+
+1. `Login.jsx` (Magic-Link-Anmeldung) hatte nur ein einzelnes E-Mail-Feld, im Unterschied zu `Adressen.jsx` (dort schon länger doppelte Eingabe ohne Copy&Paste, siehe CHANGELOG-Eintrag von früher). Behoben: gleiches Muster übernommen — zweites Feld "E-Mail-Adresse wiederholen", Paste/Drop blockiert, Abgleich vor dem Versand. Nicht nur Konsistenz: ein Tippfehler hier könnte einen Anmeldelink an eine tatsächlich existierende FREMDE Adresse schicken, falls der Tippfehler zufällig eine echte E-Mail ergibt — ein echtes Sicherheitsargument, nicht nur Komfort.
+2. Die Bestätigungs-Mail nach der Anmeldung ("Confirm your email address") ist Supabases Standard-Vorlage — englisch, unbranded, wirkt laut Stefan nicht vertrauenswürdig. **Kein Code-Fix möglich:** Diese Vorlage liegt nicht in diesem Repository, sondern wird direkt in Supabase verwaltet (Dashboard → Authentication → Email Templates → "Confirm signup"/"Magic Link"). Muss dort manuell auf Deutsch und im eigenen Design angepasst werden — Anleitungsschritte dafür noch nachzutragen.
+
+### Wohnung.jsx: Fortschrittsanzeige von Sekunden-Zähler auf simulierte Prozentleiste umgestellt (08/2026)
+
+Der Sekunden-Zähler aus dem vorigen Fix wirkte laut Stefan bei 2 Minuten Wartezeit immer noch zu wenig informativ ("kein Gefühl, wie weit man ist"). Eine ECHTE Prozentanzeige ist technisch nicht möglich (ein einzelner, undurchsichtiger API-Aufruf ohne Zwischenstatus/Streaming) — stattdessen jetzt eine simulierte, aber realistisch wirkende Kurve: `analyseProzent()` steigt anfangs schnell, wird zum Ende hin bewusst langsamer und bleibt absichtlich unter 95%, bis die echte Antwort da ist (springt dann sofort auf "fertig"). Die angezeigte Meldung richtet sich nach dem Prozentwert statt nach der Zeit — "Fast geschafft" erscheint dadurch wie gewünscht erst gegen Ende (>90%), unabhängig von der tatsächlichen Gesamtdauer. Zeitkonstante (`ANALYSE_TAU_SEK = 35`) ist eine erste Schätzung, nach den nächsten echten Laufzeiten mit `effort:"high"` ggf. nachzujustieren.
+
+## 10.08.2026 — Foto-Erkennung: Fix verifiziert (erster fehlerfreier End-to-End-Test)
+
+Nach dem `zeilenErfasst`-Schema-Fix + `effort:"high"`/`tool_choice:"auto"`-Umstellung (siehe oben) zeigten fünf aufeinanderfolgende Tests identische, falsche Werte — Verdacht auf wirkungslosen Fix. Ursache war KEIN Code-Problem, sondern zweifach Mensch-/Werkzeug-bedingt:
+
+1. Stefan lud beim Testen wiederholt eine alte, gecachte PDF-Kopie (9.8., "Dghhh"-Platzhaltertext) hoch statt der neuen — vermutlich Upload-Cache im Chat-Interface, der bei gleichlautendem Dateinamen (`Nebenkosten-Pruefbericht_2024.pdf`) eine ältere Version auslieferte. Erst nach Umbenennen der Datei kam die tatsächlich aktuelle Version (10.8., 08:12 Uhr erzeugt) an.
+2. Damit war auch die vorherige Fehlersuche (business.js fehlte lokal, iCloud-Sync-Fehler "Objekte möglicherweise veraltet") ein Symptom desselben Grundproblems: Stefans Schreibtisch/iCloud-Ordner synct nicht zuverlässig, dadurch entstehen unbemerkt veraltete Datei-Stände.
+
+**Ergebnis nach echtem Test mit der korrekten Datei:** Alle 16 Betriebskosten-Einzelpositionen + Heizung/Warmwasser-Split (527,36 € / 475,15 €) + Kaltwasser-Konsolidierung (465,75 €, keine Doppelzählung Gerätemiete) stimmen exakt mit `Testdaten/testfall-2024-heizung-warmwasser-kabel.md` überein. Unabhängige Rechenprobe: Summe aller extrahierten Werte = 3.190,82 € — exakt die in der Referenz dokumentierte Gesamtsumme der Abrechnung. Kabelanschluss-Regel (nur H1 2024 umlagefähig) korrekt und vorsichtig formuliert ("Prüfen", keine Vollbetrag-Behauptung). Alle vorherigen Vertauschungsfehler (Sturm/Hagel ↔ Haftpflicht, Hausreinigung ↔ Schnee/Eis, Gartenpflege ↔ Rauchwarnmelder) sind behoben, vorher fehlende Positionen (Beleuchtung, Leitungswasserversicherung) werden jetzt erfasst.
+
+**Zwei offene, unabhängige Kleinfehler, noch nicht behoben:**
+- ~~Tabellenzeile "Wasserversorgung" zeigt weiterhin den alten Einzel-Richtwert (140,16 €) an...~~ **Behoben, siehe unten.**
+- Ligatur-Buchstaben fehlen weiterhin systematisch im PDF-Text ("aufällig" statt "auffällig", "Betref" statt "Betreff", "ofzieller" statt "offizieller", "Haftpfichtversicherung" statt "Haftpflichtversicherung") — unabhängig von diesem Fix, vermutlich Font-/ToUnicode-CMap-Problem in `@react-pdf/renderer`, siehe frühere Untersuchung mit pdfplumber.
+
+### Nachtrag: Richtwert-Anzeige Wasser+Abwasser korrigiert (`src/lib/analyse.js`)
+
+Ursache des oben beschriebenen Kleinfehlers gefunden: Bei der Zusammenfassung von Kaltwasser (`kw`), Entwässerung (`ew`) und Niederschlagswasser (`nw`) zu einer gemeinsamen Bewertung wurde der kombinierte Richtwert (`rw`) für die Anzeige in den Zeilen "Wasserversorgung"/"Entwässerung" pauschal 50/50 aufgeteilt (`rw * 0.5`), unabhängig davon, wie sich die tatsächliche Summe `wg` real auf `kw` und `ew` verteilt. Im Normalfall (wie bei Stefans echter Abrechnung) ist `ew` = 0, weil die Kanalgebühren schon im Kaltwasser-Sammelposten stecken — dann zeigte die Zeile "Wasserversorgung" einen Richtwert, der nur die Hälfte des tatsächlich zugrunde gelegten Werts betrug, während der danebenstehende Auffälligkeitstext ("72% über Richtwert") korrekt auf Basis des vollen kombinierten Richtwerts berechnet war. Betrag und Richtwert in derselben Zeile passten dadurch nicht mehr zueinander (rechnerisch hätte man dort fälschlich auf 232% statt 72% Abweichung geschlossen).
+
+**Fix:** Richtwert-Anteil pro Zeile jetzt proportional zum tatsächlichen Anteil an der Gesamtsumme `wg` (`rw * kw/wg` bzw. `rw * ew/wg`) statt pauschal 50/50. Dadurch gilt für jede Zeile mathematisch exakt `betrag/richtwert == wg/rw` — identisch mit der oben im Text genannten Abweichung. Zusätzlich zeigt die "Entwässerung"-Zeile jetzt denselben Status/Hinweistext wie "Wasserversorgung" (vorher immer hart auf "Unauffällig" gesetzt, unabhängig vom tatsächlichen Gruppenstatus — hätte bei künftigen Abrechnungen mit befülltem `entwasserung`-Feld zu einer falsch-negativen Anzeige geführt).
+
+### Nachtrag 2: Gruppierte Positionen (Versicherungen, Straßenreinigung/Winterdienst) — Status-Vererbung korrigiert
+
+Stefan bemängelte zurecht: Die Zeile "Sturm- und Hagelversicherung € 73.46" war als "Stark erhöht" markiert, obwohl 73,46 € für sich genommen kein auffälliger Betrag ist. Ursache wie beim Wasser-Fix oben: Der DMB weist nur EINEN kombinierten Richtwert für alle vier Versicherungsarten zusammen aus (0,31 €/m²/Monat, geprüft an der Primärquelle mieterbund.de, PDF "Alle Betriebskostenarten im Überblick", 18.12.2025) — es gibt keinen offiziellen Einzelwert pro Versicherungsart. Der Code summierte korrekt alle vier Positionen und verglich nur die Summe gegen den einen Richtwert, vererbte den daraus resultierenden Status aber unverändert an JEDE Einzelzeile — dadurch sah eine kleine Position isoliert betrachtet fälschlich "einzeln zu hoch" aus.
+
+**Fix (`src/lib/analyse.js`):** Analog zum bereits bestehenden Muster bei Heizung/Warmwasser jetzt eine kombinierte Zeile ("Versicherungen (kombiniert)"), die den Status/die Abweichung trägt; die vier Einzelpositionen darunter sind neutral ("davon ...", Status "ok", Hinweis "Bereits in der Vergleichsrechnung oben enthalten"). Dieselbe Umstellung für Straßenreinigung + Schnee-/Eisbeseitigung (ebenfalls nur ein kombinierter DMB-Richtwert, § 2 Nr. 8 BetrKV).
+
+**Wichtig, auf Stefans ausdrücklichen Wunsch:** Im Anschreiben an den Vermieter (§ 556 Abs. 3 BGB) darf trotz der kombinierten Bewertung NIE pauschal "Versicherungen sind zu hoch" stehen — eine so unbestimmte Einwendung wäre zu unspezifisch. Neue Helper-Funktion `listeText()` baut daher automatisch einen Aufzählungstext mit JEDER befüllten Einzelposition + Betrag ("Gebäude-/Feuerversicherung 332,38 €, Sturm- und Hagelversicherung 73,46 €, Leitungswasserversicherung 151,72 € und Haftpflichtversicherung Gebäude 4,02 € (zusammen 561,58 €) liegen 87% über dem DMB-Richtwert..."), nur die Prozentangabe selbst bleibt auf der ehrlich belegbaren Gruppen-Basis (da kein Einzelrichtwert existiert, wäre eine Einzelprozentangabe pro Versicherungsart erfunden).
+
+Verifiziert mit den echten Testdaten aus `testfall-2024-heizung-warmwasser-kabel.md`: Straßenreinigung+Winterdienst korrekt weiterhin "Unauffällig" (47,67 € vs. 38,66 € Richtwert, unter der 1,4x-Schwelle), Versicherungen korrekt "Stark erhöht" nur auf der kombinierten Zeile (561,58 € vs. 299,65 € Richtwert, 87 %). Positionsanzahl im Bericht steigt dadurch von 20 auf 22 (durch die zusätzlichen "kombiniert"-Zeilen), die Anzahl der tatsächlich auffälligen Positionen sinkt von 10 auf 7 — was die Auffälligkeiten korrekter abbildet (vorher wurden 4 Versicherungs- und 1 Wasser-Einzelzeile separat mitgezählt, obwohl sie nur 2 unabhängige Befunde darstellen).
+
+### Nachtrag 3: "Mögliche Rückforderung" enthielt lautlos Beträge aus "Unauffällig"-Positionen
+
+Stefan zweifelte zurecht an der Plausibilität der angezeigten Rückforderungssumme ("kann mir schwer vorstellen, dass ich über 600 € fordern kann"). Nachrechnen mit den echten Testdaten deckte einen echten Bug in `buildResult()` auf: Die Summierung von `moegliche_ersparnis` prüfte nur `betrag > richtwert`, unabhängig vom Status der Position. Bei Positionen, die nur leicht über dem Richtwert liegen (z.B. Straßenreinigung+Winterdienst 47,67 € vs. 38,66 € Richtwert — 23% über, unterhalb der "Hoch"-Schwelle von 40%/1,3x, deshalb korrekt als "Unauffällig" ausgewiesen), floss die Differenz trotzdem lautlos in die Summenanzeige ein. Mit den echten Testdaten betrug der stille Aufschlag 67,84 € (9,01 € aus Straßenreinigung/Winterdienst + 58,83 € aus Müllbeseitigung) — die angezeigte Rückforderung war dadurch höher, als die eigene Tabelle es hergab.
+
+**Fix:** Zusätzliche Bedingung `status !== "ok"` in der Summierung. Nur Positionen, die auch sichtbar als "Erhöht"/"Stark erhöht"/"Nicht zulässig" markiert sind, dürfen zur Rückforderungssumme beitragen.
+
+**Ergebnis mit Stefans echten Testdaten:** "Mögliche Rückforderung" jetzt 719,35 € (vorher inkonsistent berechnete Zwischenstände: 647,59 € mit dem alten, ungruppierten Code; 787,19 € kurzzeitig mit dem neuen Gruppierungs-Code vor diesem Fix). Setzt sich jetzt exakt und nachvollziehbar aus genau den drei Positionen zusammen, die auch im Anschreiben einzeln benannt werden: Wasserversorgung (194,26 €), Versicherungen kombiniert (261,93 €), Grundsteuer (263,16 €) — Summe deckungsgleich mit der Tabelle und dem Anschreiben.
+
+**Nächster Schritt:** `src/lib/analyse.js` muss (erneut) zu GitHub (`test-kauf`-Branch) hochgeladen werden — dieser Fix kam nach dem letzten Upload dazu.
+
 ## Frühere Änderungen
 
 Siehe Kommentar-Historie in `scripts/rechtsmonitor.mjs` für die Entwicklung des SEO-Artikel-Systems (25.–26.07.2026: JSON-Extraktion, deterministische Artikel-IDs, Duplikat-Vermeidung).

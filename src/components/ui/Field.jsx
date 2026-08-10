@@ -21,7 +21,7 @@ import { useState } from "react";
 import { THEME } from "../../config/theme.js";
 import { toNum, fmtInput } from "../../lib/format.js";
 
-export default function Field({ label, value, onChange, type = "text", placeholder, error, tip, required, prefix, suffix, autoFocus, onPaste, onDrop, width, money }) {
+export default function Field({ label, value, onChange, type = "text", placeholder, error, tip, required, prefix, suffix, autoFocus, onPaste, onDrop, width, money, maxLength }) {
   const C = THEME.color;
   const [focused, setFocused] = useState(false);
   // Moderat begrenzt statt winzig — großzügige, gut lesbare Felder wie im
@@ -48,7 +48,7 @@ export default function Field({ label, value, onChange, type = "text", placehold
         {prefix && <span style={{ position: "absolute", left: 12, top: "50%", transform: "translateY(-50%)", fontSize: 14, color: C.textMuted, pointerEvents: "none" }}>{prefix}</span>}
         <input
           type={money ? "text" : type} inputMode={money ? "decimal" : undefined}
-          placeholder={placeholder} value={displayValue} autoFocus={autoFocus}
+          placeholder={placeholder} value={displayValue} autoFocus={autoFocus} maxLength={maxLength}
           onChange={handleChange}
           onFocus={() => setFocused(true)}
           onBlur={() => setFocused(false)}

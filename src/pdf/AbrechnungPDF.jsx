@@ -13,18 +13,35 @@ import { fmt } from "../lib/format.js";
 
 // Poppins/Work Sans müssen für react-pdf als Font-Dateien registriert werden
 // (react-pdf kann keine Google-Fonts-<link>-Tags der Website nutzen).
+// WICHTIG — Ursache eines echten Bugs (08/2026, siehe CHANGELOG): Vorher
+// zeigten diese Font.register()-Aufrufe auf feste Google-Fonts-CDN-URLs
+// (fonts.gstatic.com). Google verschiebt Schriftdateien irgendwann auf eine
+// neue Versionsnummer und lässt die alte URL als 404 zurück, ohne
+// Vorwarnung — genau das ist am 08.08./09.08.2026 passiert (v19/v21 -> v24)
+// und hat die komplette PDF-Erzeugung (Download-Button UND Mailversand)
+// lautlos scheitern lassen, weil react-pdf ohne Schriftdatei nicht rendern
+// kann. Behoben, dauerhaft: die vier Schriftdateien liegen jetzt selbst im
+// Projekt unter public/fonts/ (aus dem offiziellen npm-Paket @fontsource/
+// work-sans bzw. @fontsource/poppins entnommen, nicht selbst erzeugt) und
+// werden von hier aus lokal referenziert. Damit hängt die PDF-Erzeugung von
+// keinem externen Dienst mehr ab — dieser Fehler kann so nicht wiederkehren.
+// WICHTIG — bewusst .woff statt .woff2: Ein erster Versuch mit .woff2
+// (Brotli-komprimiert) verursachte "RangeError: Out of bounds access" beim
+// PDF-Erzeugen im Browser — die von react-pdf genutzte fontkit-Bibliothek
+// entpackt Brotli client-seitig offenbar nicht zuverlässig. Das ältere,
+// unkomprimierte .woff-Format (zlib/deflate, breiter unterstützt) behebt das.
 Font.register({
   family: "Work Sans",
   fonts: [
-    { src: "https://fonts.gstatic.com/s/worksans/v19/QGYsz_wNahGAdqQ43Rh_fKDp.ttf", fontWeight: 400 },
-    { src: "https://fonts.gstatic.com/s/worksans/v19/QGYsz_wNahGAdqQ43RhVeqDp.ttf", fontWeight: 500 },
+    { src: "/fonts/WorkSans-Regular.woff", fontWeight: 400 },
+    { src: "/fonts/WorkSans-Medium.woff", fontWeight: 500 },
   ],
 });
 Font.register({
   family: "Poppins",
   fonts: [
-    { src: "https://fonts.gstatic.com/s/poppins/v21/pxiEyp8kv8JHgFVrJJnedA.ttf", fontWeight: 500 },
-    { src: "https://fonts.gstatic.com/s/poppins/v21/pxiByp8kv8JHgFVrLCz7Z1xlFQ.ttf", fontWeight: 600 },
+    { src: "/fonts/Poppins-Medium.woff", fontWeight: 500 },
+    { src: "/fonts/Poppins-SemiBold.woff", fontWeight: 600 },
   ],
 });
 
