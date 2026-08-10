@@ -158,6 +158,20 @@ function abw(betrag, richtwert) {
   return richtwert > 0 ? Math.round(((betrag - richtwert) / richtwert) * 100) : 0;
 }
 
+// Baut aus [label, betrag]-Paaren einen lesbaren Aufzählungstext, z.B.
+// "Feuerversicherung 332,38 €, Sturm-/Hagelversicherung 73,46 € und
+// Haftpflichtversicherung Gebäude 4,02 €" — nur tatsächlich befüllte
+// Positionen (betrag > 0). Zweck: Im Anschreiben an den Vermieter
+// (§ 556 Abs. 3 BGB) muss IMMER konkret benannt werden, welche Einzel-
+// positionen mit welchem Betrag zur beanstandeten Summe beitragen — ein
+// pauschales "Versicherungen sind zu hoch" wäre als Einwendung zu unbe-
+// stimmt (Stefan, 10.08.2026, siehe CHANGELOG).
+function listeText(paare) {
+  const teile = paare.filter(([, b]) => b > 0).map(([label, b]) => label + " " + fmt(b));
+  if (teile.length <= 1) return teile.join("");
+  return teile.slice(0, -1).join(", ") + " und " + teile[teile.length - 1];
+}
+
 export function analysierePosten(w, wohn) {
   const R = BUSINESS.RICHTWERTE;
   const flaeche = Math.max(toNum(wohn.flaeche), 5);
@@ -246,24 +260,44 @@ export function analysierePosten(w, wohn) {
     let st = "ok", hi = "Richtwert Wasser+Abwasser für " + flaeche + "m²: " + fmt(rw) + "/Jahr.";
     if (wg > rw * 1.6) { st = "sehr_hoch"; widerspruch.push("Wasser+Abwasser " + fmt(wg) + " (" + a + "% über Richtwert). Auf Doppelberechnung prüfen."); hi = a + "% über Richtwert — mögliche Doppelberechnung!"; }
     else if (wg > rw * 1.3) { st = "hoch"; hi = a + "% über Richtwert. Belege anfordern."; }
-    if (kw > 0) posten_bewertung.push({ posten: "Wasserversorgung", betrag: kw, richtwert: rw * 0.5, abweichung_prozent: a, status: st, hinweis: hi, paragraf: "§ 2 Nr. 2 BetrKV" });
-    if (ew > 0) posten_bewertung.push({ posten: "Entwässerung", betrag: ew, richtwert: rw * 0.5, abweichung_prozent: 0, status: "ok", hinweis: "Kanalgebühren der Gemeinde.", paragraf: "§ 2 Nr. 2 BetrKV" });
+    // Richtwert-Anzeige proportional zum tatsächlichen Anteil an der Gesamtsumme wg aufteilen
+    // (nicht pauschal 50/50) — bei pauschaler Aufteilung zeigte die Zeile "Wasserversorgung" einen
+    // Richtwert, der zur oben berechneten Abweichung "a" nicht mehr passte, sobald nur eine der beiden
+    // Positionen befüllt war (Normalfall: Kanalgebühren stecken schon im Kaltwasser-Sammelposten,
+    // "Entwässerung" bleibt 0). Durch den proportionalen Anteil gilt für jede Zeile exakt
+    // betrag/richtwert == wg/rw == a — mathematisch konsistent, unabhängig davon, wie sich wg auf
+    // kw/ew verteilt. Gefunden + korrigiert 10.08.2026, siehe CHANGELOG.
+    const richtwertKw = rw * (kw / wg);
+    const richtwertEw = rw * (ew / wg);
+    if (kw > 0) posten_bewertung.push({ posten: "Wasserversorgung", betrag: kw, richtwert: richtwertKw, abweichung_prozent: a, status: st, hinweis: hi, paragraf: "§ 2 Nr. 2 BetrKV" });
+    if (ew > 0) posten_bewertung.push({ posten: "Entwässerung", betrag: ew, richtwert: richtwertEw, abweichung_prozent: a, status: st, hinweis: hi, paragraf: "§ 2 Nr. 2 BetrKV" });
     if (nw > 0) posten_bewertung.push({ posten: "Niederschlagswasser", betrag: nw, richtwert: 0, abweichung_prozent: 0, status: "ok", hinweis: "Kommunale Gebühr.", paragraf: "§ 2 Nr. 2 BetrKV" });
   }
 
   // Straßenreinigung + Schnee-/Eisbeseitigung — DMB weist nur einen KOMBINIERTEN
-  // Wert aus (Straßenreinigung inkl. Winterdienst). Manche Abrechnungen führen
-  // beides als eine Zeile, andere trennen — deshalb zwei Eingabefelder, aber
-  // eine gemeinsame Bewertung gegen den einen offiziellen Richtwert (08/2026).
+  // Wert aus (Straßenreinigung inkl. Winterdienst), beide Positionen sind zudem
+  // rechtlich dieselbe Kategorie (§ 2 Nr. 8 BetrKV). Analog zu Heizung/Warmwasser
+  // jetzt als kombinierte Zeile (trägt den Status) + neutrale "davon"-Unterzeilen
+  // dargestellt, sobald beide Felder befüllt sind (10.08.2026, siehe CHANGELOG).
+  // Vorher trugen beide Einzelzeilen denselben "Stark erhöht"-Status — irreführend,
+  // wenn eine der beiden Positionen für sich genommen klein/unauffällig war.
   const sr = toNum(w.strassenreinigung), se = toNum(w.schnee_eis_beseitigung);
   const srg = sr + se;
   if (srg > 0) {
     const rw = rj(R.strassenreinigung), a = abw(srg, rw);
     let st = "ok", hi = "Richtwert Straßenreinigung inkl. Winterdienst für " + flaeche + "m²: " + fmt(rw) + "/Jahr.";
-    if (srg > rw * 1.8) { st = "sehr_hoch"; widerspruch.push("Straßenreinigung/Winterdienst " + fmt(srg) + " liegen " + a + "% über DMB-Richtwert. Belege anfordern."); hi = a + "% über DMB-Richtwert! Belege anfordern."; }
+    const bez = listeText([["Straßenreinigung", sr], ["Schnee-/Eisbeseitigung", se]]);
+    if (srg > rw * 1.8) { st = "sehr_hoch"; widerspruch.push(bez + (sr > 0 && se > 0 ? " (zusammen " + fmt(srg) + ")" : "") + " liegen " + a + "% über dem DMB-Richtwert für Straßenreinigung inkl. Winterdienst. Belege anfordern."); hi = a + "% über DMB-Richtwert! Belege anfordern."; }
     else if (srg > rw * 1.4) { st = "hoch"; hi = a + "% über DMB-Richtwert."; }
-    if (sr > 0) posten_bewertung.push({ posten: "Straßenreinigung", betrag: sr, richtwert: 0, abweichung_prozent: a, status: st, hinweis: hi, paragraf: "§ 2 Nr. 8 BetrKV" });
-    if (se > 0) posten_bewertung.push({ posten: "Schnee- und Eisbeseitigung", betrag: se, richtwert: 0, abweichung_prozent: a, status: st, hinweis: hi, paragraf: "§ 2 Nr. 8 BetrKV" });
+    if (sr > 0 && se > 0) {
+      posten_bewertung.push({ posten: "Straßenreinigung & Winterdienst (kombiniert)", betrag: srg, richtwert: rw, abweichung_prozent: a, status: st, hinweis: hi, paragraf: "§ 2 Nr. 8 BetrKV" });
+      posten_bewertung.push({ posten: "davon Straßenreinigung", betrag: sr, richtwert: 0, abweichung_prozent: 0, status: "ok", hinweis: "Bereits in der Vergleichsrechnung oben enthalten.", paragraf: "§ 2 Nr. 8 BetrKV" });
+      posten_bewertung.push({ posten: "davon Schnee-/Eisbeseitigung", betrag: se, richtwert: 0, abweichung_prozent: 0, status: "ok", hinweis: "Bereits in der Vergleichsrechnung oben enthalten.", paragraf: "§ 2 Nr. 8 BetrKV" });
+    } else if (sr > 0) {
+      posten_bewertung.push({ posten: "Straßenreinigung", betrag: sr, richtwert: rw, abweichung_prozent: a, status: st, hinweis: hi, paragraf: "§ 2 Nr. 8 BetrKV" });
+    } else {
+      posten_bewertung.push({ posten: "Schnee- und Eisbeseitigung", betrag: se, richtwert: rw, abweichung_prozent: a, status: st, hinweis: hi, paragraf: "§ 2 Nr. 8 BetrKV" });
+    }
   }
 
   // Versicherungen — DMB weist nur einen KOMBINIERTEN Wert für alle Gebäude-
@@ -271,20 +305,36 @@ export function analysierePosten(w, wohn) {
   // tatsächlich einzeln ausweisen), aber bewusst KEINE erfundenen Einzel-
   // Richtwerte pro Versicherungsart — stattdessen Summe gegen den einen
   // offiziellen Kombiwert geprüft (08/2026, ersetzt die vorherige 65/25/10%-
-  // Schätzung ohne Quelle).
+  // Schätzung ohne Quelle). Darstellung analog zu Heizung/Warmwasser und
+  // Straßenreinigung/Winterdienst: EINE kombinierte Zeile trägt den Status,
+  // sobald mehr als eine Versicherungsart befüllt ist; die Einzelpositionen
+  // darunter sind neutral (10.08.2026, siehe CHANGELOG — vorher trugen alle
+  // Einzelzeilen denselben "Stark erhöht"-Status, auch kleine Beträge wie eine
+  // 4-Euro-Haftpflichtversicherung, was irreführend wirkte). Im Anschreiben
+  // werden trotzdem IMMER alle befüllten Einzelpositionen mit Betrag benannt,
+  // nie nur pauschal "Versicherungen sind zu hoch" — eine so unbestimmte
+  // Einwendung nach § 556 Abs. 3 BGB wäre zu unspezifisch.
   const vFeuer = toNum(w.feuerversicherung), vSturm = toNum(w.sturm_hagel_versicherung),
         vLeitung = toNum(w.leitungswasser_versicherung), vHaft = toNum(w.haftpflichtversicherung),
         vGlas = toNum(w.glasversicherung);
   const vg = vFeuer + vSturm + vLeitung + vHaft + vGlas;
+  const vEinzelpositionen = [["Gebäude-/Feuerversicherung", vFeuer], ["Sturm- und Hagelversicherung", vSturm], ["Leitungswasserversicherung", vLeitung], ["Haftpflichtversicherung Gebäude", vHaft], ["Glasversicherung", vGlas]];
+  const vAnzahlBefuellt = vEinzelpositionen.filter(([, b]) => b > 0).length;
   if (vg > 0) {
     const rw = rj(R.versicherungen), a = abw(vg, rw);
     let st = "ok", hi = "Richtwert für alle Gebäude-Sachversicherungen zusammen, " + flaeche + "m²: " + fmt(rw) + "/Jahr.";
-    if (vg > rw * 1.8) { st = "sehr_hoch"; widerspruch.push("Versicherungskosten insgesamt " + fmt(vg) + " liegen " + a + "% über DMB-Richtwert. Versicherungspolicen/Prämiensteigerung anfordern."); hi = a + "% über DMB-Richtwert (alle Versicherungen zusammen)! Nachweis anfordern."; }
+    if (vg > rw * 1.8) { st = "sehr_hoch"; widerspruch.push(listeText(vEinzelpositionen) + (vAnzahlBefuellt > 1 ? " (zusammen " + fmt(vg) + ")" : "") + " liegen " + a + "% über dem DMB-Richtwert für Gebäude-Sachversicherungen insgesamt. Versicherungspolicen/Prämiensteigerung anfordern."); hi = a + "% über DMB-Richtwert (alle Versicherungen zusammen)! Nachweis anfordern."; }
     else if (vg > rw * 1.4) { st = "hoch"; hi = a + "% über DMB-Richtwert (alle Versicherungen zusammen)."; }
-    const vPosten = [["Gebäude-/Feuerversicherung", vFeuer], ["Sturm- und Hagelversicherung", vSturm], ["Leitungswasserversicherung", vLeitung], ["Haftpflichtversicherung Gebäude", vHaft], ["Glasversicherung", vGlas]];
-    vPosten.forEach(([label, betrag]) => {
-      if (betrag > 0) posten_bewertung.push({ posten: label, betrag, richtwert: 0, abweichung_prozent: a, status: st, hinweis: hi, paragraf: "§ 2 Nr. 13 BetrKV" });
-    });
+    if (vAnzahlBefuellt > 1) {
+      posten_bewertung.push({ posten: "Versicherungen (kombiniert)", betrag: vg, richtwert: rw, abweichung_prozent: a, status: st, hinweis: hi, paragraf: "§ 2 Nr. 13 BetrKV" });
+      vEinzelpositionen.forEach(([label, betrag]) => {
+        if (betrag > 0) posten_bewertung.push({ posten: "davon " + label, betrag, richtwert: 0, abweichung_prozent: 0, status: "ok", hinweis: "Bereits in der Vergleichsrechnung oben enthalten.", paragraf: "§ 2 Nr. 13 BetrKV" });
+      });
+    } else {
+      vEinzelpositionen.forEach(([label, betrag]) => {
+        if (betrag > 0) posten_bewertung.push({ posten: label, betrag, richtwert: rw, abweichung_prozent: a, status: st, hinweis: hi, paragraf: "§ 2 Nr. 13 BetrKV" });
+      });
+    }
   }
 
   // Generische Positionen mit direktem Richtwert-Mapping.
