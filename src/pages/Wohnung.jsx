@@ -39,17 +39,35 @@ const MIN_AUFLOESUNG = 500; // px, kürzere Seite — darunter ist Text erfahrun
 // nötig ist (siehe Fehlermeldung unten).
 const MAX_PDF_MB = 3;
 
-// Rotierende Zwischenmeldungen während der Foto-Analyse (08/2026, siehe
-// CHANGELOG.md und Kommentar bei analyseSek unten) — inhaltlich an das
-// tatsächliche Zwei-Schritt-Vorgehen aus dem Prompt (api/analyse-foto.js)
-// angelehnt, damit die Anzeige nicht frei erfunden wirkt.
-const ANALYSE_MSGS = [
-  "Fotos werden gelesen…",
-  "Jede Kostenzeile wird einzeln erfasst…",
-  "Beträge werden den passenden Positionen zugeordnet…",
-  "Kaltwasser- und Heizkosten werden geprüft…",
-  "Fast fertig…",
-];
+// Fortschrittsanzeige während der Foto-Analyse (08/2026, siehe CHANGELOG.md):
+// Ein reiner Sekunden-Zähler wirkte laut Stefans Rückmeldung immer noch wie
+// ein hängendes Tool, ohne Gefühl für "wie weit sind wir". Eine ECHTE
+// Prozentanzeige ist technisch nicht möglich (ein einzelner, undurchsichtiger
+// API-Aufruf ohne Zwischenstatus, kein Streaming) — stattdessen ein
+// simulierter, an die abgeschlossenen echten Läufe angelehnter Verlauf:
+// schnell am Anfang, wird zum Ende hin bewusst langsamer und bleibt unter
+// 95%, bis die Antwort tatsächlich da ist (springt dann sofort auf 100%).
+// So wird nie fälschlich "fertig" suggeriert, während im Hintergrund noch
+// gearbeitet wird. TAU (Zeitkonstante) ist eine Schätzung — nach den ersten
+// echten Laufzeiten mit effort:"high" ggf. nachjustieren.
+const ANALYSE_TAU_SEK = 35;
+const ANALYSE_MAX_PCT = 95;
+function analyseProzent(sek) {
+  return Math.round(ANALYSE_MAX_PCT * (1 - Math.exp(-sek / ANALYSE_TAU_SEK)));
+}
+// Meldung richtet sich nach dem simulierten Prozentwert, nicht nach der Zeit
+// — "Fast geschafft" erscheint dadurch erst wirklich gegen Ende, unabhängig
+// davon, wie lange der Durchlauf insgesamt dauert (Stefans ausdrücklicher
+// Wunsch). Inhaltlich an das tatsächliche Zwei-Schritt-Vorgehen aus dem
+// Prompt (api/analyse-foto.js) angelehnt, damit die Anzeige nicht frei
+// erfunden wirkt.
+function analyseMeldung(pct) {
+  if (pct < 20) return "Fotos werden gelesen…";
+  if (pct < 45) return "Jede Kostenzeile wird einzeln erfasst…";
+  if (pct < 70) return "Beträge werden den passenden Positionen zugeordnet…";
+  if (pct < 90) return "Kaltwasser- und Heizkosten werden geprüft…";
+  return "Fast geschafft…";
+}
 
 function bildAufBase64(file, maxDim = 1800, quality = 0.82) {
   return new Promise((resolve, reject) => {
@@ -125,21 +143,17 @@ export default function Wohnung({ navigateTo, wohnung, setWohnung, werte, setWer
   const setW = (k, v) => setWohnung(p => ({ ...p, [k]: v }));
 
   // Fortschrittsanzeige während der Foto-Analyse (08/2026, siehe CHANGELOG.md):
-  // Stefans berechtigter Einwand — seit effort:"high"/"max" kann ein Aufruf
-  // 30 Sek. bis über 2 Min. dauern, vorher waren es 1-3 Sek. Ohne sichtbaren
-  // Fortschritt wirkt das wie ein hängengebliebenes Tool. Sekunden-Zähler +
-  // rotierende Zwischenmeldungen (gleiches Muster wie Loading.jsx) schaffen
-  // Transparenz, dass im Hintergrund noch gearbeitet wird.
+  // Seit effort:"high" kann ein Aufruf 30 Sek. bis über 2 Min. dauern, vorher
+  // waren es 1-3 Sek. Ein reiner Sekunden-Zähler wirkte laut Stefan immer
+  // noch wie ein hängendes Tool — jetzt ein simulierter Prozentwert
+  // (analyseProzent() oben) plus dazu passende Meldung, statt nur Sekunden.
   const [analyseSek, setAnalyseSek] = useState(0);
-  const [analyseMsgIdx, setAnalyseMsgIdx] = useState(0);
   useEffect(() => {
-    if (fotoStatus !== "analysiere") { setAnalyseSek(0); setAnalyseMsgIdx(0); return; }
+    if (fotoStatus !== "analysiere") { setAnalyseSek(0); return; }
     const sekIv = setInterval(() => setAnalyseSek(s => s + 1), 1000);
-    // Bleibt bei der letzten Meldung stehen (kein Zurückspringen), auch wenn
-    // die Analyse länger dauert als die Summe der Intervalle unten.
-    const msgIv = setInterval(() => setAnalyseMsgIdx(i => Math.min(i + 1, ANALYSE_MSGS.length - 1)), 8000);
-    return () => { clearInterval(sekIv); clearInterval(msgIv); };
+    return () => clearInterval(sekIv);
   }, [fotoStatus]);
+  const analysePct = analyseProzent(analyseSek);
 
   // Blob-URLs (für die Vorschaubilder) beim Verlassen der Seite wieder
   // freigeben, statt sie bis zum Tab-Schließen im Speicher zu halten.
@@ -464,24 +478,23 @@ export default function Wohnung({ navigateTo, wohnung, setWohnung, werte, setWer
               (08/2026, siehe CHANGELOG.md): seit effort:"high" kann ein
               Durchlauf 30 Sek. bis über 2 Min. dauern (vorher 1-3 Sek.) —
               ohne sichtbaren Fortschritt sieht das nach einem hängenden Tool
-              aus. Sekunden-Zähler ist bewusst grob (volle Sekunden reichen),
-              rotierende Meldungen sind an den tatsächlichen Prompt-Ablauf
-              angelehnt (siehe ANALYSE_MSGS oben). */}
+              aus. Ein reiner Sekunden-Zähler reichte laut Stefans Rückmeldung
+              nicht: eine simulierte Prozentanzeige (siehe analyseProzent()
+              oben) mit dazu passender Meldung wirkt konkreter, auch wenn sie
+              technisch nur eine Schätzung ist (kein echtes Zwischen-Ergebnis
+              vom einzelnen, undurchsichtigen API-Aufruf verfügbar) — bleibt
+              deshalb bewusst unter 100%, bis die Antwort wirklich da ist. */}
           {fotoStatus === "analysiere" && (
-            <div style={{ marginTop: 10, background: C.brandBg, borderRadius: THEME.radius.md, padding: "14px 16px", textAlign: "center" }}>
-              <style>{`
-                @keyframes nkrFotoSpin { to { transform: rotate(360deg); } }
-              `}</style>
-              <div style={{
-                width: 22, height: 22, margin: "0 auto 10px", borderRadius: "50%",
-                border: "3px solid " + C.border, borderTopColor: C.brand,
-                animation: "nkrFotoSpin 0.8s linear infinite",
-              }} />
-              <div style={{ fontSize: 13, fontWeight: 600, color: C.text, marginBottom: 4 }}>
-                Wird analysiert … ({analyseSek}s)
+            <div style={{ marginTop: 10, background: C.brandBg, borderRadius: THEME.radius.md, padding: "14px 16px" }}>
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", marginBottom: 8 }}>
+                <span style={{ fontSize: 13, fontWeight: 600, color: C.text }}>Wird analysiert …</span>
+                <span style={{ fontSize: 13, fontWeight: 700, color: C.brand }}>{analysePct}%</span>
               </div>
-              <div style={{ fontSize: 12, color: C.textMuted, minHeight: 16 }}>{ANALYSE_MSGS[analyseMsgIdx]}</div>
-              <div style={{ fontSize: 11, color: C.textDim, marginTop: 8 }}>
+              <div style={{ height: 6, background: C.border, borderRadius: 3, overflow: "hidden", marginBottom: 8 }}>
+                <div style={{ height: "100%", background: C.brand, width: analysePct + "%", transition: "width 0.9s ease", borderRadius: 3 }} />
+              </div>
+              <div style={{ fontSize: 12, color: C.textMuted, minHeight: 16, textAlign: "center" }}>{analyseMeldung(analysePct)}</div>
+              <div style={{ fontSize: 11, color: C.textDim, marginTop: 8, textAlign: "center" }}>
                 Das kann bis zu 2 Minuten dauern — wir prüfen jede Zeile einzeln, um Verwechslungen zu vermeiden. Bitte die Seite offen lassen.
               </div>
             </div>

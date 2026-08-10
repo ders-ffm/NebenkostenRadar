@@ -395,6 +395,17 @@ Behoben, `src/pages/Wohnung.jsx`:
 
 **Offenes Risiko, nicht in diesem Fix behoben:** Bei einer wirklich 1-2 Minuten dauernden Anfrage auf dem Handy kann iOS Safari den Tab bei Bildschirmsperre oder App-Wechsel in den Hintergrund/Ruhezustand versetzen und den laufenden `fetch`-Request abbrechen. Das ist unabhängig von der neuen Fortschrittsanzeige — die zeigt nur ehrlich an, dass es dauert, verhindert aber nicht, dass ein Nutzer währenddessen das Handy sperrt. Sollte sich das als echtes Problem zeigen, bräuchte es einen asynchronen Ablauf (Analyse im Hintergrund starten, Ergebnis später abholen) statt der aktuellen synchronen Anfrage — deutlich größerer Umbau, aktuell nicht umgesetzt.
 
+### Login.jsx: doppelte E-Mail-Eingabe + Fortschrittsanzeige als simulierte Prozentleiste (08/2026)
+
+Stefan meldete nach einem Live-Test des Kundenkonto-Zugangs zwei Punkte:
+
+1. `Login.jsx` (Magic-Link-Anmeldung) hatte nur ein einzelnes E-Mail-Feld, im Unterschied zu `Adressen.jsx` (dort schon länger doppelte Eingabe ohne Copy&Paste, siehe CHANGELOG-Eintrag von früher). Behoben: gleiches Muster übernommen — zweites Feld "E-Mail-Adresse wiederholen", Paste/Drop blockiert, Abgleich vor dem Versand. Nicht nur Konsistenz: ein Tippfehler hier könnte einen Anmeldelink an eine tatsächlich existierende FREMDE Adresse schicken, falls der Tippfehler zufällig eine echte E-Mail ergibt — ein echtes Sicherheitsargument, nicht nur Komfort.
+2. Die Bestätigungs-Mail nach der Anmeldung ("Confirm your email address") ist Supabases Standard-Vorlage — englisch, unbranded, wirkt laut Stefan nicht vertrauenswürdig. **Kein Code-Fix möglich:** Diese Vorlage liegt nicht in diesem Repository, sondern wird direkt in Supabase verwaltet (Dashboard → Authentication → Email Templates → "Confirm signup"/"Magic Link"). Muss dort manuell auf Deutsch und im eigenen Design angepasst werden — Anleitungsschritte dafür noch nachzutragen.
+
+### Wohnung.jsx: Fortschrittsanzeige von Sekunden-Zähler auf simulierte Prozentleiste umgestellt (08/2026)
+
+Der Sekunden-Zähler aus dem vorigen Fix wirkte laut Stefan bei 2 Minuten Wartezeit immer noch zu wenig informativ ("kein Gefühl, wie weit man ist"). Eine ECHTE Prozentanzeige ist technisch nicht möglich (ein einzelner, undurchsichtiger API-Aufruf ohne Zwischenstatus/Streaming) — stattdessen jetzt eine simulierte, aber realistisch wirkende Kurve: `analyseProzent()` steigt anfangs schnell, wird zum Ende hin bewusst langsamer und bleibt absichtlich unter 95%, bis die echte Antwort da ist (springt dann sofort auf "fertig"). Die angezeigte Meldung richtet sich nach dem Prozentwert statt nach der Zeit — "Fast geschafft" erscheint dadurch wie gewünscht erst gegen Ende (>90%), unabhängig von der tatsächlichen Gesamtdauer. Zeitkonstante (`ANALYSE_TAU_SEK = 35`) ist eine erste Schätzung, nach den nächsten echten Laufzeiten mit `effort:"high"` ggf. nachzujustieren.
+
 ## Frühere Änderungen
 
 Siehe Kommentar-Historie in `scripts/rechtsmonitor.mjs` für die Entwicklung des SEO-Artikel-Systems (25.–26.07.2026: JSON-Extraktion, deterministische Artikel-IDs, Duplikat-Vermeidung).

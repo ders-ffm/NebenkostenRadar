@@ -12,14 +12,36 @@ import Btn from "../components/ui/Btn.jsx";
 export default function Login({ navigateTo }) {
   const C = THEME.color;
   const [email, setEmail] = useState("");
+  // Doppelte E-Mail-Eingabe ohne Copy&Paste (08/2026, siehe CHANGELOG.md) —
+  // gleiches Muster wie in Adressen.jsx: ein Tippfehler hier führt nicht nur
+  // dazu, dass der Nutzer selbst keinen Link bekommt, sondern könnte den
+  // Anmeldelink an eine tatsächlich existierende FREMDE Adresse schicken,
+  // falls der Tippfehler zufällig eine echte E-Mail ergibt — ein echtes
+  // Sicherheitsargument, nicht nur Komfort.
+  const [emailWiederholen, setEmailWiederholen] = useState("");
   const [status, setStatus] = useState("eingabe"); // eingabe | sende | verschickt | fehler
   const [error, setError] = useState("");
+  const [errorWiederholen, setErrorWiederholen] = useState("");
+  const keinPaste = e => e.preventDefault();
 
   async function senden() {
+    let ok = true;
     if (!email.trim() || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim())) {
       setError("Bitte gültige E-Mail-Adresse eingeben");
-      return;
+      ok = false;
+    } else {
+      setError("");
     }
+    if (!emailWiederholen.trim()) {
+      setErrorWiederholen("Pflichtfeld");
+      ok = false;
+    } else if (email.trim().toLowerCase() !== emailWiederholen.trim().toLowerCase()) {
+      setErrorWiederholen("E-Mail-Adressen stimmen nicht überein");
+      ok = false;
+    } else {
+      setErrorWiederholen("");
+    }
+    if (!ok) return;
     if (!supabase) { setStatus("fehler"); return; }
     setStatus("sende"); setError("");
     const { error: err } = await supabase.auth.signInWithOtp({
@@ -49,6 +71,7 @@ export default function Login({ navigateTo }) {
         ) : (
           <>
             <Field label="E-Mail-Adresse" type="email" value={email} onChange={v => { setEmail(v); setError(""); }} placeholder="deine@email.de" required error={error} autoFocus />
+            <Field label="E-Mail-Adresse wiederholen" type="email" value={emailWiederholen} onChange={v => { setEmailWiederholen(v); setErrorWiederholen(""); }} placeholder="deine@email.de" required error={errorWiederholen} onPaste={keinPaste} onDrop={keinPaste} tip="Zum Abgleich bitte erneut eintippen" />
             <div style={{ marginTop: 8 }}>
               <Btn onClick={senden} disabled={status === "sende"}>{status === "sende" ? "Wird verschickt …" : "Anmeldelink anfordern"}</Btn>
             </div>
