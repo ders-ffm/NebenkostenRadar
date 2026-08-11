@@ -17,6 +17,11 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: "20"
+      # Fehlte bisher (11.08.2026, echter Bug — gleiche Ursache in allen 4
+      # Workflows dieses Projekts): ohne diesen Schritt fehlt node_modules,
+      # der Import von "@supabase/supabase-js" schlägt fehl.
+      - name: Abhängigkeiten installieren
+        run: npm ci
       - name: Supabase anpingen
         env:
           SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
