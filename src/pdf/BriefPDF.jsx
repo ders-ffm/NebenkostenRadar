@@ -23,12 +23,19 @@ const s = StyleSheet.create({
   tRowSum: { flexDirection: "row", paddingVertical: 6, fontWeight: 500 },
   tLabel: { flex: 3, color: C.textMuted },
   tValue: { flex: 1, textAlign: "right" },
+  gruppenTitel: { fontSize: 8.5, fontWeight: 600, color: C.textMuted, textTransform: "uppercase", marginTop: 10, marginBottom: 2 },
   gruss: { marginTop: 20, marginBottom: 30 },
   footer: { position: "absolute", bottom: 24, left: 46, right: 46, borderTop: "0.5pt solid " + C.border, paddingTop: 6, fontSize: 7, color: C.textDim, textAlign: "center" },
 });
 
 export default function BriefPDF({ result, wohnung, adressen }) {
-  const gruende = result.widerspruchsgruende || [];
+  // Zweigeteilt statt einer einzigen Liste (10.08.2026, siehe CHANGELOG):
+  // "hart" = aus den Angaben allein beweisbarer Rechtsverstoß, "statistisch"
+  // = Abweichung vom DMB-Durchschnitt bzw. offene Frage — ein Anlass zur
+  // Nachfrage, kein Beweis. Damit steht im Anschreiben an den Vermieter nie
+  // mehr Sicherheit, als die zugrunde liegende Methode tatsächlich hergibt.
+  const gruendeHart = result.widerspruchsgruende_hart || [];
+  const gruendeStatistisch = result.widerspruchsgruende_statistisch || (result.widerspruchsgruende || []).filter(g => g.typ !== "hart");
   const heute = new Date().toLocaleDateString("de-DE", { day: "numeric", month: "long", year: "numeric" });
   const fristJahr = parseInt(wohnung.jahr) + 2;
 
@@ -60,19 +67,34 @@ export default function BriefPDF({ result, wohnung, adressen }) {
       </Text>
 
       <View style={s.table}>
-        {gruende.map((g, i) => (
-          <View key={i} style={s.tRow}>
-            <Text style={s.tLabel}>{i + 1}. {g}</Text>
-          </View>
-        ))}
+        {gruendeHart.length > 0 && (
+          <>
+            <Text style={s.gruppenTitel}>Eindeutig nicht umlagefähig</Text>
+            {gruendeHart.map((g, i) => (
+              <View key={"h" + i} style={s.tRow}>
+                <Text style={s.tLabel}>{i + 1}. {g.text}</Text>
+              </View>
+            ))}
+          </>
+        )}
+        {gruendeStatistisch.length > 0 && (
+          <>
+            <Text style={s.gruppenTitel}>Auffällig im Vergleich zum DMB-Betriebskostenspiegel — bitte um Prüfung und Beleg</Text>
+            {gruendeStatistisch.map((g, i) => (
+              <View key={"s" + i} style={s.tRow}>
+                <Text style={s.tLabel}>{gruendeHart.length + i + 1}. {g.text}</Text>
+              </View>
+            ))}
+          </>
+        )}
         <View style={s.tRowSum}>
-          <Text style={s.tLabel}>Summe der Einwendungen</Text>
+          <Text style={s.tLabel}>Summe der beanstandeten Positionen</Text>
           <Text style={s.tValue}>{fmt(result.moegliche_ersparnis)}</Text>
         </View>
       </View>
 
       <Text style={s.absatz}>
-        Ich bitte um Übersendung der Originalbelege zur Einsichtnahme (§ 259 BGB), um nachvollziehbare Darlegung des Umlageschlüssels sowie um Korrektur der beanstandeten Positionen und Rückerstattung des zu viel gezahlten Betrags bis zum 30. September {fristJahr}.
+        Ich bitte um Übersendung der Originalbelege zur Einsichtnahme (§ 259 BGB), um nachvollziehbare Darlegung des Umlageschlüssels sowie um Korrektur der beanstandeten Positionen und Rückerstattung des zu viel gezahlten Betrags, soweit sich die Beanstandungen bestätigen, bis zum 30. September {fristJahr}.
       </Text>
       {result.saldo > 0 && (
         <Text style={s.absatz}>Eine eventuelle Nachzahlung leiste ich ausdrücklich unter Vorbehalt.</Text>

@@ -92,10 +92,25 @@ export default function AbrechnungPDF({ result, wohnung, seite = 1, seitenGesamt
       <Text style={s.eyebrow}>Nebenkosten-Prüfbericht · Wohnung {wohnung.flaeche} m² · Abrechnungsjahr {wohnung.jahr}</Text>
       <Text style={s.h1}>Deine vollständige Auswertung</Text>
 
+      {/* Umbenannt von "Mögliche Rückforderung" (10.08.2026, siehe CHANGELOG):
+          Eine einzelne Kopfzahl suggerierte mehr Sicherheit, als die Methode
+          hergibt — fast alle Positionen sind Richtwert-Abweichungen (Anlass
+          zur Nachfrage), keine bewiesenen Fehler. Jetzt Prüfergebnis mit den
+          beiden Kategorien getrennt, "eindeutig" nur wenn tatsächlich > 0. */}
       <View style={s.summaryBox}>
         <View>
-          <Text style={s.summaryLabel}>Mögliche Rückforderung</Text>
-          <Text style={s.summaryValue}>{result.moegliche_ersparnis > 0 ? fmt(result.moegliche_ersparnis) : "Keine"}</Text>
+          <Text style={s.summaryLabel}>Prüfergebnis</Text>
+          {result.ersparnis_hart > 0 && (
+            <Text style={s.summaryValue}>{fmt(result.ersparnis_hart)} <Text style={{ fontSize: 9, fontWeight: 400 }}>eindeutig zu viel gezahlt</Text></Text>
+          )}
+          {result.ersparnis_statistisch > 0 && (
+            <Text style={result.ersparnis_hart > 0 ? { fontSize: 11, marginTop: 2 } : s.summaryValue}>
+              {fmt(result.ersparnis_statistisch)} <Text style={{ fontSize: 9, fontWeight: 400 }}>{result.ersparnis_hart > 0 ? "zusätzlich möglich (Beleg nötig)" : "möglicherweise zu viel gezahlt (Beleg nötig)"}</Text>
+            </Text>
+          )}
+          {result.ersparnis_hart <= 0 && result.ersparnis_statistisch <= 0 && (
+            <Text style={s.summaryValue}>Keine Auffälligkeiten</Text>
+          )}
         </View>
         <Text style={s.summaryRight}>{auffaelligeAnzahl} von {result.posten_bewertung.length} Positionen{"\n"}auffällig</Text>
       </View>

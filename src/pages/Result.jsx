@@ -19,11 +19,19 @@ const STATUS_LABEL = { ok: "✓ Unauffällig", hoch: "↑ Erhöht", sehr_hoch: "
 export default function Result({ navigateTo, result, wohnung, setStufe, resetAll }) {
   const C = THEME.color;
   const [widerrufOk, setWiderrufOk] = useState(false);
-  // Vorauswahl "voll" (inkl. Musterbrief) nur, wenn es laut Analyse überhaupt
-  // etwas gibt, das ein Brief ansprechen könnte — bei "ok" wäre ein
-  // Widerspruchsbrief ohne Widerspruchsgrund unpassend, daher dort die
-  // günstigere Stufe ohne Brief vorausgewählt (Nutzer kann trotzdem wechseln).
-  const [gewaehlteStufe, setGewaehlteStufe] = useState(() => result?.gesamtbewertung === "ok" ? "auswertung" : "voll");
+  // Empfehlung jetzt dreistufig statt nur "ok vs. nicht ok" (10.08.2026,
+  // siehe CHANGELOG — Stefans Wunsch, den Brief nur zu empfehlen, wenn
+  // wirklich ein eindeutiger Verstoß vorliegt):
+  //   1. Keine Auffälligkeit ("ok")            → gar kein Kauf empfohlen
+  //   2. Nur statistische Auffälligkeiten       → nur Auswertung empfohlen,
+  //      (Richtwert-Abweichung, kein Beweis)      der Brief wäre auf einer
+  //                                                unsicheren Grundlage
+  //   3. Mind. ein "harter" Verstoß              → Auswertung + Brief
+  //      (aus den Daten beweisbar)                 empfohlen, Brief ist
+  //                                                gerechtfertigt
+  const hatHart = result?.ersparnis_hart > 0;
+  const nurStatistisch = result?.gesamtbewertung !== "ok" && !hatHart;
+  const [gewaehlteStufe, setGewaehlteStufe] = useState(() => hatHart ? "voll" : "auswertung");
 
   if (!result) {
     return (
@@ -67,7 +75,7 @@ export default function Result({ navigateTo, result, wohnung, setStufe, resetAll
           {[
             { l: "Dein €/m²/Jahr", v: fmt(result.pro_qm_gesamt) },
             { l: "DMB-Richtwert", v: fmt(result.richtwert_pro_qm_jahr) },
-            { l: "Mögl. Ersparnis", v: result.moegliche_ersparnis > 0 ? fmt(result.moegliche_ersparnis) : "Keine", hi: result.moegliche_ersparnis > 0 },
+            { l: "Auffälligkeiten", v: result.moegliche_ersparnis > 0 ? fmt(result.moegliche_ersparnis) : "Keine", hi: result.moegliche_ersparnis > 0 },
             { l: "Geprüfte Posten", v: result.posten_bewertung.length },
           ].map(k => (
             <div key={k.l} style={{ background: k.hi ? C.brandBg : C.surface, border: "1px solid " + (k.hi ? C.brand : C.border), borderRadius: THEME.radius.md, padding: "11px 12px" }}>
@@ -117,30 +125,46 @@ export default function Result({ navigateTo, result, wohnung, setStufe, resetAll
         )}
 
         <div style={{ background: C.surface, border: "2px solid " + C.text, borderRadius: THEME.radius.xl, padding: "20px 18px" }}>
+          {/* Kurze, am Kundenwunsch orientierte Formulierung statt "hart"/
+              "statistisch"-Fachsprache (10.08.2026, siehe CHANGELOG, Stefans
+              Wunsch): Die Entscheidung Bericht vs. Brief hängt letztlich
+              daran, was der Kunde als Nächstes tun will — Belege anfordern
+              (Brief) oder nicht (Bericht reicht) —, nicht an unserer eigenen
+              Beweisstärke-Einordnung. Die liefert nur die Grundlage für die
+              Empfehlung, wird dem Kunden aber nicht mehr als Begriff gezeigt. */}
           <div style={{ textAlign: "center", marginBottom: 16 }}>
             <h3 style={{ margin: "0 0 6px", fontSize: 16, fontFamily: THEME.font.heading }}>
-              {result.gesamtbewertung === "ok" ? "Trotzdem als PDF dokumentieren" : "Vollständige Auswertung als PDF"}
+              {result.gesamtbewertung === "ok" ? "Trotzdem als PDF dokumentieren" : hatHart ? "Auswertung + Brief" : "Auswertung als PDF"}
             </h3>
             <p style={{ margin: 0, fontSize: 12, color: C.textMuted }}>
               {result.gesamtbewertung === "ok"
                 ? "Optional — für deine eigenen Unterlagen, nicht für einen Widerspruch nötig"
-                : "Alle " + result.posten_bewertung.length + " Positionen mit Richtwerten und Begründungen"}
+                : hatHart
+                  ? "Wir haben einen eindeutigen Verstoß gefunden. Willst du Belege vom Vermieter anfordern? Dann brauchst du den Brief."
+                  : "Willst du Belege vom Vermieter anfordern? Dann hilft dir der Brief. Reicht dir die Auswertung — die genügt."}
             </p>
           </div>
 
           <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10, marginBottom: 16 }}>
             <button onClick={() => setGewaehlteStufe("auswertung")}
-              style={{ textAlign: "left", background: gewaehlteStufe === "auswertung" ? C.brandBg : C.bg, border: "2px solid " + (gewaehlteStufe === "auswertung" ? C.brand : C.border), borderRadius: THEME.radius.md, padding: "14px", cursor: "pointer" }}>
+              style={{ textAlign: "left", background: gewaehlteStufe === "auswertung" ? C.brandBg : C.bg, border: "2px solid " + (gewaehlteStufe === "auswertung" ? C.brand : C.border), borderRadius: THEME.radius.md, padding: "14px", cursor: "pointer", position: "relative" }}>
+              {/* Empfohlen-Badge hier, wenn NUR statistische Auffälligkeiten vorliegen
+                  (10.08.2026, siehe CHANGELOG) — der Brief wäre in diesem Fall auf einer
+                  Richtwert-Vermutung aufgebaut, nicht auf einem bewiesenen Verstoß. */}
+              {nurStatistisch && (
+                <div style={{ position: "absolute", top: -9, right: 10, background: C.accent, color: C.accentText, fontSize: 9, fontWeight: 700, padding: "2px 8px", borderRadius: 10 }}>Empfohlen</div>
+              )}
               <div style={{ fontSize: 11, color: C.textMuted, marginBottom: 4 }}>Nur Auswertung</div>
               <div style={{ fontFamily: THEME.font.heading, fontSize: 19, fontWeight: 600, color: C.text }}>{BUSINESS.PREIS_AUSWERTUNG.toFixed(2)} €</div>
               <div style={{ fontSize: 10, color: C.textDim, marginTop: 4 }}>1-seitiges PDF</div>
             </button>
             <button onClick={() => setGewaehlteStufe("voll")}
               style={{ textAlign: "left", background: gewaehlteStufe === "voll" ? C.brandBg : C.bg, border: "2px solid " + (gewaehlteStufe === "voll" ? C.brand : C.border), borderRadius: THEME.radius.md, padding: "14px", cursor: "pointer", position: "relative" }}>
-              {/* "Empfohlen"-Badge nur, wenn es laut Analyse auch etwas gibt, das ein
-                  Widerspruchsbrief ansprechen könnte — bei "ok" wäre der Brief ohne
-                  Widerspruchsgrund keine echte Empfehlung, siehe Kommentar oben. */}
-              {result.gesamtbewertung !== "ok" && (
+              {/* "Empfohlen"-Badge nur, wenn mindestens ein "harter", aus den Daten
+                  beweisbarer Verstoß vorliegt — sonst wäre der Musterbrief formal zwar
+                  möglich, aber inhaltlich nur auf Vermutungen gestützt (Stefans Wunsch,
+                  10.08.2026, siehe CHANGELOG). */}
+              {hatHart && (
                 <div style={{ position: "absolute", top: -9, right: 10, background: C.accent, color: C.accentText, fontSize: 9, fontWeight: 700, padding: "2px 8px", borderRadius: 10 }}>Empfohlen</div>
               )}
               <div style={{ fontSize: 11, color: C.textMuted, marginBottom: 4 }}>Auswertung + Brief</div>
@@ -149,17 +173,29 @@ export default function Result({ navigateTo, result, wohnung, setStufe, resetAll
             </button>
           </div>
 
-          {result.moegliche_ersparnis > 0 && (
+
+          {/* Umformuliert weg von "Mögliche Rückforderung" als Kernversprechen
+              (10.08.2026, siehe CHANGELOG, Stefans Frage zur Plausibilität/
+              Wiederkauf-Tragfähigkeit): Fast jede Position ist eine Richtwert-
+              Abweichung — ein Anlass zur Nachfrage beim Vermieter, kein
+              Beweis für einen Fehler. Das Kernversprechen ist jetzt in erster
+              Linie Klarheit/Gewissheit über die eigene Abrechnung; ein
+              möglicher Rückforderungsbetrag wird weiterhin genannt, aber nach
+              Beweisstärke getrennt und nicht mehr als Garantie formuliert —
+              ähnlich wie es z.B. NebenkostenPro handhabt (kein "Geld zurück"
+              als Versprechen, sondern "Auffälligkeitshinweise"/"Prüfpotenzial"). */}
+          {(result.ersparnis_hart > 0 || result.ersparnis_statistisch > 0) && (
             <div style={{ background: C.brandBg, borderLeft: "3px solid " + C.brand, borderRadius: 8, padding: "10px 14px", fontSize: 12, color: C.brand, marginBottom: 14 }}>
-              Mögliche Rückforderung laut Analyse: <strong>{fmt(result.moegliche_ersparnis)}</strong>
-              {/* Klarstellung gegen ein echtes Missverständnisrisiko (08/2026,
-                  Stefans Hinweis): Ohne diesen Satz könnte ein Kunde mit
-                  eigenem Guthaben denken, die Rückforderung SEI sein
-                  Guthaben, statt zusätzlich dazu — rechnerisch sind beide
-                  Werte unabhängig (result.saldo vs. moegliche_ersparnis),
-                  aber das stand bisher nirgends klar da. */}
+              {result.ersparnis_hart > 0 && (
+                <div><strong>{fmt(result.ersparnis_hart)}</strong> eindeutig zu viel gezahlt — unabhängig von Belegen nachweisbar.</div>
+              )}
+              {result.ersparnis_statistisch > 0 && (
+                <div style={{ marginTop: result.ersparnis_hart > 0 ? 4 : 0 }}>
+                  {result.ersparnis_hart > 0 ? "Zusätzlich " : ""}<strong>{fmt(result.ersparnis_statistisch)}</strong> {result.ersparnis_hart > 0 ? "möglich" : "möglicherweise zu viel gezahlt"} — liegt über dem DMB-Durchschnitt, dein Vermieter muss dazu Nachweise vorlegen. Das ist eine begründete Vermutung, keine Garantie.
+                </div>
+              )}
               {result.saldo != null && (
-                <div style={{ fontWeight: 400, marginTop: 4 }}>
+                <div style={{ fontWeight: 400, marginTop: 6 }}>
                   {result.saldo > 0
                     ? "Zusätzlich zu deiner Nachzahlung laut Abrechnung (" + fmt(result.saldo) + ") — bei Erfolg würde sich deine Nachzahlung um diesen Betrag verringern."
                     : "Zusätzlich zu deinem Guthaben laut Abrechnung (" + fmt(Math.abs(result.saldo)) + ") — nicht Teil davon, sondern obendrauf."}

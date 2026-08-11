@@ -65,11 +65,18 @@ export default function Welcome({ navigateTo, IS_DEMO }) {
         </p>
       </div>
 
+      {/* Dritte Kachel umformuliert (10.08.2026, siehe CHANGELOG): "Ø 320€
+          mögliche Rückforderung" versprach einen Geldbetrag als Kernnutzen —
+          das hält nicht, was es verspricht, wenn die meisten Auffälligkeiten
+          Richtwert-Abweichungen sind (Anlass zur Nachfrage, kein Beweis).
+          Kernversprechen jetzt: Klarheit über die eigene Abrechnung, nicht
+          ein garantierter Geldbetrag — passend zu unserem eigenen Anspruch
+          an Präzision, und näher an dem, was die Prüfung tatsächlich liefert. */}
       <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", borderBottom: "1px solid " + C.border, maxWidth: PAGE_MAX, margin: "0 auto" }}>
         {[
           ["50 %", "aller Abrechnungen enthalten Fehler", "Quelle: Deutscher Mieterbund"],
           ["§ 2 BetrKV", "Rechtsgrundlage unserer Prüfung", "inkl. HeizkostenV & CO₂KostAufG"],
-          ["Ø 320 €", "mögliche Rückforderung", "bei fehlerhafter Abrechnung"],
+          ["Klarheit", "ob deine Abrechnung stimmt", "unabhängig von Vermieter & Verwaltung"],
         ].map(([n, l, s]) => (
           <div key={l} style={{ padding: "20px 12px", textAlign: "center", borderRight: "1px solid " + C.border }}>
             <div style={{ fontFamily: THEME.font.heading, fontSize: 20, fontWeight: 600, color: C.brand, marginBottom: 4 }}>{n}</div>

@@ -435,7 +435,87 @@ Stefan bemängelte zurecht: Die Zeile "Sturm- und Hagelversicherung € 73.46" w
 
 Verifiziert mit den echten Testdaten aus `testfall-2024-heizung-warmwasser-kabel.md`: Straßenreinigung+Winterdienst korrekt weiterhin "Unauffällig" (47,67 € vs. 38,66 € Richtwert, unter der 1,4x-Schwelle), Versicherungen korrekt "Stark erhöht" nur auf der kombinierten Zeile (561,58 € vs. 299,65 € Richtwert, 87 %). Positionsanzahl im Bericht steigt dadurch von 20 auf 22 (durch die zusätzlichen "kombiniert"-Zeilen), die Anzahl der tatsächlich auffälligen Positionen sinkt von 10 auf 7 — was die Auffälligkeiten korrekter abbildet (vorher wurden 4 Versicherungs- und 1 Wasser-Einzelzeile separat mitgezählt, obwohl sie nur 2 unabhängige Befunde darstellen).
 
-**Nächster Schritt:** `src/lib/analyse.js` muss zu GitHub (`test-kauf`-Branch) hochgeladen werden, bevor beide Fixes live sichtbar sind.
+### Nachtrag 3: "Mögliche Rückforderung" enthielt lautlos Beträge aus "Unauffällig"-Positionen
+
+Stefan zweifelte zurecht an der Plausibilität der angezeigten Rückforderungssumme ("kann mir schwer vorstellen, dass ich über 600 € fordern kann"). Nachrechnen mit den echten Testdaten deckte einen echten Bug in `buildResult()` auf: Die Summierung von `moegliche_ersparnis` prüfte nur `betrag > richtwert`, unabhängig vom Status der Position. Bei Positionen, die nur leicht über dem Richtwert liegen (z.B. Straßenreinigung+Winterdienst 47,67 € vs. 38,66 € Richtwert — 23% über, unterhalb der "Hoch"-Schwelle von 40%/1,3x, deshalb korrekt als "Unauffällig" ausgewiesen), floss die Differenz trotzdem lautlos in die Summenanzeige ein. Mit den echten Testdaten betrug der stille Aufschlag 67,84 € (9,01 € aus Straßenreinigung/Winterdienst + 58,83 € aus Müllbeseitigung) — die angezeigte Rückforderung war dadurch höher, als die eigene Tabelle es hergab.
+
+**Fix:** Zusätzliche Bedingung `status !== "ok"` in der Summierung. Nur Positionen, die auch sichtbar als "Erhöht"/"Stark erhöht"/"Nicht zulässig" markiert sind, dürfen zur Rückforderungssumme beitragen.
+
+**Ergebnis mit Stefans echten Testdaten:** "Mögliche Rückforderung" jetzt 719,35 € (vorher inkonsistent berechnete Zwischenstände: 647,59 € mit dem alten, ungruppierten Code; 787,19 € kurzzeitig mit dem neuen Gruppierungs-Code vor diesem Fix). Setzt sich jetzt exakt und nachvollziehbar aus genau den drei Positionen zusammen, die auch im Anschreiben einzeln benannt werden: Wasserversorgung (194,26 €), Versicherungen kombiniert (261,93 €), Grundsteuer (263,16 €) — Summe deckungsgleich mit der Tabelle und dem Anschreiben.
+
+**Nächster Schritt:** `src/lib/analyse.js` muss (erneut) zu GitHub (`test-kauf`-Branch) hochgeladen werden — dieser Fix kam nach dem letzten Upload dazu.
+
+## 10.08.2026 — Geschäftsmodell-Frage: Trägt "Mögliche Rückforderung" den Wiederkauf?
+
+Stefans Kernfrage: Wenn wir eine Rückforderung versprechen und der Kunde bekommt in den meisten Fällen kein Geld, kauft niemand ein zweites Mal. Recherche zu Mineko UND einem direkten Preis-Wettbewerber (NebenkostenPro):
+
+- **Mineko** (Marktführer seit 2014, 150.000+ geprüfte Abrechnungen) wirbt genauso mit großen Zahlen ("93% der Abrechnungen um 565€ überhöht"), aber: (1) das eigene FAQ nennt offen die Grenzen der Methode (keine Prüfung der Verbrauchswerte/Wirtschaftlichkeit möglich); (2) Stiftung Warentest fand "etliche Punkte im Prüfbericht nicht korrekt", Nachfragen wurden nicht beantwortet — selbst der Marktführer mit menschlicher Prüfung + Mietvertragsabgleich liefert nicht zuverlässig; (3) der Großteil der Kunden zahlt über Rechtsschutzversicherungs-Partnerschaften **nichts selbst** — das Risiko "bezahlt und nichts bekommen" trägt meist die Versicherung, nicht der Mieter; (4) eigenes FAQ-Zitat: "Auch wenn die Prüfung ergibt, dass Ihre Abrechnung zu 100% korrekt ist, lohnt es sich... Sie haben endlich die Gewissheit" — Kernversprechen ist explizit NICHT nur Geld, sondern Gewissheit.
+- **NebenkostenPro** (nebenkostenpro.de, direkt abgerufen) verwendet in der eigenen Positionierung explizit KEIN "Geld zurück"-Wording: "Auffälligkeitshinweise", "Prüfpotenzial einschätzen", "gesondert zu prüfende Kostenpositionen", "Klärungsentwurf" (nicht "Widerspruch"). Wörtliches Zitat von deren Startseite: "Statt pauschaler Kennzahlen führen wir Sie... zum passenden nächsten Schritt." Footer-Disclaimer: "Eine Gewähr für Richtigkeit oder Vollständigkeit der Ergebnisse wird nicht übernommen."
+
+**Umsetzung — zweistufige Kategorisierung in `src/lib/analyse.js`:**
+
+Jede Einwendung (`widerspruch[]`) trägt jetzt ein Feld `typ`: `"hart"` (aus den Eingabedaten allein beweisbarer Rechtsverstoß, keine weitere Prüfung durch den Vermieter nötig — aktuell nur: Kabelanschluss, wenn das komplette Abrechnungsjahr nach dem 01.07.2024 liegt) oder `"statistisch"` (Richtwert-Abweichung oder offene Frage — Anlass zur Nachfrage, kein Beweis; das betrifft aktuell praktisch alle anderen Fälle: Heizung/Warmwasser, Wasser+Abwasser, Straßenreinigung/Winterdienst, Versicherungen, Grundsteuer, Hauswart, generische Richtwert-Positionen). `buildResult()` liefert entsprechend `ersparnis_hart`/`ersparnis_statistisch` und `widerspruchsgruende_hart`/`_statistisch` getrennt.
+
+**Wichtiger, ehrlicher Befund beim Testen mit Stefans echten Daten:** Die Kategorie "hart" ist bei seiner realen Abrechnung leer (0€) — alle 719,35€ sind "statistisch". Das ist kein Fehler der Umsetzung, sondern zeigt ehrlich: Mit der aktuellen Methode (Richtwert-Vergleich, kein Mietvertragsabgleich wie bei Mineko) lässt sich fast nie ein Betrag mit Sicherheit versprechen. Das ist eine bewusste Erkenntnis, kein Implementierungsproblem — falls Stefan mehr "harte" Treffer will, wäre ein Mietvertrags-Upload + -Abgleich (wie bei Mineko) der nächste große Schritt, aber ein separates, größeres Feature.
+
+**Grundsteuer-Sonderfall ergänzt:** Da der DMB-Richtwert ein bundesweiter Durchschnitt ist, bekommt die Grundsteuer-Position jetzt einen Zusatzhinweis, dass eine überdurchschnittliche Grundsteuer in Großstädten mit hohen Immobilienwerten oft ortsüblich ist (belegt am Beispiel Frankfurt: DMB Mieterschutzverein Frankfurt, t-online 06.02.2025 — historisch 10-49 Cent/m²/Monat üblich, weit über dem DMB-Schnitt von 0,18€).
+
+**Wording-Umstellung, weg von "Geld zurück" als Kernversprechen:**
+- `src/pdf/AbrechnungPDF.jsx`: "Mögliche Rückforderung" → "Prüfergebnis", getrennt nach "eindeutig zu viel gezahlt" (hart) und "möglicherweise zu viel gezahlt, Beleg nötig" (statistisch).
+- `src/pdf/BriefPDF.jsx`: Einwendungsliste zweigeteilt mit Zwischenüberschriften ("Eindeutig nicht umlagefähig" / "Auffällig im Vergleich zum DMB-Betriebskostenspiegel — bitte um Prüfung und Beleg"); Schlusssatz ergänzt um "soweit sich die Beanstandungen bestätigen" statt unbedingter Rückerstattungsforderung.
+- `src/pages/Result.jsx`: Kachel "Mögl. Ersparnis" → "Auffälligkeiten"; Rückforderungs-Kasten sprachlich in "eindeutig"/"möglich, Beleg nötig" getrennt.
+- `src/pages/Welcome.jsx`: Startseiten-Kachel "Ø 320€ mögliche Rückforderung" → "Klarheit — ob deine Abrechnung stimmt — unabhängig von Vermieter & Verwaltung". Kernversprechen jetzt Klarheit/Gewissheit statt eines Geldbetrags, näher an dem, was die Prüfung tatsächlich zuverlässig liefert.
+
+Alle geänderten Dateien einzeln mit esbuild auf Syntaxfehler geprüft (kein vollständiger `vite build` möglich — `src/artikel.js` fehlt lokal, unabhängig von dieser Änderung, siehe offener Punkt unten).
+
+**Offener Punkt, nicht durch diese Änderung verursacht:** `src/artikel.js` fehlt in Stefans lokalem iCloud-Ordner (von `src/App.jsx` importiert, für `/ratgeber/`-Artikelseiten) — vermutlich derselbe iCloud-Sync-Effekt wie zuvor bei `business.js`. Verhindert einen vollständigen lokalen `vite build`-Test, betrifft aber nicht die heute geänderten Dateien.
+
+### Nachtrag: Preisstufen-Empfehlung nach Beweisstärke gestaffelt
+
+Stefans Ergänzung: Der Musterbrief soll nur empfohlen werden, wenn wirklich ein eindeutiger Verstoß vorliegt — nicht schon bei bloßen Richtwert-Abweichungen. `Result.jsx` empfiehlt jetzt dreistufig statt nur "ok vs. nicht ok":
+
+1. Keine Auffälligkeit ("ok") → kein Kauf empfohlen (unverändert).
+2. Nur statistische Auffälligkeiten (kein `ersparnis_hart`) → **Empfohlen**-Badge auf "Nur Auswertung", zusätzlicher Erklärtext, warum der Brief hier (noch) nicht empfohlen wird.
+3. Mindestens ein "harter" Verstoß (`ersparnis_hart > 0`) → **Empfohlen**-Badge auf "Auswertung + Brief", Untertext verweist auf den gefundenen eindeutigen Verstoß.
+
+Anschließend Konsistenz-Check über den gesamten `src`-Ordner (`Rückforderung`, `Geld zurück`, `zu viel gezahlt`, `Ersparnis`, `Erstattung`, `sparen`, `garantiert`): keine weiteren Fundstellen mit altem Wording außerhalb der bereits umgestellten Dateien. Das neue Wording ist durchgängig von der Startseite (`Welcome.jsx`) bis zum Musterbrief (`BriefPDF.jsx`) umgesetzt.
+
+**Nächster Schritt:** `src/` komplett neu zu GitHub (`test-kauf`) hochladen (betroffen: `lib/analyse.js`, `pdf/AbrechnungPDF.jsx`, `pdf/BriefPDF.jsx`, `pages/Result.jsx`, `pages/Welcome.jsx`).
+
+## 10.08.2026/11.08.2026 — Kundenwording, harte Kategorie erweitert, Fristprüfung
+
+Stefans Rückfrage auf die Preisstufen-Empfehlung: "Aber was ist denn ein harter Verstoß? Wird der Brief nur empfohlen, wenn man Kabelgebühren zahlen soll?" — berechtigt, "hart" war bis dahin fast ausschließlich der Kabelanschluss-Fall. Anschließend Stefans klarer Auftrag: Kommunikation auf Kundenbedarf zuschneiden ("Möchte er Belege vom Vermieter, dann braucht er den Brief. Braucht er das nicht, genügt der Bericht"), die harte Kategorie um weitere eindeutige Fälle ergänzen, und Zustelldatum/Verjährung prüfen.
+
+### `src/pages/Result.jsx` — Wording auf Kundenabsicht statt Fachbegriffe umgestellt
+
+Die vorherige "hart"/"statistisch"-Terminologie in der UI durch die eigentliche Kundenfrage ersetzt. Karten-Überschrift/-Text jetzt:
+- Bei erkanntem hartem Verstoß: "Auswertung + Brief" / "Wir haben einen eindeutigen Verstoß gefunden. Willst du Belege vom Vermieter anfordern? Dann brauchst du den Brief."
+- Sonst: "Auswertung als PDF" / "Willst du Belege vom Vermieter anfordern? Dann hilft dir der Brief. Reicht dir die Auswertung — die genügt."
+
+Die separate, längere Erklärbox für den "nur statistisch"-Fall entfernt — durch die direktere Frage-Formulierung oben redundant geworden.
+
+### `src/lib/analyse.js` + `src/pages/Wohnung.jsx` — Neue harte Kategorie: Verwaltungskosten & Instandhaltung
+
+Antwort auf Stefans Frage "was ist ein harter Verstoß": § 1 Abs. 2 BetrKV schließt Verwaltungskosten (Nr. 1) und Instandhaltungs-/Instandsetzungskosten (Nr. 2) kategorisch von der Umlage aus — keine Richtwert-Interpretation nötig, wie beim Kabelanschluss ein deterministischer Fall. Neue Positionsgruppe "Kategorisch ausgeschlossene Kosten" (§ 1 Abs. 2 BetrKV) in `Wohnung.jsx`/`Posten.jsx` (automatisch über `POSTEN_GRUPPEN`, keine Änderung dort nötig), zwei neue optionale Felder (`verwaltungskosten`, `instandhaltung`), als `selten: true` markiert (nicht jede Abrechnung weist sie separat aus). Bei Eingabe > 0: voller Betrag als `nicht_umlagefaehig` bewertet, `typ: "hart"`-Einwendung erzeugt. Verifiziert per Node-Test: Eingabe 80€ + 150€ → `ersparnis_hart: 230`.
+
+**Nebeneffekt:** `Welcome.jsx` wirbt schon länger mit "Wir erkennen Posten, die dein Vermieter nicht abrechnen darf — z. B. Verwaltungskosten...". Das war bis zu dieser Änderung ein Überclaim (kein Eingabefeld dafür vorhanden) — jetzt durch die Umsetzung sachlich korrekt.
+
+### `src/pages/Wohnung.jsx` + `src/lib/analyse.js` — Zustelldatum und Fristprüfung (§ 556 Abs. 3 BGB)
+
+Stefans Auftrag: "von wann ist die Abrechnung... wenn die verjährt o.ä. ist muss uns das auffallen". Neues optionales Datumsfeld "Abrechnung erhalten am" (`wohnung.erhaltenAm`, `type="date"`) in `Wohnung.jsx`. Bewusst nicht im Foto-Erkennungs-Autofill enthalten — dieses Datum kennt nur der Mieter selbst, steht nicht auf der Abrechnung.
+
+§ 556 Abs. 3 BGB enthält zwei unterschiedliche 12-Monats-Fristen, beide jetzt abgebildet:
+
+1. **Vermieter → Mieter (Satz 2):** Abrechnung muss binnen 12 Monaten nach Ende des Abrechnungszeitraums zugehen, sonst ist eine Nachforderung grundsätzlich ausgeschlossen. Neue Prüfung in `buildResult()`: Ist `erhaltenAm` gesetzt und liegt nach dem 31.12. des Folgejahres, wird ein `nicht_umlagefaehig`/`typ: "hart"`-Befund "Abrechnungsfrist versäumt" erzeugt (§ 556 Abs. 3 S. 2 BGB), Betrag = `saldo`, falls Nachzahlung vorliegt, sonst 0 (Guthaben wird ohnehin unabhängig von dieser Frist erstattet).
+2. **Mieter → Vermieter (Satz 3):** Einwendungen müssen binnen 12 Monaten nach Erhalt der Abrechnung erhoben werden. `fristen_hinweis` nutzt jetzt, wenn `erhaltenAm` bekannt ist, das exakte Datum (`erhaltenAm + 1 Jahr`) statt der bisherigen Näherung "typisch Ende (Abrechnungsjahr+2)"; ist diese Frist bereits abgelaufen, wird das explizit ausgewiesen statt "Sofort handeln!".
+
+**Echter Bug beim Testen gefunden und behoben:** Erster Entwurf verglich `new Date(wohn.erhaltenAm)` (wird bei reinen Datums-Strings als UTC-Mitternacht geparst) mit `new Date(jahr+1, 11, 31)` (lokale Zeitzone). Node-Test mit Grenzfall "Abrechnung erhalten exakt am 31.12." zeigte: Wurde in `Europe/Berlin` fälschlich als Fristverstoß gewertet, weil UTC-Mitternacht des 31.12. zeitlich vor lokaler Mitternacht desselben Kalendertags liegt. Behoben durch konsistente `Date.UTC(...)`-Konstruktion auf beiden Seiten des Vergleichs sowie `timeZone: "UTC"` bei der Formatierung. Fünf Testfälle (kein Datum, rechtzeitig, verspätet, Grenzfall exakt 31.12., Datum ohne Abrechnungsjahr) über ein Node-Skript gegen `buildResult()` verifiziert, alle korrekt.
+
+Alle geänderten Dateien (`analyse.js`, `Wohnung.jsx`) einzeln mit esbuild auf Syntaxfehler geprüft.
+
+**Bewusst nicht umgesetzt (Rückfrage an Stefan noch offen):** Stefans Wunsch nach regionalen DMB-Richtwerten auf Stadt-/Kreis-Ebene (Beispiel Wolfach/Ortenaukreis) ist mit öffentlich verfügbaren Daten nicht umsetzbar — auf dieser Granularität existieren nur Mietspiegel- (Kaltmiete-), keine Betriebskosten-Daten. Bundesland-Ebene ist dagegen real vorhanden (13 landesweite DMB-Betriebskostenspiegel), aber noch nicht primärquellen-verifiziert. Diese Lücke zwischen Stefans Wunsch und der tatsächlichen Datenlage muss ihm noch vorgelegt werden, bevor an dieser Stelle etwas implementiert wird — keine erfundenen Richtwerte, siehe Grundsatz oben im Changelog.
+
+**Nächster Schritt:** `src/` (`lib/analyse.js`, `pages/Wohnung.jsx`, `pages/Result.jsx`, `pages/Welcome.jsx`) erneut zu GitHub (`test-kauf`) hochladen.
 
 ## Frühere Änderungen
 
