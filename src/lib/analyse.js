@@ -144,6 +144,20 @@ export const POSTEN_GRUPPEN = [
       { key: "gasleitungspruefung", label: "Gasleitungs- / Gasgeräteprüfung", tip: "Wiederkehrende Prüfpflicht", beispiel: "5,00", aliases: ["Gasprüfung", "Gasleitungsprüfung Allgemein"], selten: true },
       { key: "sonstiges_vereinbart", label: "Sonstige vereinbarte Betriebskosten", tip: "Nur wenn explizit im Mietvertrag benannt", beispiel: "50,00", aliases: ["Wartung Sonstige"] },
     ]},
+  // Neu 10.08.2026 (siehe CHANGELOG, Stefans Frage "was ist ein harter
+  // Verstoß" — bisher war das praktisch nur der Kabelanschluss-Fall). Diese
+  // zwei Positionen sind nach § 1 Abs. 2 BetrKV KATEGORISCH von den
+  // Betriebskosten ausgeschlossen, unabhängig von jedem Richtwert — wenn sie
+  // separat auf der Abrechnung auftauchen, ist das immer ein Fehler. Vorher
+  // gab es dafür gar kein Eingabefeld, obwohl die Startseite genau das als
+  // Leistung bewarb ("Wir erkennen... Verwaltungskosten") — das Versprechen
+  // stimmt jetzt tatsächlich.
+  { id: "nicht_umlagefaehig", label: "Kategorisch ausgeschlossene Kosten", paragraf: "§ 1 Abs. 2 BetrKV", icon: "🚫",
+    hint: "Nur ausfüllen, falls auf der Abrechnung separat ausgewiesen — diese Kosten darf dein Vermieter nach dem Gesetz nie umlegen",
+    posten: [
+      { key: "verwaltungskosten", label: "Verwaltungskosten", tip: "Kaufmännische/technische Verwaltung — nie umlagefähig (§ 1 Abs. 2 Nr. 1 BetrKV)", beispiel: "80,00", aliases: ["Verwaltungsgebühr", "Verwaltungspauschale", "Verwaltungskostenpauschale"], selten: true },
+      { key: "instandhaltung", label: "Instandhaltung / Instandsetzung", tip: "Reparaturen, Erhaltungsaufwand — nie umlagefähig (§ 1 Abs. 2 Nr. 2 BetrKV)", beispiel: "150,00", aliases: ["Reparaturkosten", "Instandsetzungskosten", "Erhaltungsaufwand"], selten: true },
+    ]},
 ];
 
 export const ALLE_POSTEN = POSTEN_GRUPPEN.flatMap(g => g.posten);
@@ -177,6 +191,22 @@ export function analysierePosten(w, wohn) {
   const flaeche = Math.max(toNum(wohn.flaeche), 5);
   const rj = m => m * flaeche * 12; // Monatsrichtwert -> Jahresrichtwert für die Wohnfläche
 
+  // widerspruch: Array von { text, typ }. "typ" unterscheidet zwei grund-
+  // sätzlich verschiedene Aussagearten (10.08.2026, siehe CHANGELOG —
+  // Stefans Frage, ob eine hohe angezeigte "Rückforderung" realistisch ist):
+  //   "hart"        — deterministischer, aus den Eingabedaten allein
+  //                    beweisbarer Rechtsverstoß, keine weitere Prüfung
+  //                    durch den Vermieter nötig, um ihn zu bestätigen
+  //                    (aktuell nur: Kabelanschluss, komplettes Abrechnungs-
+  //                    jahr nach dem 01.07.2024).
+  //   "statistisch" — Abweichung von einem Durchschnitts-Richtwert (DMB)
+  //                    oder eine offene, nur mit weiteren Unterlagen zu
+  //                    klärende Frage (z.B. genauer Abrechnungszeitraum
+  //                    einer Position). Ein Anlass zur Nachfrage/Belegein-
+  //                    sicht — KEIN Beweis für einen Fehler. Der DMB selbst
+  //                    weist ausdrücklich darauf hin, dass Abweichungen vom
+  //                    Betriebskostenspiegel keine verbindliche Prüfung der
+  //                    Abrechnung ersetzen (mieterbund.de, Stand 12/2025).
   const widerspruch = [];
   const posten_bewertung = [];
 
@@ -200,13 +230,29 @@ export function analysierePosten(w, wohn) {
       // Übergangsjahr bzw. Jahr nicht sicher bekannt: keine sichere Behauptung möglich,
       // ohne den genauen Abrechnungszeitraum dieser einen Position zu kennen.
       posten_bewertung.push({ posten: "Kabelanschluss", betrag: b, richtwert: 0, abweichung_prozent: 0, status: "pruefen", hinweis: "Seit 01.07.2024 nicht mehr umlagefähig (§ 2 Nr. 15b TKG). Prüfe den auf der Abrechnung angegebenen Zeitraum: Anteil bis 30.06.2024 zulässig, danach nicht mehr.", paragraf: "§ 2 Nr. 15b TKG" });
-      widerspruch.push("Kabelanschlusskosten " + fmt(b) + ": Prüfe den abgerechneten Zeitraum auf der Abrechnung. Seit 01.07.2024 nicht mehr umlagefähig (§ 2 Nr. 15b TKG), nur der Anteil bis 30.06.2024 ist noch zulässig.");
+      widerspruch.push({ typ: "statistisch", text: "Kabelanschlusskosten " + fmt(b) + ": Prüfe den abgerechneten Zeitraum auf der Abrechnung. Seit 01.07.2024 nicht mehr umlagefähig (§ 2 Nr. 15b TKG), nur der Anteil bis 30.06.2024 ist noch zulässig." });
     } else {
       // Abrechnungsjahr vollständig nach der Gesetzesänderung — hier ist die
       // Pauschalaussage tatsächlich sicher.
       posten_bewertung.push({ posten: "Kabelanschluss", betrag: b, richtwert: 0, abweichung_prozent: 100, status: "nicht_umlagefaehig", hinweis: "Seit 01.07.2024 nicht mehr umlagefähig. Voller Betrag rückforderbar.", paragraf: "§ 2 Nr. 15b TKG" });
-      widerspruch.push("Kabelanschlusskosten " + fmt(b) + ": Nicht umlagefähig seit 01.07.2024 (§ 2 Nr. 15b TKG). Rückforderung des vollen Betrags.");
+      widerspruch.push({ typ: "hart", text: "Kabelanschlusskosten " + fmt(b) + ": Nicht umlagefähig seit 01.07.2024 (§ 2 Nr. 15b TKG). Rückforderung des vollen Betrags." });
     }
+  }
+
+  // Verwaltungskosten / Instandhaltung — kategorisch nicht umlagefähig
+  // (§ 1 Abs. 2 Nr. 1 und 2 BetrKV), unabhängig von jedem Richtwert. Anders
+  // als beim Kabelanschluss gibt es hier keine zeitliche Übergangsregel und
+  // keine Grauzone: Wenn diese Kosten separat auf der Abrechnung stehen,
+  // ist das immer ein Fehler. Deshalb direkt "hart", ohne Fallunterscheidung.
+  if (toNum(w.verwaltungskosten) > 0) {
+    const b = toNum(w.verwaltungskosten);
+    posten_bewertung.push({ posten: "Verwaltungskosten", betrag: b, richtwert: 0, abweichung_prozent: 100, status: "nicht_umlagefaehig", hinweis: "Nie umlagefähig, unabhängig von der Höhe. Voller Betrag rückforderbar.", paragraf: "§ 1 Abs. 2 Nr. 1 BetrKV" });
+    widerspruch.push({ typ: "hart", text: "Verwaltungskosten " + fmt(b) + ": Nach § 1 Abs. 2 Nr. 1 BetrKV nicht umlagefähig. Rückforderung des vollen Betrags." });
+  }
+  if (toNum(w.instandhaltung) > 0) {
+    const b = toNum(w.instandhaltung);
+    posten_bewertung.push({ posten: "Instandhaltung / Instandsetzung", betrag: b, richtwert: 0, abweichung_prozent: 100, status: "nicht_umlagefaehig", hinweis: "Nie umlagefähig, unabhängig von der Höhe. Voller Betrag rückforderbar.", paragraf: "§ 1 Abs. 2 Nr. 2 BetrKV" });
+    widerspruch.push({ typ: "hart", text: "Instandhaltungs-/Instandsetzungskosten " + fmt(b) + ": Nach § 1 Abs. 2 Nr. 2 BetrKV nicht umlagefähig. Rückforderung des vollen Betrags." });
   }
 
   // Heizung + Warmwasser — DMB weist nur einen KOMBINIERTEN Wert aus, daher hier
@@ -219,11 +265,11 @@ export function analysierePosten(w, wohn) {
     let st = "ok", hi = "Richtwert Heizung+WW für " + flaeche + "m²: " + fmt(rwK) + "/Jahr. Verbrauchsanteil muss 50-70% betragen (§ 7 HeizkostenV).";
     if (kombi > rwMax) {
       st = "sehr_hoch";
-      widerspruch.push("Heizkosten+Warmwasser " + fmt(kombi) + " übersteigen DMB-Höchstwert " + fmt(rwMax) + " für " + flaeche + "m². Belegeinsicht anfordern.");
+      widerspruch.push({ typ: "statistisch", text: "Heizkosten+Warmwasser " + fmt(kombi) + " übersteigen DMB-Höchstwert " + fmt(rwMax) + " für " + flaeche + "m². Belegeinsicht anfordern." });
       hi = aK + "% über DMB-Richtwert! Max. " + fmt(rwMax) + "/Jahr.";
     } else if (kombi > rwK * 1.3) {
       st = "hoch";
-      widerspruch.push("Heizkosten+Warmwasser " + fmt(kombi) + " liegen " + aK + "% über DMB-Durchschnitt für " + flaeche + "m². Belege anfordern.");
+      widerspruch.push({ typ: "statistisch", text: "Heizkosten+Warmwasser " + fmt(kombi) + " liegen " + aK + "% über DMB-Durchschnitt für " + flaeche + "m². Belege anfordern." });
       hi = aK + "% über DMB-Richtwert.";
     }
     posten_bewertung.push({ posten: "Heizkosten & Warmwasser (kombiniert)", betrag: kombi, richtwert: rwK, abweichung_prozent: aK, status: st, hinweis: hi, paragraf: "§ 2 Nr. 4+5 BetrKV, § 7 HeizkostenV" });
@@ -234,7 +280,7 @@ export function analysierePosten(w, wohn) {
   if (toNum(w.co2_abgabe) > 0) {
     const b = toNum(w.co2_abgabe);
     posten_bewertung.push({ posten: "CO2-Abgabe", betrag: b, richtwert: 0, abweichung_prozent: 0, status: "pruefen", hinweis: "Vermieter muss 0-95% selbst tragen (10-Stufen-Modell). Energieausweis anfordern.", paragraf: "§ 5 CO2KostAufG" });
-    widerspruch.push("CO2-Abgabe " + fmt(b) + ": Prüfe ob Vermieteranteil korrekt abgezogen wurde (§ 5 CO2KostAufG).");
+    widerspruch.push({ typ: "statistisch", text: "CO2-Abgabe " + fmt(b) + ": Prüfe ob Vermieteranteil korrekt abgezogen wurde (§ 5 CO2KostAufG)." });
   }
 
   // Hauswart — DMB-Wert "separat abgerechnet" (0,21), da Hausreinigung/Garten bei uns eigene Felder sind
@@ -243,11 +289,11 @@ export function analysierePosten(w, wohn) {
     let st = "ok", hi = "Nur Betriebskostenanteile umlagefähig. Richtwert (separat abgerechnet): " + fmt(rw) + "/Jahr.";
     if (b > rw * 1.5) {
       st = "sehr_hoch";
-      widerspruch.push("Hausmeisterkosten " + fmt(b) + " erheblich über Richtwert " + fmt(rw) + "/Jahr für " + flaeche + "m². Aufschlüsselung anfordern.");
+      widerspruch.push({ typ: "statistisch", text: "Hausmeisterkosten " + fmt(b) + " erheblich über Richtwert " + fmt(rw) + "/Jahr für " + flaeche + "m². Aufschlüsselung anfordern." });
       hi = a + "% über Richtwert! Aufschlüsselung anfordern.";
     } else if (b > rw * 1.3) {
       st = "hoch";
-      widerspruch.push("Hausmeisterkosten " + fmt(b) + " (" + a + "% über Richtwert). Nachweis anfordern.");
+      widerspruch.push({ typ: "statistisch", text: "Hausmeisterkosten " + fmt(b) + " (" + a + "% über Richtwert). Nachweis anfordern." });
     }
     posten_bewertung.push({ posten: "Hauswart/Hausmeister", betrag: b, richtwert: rw, abweichung_prozent: a, status: st, hinweis: hi, paragraf: "§ 2 Nr. 14 BetrKV" });
   }
@@ -258,7 +304,7 @@ export function analysierePosten(w, wohn) {
   if (wg > 0) {
     const rw = rj(R.wasser_abwasser), a = abw(wg, rw);
     let st = "ok", hi = "Richtwert Wasser+Abwasser für " + flaeche + "m²: " + fmt(rw) + "/Jahr.";
-    if (wg > rw * 1.6) { st = "sehr_hoch"; widerspruch.push("Wasser+Abwasser " + fmt(wg) + " (" + a + "% über Richtwert). Auf Doppelberechnung prüfen."); hi = a + "% über Richtwert — mögliche Doppelberechnung!"; }
+    if (wg > rw * 1.6) { st = "sehr_hoch"; widerspruch.push({ typ: "statistisch", text: "Wasser+Abwasser " + fmt(wg) + " (" + a + "% über Richtwert). Auf Doppelberechnung prüfen." }); hi = a + "% über Richtwert — mögliche Doppelberechnung!"; }
     else if (wg > rw * 1.3) { st = "hoch"; hi = a + "% über Richtwert. Belege anfordern."; }
     // Richtwert-Anzeige proportional zum tatsächlichen Anteil an der Gesamtsumme wg aufteilen
     // (nicht pauschal 50/50) — bei pauschaler Aufteilung zeigte die Zeile "Wasserversorgung" einen
@@ -287,7 +333,7 @@ export function analysierePosten(w, wohn) {
     const rw = rj(R.strassenreinigung), a = abw(srg, rw);
     let st = "ok", hi = "Richtwert Straßenreinigung inkl. Winterdienst für " + flaeche + "m²: " + fmt(rw) + "/Jahr.";
     const bez = listeText([["Straßenreinigung", sr], ["Schnee-/Eisbeseitigung", se]]);
-    if (srg > rw * 1.8) { st = "sehr_hoch"; widerspruch.push(bez + (sr > 0 && se > 0 ? " (zusammen " + fmt(srg) + ")" : "") + " liegen " + a + "% über dem DMB-Richtwert für Straßenreinigung inkl. Winterdienst. Belege anfordern."); hi = a + "% über DMB-Richtwert! Belege anfordern."; }
+    if (srg > rw * 1.8) { st = "sehr_hoch"; widerspruch.push({ typ: "statistisch", text: bez + (sr > 0 && se > 0 ? " (zusammen " + fmt(srg) + ")" : "") + " liegen " + a + "% über dem DMB-Richtwert für Straßenreinigung inkl. Winterdienst. Belege anfordern." }); hi = a + "% über DMB-Richtwert! Belege anfordern."; }
     else if (srg > rw * 1.4) { st = "hoch"; hi = a + "% über DMB-Richtwert."; }
     if (sr > 0 && se > 0) {
       posten_bewertung.push({ posten: "Straßenreinigung & Winterdienst (kombiniert)", betrag: srg, richtwert: rw, abweichung_prozent: a, status: st, hinweis: hi, paragraf: "§ 2 Nr. 8 BetrKV" });
@@ -323,7 +369,7 @@ export function analysierePosten(w, wohn) {
   if (vg > 0) {
     const rw = rj(R.versicherungen), a = abw(vg, rw);
     let st = "ok", hi = "Richtwert für alle Gebäude-Sachversicherungen zusammen, " + flaeche + "m²: " + fmt(rw) + "/Jahr.";
-    if (vg > rw * 1.8) { st = "sehr_hoch"; widerspruch.push(listeText(vEinzelpositionen) + (vAnzahlBefuellt > 1 ? " (zusammen " + fmt(vg) + ")" : "") + " liegen " + a + "% über dem DMB-Richtwert für Gebäude-Sachversicherungen insgesamt. Versicherungspolicen/Prämiensteigerung anfordern."); hi = a + "% über DMB-Richtwert (alle Versicherungen zusammen)! Nachweis anfordern."; }
+    if (vg > rw * 1.8) { st = "sehr_hoch"; widerspruch.push({ typ: "statistisch", text: listeText(vEinzelpositionen) + (vAnzahlBefuellt > 1 ? " (zusammen " + fmt(vg) + ")" : "") + " liegen " + a + "% über dem DMB-Richtwert für Gebäude-Sachversicherungen insgesamt. Versicherungspolicen/Prämiensteigerung anfordern." }); hi = a + "% über DMB-Richtwert (alle Versicherungen zusammen)! Nachweis anfordern."; }
     else if (vg > rw * 1.4) { st = "hoch"; hi = a + "% über DMB-Richtwert (alle Versicherungen zusammen)."; }
     if (vAnzahlBefuellt > 1) {
       posten_bewertung.push({ posten: "Versicherungen (kombiniert)", betrag: vg, richtwert: rw, abweichung_prozent: a, status: st, hinweis: hi, paragraf: "§ 2 Nr. 13 BetrKV" });
@@ -357,6 +403,7 @@ export function analysierePosten(w, wohn) {
     "kaltwasser", "entwasserung", "niederschlagswasser", "kabelanschluss",
     "strassenreinigung", "schnee_eis_beseitigung",
     "feuerversicherung", "sturm_hagel_versicherung", "leitungswasser_versicherung", "haftpflichtversicherung", "glasversicherung",
+    "verwaltungskosten", "instandhaltung",
   ]);
 
   ALLE_POSTEN.forEach(p => {
@@ -365,8 +412,26 @@ export function analysierePosten(w, wohn) {
     const entry = bm[p.key];
     if (entry) {
       const [rm, para] = entry, rw = rj(rm), a = abw(b, rw);
+      // Grundsteuer-Sonderfall (gefunden 10.08.2026, siehe CHANGELOG): Der
+      // DMB-Richtwert ist ein BUNDESWEITER Durchschnitt inkl. günstiger
+      // ländlicher Regionen. In Großstädten mit hohen Immobilienwerten
+      // (bestätigt am Beispiel Frankfurt: DMB Mieterschutzverein Frankfurt,
+      // Interview t-online 06.02.2025 — dort historisch 10-49 Cent/m²/Monat
+      // üblich, weit über dem DMB-Schnitt von 0,18€) ist eine überdurch-
+      // schnittliche Grundsteuer oft schlicht ortsüblich, kein Abrechnungs-
+      // fehler. Ohne diesen Hinweis suggeriert die Abweichungsanzeige mehr
+      // Sicherheit, als die Methode hergibt.
+      const istGrundsteuer = p.key === "grundsteuer";
       let st = "ok", hi = rw > 0 ? "Richtwert für " + flaeche + "m²: " + fmt(rw) + "/Jahr." : "Formale Zulässigkeit prüfen.";
-      if (a > 80) { st = "sehr_hoch"; hi = a + "% über DMB-Richtwert! Belege anfordern."; widerspruch.push(p.label + " " + fmt(b) + " liegt " + a + "% über DMB-Richtwert. Belegeinsicht anfordern (§ 259 BGB)."); }
+      if (a > 80) {
+        st = "sehr_hoch";
+        hi = a + "% über DMB-Richtwert! Belege anfordern." + (istGrundsteuer ? " In Großstädten mit hohen Immobilienwerten oft ortsüblich, kein sicheres Zeichen für einen Fehler." : "");
+        widerspruch.push({
+          typ: "statistisch",
+          text: p.label + " " + fmt(b) + " liegt " + a + "% über DMB-Richtwert. Belegeinsicht anfordern (§ 259 BGB)."
+            + (istGrundsteuer ? " Hinweis: Der DMB-Richtwert ist ein bundesweiter Durchschnitt; in Großstädten mit hohen Immobilienwerten ist eine überdurchschnittliche Grundsteuer oft ortsüblich und kein Abrechnungsfehler." : ""),
+        });
+      }
       else if (a > 40) { st = "hoch"; hi = a + "% über DMB-Richtwert. Prüfenswert."; }
       posten_bewertung.push({ posten: p.label, betrag: b, richtwert: rw, abweichung_prozent: Math.max(0, a), status: st, hinweis: hi, paragraf: para });
     } else {
@@ -387,6 +452,52 @@ export function buildResult(w, wohn) {
   const saldo = vorauszahlung > 0 ? gesamt - vorauszahlung : null;
 
   const { posten_bewertung, widerspruch } = analysierePosten(w, wohn);
+
+  // Abrechnungsfrist des Vermieters (§ 556 Abs. 3 Satz 2 BGB) — neu 10.08.2026,
+  // siehe CHANGELOG, Stefans Wunsch. Der Vermieter muss innerhalb von 12
+  // Monaten nach Ende des Abrechnungszeitraums abrechnen. Bei Kalenderjahr-
+  // Abrechnung (der Regelfall, andere Zeiträume erfassen wir aktuell nicht)
+  // endet der Zeitraum am 31.12. des Abrechnungsjahres, die Frist damit am
+  // 31.12. des Folgejahres. Kommt die Abrechnung später beim Mieter an, ist
+  // eine Nachforderung grundsätzlich ausgeschlossen (Ausnahme: Vermieter hat
+  // die Verspätung nicht zu vertreten, z.B. bei verspätetem Grundsteuer-
+  // bescheid — das können wir aus den Eingabedaten nicht erkennen, deshalb
+  // Hinweis statt automatischer 100%-Sicherheit im Text). Nur ausgewertet,
+  // wenn das Datum tatsächlich angegeben wurde (Feld ist optional).
+  if (wohn.erhaltenAm) {
+    const jahrNum = parseInt(wohn.jahr, 10);
+    // <input type="date"> liefert "YYYY-MM-DD"; new Date(String) parst das
+    // als UTC-Mitternacht. Der Vergleichswert fristEnde MUSS deshalb
+    // ebenfalls über Date.UTC gebildet werden — sonst vergleicht man einen
+    // UTC-Zeitpunkt mit einem lokalen Zeitpunkt, was am 31.12. je nach
+    // Zeitzone/Sommerzeit zu einem falschen "verspätet"-Befund führen kann
+    // (per Test gefunden: 31.12. exakt am Fristende wurde faelschlich als
+    // Verstoß gewertet). Gleiches gilt für die Formatierung — timeZone:
+    // "UTC" erzwingen, sonst kann die Anzeige vom Tag abweichen.
+    const erhalten = new Date(wohn.erhaltenAm);
+    if (jahrNum && !isNaN(erhalten.getTime())) {
+      const fristEnde = new Date(Date.UTC(jahrNum + 1, 11, 31));
+      if (erhalten > fristEnde) {
+        const fristEndeText = fristEnde.toLocaleDateString("de-DE", { timeZone: "UTC" });
+        const betroffenerBetrag = saldo != null && saldo > 0 ? saldo : 0;
+        posten_bewertung.push({
+          posten: "Abrechnungsfrist versäumt",
+          betrag: betroffenerBetrag,
+          richtwert: 0,
+          abweichung_prozent: 100,
+          status: "nicht_umlagefaehig",
+          hinweis: "Die Abrechnung kam erst nach dem " + fristEndeText + " bei dir an — mehr als 12 Monate nach Ende des Abrechnungszeitraums " + jahrNum + ". Nach § 556 Abs. 3 Satz 2 BGB ist eine Nachforderung dann grundsätzlich ausgeschlossen, außer der Vermieter hat die Verspätung nicht zu vertreten.",
+          paragraf: "§ 556 Abs. 3 S. 2 BGB",
+        });
+        widerspruch.push({
+          typ: "hart",
+          text: "Die Abrechnung ist erst nach dem " + fristEndeText + " bei mir eingegangen — mehr als 12 Monate nach Ende des Abrechnungszeitraums " + jahrNum + ". Nach § 556 Abs. 3 Satz 2 BGB ist eine Nachforderung damit ausgeschlossen. Ich widerspreche einer etwaigen Nachforderung aus diesem Grund"
+            + (betroffenerBetrag > 0 ? " (" + fmt(betroffenerBetrag) + ")." : "."),
+        });
+      }
+    }
+  }
+
   const hatKritisch = posten_bewertung.some(p => p.status === "nicht_umlagefaehig");
   const hatSehrHoch = posten_bewertung.some(p => p.status === "sehr_hoch");
   const hatHoch = posten_bewertung.some(p => ["hoch", "pruefen"].includes(p.status));
@@ -409,6 +520,18 @@ export function buildResult(w, wohn) {
     return s;
   }, 0);
 
+  // Aufteilung nach Beweisstärke (10.08.2026, siehe CHANGELOG): "hart" = aus
+  // den Eingabedaten allein beweisbar (aktuell: status "nicht_umlagefaehig",
+  // bislang nur der Kabelanschluss-Fall). "statistisch" = Richtwert-Abweichung
+  // oder offene Frage — ein Anlass zur Nachfrage, kein Beweis. Diese Trennung
+  // zieht sich auch durch widerspruch[].typ (siehe analysierePosten oben) und
+  // wird in BriefPDF.jsx/Result.jsx/AbrechnungPDF.jsx verwendet, um nicht mehr
+  // Sicherheit zu suggerieren, als die Methode tatsächlich hergibt.
+  const ersparnisHart = posten_bewertung.reduce((s, p) => p.status === "nicht_umlagefaehig" ? s + p.betrag : s, 0);
+  const ersparnisStatistisch = Math.round((ersparnis - ersparnisHart) * 100) / 100;
+  const widerspruchHart = widerspruch.filter(g => g.typ === "hart");
+  const widerspruchStatistisch = widerspruch.filter(g => g.typ !== "hart");
+
   const saldoText = saldo !== null ? (saldo > 0 ? " Nachzahlung: " + fmt(saldo) + "." : " Guthaben: " + fmt(Math.abs(saldo)) + " — trotzdem inhaltlich prüfen!") : "";
 
   return {
@@ -427,11 +550,40 @@ export function buildResult(w, wohn) {
         : "Weitgehend unauffällig: " + fmt(proQmJahr) + "/m2/Jahr (DMB-Richtwert: " + fmt(richtwertJahr) + "/m2/Jahr)." + saldoText,
     fehler_anzahl: widerspruch.length,
     moegliche_ersparnis: Math.round(ersparnis * 100) / 100,
+    // Aufteilung nach Beweisstärke, siehe Kommentar oben. Für UI/PDF: Nur
+    // ersparnis_hart ist eine belastbare Zahl, ersparnis_statistisch ist eine
+    // Schätzung auf Basis von Durchschnittswerten.
+    ersparnis_hart: Math.round(ersparnisHart * 100) / 100,
+    ersparnis_statistisch: ersparnisStatistisch,
     pro_qm_gesamt: parseFloat(proQmJahr.toFixed(2)),
     richtwert_pro_qm_jahr: richtwertJahr,
     posten_bewertung,
     widerspruchsgruende: widerspruch,
-    fristen_hinweis: "Widerspruchsfrist: 12 Monate nach Erhalt der Abrechnung (§ 556 Abs. 3 BGB). Für Abrechnungsjahr " + wohn.jahr + " endet die Frist typisch Ende " + (parseInt(wohn.jahr) + 2) + ". Sofort handeln!",
+    widerspruchsgruende_hart: widerspruchHart,
+    widerspruchsgruende_statistisch: widerspruchStatistisch,
+    // Zwei unterschiedliche Fristen aus § 556 Abs. 3 BGB, nicht verwechseln:
+    // (1) Vermieter -> Mieter: Abrechnung muss binnen 12 Monaten nach Ende
+    //     des Abrechnungszeitraums zugehen (Satz 2) — dazu oben der
+    //     "Abrechnungsfrist versäumt"-Befund, falls erhaltenAm gesetzt ist.
+    // (2) Mieter -> Vermieter: Einwendungen (Widerspruch) müssen binnen 12
+    //     Monaten NACH ERHALT der Abrechnung erhoben werden (Satz 3) — das
+    //     ist die Frist, die hier ausgegeben wird. Neu 10.08.2026 (siehe
+    //     CHANGELOG): Wenn erhaltenAm bekannt ist, exaktes Datum statt der
+    //     bisherigen "typisch Ende (jahr+2)"-Näherung berechnen.
+    fristen_hinweis: (() => {
+      if (wohn.erhaltenAm) {
+        const erhalten = new Date(wohn.erhaltenAm);
+        if (!isNaN(erhalten.getTime())) {
+          const einwendungsfrist = new Date(erhalten);
+          einwendungsfrist.setFullYear(einwendungsfrist.getFullYear() + 1);
+          const heute = new Date();
+          const abgelaufen = heute > einwendungsfrist;
+          return "Widerspruchsfrist: 12 Monate nach Erhalt der Abrechnung (§ 556 Abs. 3 Satz 3 BGB). Abrechnung erhalten am " + erhalten.toLocaleDateString("de-DE", { timeZone: "UTC" }) + " — Frist endet am " + einwendungsfrist.toLocaleDateString("de-DE", { timeZone: "UTC" }) + "."
+            + (abgelaufen ? " Diese Frist ist bereits abgelaufen — ein Widerspruch ist dann grundsätzlich nicht mehr möglich, bitte anwaltlich prüfen lassen." : " Sofort handeln!");
+        }
+      }
+      return "Widerspruchsfrist: 12 Monate nach Erhalt der Abrechnung (§ 556 Abs. 3 Satz 3 BGB). Für Abrechnungsjahr " + wohn.jahr + " endet die Frist typisch Ende " + (parseInt(wohn.jahr) + 2) + " (Näherungswert — trage oben das genaue Erhaltsdatum ein für eine exakte Frist). Sofort handeln!";
+    })(),
     naechste_schritte: [
       widerspruch.length > 0 ? "Prüfbericht mit Mustertext per Einschreiben senden" : "Belege beim Vermieter anfordern (§ 259 BGB)",
       "Originalbelege einsehen — dieses Recht besteht unabhängig vom Ergebnis",

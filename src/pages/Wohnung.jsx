@@ -541,6 +541,13 @@ export default function Wohnung({ navigateTo, wohnung, setWohnung, werte, setWer
 
         <Field label="Wohnfläche laut Mietvertrag" value={wohnung.flaeche} onChange={v => setW("flaeche", v)} type="number" placeholder="z. B. 75" suffix="m²" width="short" required error={errors.flaeche} tip="Steht auf dem Deckblatt oder im Mietvertrag" />
         <Field label="Abrechnungsjahr" value={wohnung.jahr} onChange={v => setW("jahr", v)} type="number" placeholder="z. B. 2025" width="short" required error={errors.jahr} tip="Das Kalenderjahr oben auf der Abrechnung" />
+        {/* Neu 10.08.2026 (siehe CHANGELOG, Stefans Wunsch): Ohne dieses Datum
+            lässt sich nicht prüfen, ob der Vermieter die 12-Monats-Frist zur
+            Abrechnung eingehalten hat (§ 556 Abs. 3 BGB) — bei Fristversäumnis
+            ist die GESAMTE Nachforderung ausgeschlossen, ein sehr starker,
+            harter Befund. Bewusst optional (nicht jeder weiß/merkt sich das
+            genaue Datum), Fristprüfung greift nur, wenn ausgefüllt. */}
+        <Field label="Abrechnung erhalten am" value={wohnung.erhaltenAm} onChange={v => setW("erhaltenAm", v)} type="date" width="medium" tip="Datum auf dem Anschreiben oder Briefumschlag — optional, aber wichtig für die Fristprüfung" />
         <Field label="Geleistete Vorauszahlungen" value={wohnung.vorauszahlung} onChange={v => setW("vorauszahlung", v)} money placeholder="z. B. 2.400,00" prefix="€" width="medium" required error={errors.vorauszahlung} tip="Alle Abschläge des Jahres, steht als 'Summe Vorauszahlungen' auf der Abrechnung" />
 
         {vzQm !== null && vzQm < 0.5 && (
