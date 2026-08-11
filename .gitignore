@@ -1,0 +1,15 @@
+# node_modules NIE hochladen/committen: mehrere zehntausend Dateien, komplett
+# aus package.json + package-lock.json reproduzierbar (npm ci). package-lock.json
+# dagegen GEHÖRT ins Repo — legt exakte Versionen fest, u.a. damit `npm ci` in
+# den GitHub-Actions-Workflows (.github/workflows/*.yml) zuverlässig funktioniert.
+node_modules/
+
+# Build-Ausgabe, ebenfalls reproduzierbar (npm run build)
+dist/
+
+# Lokale Umgebungsvariablen (Secrets) nie hochladen
+.env
+.env.local
+
+# Editor-/OS-Artefakte
+.DS_Store
