@@ -150,11 +150,24 @@ function posteneKatalogFuerPrompt() {
 // Freitext-JSON ist strukturell fragil, das lässt sich nicht zuverlässig
 // per Prompt-Wortwahl beheben.
 // Stattdessen jetzt Anthropics "tool use": Der KI wird ein Werkzeug mit
-// festem Eingabe-Schema vorgegeben und per tool_choice erzwungen — die
-// Antwort kommt dann als von Anthropic selbst validiertes JSON-Objekt
+// festem Eingabe-Schema vorgegeben — die Antwort kommt dann, WENN das
+// Werkzeug aufgerufen wird, als von Anthropic selbst validiertes JSON-Objekt
 // zurück (aiJson.content[].input), kein eigenes Parsen aus Freitext mehr
 // nötig. Das ist der von Anthropic vorgesehene Weg für strukturierte
 // Datenextraktion, nicht nur eine bessere Prompt-Formulierung.
+//
+// tool_choice bewusst NICHT mehr erzwungen (08/2026, siehe CHANGELOG.md):
+// War anfangs auf {type:"tool", name:...} erzwungen — das garantiert zwar
+// den Tool-Aufruf, unterdrückt laut Anthropics eigener Doku aber jedes
+// Nachdenken davor. Live bestätigt: mit erzwungenem tool_choice UND
+// effort:"max" lag thinking_tokens bei mehreren Tests konstant bei 0, obwohl
+// die Doku für max-Effort durchgehendes Denken verspricht. Jetzt tool_choice
+// "auto" (Standard) — damit ist Denken laut Doku uneingeschränkt kompatibel.
+// Risiko: das Modell könnte in seltenen Fällen das Werkzeug gar nicht
+// aufrufen (z.B. bei völlig unlesbaren Fotos) — dagegen zum einen die
+// Anweisung oben im Prompt ("Nutze IMMER das Werkzeug"), zum anderen die
+// bestehende Fehlerbehandlung unten (kein gültiger Tool-Aufruf → klare
+// Fehlermeldung statt Absturz), die genau für diesen Fall schon vorhanden war.
 const TOOL_NAME = "melde_abrechnungsdaten";
 const TOOLS = [{
   name: TOOL_NAME,
@@ -185,9 +198,29 @@ const TOOLS = [{
         },
         required: ["flaeche", "jahr", "vorauszahlung", "gesamtsummeLautAbrechnung", "teilsummenLautAbrechnung"],
       },
+      // NEU 08/2026 (siehe CHANGELOG.md): Pflichtfeld VOR "werte", erzwingt eine
+      // reine Abschrift jeder Zeile, BEVOR irgendeine Zuordnung zu unseren Keys
+      // passiert. Grund: wiederholt beobachteter Fehler, bei dem Beträge der
+      // FALSCHEN Nachbarzeile zugeordnet wurden (Lesen und Zuordnen in einem
+      // Schritt vermischt). Die Trennung in zwei Schritte erzwingt, dass jede
+      // Zeile einzeln erfasst wird, bevor die Kategorisierung beginnt — "werte"
+      // MUSS laut Prompt ausschließlich aus diesem Feld abgeleitet werden, nicht
+      // erneut direkt vom Bild.
+      zeilenErfasst: {
+        type: "array",
+        description: "PFLICHT, ZUERST auszufüllen, vor 'werte': Reine Abschrift JEDER einzelnen Kostenzeile, die auf den Fotos/PDF-Seiten zu sehen ist, in der abgedruckten Reihenfolge. Bezeichnung GENAU wie gedruckt übernehmen, noch KEINE Zuordnung zu unseren Keys. Trage wirklich jede sichtbare Zeile ein, auch Posten, die später keinem Key zugeordnet werden können.",
+        items: {
+          type: "object",
+          properties: {
+            bezeichnungLautAbrechnung: { type: "string", description: "Bezeichnung/Beschriftung der Zeile, exakt wie auf der Abrechnung gedruckt" },
+            betrag: { type: "string", description: "Der dieser Zeile zugeordnete Betrag, als Zahl-String, z.B. \"437.15\"" },
+          },
+          required: ["bezeichnungLautAbrechnung", "betrag"],
+        },
+      },
       werte: {
         type: "object",
-        description: "Erkannte Kostenpositionen. NUR die im Prompt genannten Keys verwenden, nur mit tatsächlich gefundenem Betrag > 0. Betrag als Zahl-String mit Punkt als Dezimaltrennzeichen, z.B. \"437.15\".",
+        description: "Erkannte Kostenpositionen. NUR die im Prompt genannten Keys verwenden, nur mit tatsächlich gefundenem Betrag > 0. Betrag als Zahl-String mit Punkt als Dezimaltrennzeichen, z.B. \"437.15\". MUSS ausschließlich aus 'zeilenErfasst' abgeleitet werden (nicht erneut unabhängig vom Bild bestimmt) — jeder Betrag hier muss einem Eintrag dort entsprechen.",
         additionalProperties: { type: "string" },
       },
       hinweise: {
@@ -196,7 +229,7 @@ const TOOLS = [{
         items: { type: "string" },
       },
     },
-    required: ["wohnung", "werte", "hinweise"],
+    required: ["wohnung", "zeilenErfasst", "werte", "hinweise"],
   },
 }];
 
@@ -239,7 +272,11 @@ export default async function handler(req, res) {
     return res.status(429).json({ error: "Zu viele Foto-Analysen von dieser Verbindung. Bitte in einer Stunde erneut versuchen oder die Werte manuell eingeben." });
   }
 
-  const prompt = `Du liest Fotos und/oder PDF-Seiten einer deutschen Nebenkostenabrechnung (Betriebskostenabrechnung) und extrahierst daraus strukturierte Daten. Trage das Ergebnis über das Werkzeug "${TOOL_NAME}" ein.
+  const prompt = `Du liest Fotos und/oder PDF-Seiten einer deutschen Nebenkostenabrechnung (Betriebskostenabrechnung) und extrahierst daraus strukturierte Daten. Nutze für deine Antwort IMMER das Werkzeug "${TOOL_NAME}" — auch nach ausführlichem Nachdenken endet deine Antwort in einem Aufruf dieses Werkzeugs, nie in reinem Text.
+
+Das ist eine anspruchsvolle Aufgabe mit vielen ähnlichen, eng gedruckten Zeilen, bei der schon mehrfach Beträge der falschen Zeile zugeordnet wurden. Denke deshalb gründlich und in zwei getrennten Schritten nach, bevor du das Werkzeug aufrufst:
+1. ERFASSEN: Fülle zuerst "zeilenErfasst" vollständig aus — eine reine, unkommentierte Abschrift jeder einzelnen Kostenzeile in der abgedruckten Reihenfolge, noch OHNE Zuordnung zu unseren Keys.
+2. ZUORDNEN: Leite "werte" danach ausschließlich aus deiner eigenen Abschrift in "zeilenErfasst" ab, nicht erneut unabhängig vom Bild. Prüfe dabei jeden Eintrag einzeln: passt der Key wirklich zur Bezeichnung dieser einen Zeile?
 
 Für "werte" darfst du AUSSCHLIESSLICH die folgenden Keys verwenden, gewählt nach der Bezeichnung/den Alternativbegriffen, wie sie auf der Abrechnung stehen. Nur Keys mit tatsächlich gefundenem Betrag > 0 aufnehmen, alle anderen weglassen:
 
@@ -250,6 +287,8 @@ Wichtige Regeln:
 - Wenn ein Posten auf der Abrechnung in "Grundanteil" + "Verbrauchsanteil" aufgeteilt ist (z.B. bei Heizung oder Warmwasser), addiere beide zu einem Gesamtbetrag für den jeweiligen Key — aber NUR die Zeilen, die zu genau diesem einen Key gehören (z.B. nur "Heizung Grundanteil" + "Heizung Verbrauchsanteil" für Heizkosten, nur "Warmwasser Grundanteil" + "Warmwasser Verbrauchsanteil" für Warmwasser).
 - Manche Abrechnungen drucken zusätzlich eine gemeinsame Zwischensumme, die mehrere unserer Keys zusammenfasst (z.B. eine Zeile "Summe Heizkosten/Warmwasserkosten", die Heizung UND Warmwasser gemeinsam enthält). Verwende eine solche gemeinsame Zwischensumme NIEMALS direkt als Wert für einen einzelnen Key — sie ist keine Erkennung für "Heizkosten" allein. Berechne stattdessen jeden Key ausschließlich aus seinen eigenen, klar mit ihm beschrifteten Unterzeilen. Wenn sich ein Betrag nur der gemeinsamen Zwischensumme entnehmen lässt, aber nicht den einzelnen Unterzeilen der betroffenen Keys, gilt die Regel unten (Key weglassen statt schätzen).
 - Wenn du bei einem Betrag unsicher bist, welchem Key er zugeordnet werden soll, ODER wenn ein Gesamtbetrag auf mehrere unserer Keys aufgeteilt werden müsste, ohne dass die Abrechnung diese Aufteilung selbst vorgibt: LASS ALLE betroffenen Keys WEG statt zu schätzen oder zu raten. Ein fehlender Wert ist besser als ein falsch zugeordneter oder geschätzter.
+- Bei einer LANGEN LISTE von Kostenzeilen direkt untereinander (typisch bei Betriebskosten-Einzelpositionen): Ordne jeden Betrag GENAU der Beschriftung IN DERSELBEN ZEILE zu, Zeile für Zeile einzeln geprüft. Verwechsle niemals den Betrag einer Zeile mit dem einer benachbarten Zeile darüber oder darunter — das ist ein bekannter, bereits beobachteter Fehler bei eng gedruckten Listen. Prüfe vor der Abgabe zur Sicherheit: passt jeder eingetragene Betrag wirklich zu der Bezeichnung, mit der du ihn verknüpft hast?
+- Kaltwasser-/Wasserkosten stehen auf manchen Abrechnungen in mehrere Teilbeträge aufgesplittet, teils auf einer eigenen Extra-Seite (z.B. Kaltwasser-Grundbetrag + Gerätemiete + Kanal + Servicegebühren als eigene Zeilen, erkennbar an einer gemeinsamen Endsumme wie "Summe Kaltwasserkosten" oder "Gesamtergebnis Kaltwasserkosten"). In diesem Fall: addiere ALLE diese Teilbeträge und trage NUR die Summe in den Key "kaltwasser" ein. Verwende NIEMALS "wasserzaehler" oder "entwaesserung" für einzelne Teilbeträge, die bereits Teil dieser gemeinsamen Kaltwasserkosten-Endsumme sind — auch wenn eine der Teilzeilen "Kanal" oder "Gerätemiete" heißt. "wasserzaehler"/"entwaesserung" nur verwenden, wenn die Abrechnung sie als eigenständige Position AUSSERHALB der Kaltwasserkosten-Endsumme ausweist.
 - Erfinde keine Werte, die nicht auf den Fotos zu erkennen sind. Ein geschätzter Wert ist keine Erkennung.
 - Zahlen im deutschen Format (z.B. "1.234,56") in reine Dezimalzahlen mit Punkt umwandeln (1234.56).
 - Trage zusätzlich "gesamtsummeLautAbrechnung" ein, falls im Abrechnungsergebnis eine einzelne, eindeutig aufgedruckte Endsumme aller Kosten steht (oft ganz oben oder in einer Ergebnistabelle, Zeile "Summe"/"Gesamtkosten"/"Gesamtergebnis"). Diese Zahl dient NUR einem separaten Abgleich im Formular und beeinflusst "werte" nicht — verwende sie NICHT als Grundlage, um einzelne Keys in "werte" zu befüllen oder zu berechnen.
@@ -282,12 +321,39 @@ Wenn dadurch einzelne Beträge unsicher sind, nimm sie NICHT in "werte" auf. Wen
       },
       body: JSON.stringify({
         model: "claude-sonnet-5",
-        // 4096 statt ursprünglich 3000 — bei echten, vollständigen Abrechnungen
-        // mit vielen Posten braucht die strukturierte Antwort spürbar mehr
-        // Platz als bei Testfotos ohne Abrechnungsinhalt.
-        max_tokens: 4096,
+        // 20000 statt vorher 16000 (08/2026, siehe CHANGELOG.md): mit
+        // tool_choice:"auto" (unten) + effort:"max" dauerte ein Testaufruf
+        // 2 Min. 18 Sek. und endete trotzdem mit "kein gültiger Tool-Aufruf"
+        // — starkes Indiz für stop_reason "max_tokens" (Denken hat jetzt
+        // offenbar so viel Raum bekommen, dass selbst 16000 nicht reichten).
+        // Da gleichzeitig effort von "max" auf "high" heruntergestuft wurde
+        // (siehe unten), sollte der Denkanteil jetzt spürbar kleiner sein —
+        // 20000 als Sicherheitsmarge, falls trotzdem mehr gebraucht wird.
+        max_tokens: 20000,
+        // effort: "high" statt "max" (08/2026, siehe CHANGELOG.md) — direkte
+        // Reaktion auf Stefans zweiten berechtigten Einwand: 2+ Minuten
+        // Wartezeit ohne jede Rückmeldung wirkt auf Nutzer wie ein
+        // aufgehängtes Tool, unabhängig davon, ob das Ergebnis am Ende
+        // stimmt. "max" bedeutet laut Doku "keine Einschränkung der
+        // Denktiefe" — das ist für ein synchrones Web-Formular auf dem
+        // Handy nicht vertretbar, selbst wenn es die Genauigkeit verbessern
+        // sollte. "high" ist Sonnet 5s Standardstufe und laut Doku ausdrück-
+        // lich für "komplexes Schlussfolgern, wenn Qualität wichtiger ist
+        // als Tempo" gedacht — also weiterhin klar mehr Denken als das
+        // vorherige (versehentlich wirkungslose) Setup, nur ohne die
+        // unbegrenzte Tiefe von "max". Muss erneut getestet werden: sowohl
+        // Dauer als auch ob thinking_tokens jetzt > 0 UND die Zuordnung
+        // besser wird.
+        output_config: { effort: "high" },
         tools: TOOLS,
-        tool_choice: { type: "tool", name: TOOL_NAME }, // erzwingt den Tool-Aufruf, keine freie Textantwort möglich
+        // tool_choice NICHT mehr erzwungen (08/2026, siehe CHANGELOG.md und
+        // Kommentar bei TOOLS oben) — "auto" lässt das Modell selbst
+        // entscheiden, ist aber das einzige mit Denken uneingeschränkt
+        // kompatible tool_choice. Prompt weist oben ausdrücklich an, immer
+        // dieses eine Werkzeug zu nutzen; Fehlerbehandlung unten fängt den
+        // (laut Anthropics eigener Aussage sehr seltenen) Fall ab, dass
+        // trotzdem kein Tool-Aufruf erfolgt.
+        tool_choice: { type: "auto" },
         messages: [{ role: "user", content }],
       }),
     });
@@ -300,18 +366,34 @@ Wenn dadurch einzelne Beträge unsicher sind, nimm sie NICHT in "werte" auf. Wen
 
     const aiJson = await aiRes.json();
     const stopReason = aiJson?.stop_reason;
-    // Bei erzwungenem tool_choice liefert Anthropic das Ergebnis als bereits
-    // von Anthropic selbst validiertes JSON-Objekt im "input"-Feld des
-    // tool_use-Blocks — kein eigenes Parsen von Freitext mehr nötig (siehe
-    // Kommentar bei TOOLS oben, Grund für die Umstellung).
+    // Diagnose-Log (08/2026, siehe CHANGELOG.md): protokolliert, wie viele der
+    // verbrauchten Tokens tatsächlich fürs interne Nachdenken (Adaptive
+    // Thinking bei effort:"max") draufgingen — bisher unsichtbar, jetzt bei
+    // jedem Aufruf im Vercel-Log nachprüfbar. Kein console.error (kein
+    // Fehler), bewusst normales Log, nur für die Erfolgskontrolle nach dem
+    // effort-Fix gedacht.
+    console.log(
+      "analyse-foto: stop_reason=" + stopReason +
+      ", thinking_tokens=" + (aiJson?.usage?.output_tokens_details?.thinking_tokens ?? "n/a") +
+      ", output_tokens=" + (aiJson?.usage?.output_tokens ?? "n/a")
+    );
+    // Ruft das Modell das Werkzeug auf (Regelfall, siehe Prompt-Anweisung
+    // oben), liefert Anthropic das Ergebnis als bereits selbst validiertes
+    // JSON-Objekt im "input"-Feld des tool_use-Blocks — kein eigenes Parsen
+    // von Freitext nötig (siehe Kommentar bei TOOLS oben). Bei tool_choice
+    // "auto" (seit 08/2026, siehe CHANGELOG.md) kann content zusätzlich
+    // Text-/Denk-Blöcke VOR dem tool_use-Block enthalten — .find() filtert
+    // die zuverlässig heraus, keine Änderung an dieser Stelle nötig.
     const toolUse = (aiJson?.content || []).find(b => b.type === "tool_use" && b.name === TOOL_NAME);
     const parsed = toolUse?.input || null;
     if (!parsed) {
       // Diagnose fürs Vercel-Log: stop_reason "max_tokens" bedeutet, die Antwort
-      // wurde mitten im Tool-Aufruf abgeschnitten (z.B. bei sehr vielen Fotos/
-      // Posten gleichzeitig) — dann hilft nur weniger Fotos pro Durchlauf.
-      // Jeder andere Grund ist bei erzwungenem Tool-Use unerwartet und sollte
-      // im Log genauer angeschaut werden.
+      // wurde mitten im Tool-Aufruf (oder beim Denken) abgeschnitten — dann
+      // hilft weniger Fotos pro Durchlauf oder mehr max_tokens. stop_reason
+      // "end_turn" bedeutet, das Modell hat NICHT das Werkzeug aufgerufen
+      // (bei tool_choice "auto" möglich, laut Anthropic aber selten bei
+      // expliziter Anweisung im Prompt) — im Log genauer anzuschauen, falls
+      // das häufiger auftritt.
       console.error("analyse-foto: kein gültiger Tool-Aufruf in der Antwort. stop_reason:", stopReason);
       return res.status(502).json({
         error: stopReason === "max_tokens"
