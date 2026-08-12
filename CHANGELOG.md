@@ -517,6 +517,26 @@ Alle geänderten Dateien (`analyse.js`, `Wohnung.jsx`) einzeln mit esbuild auf S
 
 **Nächster Schritt:** `src/` (`lib/analyse.js`, `pages/Wohnung.jsx`, `pages/Result.jsx`, `pages/Welcome.jsx`) erneut zu GitHub (`test-kauf`) hochladen.
 
+## 11.08.2026/12.08.2026 — Automatisierte Richtwerte-Prüfung repariert, versehentlicher main-Upload, Stripe-Live-Links erneuert
+
+**Auslöser 1 — Stefans Frage, ob Richtwerte automatisch aktuell gehalten werden können:** Recherche ergab: Der DMB bietet keine API/offene Schnittstelle, veröffentlicht seinen Betriebskostenspiegel nur etwa jährlich (Dez/Jan) als PDF/Pressemitteilung. "Immer aktuell" kann technisch also nur heißen: zeitnahes automatisches Erkennen einer neuen Ausgabe, mit menschlicher Freigabe vor Übernahme (die Werte fließen in Rückforderungen gegenüber Vermietern ein — keine automatische Änderung ohne Prüfung, siehe Stefans 0-Fehler-Toleranz-Prinzip bei Zahlen).
+
+Beim Nachsehen: Genau dieses System existierte bereits aus einer früheren Session (`scripts/richtwerte-monitor.mjs` + `.github/workflows/richtwerte-monitor.yml`, monatlicher Cron, legt bei Abweichung ein GitHub Issue an, ändert nichts automatisch). **Echter, bisher unbemerkter Fehler:** In allen vier geplanten GitHub-Actions-Workflows (`richtwerte-monitor.yml`, `marketing-rabatt-versand.yml`, `datenloeschung.yml`, `supabase-keepalive.yml`) fehlte der `npm ci`-Schritt vor dem Skriptaufruf. Da `node_modules` zu Recht nicht im Repo liegt, wäre jeder dieser Workflows bei jedem automatischen Lauf mit "Cannot find module" abgebrochen, ohne dass es auffällt — die Richtwerte-Prüfung hätte also nie tatsächlich stattgefunden. In allen vier Dateien behoben (`npm ci` ergänzt, YAML-Syntax geprüft). Zusätzlich `.gitignore` angelegt (gab es bisher nicht) — `node_modules/`, `dist/`, `.env*`, `.DS_Store`.
+
+**Auslöser 2 — Stefan hat versehentlich auf den `main`-Branch statt `test-kauf` hochgeladen.** main ist der produktiv geschaltete Branch (Vercel Production). Dadurch war kurzzeitig `STRIPE_LINK_VOLL` (ein Stripe-TESTMODUS-Link aus dem Test-Branch) live — echte Kunden wären beim Kauf von "Auswertung + Brief" auf einer Stripe-Testseite gelandet, keine echte Zahlung. Zwei neue Live-Payment-Links zu den aktuellen Beträgen angelegt (Anleitung dazu im Chat erstellt) und in `src/config/business.js` eingetragen:
+- `STRIPE_LINK_AUSWERTUNG` (9,99 €): `https://buy.stripe.com/aFadR99SP26h3os0MzgUM03`
+- `STRIPE_LINK_VOLL` (12,99 €): `https://buy.stripe.com/9B63cv0ifbGR8IMfHtgUM04`
+
+Beide ohne `test_`-Präfix, also live. Alter, irreführender Kommentarblock in `business.js` (verwies noch auf 7,99/9,99 € als "alte" Beträge und auf den Testmodus-Link) durch aktuellen Stand ersetzt.
+
+**Nebenbefund beim Aufräumen der Stripe-Webhooks:** Vier aktive Webhook-Endpunkte vorgefunden, davon zwei redundante Duplikate auf dieselbe (korrekte) NebenkostenRadar-URL (mit/ohne `www.`) und einer auf eine fremde, nie live gegangene Domain (`shop-watcher.com`, laut Stefan ein altes, zum Verkauf stehendes Projekt — datenschutzrechtlich nicht unbedenklich, da derselbe Stripe-Account bei Live-Käufen grundsätzlich auch dorthin Kundendaten hätte senden können, wenn der Endpunkt auf `checkout.session.completed` hörte). Auf Stefans Bestätigung hin von ihm gelöscht bzw. zur Löschung empfohlen; verblieben ist der eine Endpunkt, dessen Signing Secret mit `STRIPE_WEBHOOK_SECRET` in Vercel übereinstimmt.
+
+**Auslöser 3 — Datei-Sync-Lücke entdeckt:** `.github/workflows/rechtsmonitor.yml`, `scripts/rechtsmonitor.mjs`, `vite.config.js` und `README.md` existierten auf GitHub (main), fehlten aber lokal in Stefans iCloud-Ordner — vermutlich derselbe wiederkehrende iCloud-Sync-Effekt wie zuvor bei `business.js`/`src/artikel.js`. Alle vier von GitHub zurückgeholt und lokal wiederhergestellt, damit ein künftiger Upload sie nicht versehentlich als "gelöscht" behandelt.
+
+**Zusätzlich, auf Stefans klare Vorgabe ("Die Empfehlung muss wieder auf 12,99 sein und zwar immer"):** Die am 10.08.2026 eingeführte Beweisstärke-abhängige Preisstufen-Empfehlung (siehe Eintrag "Nachtrag: Preisstufen-Empfehlung nach Beweisstärke gestaffelt") in `Result.jsx` wieder zurückgenommen. Das "Empfohlen"-Badge sitzt jetzt fest auf "Auswertung + Brief" (12,99 €), unabhängig von hart/statistisch, ebenso die Vorauswahl (`gewaehlteStufe` startet immer mit `"voll"`). Die Kundenintentions-Formulierung im Karten-Text ("Belege vom Vermieter nötig? → Brief. Sonst → Bericht.") bleibt unverändert bestehen, betrifft nur den Text, nicht das Badge.
+
+**Nächster Schritt:** `src/config/business.js`, `src/pages/Result.jsx` sowie die vier reparierten `.github/workflows/*.yml` und `.gitignore` zu `main` hochladen (nicht mehr `test-kauf`, da main bereits der aktuelle Produktivstand ist).
+
 ## Frühere Änderungen
 
 Siehe Kommentar-Historie in `scripts/rechtsmonitor.mjs` für die Entwicklung des SEO-Artikel-Systems (25.–26.07.2026: JSON-Extraktion, deterministische Artikel-IDs, Duplikat-Vermeidung).

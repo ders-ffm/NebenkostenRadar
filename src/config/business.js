@@ -18,18 +18,18 @@ export const BUSINESS = {
   // sich nicht per URL-Parameter umschalten. Für die zwei Preisstufen braucht es
   // zwei separate Payment Links im Stripe-Dashboard (Produkte → Payment Link
   // erstellen), jeweils mit "Gutscheincodes zulassen" aktiviert (siehe Task
-  // "Gutschein-Code-Funktion"). Beide Links unten sind bereits angelegt.
-  // ACHTUNG (08/2026, Preisänderung): Beide Payment Links sind fest an die
-  // ALTEN Beträge (7,99 €/9,99 €) gebunden — ein Payment Link lässt sich
-  // nachträglich nicht im Preis ändern. Nach dieser Code-Änderung auf
-  // 9,99 €/12,99 € müssen in Stripe ZWEI NEUE Payment Links mit den neuen
-  // Beträgen angelegt und hier eingetragen werden, sonst zeigt die Seite
-  // einen Preis, aber Stripe kassiert den alten. STRIPE_LINK_VOLL zeigt
-  // außerdem gerade noch auf den Test-Modus-Link vom Stripe-Testing
-  // (test-kauf-Branch) — vor einem Live-Update unbedingt zurück auf den
-  // echten Live-Link prüfen.
-  STRIPE_LINK_AUSWERTUNG: "https://buy.stripe.com/4gM9AT4yvdOZe3666TgUM02",
-  STRIPE_LINK_VOLL: "https://buy.stripe.com/test_4gM28r2qn26hf7a0MzgUM00",
+  // "Gutschein-Code-Funktion").
+  // 11.08.2026 — Neue Live-Payment-Links zu den aktuellen Beträgen (9,99 €/
+  // 12,99 €) angelegt und hier eingetragen. Auslöser: Stefan hatte versehentlich
+  // den test-kauf-Branch-Stand (STRIPE_LINK_VOLL zeigte auf einen Stripe-
+  // TESTMODUS-Link) auf main hochgeladen — echte Kunden wären beim Kauf von
+  // "Auswertung + Brief" auf einer Test-Checkout-Seite gelandet, keine echte
+  // Zahlung. Beide Links unten sind jetzt live geprüft (keine "test_"-URL).
+  // Zugehöriger Live-Webhook-Endpunkt in Stripe: https://nebenkostenradar.com/api/webhook
+  // (checkout.session.completed) — Signing Secret muss mit STRIPE_WEBHOOK_SECRET
+  // in Vercel übereinstimmen, sonst schlägt die Rabatt-Mail-Protokollierung fehl.
+  STRIPE_LINK_AUSWERTUNG: "https://buy.stripe.com/aFadR99SP26h3os0MzgUM03",
+  STRIPE_LINK_VOLL: "https://buy.stripe.com/9B63cv0ifbGR8IMfHtgUM04",
   // Zwei Preisstufen (siehe Projekt-Entscheidung 08/2026):
   //   Stufe 1: nur Auswertung als 1-seitiges PDF
   //   Stufe 2: Auswertung + Musterbrief als 2-seitiges PDF
