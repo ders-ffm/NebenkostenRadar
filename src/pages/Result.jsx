@@ -30,8 +30,12 @@ export default function Result({ navigateTo, result, wohnung, setStufe, resetAll
   //      (aus den Daten beweisbar)                 empfohlen, Brief ist
   //                                                gerechtfertigt
   const hatHart = result?.ersparnis_hart > 0;
-  const nurStatistisch = result?.gesamtbewertung !== "ok" && !hatHart;
-  const [gewaehlteStufe, setGewaehlteStufe] = useState(() => hatHart ? "voll" : "auswertung");
+  // Vorauswahl + "Empfohlen"-Badge fest auf "voll" (12,99 €) — nicht mehr
+  // abhängig von hart/statistisch (11.08.2026, Stefans klare Vorgabe: "Die
+  // Empfehlung muss wieder auf 12,99 sein und zwar immer", löst die
+  // gestaffelte Preisstufen-Empfehlung vom 10.08.2026 wieder ab, siehe
+  // CHANGELOG für die frühere Begründung).
+  const [gewaehlteStufe, setGewaehlteStufe] = useState("voll");
 
   if (!result) {
     return (
@@ -148,25 +152,16 @@ export default function Result({ navigateTo, result, wohnung, setStufe, resetAll
           <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10, marginBottom: 16 }}>
             <button onClick={() => setGewaehlteStufe("auswertung")}
               style={{ textAlign: "left", background: gewaehlteStufe === "auswertung" ? C.brandBg : C.bg, border: "2px solid " + (gewaehlteStufe === "auswertung" ? C.brand : C.border), borderRadius: THEME.radius.md, padding: "14px", cursor: "pointer", position: "relative" }}>
-              {/* Empfohlen-Badge hier, wenn NUR statistische Auffälligkeiten vorliegen
-                  (10.08.2026, siehe CHANGELOG) — der Brief wäre in diesem Fall auf einer
-                  Richtwert-Vermutung aufgebaut, nicht auf einem bewiesenen Verstoß. */}
-              {nurStatistisch && (
-                <div style={{ position: "absolute", top: -9, right: 10, background: C.accent, color: C.accentText, fontSize: 9, fontWeight: 700, padding: "2px 8px", borderRadius: 10 }}>Empfohlen</div>
-              )}
               <div style={{ fontSize: 11, color: C.textMuted, marginBottom: 4 }}>Nur Auswertung</div>
               <div style={{ fontFamily: THEME.font.heading, fontSize: 19, fontWeight: 600, color: C.text }}>{BUSINESS.PREIS_AUSWERTUNG.toFixed(2)} €</div>
               <div style={{ fontSize: 10, color: C.textDim, marginTop: 4 }}>1-seitiges PDF</div>
             </button>
             <button onClick={() => setGewaehlteStufe("voll")}
               style={{ textAlign: "left", background: gewaehlteStufe === "voll" ? C.brandBg : C.bg, border: "2px solid " + (gewaehlteStufe === "voll" ? C.brand : C.border), borderRadius: THEME.radius.md, padding: "14px", cursor: "pointer", position: "relative" }}>
-              {/* "Empfohlen"-Badge nur, wenn mindestens ein "harter", aus den Daten
-                  beweisbarer Verstoß vorliegt — sonst wäre der Musterbrief formal zwar
-                  möglich, aber inhaltlich nur auf Vermutungen gestützt (Stefans Wunsch,
-                  10.08.2026, siehe CHANGELOG). */}
-              {hatHart && (
-                <div style={{ position: "absolute", top: -9, right: 10, background: C.accent, color: C.accentText, fontSize: 9, fontWeight: 700, padding: "2px 8px", borderRadius: 10 }}>Empfohlen</div>
-              )}
+              {/* "Empfohlen"-Badge fest auf dieser Stufe, unabhängig von hart/
+                  statistisch (11.08.2026, Stefans Vorgabe, siehe Kommentar oben
+                  bei gewaehlteStufe). */}
+              <div style={{ position: "absolute", top: -9, right: 10, background: C.accent, color: C.accentText, fontSize: 9, fontWeight: 700, padding: "2px 8px", borderRadius: 10 }}>Empfohlen</div>
               <div style={{ fontSize: 11, color: C.textMuted, marginBottom: 4 }}>Auswertung + Brief</div>
               <div style={{ fontFamily: THEME.font.heading, fontSize: 19, fontWeight: 600, color: C.text }}>{BUSINESS.PREIS_VOLL.toFixed(2)} €</div>
               <div style={{ fontSize: 10, color: C.textDim, marginTop: 4 }}>2-seitiges PDF inkl. Musterbrief</div>
