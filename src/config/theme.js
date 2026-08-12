@@ -61,7 +61,17 @@ export const THEME = {
 
   layout: {
     pageMax: 1200,
-    formMax: 560, // einspaltige Formular-Schritte (Wohnung/Posten/Adressen) — schmaler als pageMax, nach Vorbild Taxfix
+    // 12.08.2026: von 560 auf 680 erhöht. Grund: 560px wirkte auf breiten
+    // Desktop-Bildschirmen als sehr schmale, isolierte Spalte (Stefans
+    // Rückmeldung). formMax wird per inline maxWidth (kein CSS-Media-Query)
+    // gesetzt und dadurch NIE erzwungen — auf schmalen/mobilen Viewports
+    // greift automatisch die Bildschirmbreite selbst (Div hat kein festes
+    // width, nur maxWidth). Diese Änderung wirkt sich daher ausschließlich
+    // auf Bildschirme >680px aus, das mobile Verhalten bleibt unverändert.
+    // 680 statt z.B. 900+, weil ein einspaltiges Formular (Label + Feld
+    // untereinander) bei größerer Breite unruhig zu lesen wird — üblicher
+    // Richtwert für Formular-Spalten liegt bei 600–750px.
+    formMax: 680, // einspaltige Formular-Schritte (Wohnung/Posten/Adressen) — schmaler als pageMax, nach Vorbild Taxfix
     mobileBreakpoint: 760,
   },
 };

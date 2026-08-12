@@ -2,6 +2,12 @@
 
 Alle wesentlichen Änderungen an diesem Projekt, mit Datum und Begründung. Dient der Nachvollziehbarkeit, damit auch ohne KI-Unterstützung verstanden werden kann, warum etwas so ist, wie es ist.
 
+## 12.08.2026 — Desktop-Formularbreite verbreitert, Meta-Kampagne vorbereitet
+
+**Desktop-Layout:** `THEME.layout.formMax` (Wohnung.jsx/Posten.jsx/Adressen.jsx) von 560 auf 680 erhöht — auf breiten Desktop-Bildschirmen wirkte die Formular-Spalte ab Schritt 1 sehr schmal (Stefans Rückmeldung per Screenshot). Da `formMax` per inline `maxWidth` gesetzt wird (kein `width`, kein CSS-Media-Query), greift auf schmalen/mobilen Viewports automatisch die Bildschirmbreite selbst — die Änderung wirkt sich rein rechnerisch ausschließlich auf Bildschirme >680px aus, das bestätigt korrekte mobile Verhalten bleibt unverändert. Einzeiliger Fix an der zentralen Design-Token-Datei (Prinzip: eine Stelle ändern, alle Seiten ziehen nach).
+
+**Meta-Ads/Facebook-Kampagne:** Fertiges Bildmaterial (2 Anzeigenformate, FB-Titelbild, FB-Profilbild, App-Icon) sowie Seitentexte für Facebook-Seite und Instagram-Bio unter `marketing/meta-kampagne/` abgelegt. Beim Bau der Assets ein Layout-Bug im FB-Titelbild gefunden und behoben (Headline überlappte ursprünglich die Wortmarke im zweispaltigen Entwurf — jetzt einspaltig/zentriert). Bekannte Einschränkung: Bilder nutzen die Ersatzschrift DejaVu Sans statt der echten Marken-Fonts Poppins/Work Sans (Google Fonts aus der Erstellungsumgebung nicht erreichbar) — Farben/Icon/Texte sind exakt nach `theme.js`, aber kein pixelgenauer Font-Abgleich; Details siehe `seitentexte_fb-instagram.md`.
+
 ## 12.08.2026 — Realtest mit Stefans Abrechnung 2025 deckt drei echte Bugs auf
 
 Stefan hat den fertigen Prüfbericht/Musterbrief für seine eigene, echte Betriebskostenabrechnung 2025 (ABG Frankfurt Holding, Guthaben-Fall) hochgeladen. Abgleich gegen die Original-Abrechnung (per Foto zuvor selbst geprüft) deckte drei echte Fehler auf:
