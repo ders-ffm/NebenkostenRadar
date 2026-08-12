@@ -37,7 +37,6 @@ export default function BriefPDF({ result, wohnung, adressen }) {
   const gruendeHart = result.widerspruchsgruende_hart || [];
   const gruendeStatistisch = result.widerspruchsgruende_statistisch || (result.widerspruchsgruende || []).filter(g => g.typ !== "hart");
   const heute = new Date().toLocaleDateString("de-DE", { day: "numeric", month: "long", year: "numeric" });
-  const fristJahr = parseInt(wohnung.jahr) + 2;
 
   return (
     <Page size="A4" style={s.page}>
@@ -58,7 +57,11 @@ export default function BriefPDF({ result, wohnung, adressen }) {
         <Text>{adressen.vermieterPlz} {adressen.vermieterOrt}</Text>
       </View>
 
-      <Text style={s.datum}>{adressen.mieterOrt}, {heute}</Text>
+      {/* .trim() 12.08.2026: ein Leerzeichen im eingegebenen Ort-Feld
+          erzeugte sichtbar "Frankfurt , 12. August 2026" statt "Frankfurt,
+          12. August 2026" — Eingabefehler, nicht im Formular verhindert;
+          hier defensiv abgefangen statt nur an der Formularvalidierung. */}
+      <Text style={s.datum}>{(adressen.mieterOrt || "").trim()}, {heute}</Text>
       <Text style={s.betreff}>Betreff: Einwendungen gegen die Betriebskostenabrechnung {wohnung.jahr}</Text>
 
       <Text style={s.absatz}>Sehr geehrte Damen und Herren,</Text>
@@ -93,8 +96,18 @@ export default function BriefPDF({ result, wohnung, adressen }) {
         </View>
       </View>
 
+      {/* 12.08.2026, echter Bug: Hier stand vorher zusätzlich "...bis zum 30.
+          September {fristJahr}" (fristJahr = Abrechnungsjahr + 2, feststehend
+          "30. September") — eine grobe, längst durch die echte Fristprüfung
+          in analyse.js (buildResult, Einwendungsfrist anhand erhaltenAm)
+          ersetzte Näherung, die hier aber übersehen wurde und einen
+          Widerspruch im selben Brief erzeugte: eine Zahlungsforderung erst
+          in 13 Monaten, direkt gefolgt von der Bitte um Stellungnahme
+          "innerhalb von 4 Wochen". Ersatzlos gestrichen — die 4-Wochen-Frist
+          unten ist die einzige im Brief genannte Frist, wie von Stefan
+          bestätigt (siehe CHANGELOG). */}
       <Text style={s.absatz}>
-        Ich bitte um Übersendung der Originalbelege zur Einsichtnahme (§ 259 BGB), um nachvollziehbare Darlegung des Umlageschlüssels sowie um Korrektur der beanstandeten Positionen und Rückerstattung des zu viel gezahlten Betrags, soweit sich die Beanstandungen bestätigen, bis zum 30. September {fristJahr}.
+        Ich bitte um Übersendung der Originalbelege zur Einsichtnahme (§ 259 BGB), um nachvollziehbare Darlegung des Umlageschlüssels sowie um Korrektur der beanstandeten Positionen und Rückerstattung des zu viel gezahlten Betrags, soweit sich die Beanstandungen bestätigen.
       </Text>
       {result.saldo > 0 && (
         <Text style={s.absatz}>Eine eventuelle Nachzahlung leiste ich ausdrücklich unter Vorbehalt.</Text>

@@ -249,6 +249,13 @@ export default function Wohnung({ navigateTo, wohnung, setWohnung, werte, setWer
         ...(data.wohnung?.flaeche ? { flaeche: data.wohnung.flaeche } : {}),
         ...(data.wohnung?.jahr ? { jahr: data.wohnung.jahr } : {}),
         ...(data.wohnung?.vorauszahlung ? { vorauszahlung: data.wohnung.vorauszahlung } : {}),
+        // NEU 12.08.2026 (siehe CHANGELOG.md): nur als VORSCHLAG übernehmen,
+        // wenn das Feld noch leer ist — nie einen bereits vom Nutzer selbst
+        // eingetragenen Wert überschreiben. Das gedruckte Anschreiben-Datum
+        // ist nicht dasselbe wie das tatsächliche Empfangsdatum (Postversand
+        // braucht ein paar Tage), deshalb weiterhin frei korrigierbar, siehe
+        // Tooltip beim Feld unten.
+        ...(data.wohnung?.ausstellungsdatumGedruckt && !p.erhaltenAm ? { erhaltenAm: data.wohnung.ausstellungsdatumGedruckt } : {}),
       }));
       if (setWerte && data.werte) setWerte(p => ({ ...p, ...data.werte }));
       // Gesamtsumme laut Abrechnung (08/2026, siehe CHANGELOG.md): macht den
@@ -547,7 +554,7 @@ export default function Wohnung({ navigateTo, wohnung, setWohnung, werte, setWer
             ist die GESAMTE Nachforderung ausgeschlossen, ein sehr starker,
             harter Befund. Bewusst optional (nicht jeder weiß/merkt sich das
             genaue Datum), Fristprüfung greift nur, wenn ausgefüllt. */}
-        <Field label="Abrechnung erhalten am" value={wohnung.erhaltenAm} onChange={v => setW("erhaltenAm", v)} type="date" width="medium" tip="Datum auf dem Anschreiben oder Briefumschlag — optional, aber wichtig für die Fristprüfung" />
+        <Field label="Abrechnung erhalten am" value={wohnung.erhaltenAm} onChange={v => setW("erhaltenAm", v)} type="date" width="medium" tip="Bei Foto-Upload mit dem gedruckten Anschreiben-Datum vorausgefüllt — bei Postversand ggf. anpassen, falls du sie erst später erhalten hast. Optional, aber wichtig für die Fristprüfung." />
         <Field label="Geleistete Vorauszahlungen" value={wohnung.vorauszahlung} onChange={v => setW("vorauszahlung", v)} money placeholder="z. B. 2.400,00" prefix="€" width="medium" required error={errors.vorauszahlung} tip="Alle Abschläge des Jahres, steht als 'Summe Vorauszahlungen' auf der Abrechnung" />
 
         {vzQm !== null && vzQm < 0.5 && (

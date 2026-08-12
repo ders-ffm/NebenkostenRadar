@@ -182,6 +182,18 @@ const TOOLS = [{
           flaeche: { type: "string", description: "Wohnfläche in m² als Zahl-String, z.B. \"75.5\", oder \"\" wenn nicht gefunden" },
           jahr: { type: "string", description: "Abrechnungsjahr, 4-stellig, z.B. \"2024\", oder \"\" wenn nicht gefunden" },
           vorauszahlung: { type: "string", description: "Summe der geleisteten Vorauszahlungen/Abschläge als Zahl-String, z.B. \"2400\", oder \"\" wenn nicht gefunden" },
+          // NEU 12.08.2026 (siehe CHANGELOG.md): Stefans Wunsch nach dem Realtest
+          // mit seiner eigenen Abrechnung — "Abrechnung erhalten am" (erhaltenAm,
+          // wichtig für die Fristprüfung in analyse.js) wurde bisher nie
+          // vorausgefüllt, weil nur der Mieter das TATSÄCHLICHE Empfangsdatum
+          // kennt. Das gedruckte Ausstellungsdatum des Anschreibens ist aber ein
+          // sinnvoller AUSGANGSPUNKT (bei E-Mail/Sofortzustellung oft identisch,
+          // bei Postversand ein paar Tage früher als der echte Empfang) — deshalb
+          // hier nur als eigenes, klar benanntes Feld erfasst und in Wohnung.jsx
+          // als KORRIGIERBARER Vorschlag übernommen, nie als vermeintlich sicherer
+          // Wert. Bewusst NICHT "erhaltenAm" genannt, um diesen Unterschied auch
+          // im Code sichtbar zu halten.
+          ausstellungsdatumGedruckt: { type: "string", description: "Das auf dem Anschreiben/Deckblatt GEDRUCKTE Datum (Briefdatum, z.B. neben Ort/Absender oder in der Kopfzeile) im Format YYYY-MM-DD, z.B. \"2026-08-12\". NICHT das Abrechnungsjahr, NICHT der Beginn/Ende des Abrechnungszeitraums, NICHT irgendein anderes Datum auf der Abrechnung — nur das Datum, an dem das Schreiben laut Aufdruck verfasst/versendet wurde. Leerer String, wenn kein eindeutiges Ausstellungsdatum zu erkennen ist." },
           gesamtsummeLautAbrechnung: { type: "string", description: "Die GEDRUCKTE Gesamt-/Endsumme aller umlagefähigen Kosten laut Abrechnungsergebnis (z.B. Zeile 'Summe' oder 'Gesamtkosten' im Abrechnungsergebnis, meist auf der ersten Seite). Nur eintragen, wenn eine einzelne, eindeutige Endsumme klar aufgedruckt ist — NICHT selbst berechnen oder aus Einzelposten zusammenzählen. Wenn es KEINE einzelne Gesamtsumme gibt, hier \"\" lassen und stattdessen teilsummenLautAbrechnung befüllen." },
           teilsummenLautAbrechnung: {
             type: "array",
@@ -196,7 +208,7 @@ const TOOLS = [{
             },
           },
         },
-        required: ["flaeche", "jahr", "vorauszahlung", "gesamtsummeLautAbrechnung", "teilsummenLautAbrechnung"],
+        required: ["flaeche", "jahr", "vorauszahlung", "ausstellungsdatumGedruckt", "gesamtsummeLautAbrechnung", "teilsummenLautAbrechnung"],
       },
       // NEU 08/2026 (siehe CHANGELOG.md): Pflichtfeld VOR "werte", erzwingt eine
       // reine Abschrift jeder Zeile, BEVOR irgendeine Zuordnung zu unseren Keys
@@ -291,6 +303,7 @@ Wichtige Regeln:
 - Kaltwasser-/Wasserkosten stehen auf manchen Abrechnungen in mehrere Teilbeträge aufgesplittet, teils auf einer eigenen Extra-Seite (z.B. Kaltwasser-Grundbetrag + Gerätemiete + Kanal + Servicegebühren als eigene Zeilen, erkennbar an einer gemeinsamen Endsumme wie "Summe Kaltwasserkosten" oder "Gesamtergebnis Kaltwasserkosten"). In diesem Fall: addiere ALLE diese Teilbeträge und trage NUR die Summe in den Key "kaltwasser" ein. Verwende NIEMALS "wasserzaehler" oder "entwaesserung" für einzelne Teilbeträge, die bereits Teil dieser gemeinsamen Kaltwasserkosten-Endsumme sind — auch wenn eine der Teilzeilen "Kanal" oder "Gerätemiete" heißt. "wasserzaehler"/"entwaesserung" nur verwenden, wenn die Abrechnung sie als eigenständige Position AUSSERHALB der Kaltwasserkosten-Endsumme ausweist.
 - Erfinde keine Werte, die nicht auf den Fotos zu erkennen sind. Ein geschätzter Wert ist keine Erkennung.
 - Zahlen im deutschen Format (z.B. "1.234,56") in reine Dezimalzahlen mit Punkt umwandeln (1234.56).
+- Trage zusätzlich "ausstellungsdatumGedruckt" ein: das gedruckte Datum des Anschreibens (Briefdatum, meist bei Ort/Absenderzeile oder in der Kopfzeile), im Format YYYY-MM-DD. Das ist NICHT das Abrechnungsjahr und NICHT der Beginn/das Ende des Abrechnungszeitraums — nur das Datum, an dem das Schreiben verfasst wurde. Leerer String, wenn kein eindeutiges Datum dafür zu erkennen ist.
 - Trage zusätzlich "gesamtsummeLautAbrechnung" ein, falls im Abrechnungsergebnis eine einzelne, eindeutig aufgedruckte Endsumme aller Kosten steht (oft ganz oben oder in einer Ergebnistabelle, Zeile "Summe"/"Gesamtkosten"/"Gesamtergebnis"). Diese Zahl dient NUR einem separaten Abgleich im Formular und beeinflusst "werte" nicht — verwende sie NICHT als Grundlage, um einzelne Keys in "werte" zu befüllen oder zu berechnen.
 
 Lesbarkeit prüfen, aber die Hinweise EINFACH halten (wichtig, das lesen normale Nutzer, keine Techniker): Prüfe jedes Foto/jede PDF-Seite darauf, ob es vollständig lesbar ist. Bei Problemen (unscharf, zu dunkel, abgeschnitten, schräg fotografiert, überlagert, Beträge nicht eindeutig zuordenbar) trage GENAU EINEN kurzen Hinweis pro betroffener Datei in "hinweise" ein. Strikte Vorgaben für jeden Hinweis:
@@ -423,10 +436,24 @@ Wenn dadurch einzelne Beträge unsicher sind, nimm sie NICHT in "werte" auf. Wen
     const gesamtsummeDirekt = toNum(w.gesamtsummeLautAbrechnung);
     const gesamtsummeLautAbrechnung = gesamtsummeDirekt > 0 ? gesamtsummeDirekt : teilsummenSumme;
 
+    // Ausstellungsdatum serverseitig streng validieren (Format UND echtes
+    // Kalenderdatum, nicht nur Regex) — landet sonst ungeprüft in einem
+    // <input type="date"> bzw. in new Date(...) für die Fristprüfung.
+    const ausstellungsdatumRoh = String(w.ausstellungsdatumGedruckt || "").trim();
+    const isoMatch = /^(\d{4})-(\d{2})-(\d{2})$/.exec(ausstellungsdatumRoh);
+    let ausstellungsdatumGedruckt = "";
+    if (isoMatch) {
+      const geprueft = new Date(ausstellungsdatumRoh);
+      if (!isNaN(geprueft.getTime()) && geprueft.toISOString().slice(0, 10) === ausstellungsdatumRoh) {
+        ausstellungsdatumGedruckt = ausstellungsdatumRoh;
+      }
+    }
+
     const wohnung = {
       flaeche: toNum(w.flaeche) > 0 ? String(toNum(w.flaeche)) : "",
       jahr: /^\d{4}$/.test(String(w.jahr || "").trim()) ? String(w.jahr).trim() : "",
       vorauszahlung: toNum(w.vorauszahlung) > 0 ? String(toNum(w.vorauszahlung)) : "",
+      ausstellungsdatumGedruckt,
       gesamtsummeLautAbrechnung: gesamtsummeLautAbrechnung > 0 ? String(gesamtsummeLautAbrechnung) : "",
     };
 

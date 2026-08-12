@@ -445,7 +445,18 @@ export function analysierePosten(w, wohn) {
 export function buildResult(w, wohn) {
   const R = BUSINESS.RICHTWERTE;
   const flaeche = Math.max(toNum(wohn.flaeche), 5);
-  const gesamt = ALLE_POSTEN.reduce((s, p) => s + toNum(w[p.key]), 0);
+  // co2_abgabe bewusst aus der Gesamtsumme ausgeschlossen (12.08.2026, echter
+  // Bug, gefunden beim Testen mit Stefans realer Abrechnung 2025): Die
+  // CO2-Kosten nach CO2KostAufG sind strukturell IMMER schon Teil der
+  // bereits abgerechneten Heiz-/Brennstoffkosten (heizkosten_gesamt) — die
+  // Angabe im Feld co2_abgabe ist eine informative Aufschlüsselung, wer
+  // welchen Anteil dieser bereits enthaltenen Kosten trägt, kein zusätzlicher
+  // Posten obendrauf. Vorher floss der Betrag zusätzlich in "gesamt" ein,
+  // sobald das Feld befüllt war — das hat Gesamtkosten, Saldo und €/m²/Jahr
+  // um genau diesen Betrag verfälscht (bestätigt: 80,87 € Differenz im
+  // Realtest). co2_abgabe bleibt für Anzeige/Hinweis (co2_hinweis, Posten-
+  // Zeile "Prüfen") erhalten, zählt nur nicht mehr zur Gesamtsumme.
+  const gesamt = ALLE_POSTEN.filter(p => p.key !== "co2_abgabe").reduce((s, p) => s + toNum(w[p.key]), 0);
   const proQmJahr = gesamt / flaeche;
   const richtwertJahr = R.gesamt * 12;
   const vorauszahlung = toNum(wohn.vorauszahlung);

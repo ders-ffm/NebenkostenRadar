@@ -2,6 +2,22 @@
 
 Alle wesentlichen Änderungen an diesem Projekt, mit Datum und Begründung. Dient der Nachvollziehbarkeit, damit auch ohne KI-Unterstützung verstanden werden kann, warum etwas so ist, wie es ist.
 
+## 12.08.2026 — Realtest mit Stefans Abrechnung 2025 deckt drei echte Bugs auf
+
+Stefan hat den fertigen Prüfbericht/Musterbrief für seine eigene, echte Betriebskostenabrechnung 2025 (ABG Frankfurt Holding, Guthaben-Fall) hochgeladen. Abgleich gegen die Original-Abrechnung (per Foto zuvor selbst geprüft) deckte drei echte Fehler auf:
+
+**1. CO2-Abgabe wurde doppelt gezählt.** Die Foto-Erkennung (`api/analyse-foto.js`) hat den auf einer Detail-Seite ausgewiesenen "Ihr Anteil an den CO2-Kosten" (80,87 €) korrekt als `co2_abgabe` erkannt — dieser Betrag steckt aber strukturell IMMER schon in den bereits erfassten Heizkosten (CO2KostAufG regelt nur die Aufteilung eines bereits abgerechneten Kostenbestandteils zwischen Vermieter/Mieter, keine zusätzliche Position). `buildResult()` in `src/lib/analyse.js` zählte `co2_abgabe` bisher trotzdem zusätzlich zur Gesamtsumme — Folge: Gesamtkosten um genau 80,87 € zu hoch (3.245,71 € statt 3.164,84 €), Guthaben-Anzeige entsprechend zu niedrig (114,29 € statt echter 195,16 €). Behoben: `co2_abgabe` fließt nicht mehr in `gesamt` ein, bleibt aber als Hinweiszeile/Posten "Prüfen" erhalten. Mit Node-Test gegen die echten Zahlen verifiziert (exakte Übereinstimmung nach Fix).
+
+**2. Musterbrief enthielt zwei widersprüchliche Fristen.** `BriefPDF.jsx` forderte Rückerstattung "bis zum 30. September {Abrechnungsjahr+2}" (hier: 2027, über 13 Monate in der Zukunft) UND im selben Absatzblock eine schriftliche Stellungnahme "innerhalb von 4 Wochen". Die erste Formulierung war ein Rest der alten, groben Fristnäherung, die am 10./11.08.2026 bei der eigentlichen Einwendungsfrist in `analyse.js` bereits durch das echte Zustelldatum ersetzt wurde — dieser zweite Ort im Code wurde dabei übersehen. Auf Stefans Bestätigung hin ersatzlos gestrichen (`fristJahr`-Variable mitentfernt, da dadurch ungenutzt); die 4-Wochen-Frist ist jetzt die einzige im Brief genannte Frist.
+
+**3. Kleinerer Darstellungsfehler:** Ein Leerzeichen im eingegebenen Ort-Feld erzeugte im Brief "Frankfurt , 12. August 2026" statt "Frankfurt, ...". Nutzereingabefehler, nicht durch die Formularvalidierung abgefangen — in `BriefPDF.jsx` jetzt mit `.trim()` defensiv abgesichert, unabhängig von der Eingabe.
+
+**Nicht bestätigt/kein Bug:** Vermeintlich fehlerhafte Ligaturen im PDF-Textlayer ("aufällig" statt "auffällig" u.ä.) traten nur bei automatisierter Textextraktion auf — Stefan bestätigt, dass das PDF beim normalen Ansehen fehlerfrei ist. Kein sichtbarer Fehler, daher zurückgestellt (könnte bei Copy-Paste/Screenreadern/PDF-Textsuche relevant werden, siehe Kommentar in `AbrechnungPDF.jsx`/`BriefPDF.jsx` für künftige Prüfung der Font-Einbettung).
+
+**Nachtrag, auf Stefans "ja, ergänzen":** Foto-/PDF-Erkennung erfasst jetzt zusätzlich das gedruckte Anschreiben-Datum (`ausstellungsdatumGedruckt`, neues Feld im Tool-Schema, `api/analyse-foto.js`) und übernimmt es in `Wohnung.jsx` als korrigierbaren Vorschlag für `erhaltenAm` — nur wenn das Feld noch leer ist, überschreibt also nie eine eigene Eingabe. Serverseitig streng validiert (Format YYYY-MM-DD UND echtes Kalenderdatum per Round-Trip-Check über `Date`/`toISOString`, nicht nur Regex) — verworfen statt übernommen bei deutschem Format, Kalenderfehlern (z.B. 30. Februar) oder Freitext, mit Node-Test gegen mehrere Fälle verifiziert. Tooltip beim Feld weist darauf hin, dass bei Postversand das tatsächliche Empfangsdatum abweichen kann und das Feld entsprechend angepasst werden sollte.
+
+**Offen, Rückfrage an Stefan:** Die Foto-Erkennung könnte zusätzlich lernen, `co2_abgabe` nur zu befüllen, wenn CO2-Kosten als eigene ZUSÄTZLICHE Zeile auftauchen statt als reine Anteils-/Aufteilungserläuterung eines bereits erfassten Heizkosten-Postens — durch Fix 1 oben nicht mehr zahlenkritisch, nur noch eine unnötige "Prüfen"-Zeile im Bericht. Ebenfalls offen: `erhaltenAm` (Zustelldatum) wird von der Foto-/PDF-Erkennung bewusst nicht vorausgefüllt (nur der Mieter weiß i.d.R. das tatsächliche Empfangsdatum) — bei dieser konkreten Abrechnung war das gedruckte Anschreiben-Datum aber ein plausibler Vorschlagswert. Mögliche Erweiterung: gedrucktes Anschreiben-/Ausstellungsdatum zusätzlich erkennen und als korrigierbaren Vorschlag für `erhaltenAm` vorausfüllen.
+
 ## 08/2026 — Modularer Neuaufbau + Korrekturen
 
 ### Architektur
