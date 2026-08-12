@@ -29,6 +29,14 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: "20"
+      # Fehlte bisher (11.08.2026, echter Bug): Ohne diesen Schritt gibt es
+      # kein node_modules (zu Recht nicht im Repo, siehe .gitignore) und der
+      # Import von "node-fetch" in richtwerte-monitor.mjs schlägt fehl — der
+      # Workflow wäre JEDEN Monat stillschweigend rot gelaufen, ohne dass die
+      # eigentliche Prüfung je stattfindet. npm ci statt npm install, weil
+      # package-lock.json im Repo liegt (reproduzierbar, schneller).
+      - name: Abhängigkeiten installieren
+        run: npm ci
       - name: Richtwerte gegen DMB-Quelle prüfen
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
