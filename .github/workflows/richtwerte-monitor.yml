@@ -28,7 +28,7 @@ jobs:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
-          node-version: "20"
+          node-version: "22"
       # Fehlte bisher (11.08.2026, echter Bug): Ohne diesen Schritt gibt es
       # kein node_modules (zu Recht nicht im Repo, siehe .gitignore) und der
       # Import von "node-fetch" in richtwerte-monitor.mjs schlägt fehl — der
