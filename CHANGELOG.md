@@ -2,6 +2,10 @@
 
 Alle wesentlichen Änderungen an diesem Projekt, mit Datum und Begründung. Dient der Nachvollziehbarkeit, damit auch ohne KI-Unterstützung verstanden werden kann, warum etwas so ist, wie es ist.
 
+## 13.08.2026 — CO2-Abgabe: gleicher Bug wie 12.08. jetzt auch in Posten.jsx behoben
+
+Stefan testete erneut mit seiner realen ABG-Abrechnung (Kupferhammer 35) und bekam wieder eine Abweichungs-Warnung: eingetragene Posten € 3.245,71 vs. Gesamtsumme laut Abrechnung € 3.164,84 — Differenz € 80,87, exakt der CO2-Kosten-Anteil auf Seite 14 der Abrechnung. Grund: Am 12.08.2026 wurde bereits erkannt und in `analyse.js` (`gesamt`-Berechnung) behoben, dass CO2-Kosten nach CO2KostAufG strukturell schon Teil der Heizkosten sind, kein zusätzlicher Posten — der Fix wurde aber nur dort gemacht, nicht in der `total`-Berechnung von `Posten.jsx`, die die "Eingegeben"-Anzeige und den Abgleich mit der Abrechnungs-Gesamtsumme speist. Jetzt konsistent: `co2_abgabe` in beiden Stellen ausgeschlossen.
+
 ## 13.08.2026 — Graue Beispielbeträge aus allen Eingabefeldern entfernt
 
 Stefans Einschätzung: Auch als reiner Placeholder (kein echter Wert im `value`, wird beim Absenden nicht mitgeschickt, siehe EuroInput.jsx) wirkt eine konkrete Zahl wie "890,00" in einem Kostenfeld wie eine Vorgabe und kann Kunden in die Irre führen. Betroffen waren die ~25 `beispiel`-Werte je Kostenposten in `lib/analyse.js` (Placeholder in `EuroInput.jsx`, Posten.jsx) sowie das Feld "Geleistete Vorauszahlungen" in `Wohnung.jsx` (Placeholder "z. B. 2.400,00"). Alle jetzt einheitlich "0,00".

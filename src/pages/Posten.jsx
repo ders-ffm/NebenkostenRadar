@@ -32,7 +32,13 @@ export default function Posten({ navigateTo, werte, setWerte, runAnalyse, gesamt
   // PDF-Erkennung in Wohnung.jsx diesen Wert ebenfalls automatisch setzen kann.
   const setPosten = (k, v) => setWerte(p => ({ ...p, [k]: v }));
 
-  const total = ALLE_POSTEN.reduce((s, p) => s + toNum(werte[p.key]), 0);
+  // co2_abgabe bewusst ausgeschlossen, analog zu `gesamt` in analyse.js
+  // (siehe dortiger Kommentar vom 12.08.2026): CO2-Kosten sind strukturell
+  // schon Teil von heizkosten_gesamt, kein zusätzlicher Posten. Fehlte diese
+  // Ausnahme hier, tauchte exakt derselbe Betrag doppelt auf und löste beim
+  // Abgleich mit der Abrechnungs-Gesamtsumme fälschlich eine Abweichungs-
+  // Warnung aus (13.08.2026, erneut mit derselben realen Abrechnung bestätigt).
+  const total = ALLE_POSTEN.filter(p => p.key !== "co2_abgabe").reduce((s, p) => s + toNum(werte[p.key]), 0);
   const filledPosten = ALLE_POSTEN.filter(p => toNum(werte[p.key]) > 0).length;
 
   const sucheNorm = normalisiere(suche.trim());
