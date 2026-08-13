@@ -2,6 +2,10 @@
 
 Alle wesentlichen Änderungen an diesem Projekt, mit Datum und Begründung. Dient der Nachvollziehbarkeit, damit auch ohne KI-Unterstützung verstanden werden kann, warum etwas so ist, wie es ist.
 
+## 13.08.2026 — Weiterer veralteter Preis gefunden: index.html JSON-LD
+
+Beim Recherchieren für den Businessplan (`planung/`) aufgefallen: Das globale JSON-LD in `index.html` (Google-Rich-Snippet-Daten) zeigte noch 7,99 €/9,99 € statt der aktuellen 9,99 €/12,99 € — derselbe Fehler wie zuvor in `Datenschutz.jsx`, diesmal aber SEO-relevant (falscher Preis könnte in Google-Suchergebnissen erscheinen). Korrigiert. Diese Datei ist reines HTML, kann nicht wie die React-Seiten aus `business.js` gerendert werden — Kommentar im Code ergänzt, damit das bei der nächsten Preisänderung nicht wieder vergessen wird.
+
 ## 13.08.2026 — CO2-Abgabe: gleicher Bug wie 12.08. jetzt auch in Posten.jsx behoben
 
 Stefan testete erneut mit seiner realen ABG-Abrechnung (Kupferhammer 35) und bekam wieder eine Abweichungs-Warnung: eingetragene Posten € 3.245,71 vs. Gesamtsumme laut Abrechnung € 3.164,84 — Differenz € 80,87, exakt der CO2-Kosten-Anteil auf Seite 14 der Abrechnung. Grund: Am 12.08.2026 wurde bereits erkannt und in `analyse.js` (`gesamt`-Berechnung) behoben, dass CO2-Kosten nach CO2KostAufG strukturell schon Teil der Heizkosten sind, kein zusätzlicher Posten — der Fix wurde aber nur dort gemacht, nicht in der `total`-Berechnung von `Posten.jsx`, die die "Eingegeben"-Anzeige und den Abgleich mit der Abrechnungs-Gesamtsumme speist. Jetzt konsistent: `co2_abgabe` in beiden Stellen ausgeschlossen.

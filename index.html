@@ -111,6 +111,14 @@
     gtag('consent', 'default', { analytics_storage: 'denied' });
   </script>
 
+  <!--
+    ACHTUNG bei Preisänderungen: Diese Datei ist reines statisches HTML, kein
+    JSX — kann NICHT wie Datenschutz.jsx/AGB.jsx aus BUSINESS.PREIS_* in
+    src/config/business.js gerendert werden. Preise unten müssen bei jeder
+    Änderung von Hand nachgezogen werden. Am 13.08.2026 hier veraltete Preise
+    (7,99 €/9,99 €) gefunden und auf die aktuellen 9,99 €/12,99 € korrigiert —
+    derselbe Fehler wie zuvor in Datenschutz.jsx, siehe CHANGELOG.md.
+  -->
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
@@ -119,8 +127,8 @@
     "url": "https://nebenkostenradar.com",
     "applicationCategory": "FinanceApplication",
     "offers": [
-      { "@type": "Offer", "price": "7.99", "priceCurrency": "EUR", "name": "Auswertung" },
-      { "@type": "Offer", "price": "9.99", "priceCurrency": "EUR", "name": "Auswertung + Brief" }
+      { "@type": "Offer", "price": "9.99", "priceCurrency": "EUR", "name": "Auswertung" },
+      { "@type": "Offer", "price": "12.99", "priceCurrency": "EUR", "name": "Auswertung + Brief" }
     ]
   }
   </script>
