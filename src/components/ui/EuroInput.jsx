@@ -1,17 +1,20 @@
 // ─────────────────────────────────────────────────────────────────────────
 // EuroInput.jsx — kompaktes Eingabefeld für einen einzelnen Kostenposten.
 //
-// Erweitert 08/2026: Tausenderpunkt-Anzeige (wie Field.jsx, "money"-Modus)
-// und `beispiel`-Placeholder statt immer nur "0,00" — zeigt eine graue
-// Beispielzahl in realistischer Größenordnung, damit sofort klar ist, was
-// in etwa erwartet wird (siehe lib/analyse.js für die Werte, hergeleitet
-// aus den DMB-Richtwerten für eine 75m²-Referenzwohnung).
+// Erweitert 08/2026: Tausenderpunkt-Anzeige (wie Field.jsx, "money"-Modus).
+// KORREKTUR 13.08.2026: Zwischenzeitlich gab es hier je Posten einen grauen
+// Beispielbetrag als Placeholder (z. B. "890,00" bei Heizkosten). Wieder
+// entfernt — Stefans Einschätzung: Auch als reiner Placeholder (kein echter
+// Wert im `value`, wird beim Absenden nicht mitgeschickt) sieht eine
+// konkrete Zahl im Feld wie eine Vorgabe aus und kann Kunden in die Irre
+// führen. Placeholder ist jetzt einheitlich "0,00", siehe lib/analyse.js
+// für die Begründung.
 // ─────────────────────────────────────────────────────────────────────────
 import { useState } from "react";
 import { THEME } from "../../config/theme.js";
 import { toNum, fmtInput } from "../../lib/format.js";
 
-export default function EuroInput({ label, value, onChange, tip, pflicht, warn, beispiel }) {
+export default function EuroInput({ label, value, onChange, tip, pflicht, warn }) {
   const C = THEME.color;
   const [focused, setFocused] = useState(false);
   const numVal = toNum(value);
@@ -41,7 +44,7 @@ export default function EuroInput({ label, value, onChange, tip, pflicht, warn, 
       <div style={{ display: "flex", alignItems: "center", gap: 4, flexShrink: 0, paddingTop: 2 }}>
         <span style={{ fontSize: 12, color: C.textMuted }}>€</span>
         <input
-          type="text" inputMode="decimal" placeholder={beispiel || "0,00"} value={displayValue}
+          type="text" inputMode="decimal" placeholder="0,00" value={displayValue}
           onChange={handleChange}
           onFocus={() => setFocused(true)} onBlur={() => setFocused(false)}
           style={{

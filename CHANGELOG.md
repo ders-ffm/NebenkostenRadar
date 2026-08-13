@@ -2,6 +2,14 @@
 
 Alle wesentlichen Änderungen an diesem Projekt, mit Datum und Begründung. Dient der Nachvollziehbarkeit, damit auch ohne KI-Unterstützung verstanden werden kann, warum etwas so ist, wie es ist.
 
+## 13.08.2026 — Graue Beispielbeträge aus allen Eingabefeldern entfernt
+
+Stefans Einschätzung: Auch als reiner Placeholder (kein echter Wert im `value`, wird beim Absenden nicht mitgeschickt, siehe EuroInput.jsx) wirkt eine konkrete Zahl wie "890,00" in einem Kostenfeld wie eine Vorgabe und kann Kunden in die Irre führen. Betroffen waren die ~25 `beispiel`-Werte je Kostenposten in `lib/analyse.js` (Placeholder in `EuroInput.jsx`, Posten.jsx) sowie das Feld "Geleistete Vorauszahlungen" in `Wohnung.jsx` (Placeholder "z. B. 2.400,00"). Alle jetzt einheitlich "0,00".
+
+Bewusst NICHT angefasst: Wohnfläche ("z. B. 75"), Abrechnungsjahr ("z. B. 2025") sowie Name-/Adressfelder ("Max Mustermann" etc.) — das sind Format-/Größenordnungshinweise, keine Geldbeträge, daher nicht dieselbe Irreführungsgefahr. Falls Stefan das anders sieht, gesondert ansprechen.
+
+Die zugrunde liegenden DMB-Richtwerte für den Auffälligkeits-Abgleich (RICHTWERTE in `analyse.js`) sind davon unberührt — nur die Anzeige im leeren Eingabefeld hat sich geändert, nicht die Analyselogik.
+
 ## 13.08.2026 — Rechtstexte: Preisfehler behoben, Drittlandtransfer und Widerrufsbelehrung ergänzt
 
 Auf Stefans Nachfrage zu DSGVO-Konformität/Abmahnsicherheit geprüft (Code-Audit, keine Rechtsberatung). Drei konkrete Lücken gefunden und behoben:

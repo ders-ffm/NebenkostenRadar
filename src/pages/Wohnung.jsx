@@ -555,7 +555,7 @@ export default function Wohnung({ navigateTo, wohnung, setWohnung, werte, setWer
             harter Befund. Bewusst optional (nicht jeder weiß/merkt sich das
             genaue Datum), Fristprüfung greift nur, wenn ausgefüllt. */}
         <Field label="Abrechnung erhalten am" value={wohnung.erhaltenAm} onChange={v => setW("erhaltenAm", v)} type="date" width="medium" tip="Bei Foto-Upload mit dem gedruckten Anschreiben-Datum vorausgefüllt — bei Postversand ggf. anpassen, falls du sie erst später erhalten hast. Optional, aber wichtig für die Fristprüfung." />
-        <Field label="Geleistete Vorauszahlungen" value={wohnung.vorauszahlung} onChange={v => setW("vorauszahlung", v)} money placeholder="z. B. 2.400,00" prefix="€" width="medium" required error={errors.vorauszahlung} tip="Alle Abschläge des Jahres, steht als 'Summe Vorauszahlungen' auf der Abrechnung" />
+        <Field label="Geleistete Vorauszahlungen" value={wohnung.vorauszahlung} onChange={v => setW("vorauszahlung", v)} money placeholder="0,00" prefix="€" width="medium" required error={errors.vorauszahlung} tip="Alle Abschläge des Jahres, steht als 'Summe Vorauszahlungen' auf der Abrechnung" />
 
         {vzQm !== null && vzQm < 0.5 && (
           <div style={{ background: C.warnBg, borderLeft: "3px solid " + C.warn, borderRadius: THEME.radius.md, padding: "12px 14px", marginBottom: 10, fontSize: 13, color: C.warn }}>

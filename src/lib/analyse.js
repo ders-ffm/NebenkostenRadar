@@ -23,15 +23,14 @@ import { toNum, fmt } from "./format.js";
 import { BUSINESS } from "../config/business.js";
 import { THEME } from "../config/theme.js";
 
-// `beispiel`: grauer Placeholder-Beispielwert je Posten, damit die Größen-
-// ordnung sofort klar ist (08/2026, siehe Field.jsx/EuroInput.jsx). Wo ein
-// DMB-Richtwert existiert, aus RICHTWERTE * 12 * 75m² (Referenzwohnung,
-// gleiche Beispielgröße wie das Wohnfläche-Placeholder "z. B. 75")
-// hergeleitet und kaufmännisch gerundet — bei Heizung/Warmwasser und Wasser/
-// Abwasser anteilig aufgeteilt, da DMB nur den kombinierten Wert ausweist
-// (siehe Kommentar unten bei analysierePosten). Für Posten ohne offiziellen
-// Richtwert: grobe, plausible Hausnummer, klar als Beispiel ("z. B.")
-// gekennzeichnet, keine belastbare Schätzung.
+// Kein `beispiel`-Feld mehr (bis 13.08.2026 gab es hier graue Platzhalter-
+// Beispielbeträge je Posten, hergeleitet aus den DMB-Richtwerten). Stefans
+// Entscheidung: Auch als reiner Placeholder (kein echter Wert, siehe
+// EuroInput.jsx) wirkt eine konkrete Zahl im Eingabefeld wie ein plausibler
+// Vorschlag und kann Kunden in die Irre führen. Alle Felder zeigen jetzt
+// einheitlich "0,00" als Platzhalter (EuroInput.jsx). Die eigentlichen
+// DMB-Richtwerte für den Auffälligkeits-Abgleich (RICHTWERTE, siehe
+// analysierePosten weiter unten) sind davon unabhängig und bleiben unverändert.
 //
 // STRUKTUR-ÜBERARBEITUNG 08/2026 (siehe CHANGELOG.md):
 // Auslöser war ein Praxistest anhand einer echten Abrechnung (ABG Frankfurt
@@ -67,82 +66,82 @@ import { THEME } from "../config/theme.js";
 export const POSTEN_GRUPPEN = [
   { id: "grundsteuer", label: "Grundsteuer", paragraf: "§ 2 Nr. 1 BetrKV", icon: "🏛",
     posten: [
-      { key: "grundsteuer", label: "Grundsteuer", tip: "Prüfe ob Betrag mit Bescheid übereinstimmt", beispiel: "160,00", aliases: ["Grundabgaben"] },
+      { key: "grundsteuer", label: "Grundsteuer", tip: "Prüfe ob Betrag mit Bescheid übereinstimmt", aliases: ["Grundabgaben"] },
     ]},
   { id: "wasser", label: "Wasserversorgung", paragraf: "§ 2 Nr. 2 BetrKV", icon: "💧",
     posten: [
-      { key: "kaltwasser", label: "Wasserversorgung (Kaltwasser)", tip: "Frischwasserkosten inkl. Grundgebühr", beispiel: "160,00", aliases: ["Frischwasser", "Kaltwasserkosten"] },
-      { key: "wasserzaehler", label: "Miete und Wartung Wasserzähler", tip: "Zählermiete und Eichung", beispiel: "25,00", aliases: ["Zählermiete", "Eichung"], selten: true },
+      { key: "kaltwasser", label: "Wasserversorgung (Kaltwasser)", tip: "Frischwasserkosten inkl. Grundgebühr", aliases: ["Frischwasser", "Kaltwasserkosten"] },
+      { key: "wasserzaehler", label: "Miete und Wartung Wasserzähler", tip: "Zählermiete und Eichung", aliases: ["Zählermiete", "Eichung"], selten: true },
     ]},
   { id: "entwaesserung", label: "Entwässerung", paragraf: "§ 2 Nr. 3 BetrKV", icon: "💧",
     posten: [
-      { key: "entwasserung", label: "Entwässerung / Abwasser", tip: "Kanalgebühren der Gemeinde", beispiel: "90,00", aliases: ["Kanalgebühr", "Abwasserkosten"] },
-      { key: "niederschlagswasser", label: "Niederschlagswassergebühr", tip: "Manche Kommunen erheben dies separat", beispiel: "15,00", aliases: ["Regenwasser"], selten: true },
+      { key: "entwasserung", label: "Entwässerung / Abwasser", tip: "Kanalgebühren der Gemeinde", aliases: ["Kanalgebühr", "Abwasserkosten"] },
+      { key: "niederschlagswasser", label: "Niederschlagswassergebühr", tip: "Manche Kommunen erheben dies separat", aliases: ["Regenwasser"], selten: true },
     ]},
   { id: "heizung", label: "Heizung", paragraf: "§ 2 Nr. 4 BetrKV", icon: "🔥",
     posten: [
-      { key: "heizkosten_gesamt", label: "Heizkosten", pflicht: true, tip: "Gesamte Heizkosten lt. Abrechnung — auf vielen Abrechnungen als 'Heizung Grundanteil' + 'Heizung Verbrauchsanteil' getrennt ausgewiesen, dann beide Beträge zusammenzählen", beispiel: "890,00", aliases: ["Wärmeversorgung", "Zentralheizung", "Heizung Grundanteil", "Heizung Verbrauchsanteil"] },
-      { key: "heizung_betriebsstrom", label: "Betriebsstrom Heizungsanlage", tip: "Strom für Pumpen, Steuerung", beispiel: "35,00", aliases: ["Stromkosten Heizung"], selten: true },
-      { key: "heizung_wartung", label: "Wartung Heizungsanlage", tip: "Wartung ja, Reparaturen nein", beispiel: "60,00", aliases: ["Heizkosten Wartung", "Gerätemiete Heizung"], selten: true },
-      { key: "co2_abgabe", label: "CO2-Abgabe / Kohlendioxidkosten", tip: "Vermieter trägt je nach Energieklasse 0-95%. Achtung: steht oft NICHT als eigene Zeile auf der Hauptseite, sondern nur auf einer Detail-Anlage weiter hinten in der Abrechnung ('CO2-Kosten', 'Aufteilung der CO2-Kosten') — dort nachschauen, wenn hier nichts auf den ersten Blick zu finden ist.", beispiel: "45,00", aliases: ["CO2-Kosten", "CO2KostAufG", "Kohlendioxidabgabe"] },
+      { key: "heizkosten_gesamt", label: "Heizkosten", pflicht: true, tip: "Gesamte Heizkosten lt. Abrechnung — auf vielen Abrechnungen als 'Heizung Grundanteil' + 'Heizung Verbrauchsanteil' getrennt ausgewiesen, dann beide Beträge zusammenzählen", aliases: ["Wärmeversorgung", "Zentralheizung", "Heizung Grundanteil", "Heizung Verbrauchsanteil"] },
+      { key: "heizung_betriebsstrom", label: "Betriebsstrom Heizungsanlage", tip: "Strom für Pumpen, Steuerung", aliases: ["Stromkosten Heizung"], selten: true },
+      { key: "heizung_wartung", label: "Wartung Heizungsanlage", tip: "Wartung ja, Reparaturen nein", aliases: ["Heizkosten Wartung", "Gerätemiete Heizung"], selten: true },
+      { key: "co2_abgabe", label: "CO2-Abgabe / Kohlendioxidkosten", tip: "Vermieter trägt je nach Energieklasse 0-95%. Achtung: steht oft NICHT als eigene Zeile auf der Hauptseite, sondern nur auf einer Detail-Anlage weiter hinten in der Abrechnung ('CO2-Kosten', 'Aufteilung der CO2-Kosten') — dort nachschauen, wenn hier nichts auf den ersten Blick zu finden ist.", aliases: ["CO2-Kosten", "CO2KostAufG", "Kohlendioxidabgabe"] },
     ]},
   { id: "warmwasser", label: "Warmwasser", paragraf: "§ 2 Nr. 5 BetrKV", icon: "🔥",
     posten: [
-      { key: "warmwasser_gesamt", label: "Warmwasserversorgung", pflicht: true, tip: "Muss separat ausgewiesen sein — auf manchen Abrechnungen als 'Warmwasser Grundanteil' + 'Warmwasser Verbrauchsanteil' getrennt, dann beide zusammenzählen", beispiel: "300,00", aliases: ["Warmwasser Grundanteil", "Warmwasser Verbrauchsanteil"] },
+      { key: "warmwasser_gesamt", label: "Warmwasserversorgung", pflicht: true, tip: "Muss separat ausgewiesen sein — auf manchen Abrechnungen als 'Warmwasser Grundanteil' + 'Warmwasser Verbrauchsanteil' getrennt, dann beide zusammenzählen", aliases: ["Warmwasser Grundanteil", "Warmwasser Verbrauchsanteil"] },
     ]},
   { id: "aufzug", label: "Aufzug", paragraf: "§ 2 Nr. 7 BetrKV", icon: "⚙️",
     posten: [
-      { key: "aufzug", label: "Aufzug (Betrieb, Wartung, TÜV)", tip: "Nur Betrieb/Wartung, keine Reparaturen", beispiel: "180,00", aliases: ["Fahrstuhl"], selten: true },
+      { key: "aufzug", label: "Aufzug (Betrieb, Wartung, TÜV)", tip: "Nur Betrieb/Wartung, keine Reparaturen", aliases: ["Fahrstuhl"], selten: true },
     ]},
   { id: "strassenreinigung", label: "Straßenreinigung und Müllbeseitigung", paragraf: "§ 2 Nr. 8 BetrKV", icon: "🧹",
     posten: [
-      { key: "strassenreinigung", label: "Straßenreinigung", tip: "Ohne Winterdienst — der hat auf vielen Abrechnungen eine eigene Zeile, siehe unten", beispiel: "20,00", aliases: ["Straßenreinigungsgebühr"] },
-      { key: "schnee_eis_beseitigung", label: "Schnee- und Eisbeseitigung", tip: "Winterdienst — auf manchen Abrechnungen mit der Straßenreinigung zusammengefasst, auf anderen eigene Zeile", beispiel: "15,00", aliases: ["Winterdienst", "Räum- und Streudienst"] },
-      { key: "muellbeseitigung", label: "Müllbeseitigung / Abfallentsorgung", tip: "Gebühren für alle Tonnen", beispiel: "140,00", aliases: ["Müllabfuhr", "Abfallgebühren"] },
+      { key: "strassenreinigung", label: "Straßenreinigung", tip: "Ohne Winterdienst — der hat auf vielen Abrechnungen eine eigene Zeile, siehe unten", aliases: ["Straßenreinigungsgebühr"] },
+      { key: "schnee_eis_beseitigung", label: "Schnee- und Eisbeseitigung", tip: "Winterdienst — auf manchen Abrechnungen mit der Straßenreinigung zusammengefasst, auf anderen eigene Zeile", aliases: ["Winterdienst", "Räum- und Streudienst"] },
+      { key: "muellbeseitigung", label: "Müllbeseitigung / Abfallentsorgung", tip: "Gebühren für alle Tonnen", aliases: ["Müllabfuhr", "Abfallgebühren"] },
     ]},
   { id: "gebaeude", label: "Gebäudereinigung und Ungezieferbekämpfung", paragraf: "§ 2 Nr. 9 BetrKV", icon: "🧹",
     posten: [
-      { key: "hausreinigung", label: "Hausreinigung / Treppenhausreinigung", tip: "Nur umlagefähig wenn vertraglich vereinbart", beispiel: "190,00", aliases: ["Gebäudereinigung", "Treppenhausreinigung"] },
-      { key: "ungezieferbekaempfung", label: "Ungezieferbekämpfung", tip: "Nur bei tatsächlichem Bedarf", beispiel: "20,00", aliases: ["Schädlingsbekämpfung"], selten: true },
+      { key: "hausreinigung", label: "Hausreinigung / Treppenhausreinigung", tip: "Nur umlagefähig wenn vertraglich vereinbart", aliases: ["Gebäudereinigung", "Treppenhausreinigung"] },
+      { key: "ungezieferbekaempfung", label: "Ungezieferbekämpfung", tip: "Nur bei tatsächlichem Bedarf", aliases: ["Schädlingsbekämpfung"], selten: true },
     ]},
   { id: "garten", label: "Gartenpflege", paragraf: "§ 2 Nr. 10 BetrKV", icon: "🧹",
     posten: [
-      { key: "gartenpflege", label: "Gartenpflege", tip: "Nur laufende Pflege, keine Neuanlage", beispiel: "135,00", aliases: ["Grünpflege", "Außenanlagen"] },
+      { key: "gartenpflege", label: "Gartenpflege", tip: "Nur laufende Pflege, keine Neuanlage", aliases: ["Grünpflege", "Außenanlagen"] },
     ]},
   { id: "beleuchtung", label: "Beleuchtung", paragraf: "§ 2 Nr. 11 BetrKV", icon: "⚙️",
     posten: [
-      { key: "allgemeinstrom", label: "Beleuchtung / Allgemeinstrom", tip: "Strom für Gemeinschaftsflächen", beispiel: "55,00", aliases: ["Gemeinschaftsstrom", "Hausstrom"] },
+      { key: "allgemeinstrom", label: "Beleuchtung / Allgemeinstrom", tip: "Strom für Gemeinschaftsflächen", aliases: ["Gemeinschaftsstrom", "Hausstrom"] },
     ]},
   { id: "schornstein", label: "Schornsteinreinigung", paragraf: "§ 2 Nr. 12 BetrKV", icon: "🔥",
     posten: [
-      { key: "schornsteinreinigung", label: "Schornsteinreinigung", tip: "Kehrgebühren", beispiel: "35,00", aliases: ["Kaminkehrer", "Kehrgebühr"], selten: true },
+      { key: "schornsteinreinigung", label: "Schornsteinreinigung", tip: "Kehrgebühren", aliases: ["Kaminkehrer", "Kehrgebühr"], selten: true },
     ]},
   { id: "versicherungen", label: "Versicherungen", paragraf: "§ 2 Nr. 13 BetrKV", icon: "🛡",
     hint: "Nur Sachversicherungen des Gebäudes — nicht deine Hausratsversicherung",
     posten: [
-      { key: "feuerversicherung", label: "Gebäude-/Feuerversicherung", tip: "Auf manchen Abrechnungen mit Sturm/Leitungswasser zu einer 'Gebäudeversicherung' zusammengefasst — dann hier den Gesamtbetrag eintragen", beispiel: "150,00", aliases: ["Gebäudeversicherung", "Brandversicherung"] },
-      { key: "sturm_hagel_versicherung", label: "Sturm- und Hagelversicherung", tip: "Oft eigene Zeile, manchmal Teil der Gebäudeversicherung", beispiel: "25,00", aliases: ["Sturmversicherung", "Hagelversicherung"] },
-      { key: "leitungswasser_versicherung", label: "Leitungswasserversicherung", tip: "Oft eigene Zeile, manchmal Teil der Gebäudeversicherung", beispiel: "40,00", aliases: ["Wasserschadenversicherung"] },
-      { key: "haftpflichtversicherung", label: "Haftpflichtversicherung Gebäude", tip: "Haus- und Grundbesitzerhaftpflicht", beispiel: "15,00", aliases: ["Grundbesitzerhaftpflicht"] },
-      { key: "glasversicherung", label: "Glasversicherung", tip: "Nur wenn vertraglich vereinbart", beispiel: "10,00", selten: true },
+      { key: "feuerversicherung", label: "Gebäude-/Feuerversicherung", tip: "Auf manchen Abrechnungen mit Sturm/Leitungswasser zu einer 'Gebäudeversicherung' zusammengefasst — dann hier den Gesamtbetrag eintragen", aliases: ["Gebäudeversicherung", "Brandversicherung"] },
+      { key: "sturm_hagel_versicherung", label: "Sturm- und Hagelversicherung", tip: "Oft eigene Zeile, manchmal Teil der Gebäudeversicherung", aliases: ["Sturmversicherung", "Hagelversicherung"] },
+      { key: "leitungswasser_versicherung", label: "Leitungswasserversicherung", tip: "Oft eigene Zeile, manchmal Teil der Gebäudeversicherung", aliases: ["Wasserschadenversicherung"] },
+      { key: "haftpflichtversicherung", label: "Haftpflichtversicherung Gebäude", tip: "Haus- und Grundbesitzerhaftpflicht", aliases: ["Grundbesitzerhaftpflicht"] },
+      { key: "glasversicherung", label: "Glasversicherung", tip: "Nur wenn vertraglich vereinbart", selten: true },
     ]},
   { id: "hauswart", label: "Hauswart", paragraf: "§ 2 Nr. 14 BetrKV", icon: "🏠",
     posten: [
-      { key: "hauswart", label: "Hauswart / Hausmeister", tip: "Nur Betriebskostenanteile — keine Verwaltung/Instandhaltung", beispiel: "190,00", aliases: ["Hausmeisterkosten", "Concierge"] },
+      { key: "hauswart", label: "Hauswart / Hausmeister", tip: "Nur Betriebskostenanteile — keine Verwaltung/Instandhaltung", aliases: ["Hausmeisterkosten", "Concierge"] },
     ]},
   { id: "technik", label: "Gemeinschaftsantenne, Kabel und Waschräume", paragraf: "§ 2 Nr. 15 BetrKV", icon: "⚙️",
     posten: [
-      { key: "gemeinschaftsantenne", label: "Gemeinschafts-Antenne / SAT-Anlage", tip: "Umlagefähig wenn Gemeinschaftsanlage", beispiel: "50,00", aliases: ["Antennenanlage"], selten: true },
+      { key: "gemeinschaftsantenne", label: "Gemeinschafts-Antenne / SAT-Anlage", tip: "Umlagefähig wenn Gemeinschaftsanlage", aliases: ["Antennenanlage"], selten: true },
       { key: "kabelanschluss", label: "Kabelanschluss / TV-Versorgung", tip: "Seit 01.07.2024 grundsätzlich nicht mehr umlagefähig — bei Abrechnungsjahr vor 2024 regulär zulässig", aliases: ["Breitbandkabelanschluss", "TV-Kabel"] },
-      { key: "gemeinschaftswaschmaschine", label: "Waschmaschinen / Trockenräume", tip: "Betrieb der Gemeinschaftsgeräte", beispiel: "25,00", aliases: ["Waschküche", "Trockenraum"], selten: true },
-      { key: "tiefgarage", label: "Tiefgaragenbelüftung / -entwässerung", tip: "Wenn im Mietvertrag vereinbart", beispiel: "40,00", aliases: ["Tiefgarage"], selten: true },
+      { key: "gemeinschaftswaschmaschine", label: "Waschmaschinen / Trockenräume", tip: "Betrieb der Gemeinschaftsgeräte", aliases: ["Waschküche", "Trockenraum"], selten: true },
+      { key: "tiefgarage", label: "Tiefgaragenbelüftung / -entwässerung", tip: "Wenn im Mietvertrag vereinbart", aliases: ["Tiefgarage"], selten: true },
     ]},
   { id: "sonstiges", label: "Sonstige Betriebskosten", paragraf: "§ 2 Nr. 17 BetrKV", icon: "🏠",
     hint: "Achtung: Verwaltungskosten darf der Vermieter NICHT umlegen",
     posten: [
-      { key: "rauchwarnmelder_wartung", label: "Wartung Rauchwarnmelder", tip: "Nur Wartung/Miete, keine Anschaffung", beispiel: "10,00", aliases: ["Rauchmelder"], selten: true },
-      { key: "gasleitungspruefung", label: "Gasleitungs- / Gasgeräteprüfung", tip: "Wiederkehrende Prüfpflicht", beispiel: "5,00", aliases: ["Gasprüfung", "Gasleitungsprüfung Allgemein"], selten: true },
-      { key: "sonstiges_vereinbart", label: "Sonstige vereinbarte Betriebskosten", tip: "Nur wenn explizit im Mietvertrag benannt", beispiel: "50,00", aliases: ["Wartung Sonstige"] },
+      { key: "rauchwarnmelder_wartung", label: "Wartung Rauchwarnmelder", tip: "Nur Wartung/Miete, keine Anschaffung", aliases: ["Rauchmelder"], selten: true },
+      { key: "gasleitungspruefung", label: "Gasleitungs- / Gasgeräteprüfung", tip: "Wiederkehrende Prüfpflicht", aliases: ["Gasprüfung", "Gasleitungsprüfung Allgemein"], selten: true },
+      { key: "sonstiges_vereinbart", label: "Sonstige vereinbarte Betriebskosten", tip: "Nur wenn explizit im Mietvertrag benannt", aliases: ["Wartung Sonstige"] },
     ]},
   // Neu 10.08.2026 (siehe CHANGELOG, Stefans Frage "was ist ein harter
   // Verstoß" — bisher war das praktisch nur der Kabelanschluss-Fall). Diese
@@ -155,8 +154,8 @@ export const POSTEN_GRUPPEN = [
   { id: "nicht_umlagefaehig", label: "Kategorisch ausgeschlossene Kosten", paragraf: "§ 1 Abs. 2 BetrKV", icon: "🚫",
     hint: "Nur ausfüllen, falls auf der Abrechnung separat ausgewiesen — diese Kosten darf dein Vermieter nach dem Gesetz nie umlegen",
     posten: [
-      { key: "verwaltungskosten", label: "Verwaltungskosten", tip: "Kaufmännische/technische Verwaltung — nie umlagefähig (§ 1 Abs. 2 Nr. 1 BetrKV)", beispiel: "80,00", aliases: ["Verwaltungsgebühr", "Verwaltungspauschale", "Verwaltungskostenpauschale"], selten: true },
-      { key: "instandhaltung", label: "Instandhaltung / Instandsetzung", tip: "Reparaturen, Erhaltungsaufwand — nie umlagefähig (§ 1 Abs. 2 Nr. 2 BetrKV)", beispiel: "150,00", aliases: ["Reparaturkosten", "Instandsetzungskosten", "Erhaltungsaufwand"], selten: true },
+      { key: "verwaltungskosten", label: "Verwaltungskosten", tip: "Kaufmännische/technische Verwaltung — nie umlagefähig (§ 1 Abs. 2 Nr. 1 BetrKV)", aliases: ["Verwaltungsgebühr", "Verwaltungspauschale", "Verwaltungskostenpauschale"], selten: true },
+      { key: "instandhaltung", label: "Instandhaltung / Instandsetzung", tip: "Reparaturen, Erhaltungsaufwand — nie umlagefähig (§ 1 Abs. 2 Nr. 2 BetrKV)", aliases: ["Reparaturkosten", "Instandsetzungskosten", "Erhaltungsaufwand"], selten: true },
     ]},
 ];
 
