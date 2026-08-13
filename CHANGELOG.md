@@ -2,6 +2,12 @@
 
 Alle wesentlichen Änderungen an diesem Projekt, mit Datum und Begründung. Dient der Nachvollziehbarkeit, damit auch ohne KI-Unterstützung verstanden werden kann, warum etwas so ist, wie es ist.
 
+## 13.08.2026 — Foto-Erkennung: Timeout-Bug live gefunden und behoben
+
+Stefan meldete drei fehlgeschlagene Live-Versuche mit einer eigenen, dicht befüllten Abrechnung (5 Seiten, weit innerhalb des beworbenen Limits "Bis zu 6 Seiten hochladen" in `Wohnung.jsx`) — beim vierten Versuch lief es durch. Ursache: `vercel.json` setzte `maxDuration: 60` für `api/analyse-foto.js`. Der zweistufige Prompt (erst jede Kostenzeile einzeln abschreiben, dann erst zuordnen — siehe Kommentar in `analyse-foto.js`) braucht bei einer Abrechnung mit vielen Einzelpositionen wie dieser (15+ Betriebskosten-Zeilen, Heiz-/Wasserkosten-Aufteilung, CO2-Berechnung) auch ohne Höchstwert an Seiten teils deutlich mehr als 60 Sekunden — ein früherer Testlauf mit demselben Beleg brauchte laut Code-Kommentar 2 Min. 18 Sek. Reine Varianz um die 60s-Grenze, kein deterministischer Logikfehler — passt zum Muster "3x fehlgeschlagen, beim 4. Versuch ohne Änderung erfolgreich".
+
+**Fix:** `maxDuration` auf 180s erhöht. Das ist auf Stefans bestätigtem Vercel-Hobby-Plan möglich, aber NUR wenn Fluid Compute für das Projekt aktiv ist (Vercel-Doku, Stand 08/2026: Hobby ohne Fluid Compute vermutlich weiterhin bei 60s gedeckelt, mit Fluid Compute 300s Standard UND Maximum). **Offener Punkt, von Stefan zu prüfen:** Projekteinstellungen → Functions → Fluid Compute muss aktiviert sein, sonst greift der neue Wert nicht oder das Deployment wird von Vercel auf den alten Grenzwert zurückgestuft. Bei neueren Vercel-Projekten standardmäßig aktiv, bei älteren ggf. manuell nötig.
+
 ## 13.08.2026 — Hintergrundfarbe auf reines Weiß, Kampagnen-Finalisierung
 
 **Design:** `THEME.color.bg` (`src/config/theme.js`) von Cream (#FBF7F0) auf reines Weiß (#FFFFFF) geändert — Stefans Vorgabe, per Mockup (Website-Hero + Anzeigen) vorab freigegeben. Da `surface` (Karten/Formulare) bereits Weiß war, sind `bg` und `surface` jetzt identisch — Karten grenzen sich nur noch über die 1px-Border ab, nicht mehr über einen Farbkontrast zur Seite. Bewusste, geprüfte Entscheidung, kein Bug. Alle Marketing-Bilder (3 Anzeigen, FB-Titelbild, 3 Insta-Content-Posts) parallel auf denselben weißen Hintergrund umgestellt und in `marketing/meta-kampagne/` ausgetauscht; Logos/Profilbild unverändert gelassen.

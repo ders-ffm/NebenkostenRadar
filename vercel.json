@@ -35,6 +35,6 @@
   ],
   "functions": {
     "api/admin-auth.js":  { "maxDuration": 5  },
-    "api/analyse-foto.js": { "maxDuration": 60 }
+    "api/analyse-foto.js": { "maxDuration": 180 }
   }
 }
