@@ -66,7 +66,7 @@
  *   Rein stilistisch, keine Änderung an JSON-Struktur oder ID-Logik.
  */
 import fetch from 'node-fetch';
-import { readFileSync, writeFileSync, existsSync } from 'fs';
+import { readFileSync, writeFileSync } from 'fs';
 import { fileURLToPath } from 'url';
 import { dirname, join } from 'path';
 const __dirname = dirname(fileURLToPath(import.meta.url));
@@ -163,7 +163,7 @@ async function getBild(query, bekannteBilder = []) {
 async function ladeBestehendeArtikel() {
   const pfad = join(__dirname, '../src/artikel.js');
   const modul = await import(pfad + '?t=' + Date.now()); // Cache-Bypass bei mehrfachem Lauf im selben Prozess
-  return modul.ARTIKEL.map(a => ({ id: a.id, titel: a.titel, bild: a.bild }));
+  return modul.ARTIKEL.map(a => ({ id: a.id, titel: a.titel, bild: a.bild, datum: a.datum }));
 }
 // ── verweis-Blöcke gegen Halluzinationen absichern ───────────────────────────
 // Die KI kann sich eine "ziel"-ID ausdenken, die es nicht gibt. Damit sowas
@@ -332,20 +332,51 @@ function fuegeArtikelEin(artikel, bildUrl) {
   writeFileSync(join(__dirname, '../src/artikel.js'), app);
   return true;
 }
-// ── Sitemap aktualisieren ─────────────────────────────────────────────────────
-function aktualisiereSitemap(artikelId) {
+// ── Sitemap NEU AUFBAUEN (nicht mehr nur anhängen) ───────────────────────────
+// GEÄNDERT 13.08.2026 — ROOT-CAUSE-FIX für einen in der echten Google Search
+// Console gefundenen Bug: Die alte Version hat bei jedem neuen Artikel nur
+// eine <url>-Zeile ANGEHÄNGT, aber nie geprüft, ob alle bisherigen Einträge
+// noch zu echten Artikeln in artikel.js gehören. Wurde ein Artikel jemals von
+// Hand entfernt/umbenannt (kam bei Testläufen während der Entwicklung dieses
+// Scripts vor), blieb sein Sitemap-Eintrag für immer als toter Link stehen —
+// Google listete ihn als Seite, die "Artikel nicht gefunden" zeigt. Drei
+// solcher verwaisten Einträge wurden am 13.08.2026 in der Google Search
+// Console gefunden und über einen manuellen sitemap.xml-Ersatz entfernt.
+// Diese Funktion baut die Sitemap jetzt bei JEDEM Lauf komplett neu aus der
+// aktuellen, echten Artikelliste auf — ein verwaister Eintrag kann dadurch
+// strukturell nicht mehr entstehen, unabhängig davon, wie ein Artikel entfernt
+// wurde.
+function parseDatumZuISO(datum) {
+  const monate = { januar:1, februar:2, märz:3, april:4, mai:5, juni:6, juli:7, august:8, september:9, oktober:10, november:11, dezember:12 };
+  const [monatName, jahr] = (datum || '').toLowerCase().split(' ');
+  const monat = monate[monatName];
+  if (!monat || !jahr) return new Date().toISOString().split('T')[0];
+  return `${jahr}-${String(monat).padStart(2, '0')}-01`;
+}
+function baueSitemap(alleArtikel) {
   const pfad = join(__dirname, '../public/sitemap.xml');
-  if (!existsSync(pfad)) return;
-  let sitemap = readFileSync(pfad, 'utf8');
-  if (sitemap.includes(artikelId)) return;
-  const neuerEintrag = `  <url>
-    <loc>https://nebenkostenradar.com/ratgeber/${artikelId}</loc>
-    <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
-    <lastmod>${new Date().toISOString().split('T')[0]}</lastmod>
-  </url>
-</urlset>`;
-  writeFileSync(pfad, sitemap.replace('</urlset>', neuerEintrag));
+  const statischeSeiten = [
+    { loc: 'https://nebenkostenradar.com/', changefreq: 'weekly', priority: '1.0' },
+    { loc: 'https://nebenkostenradar.com/ratgeber', changefreq: 'monthly', priority: '0.8' },
+    { loc: 'https://nebenkostenradar.com/ueber-uns', changefreq: 'yearly', priority: '0.5' },
+  ];
+  const artikelUrls = alleArtikel.map(a => ({
+    loc: `https://nebenkostenradar.com/ratgeber/${a.id}`,
+    changefreq: 'monthly',
+    priority: '0.8',
+    lastmod: parseDatumZuISO(a.datum),
+  }));
+  const alleUrls = [...statischeSeiten, ...artikelUrls];
+  const xml = `<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+${alleUrls.map(u => `  <url>
+    <loc>${u.loc}</loc>
+    <changefreq>${u.changefreq}</changefreq>
+    <priority>${u.priority}</priority>${u.lastmod ? `\n    <lastmod>${u.lastmod}</lastmod>` : ''}
+  </url>`).join('\n')}
+</urlset>
+`;
+  writeFileSync(pfad, xml);
 }
 // ── Hauptprogramm ─────────────────────────────────────────────────────────────
 async function main() {
@@ -379,8 +410,7 @@ async function main() {
       const bild = await getBild(artikel.unsplash_query || 'apartment building', bekannteBilder);
       const eingefuegt = fuegeArtikelEin(artikel, bild);
       if (eingefuegt) {
-        aktualisiereSitemap(artikel.id);
-        bestehendeArtikel.push({ id: artikel.id, titel: artikel.titel, bild }); // für evtl. weitere Themen im selben Lauf
+        bestehendeArtikel.push({ id: artikel.id, titel: artikel.titel, bild, datum: artikel.datum }); // für evtl. weitere Themen im selben Lauf
         bekannteBilder.push(bild);
         neuArtikel++;
         console.log(`  Titel: ${artikel.titel}`);
@@ -390,8 +420,12 @@ async function main() {
       console.error(`  Fehler: ${e.message}`);
     }
   }
+  // Sitemap bei JEDEM Lauf komplett neu aufbauen, nicht nur bei neuen Artikeln
+  // — heilt dadurch auch verwaiste Alt-Einträge automatisch aus, falls doch
+  // mal von Hand ein Artikel entfernt wird (siehe Kommentar bei baueSitemap()).
+  baueSitemap(bestehendeArtikel);
   console.log(`\n${'='.repeat(40)}`);
-  console.log(`${neuArtikel} neue Artikel erstellt.`);
+  console.log(`${neuArtikel} neue Artikel erstellt. Sitemap neu aufgebaut (${bestehendeArtikel.length} Artikel-URLs).`);
   if (neuArtikel > 0) console.log('Bitte: git add . && git commit -m "Neue Artikel" && git push');
 }
 main();
