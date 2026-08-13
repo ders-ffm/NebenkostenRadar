@@ -2,6 +2,14 @@
 
 Alle wesentlichen Änderungen an diesem Projekt, mit Datum und Begründung. Dient der Nachvollziehbarkeit, damit auch ohne KI-Unterstützung verstanden werden kann, warum etwas so ist, wie es ist.
 
+## 13.08.2026 — Richtwerte-Monitor: Fehlalarm-Bug behoben (echtes Beispiel: Issue #1)
+
+Stefan zeigte das erste automatisch erstellte GitHub-Issue vom Richtwerte-Monitor: "Neue DMB-Richtwerte verfügbar: 2024 (aktuell im Code: 2024 (veröffentlicht 12/2025))". Geprüft: reiner Fehlalarm. Der Betrag stimmte exakt (2,67 €/m²/Monat = 2,67 €/m²/Monat), das Jahr war inhaltlich dasselbe (2024). Ursache: `RICHTWERTE_JAHR` in `business.js` ist ein Anzeigetext für die Website ("2024 (veröffentlicht 12/2025)"), kein reines Jahr — der String-Vergleich in `scripts/richtwerte-monitor.mjs` gegen die von der DMB-Seite gelesene reine Jahreszahl ("2024") schlug dadurch strukturell IMMER fehl, unabhängig davon, ob sich wirklich etwas geändert hat. Hätte jeden Monat einen unnötigen Fehlalarm erzeugt — bei einem Zeitbudget von 1–2 Std./Woche (siehe `planung/businessplan-umsatzprognose.md`) ein echtes Problem, nicht nur Kosmetik.
+
+**Fix:** `richtwerte-monitor.mjs` zieht jetzt nur die vierstellige Jahreszahl aus dem Anzeigetext heraus, bevor verglichen wird. `business.js` bewusst nicht angefasst, der Anzeigetext wird vermutlich auf der Website gebraucht. Mit einem Testfall verifiziert (identischer Fall wie Issue #1 nachgestellt — Ergebnis jetzt korrekt "keine Abweichung").
+
+**Offener Punkt, von Stefan zu erledigen:** GitHub-Issue #1 kann geschlossen werden (Fehlalarm, kein Handlungsbedarf) — das kann ich von hier aus nicht selbst tun, kein Schreibzugriff auf GitHub.
+
 ## 13.08.2026 — Vorrendern der Ratgeber-Artikel + Sitemap-Bug behoben
 
 **Korrektur einer eigenen früheren Aussage:** Im Businessplan-Gespräch hatte ich zunächst vermutet, mehrere Ratgeber-Artikel seien inhaltlich fast identisch dupliziert (Themen-Pool-Bug). Beim genauen Nachschauen in `src/artikel.js` stimmte das nicht: Von den 5 verdächtig ähnlich klingenden Sitemap-Einträgen gehörten nur 2 zu tatsächlich existierenden, jeweils einzigartigen Artikeln. Die anderen 3 (`heizkostenabrechnung-haeufigste-fehler-vermieter-2026`, `heizkostenabrechnung-fehler-vermieter-checkliste-2026`, `bgh-urteile-mietrecht-nebenkosten-2026-ratgeber`) waren **verwaiste Sitemap-Einträge ohne zugehörigen Artikel** — vermutlich Reste aus manuellen Testläufen von `rechtsmonitor.mjs` während dessen Entwicklung am 25./26.07.2026 (siehe Kommentar-Verlauf in der Datei). Google listete sie als Seiten, bekam beim Aufruf aber nur "Artikel nicht gefunden" (`Artikel.jsx`) — das erklärt einen Teil der in der echten Google Search Console gefundenen Indexierungsprobleme direkter als meine ursprüngliche Duplikat-Theorie.

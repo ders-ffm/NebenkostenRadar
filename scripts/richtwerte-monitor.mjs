@@ -124,7 +124,18 @@ async function main() {
   }
   console.log("Auf der DMB-Website:", neu);
 
-  if (alt.gesamt === neu.gesamt && alt.jahr === neu.jahr) {
+  // FIX 13.08.2026 (echter Fehlalarm in Issue #1 gefunden, siehe GitHub):
+  // RICHTWERTE_JAHR in business.js ist ein Anzeigetext für die Website, z.B.
+  // "2024 (veröffentlicht 12/2025)", kein reines Jahr. Der reine
+  // String-Vergleich gegen die DMB-Seite (liefert nur "2024") schlug deshalb
+  // IMMER fehl, obwohl der Betrag exakt übereinstimmte (2.67 = 2.67) und das
+  // Jahr inhaltlich dasselbe war — hätte jeden Monat neu einen Fehlalarm
+  // erzeugt. Business.js absichtlich nicht angefasst (der Anzeigetext wird
+  // vermutlich auf der Website gebraucht) — stattdessen wird hier nur die
+  // vierstellige Jahreszahl aus dem Anzeigetext herausgezogen, bevor
+  // verglichen wird.
+  const altJahrZahl = (alt.jahr || "").match(/\d{4}/)?.[0] || alt.jahr;
+  if (alt.gesamt === neu.gesamt && altJahrZahl === neu.jahr) {
     console.log("\nKeine Abweichung — Richtwerte sind aktuell.");
     return;
   }
