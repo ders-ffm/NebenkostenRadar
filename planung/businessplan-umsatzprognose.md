@@ -144,7 +144,9 @@ Das heißt nicht zwangsläufig "nicht sinnvoll" — es heißt: **als reine Direk
 | Wann | Aufgabe | Dauer |
 |---|---|---|
 | Einmalig, diese Woche | Flight 1 der Meta-Kampagne einrichten (Anleitung liegt bereit) | 30–45 Min. |
+| Einmalig, diese Woche | Erster LinkedIn-Post (Auftakt/Logbuch-Ankündigung, Text liegt fertig bereit — siehe Abschnitt 8) | 5 Min. (nur einfügen) |
 | 2x/Woche, laufend | Nächsten Post aus `content-kalender.md` kopieren, auf FB/Insta einfügen | 10 Min./Post |
+| Alle 1–2 Wochen, laufend | LinkedIn-Logbuch-Post: was diese Woche passiert ist, welches Problem gelöst wurde (siehe Abschnitt 8 für Format) | 15–20 Min./Post |
 | 1x/Monat | GitHub-Issue prüfen, falls Richtwerte-Monitor eine Abweichung meldet | 10–15 Min., nur wenn ein Issue existiert |
 | Anfang September | Zwischencheck Flight 1 (CPC/Klicks vergleichen), Flight 2 nur mit Sieger-Creative einrichten | 20–30 Min. |
 | Ab November, optional | Erste SEO-Wirkung prüfen (Google Search Console einrichten, falls noch nicht geschehen — nicht im Code gefunden, vermutlich noch offen) | einmalig 20 Min. Einrichtung, danach 5 Min./Monat Blick auf Zahlen |
@@ -166,6 +168,18 @@ Bisher deckt dieser Plan SEO, organisches Social und Meta-Ads ab. Das ist zu eng
 | **Lokale Frankfurt-Presse** | 1–2 Std. einmalig (Recherche + Anschreiben) | Deine reale Abrechnung (ABG Frankfurt, Kupferhammer 35) plus die Statistik "93 % fehlerhaft" sind eine nachvollziehbare, lokal verankerte Geschichte für Frankfurter Lokalmedien/Wirtschaftsblogs. Kein garantierter Erfolg, aber geringer Aufwand für potenziell hohe Reichweite auf einen Schlag. |
 
 Das sind Vorschläge, keine Zusagen — welche davon zu deiner Zeit und deinem Geschmack passen, entscheidest du. Ich würde LinkedIn und die Vergleichsartikel-E-Mails als die zwei mit dem besten Aufwand-Nutzen-Verhältnis einstufen.
+
+### LinkedIn — Schritt für Schritt (13.08.2026, auf Stefans Wunsch konkretisiert)
+
+**Format, das auf LinkedIn funktioniert (anders als Insta/FB):** Kein Bild nötig, reiner Text reicht. Erste 2–3 Zeilen sind der Hook (LinkedIn blendet den Rest hinter "…mehr anzeigen" aus) — die wichtigste Aussage gehört an den Anfang. Kurze Absätze, Leerzeilen zwischen Gedanken. Kaum Hashtags (2–3 reichen, nicht 10+). Kein Verkaufston — auf LinkedIn wirkt "ich baue/lerne gerade etwas" glaubwürdiger als "kauft mein Produkt".
+
+**Alle Post-Texte (Post 1 überarbeitet + 6 weitere, copy-paste-fertig) liegen jetzt in einer eigenen Datei: `marketing/linkedin-logbuch.md`.** Ausgelagert, damit dieses Dokument nicht mit Post-Texten überfrachtet wird und du dort laufend neue Posts ergänzen kannst, ohne den Businessplan anzufassen.
+
+**Durchgehende Schiene der ganzen Serie (13.08.2026 präzisiert):** nicht "Umsatz/Produktlaunch", sondern das Experiment, wie weit man mit KI kommt, wenn man selbst kein Entwickler, Marketer oder Jurist ist — und wie stark gutes Prompten den Unterschied macht. Post 1 stellt das jetzt explizit voran.
+
+Die 6 neuen Posts (2–7) sind reale, bereits gemeisterte Hürden aus diesem Projekt — der Live-Timeout-Bug, der doppelt gefixte CO2-Kosten-Bug (deine eigene Abrechnung), die unterschätzte Widerrufsrecht-Pflicht, die falsche erste Vermutung bei den Google-Indexierungsproblemen (echte Ursache: tote Sitemap-Links + reine JS-Rendering), der Kurswechsel kurz vor dem geplanten Start (Handeingabe erwies sich als unbrauchbar, weil jede Abrechnung anders aufgebaut ist → Umbau auf Foto-/PDF-Upload), und die konkreten Schritte für organisches Wachstum ohne Werbebudget (Ratgeber-Artikel, Vorrendern, Sitemap-Bereinigung). Jeweils ~80–120 Wörter, gleicher direkter Ton wie Post 1. Bewusst kein Post zu Break-even/Werbebudget-Kalkulation — das passt nicht zur "Lernen mit KI"-Schiene und bleibt intern in Abschnitt 6.
+
+**Kadenz, laufend (alle 1–2 Wochen, nicht starr):** Nach den 6 vorbereiteten Posts dokumentiert jeder weitere Post einen echten neuen Schritt — die Rohstoffe liefert dieses Projekt laufend von selbst, kurz zusammenfassen reicht.
 
 ## 9. Einordnung: 250–1.000 Verkäufe/Jahr — realistisch?
 
