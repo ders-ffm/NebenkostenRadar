@@ -18,7 +18,12 @@
 export const THEME = {
   color: {
     // Flächen
-    bg: "#FBF7F0",       // Cream — Seitenhintergrund
+    // 13.08.2026: bg von Cream (#FBF7F0) auf reines Weiß umgestellt (Stefans
+    // Vorgabe). Damit sind bg und surface identisch — Karten heben sich jetzt
+    // nur noch über die 1px-Border von der Seite ab, nicht mehr über einen
+    // Farbkontrast. Bewusst so freigegeben (Mockup vorab gezeigt), falls das
+    // zu flach wirkt: Karten-Border/Schatten verstärken, nicht bg zurückändern.
+    bg: "#FFFFFF",        // Seitenhintergrund
     surface: "#FFFFFF",   // Karten, Formulare
     border: "#E3D9C6",
 

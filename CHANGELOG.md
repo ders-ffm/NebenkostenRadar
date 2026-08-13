@@ -2,6 +2,12 @@
 
 Alle wesentlichen Änderungen an diesem Projekt, mit Datum und Begründung. Dient der Nachvollziehbarkeit, damit auch ohne KI-Unterstützung verstanden werden kann, warum etwas so ist, wie es ist.
 
+## 13.08.2026 — Hintergrundfarbe auf reines Weiß, Kampagnen-Finalisierung
+
+**Design:** `THEME.color.bg` (`src/config/theme.js`) von Cream (#FBF7F0) auf reines Weiß (#FFFFFF) geändert — Stefans Vorgabe, per Mockup (Website-Hero + Anzeigen) vorab freigegeben. Da `surface` (Karten/Formulare) bereits Weiß war, sind `bg` und `surface` jetzt identisch — Karten grenzen sich nur noch über die 1px-Border ab, nicht mehr über einen Farbkontrast zur Seite. Bewusste, geprüfte Entscheidung, kein Bug. Alle Marketing-Bilder (3 Anzeigen, FB-Titelbild, 3 Insta-Content-Posts) parallel auf denselben weißen Hintergrund umgestellt und in `marketing/meta-kampagne/` ausgetauscht; Logos/Profilbild unverändert gelassen.
+
+**Kampagne:** Anzeigen-Varianten D ("Zahlst du drauf – ohne es zu merken?") und F ("Glaub nicht alles, was da steht.") sowie eine dritte, von Stefan vorgeschlagene Vertrauens-Variante ("Von Mieter für Mieter") final freigegeben. Der Claim "Von Mieter für Mieter" ist verifiziert zutreffend (Stefan wohnt seit jeher zur Miete). Facebook-Seite und Instagram-Profil sind live (Insta: 3 Content-Posts veröffentlicht, Bio nutzt den Von-Mieter-für-Mieter-Claim).
+
 ## 12.08.2026 — Desktop-Formularbreite verbreitert, Meta-Kampagne vorbereitet
 
 **Desktop-Layout:** `THEME.layout.formMax` (Wohnung.jsx/Posten.jsx/Adressen.jsx) von 560 auf 680 erhöht — auf breiten Desktop-Bildschirmen wirkte die Formular-Spalte ab Schritt 1 sehr schmal (Stefans Rückmeldung per Screenshot). Da `formMax` per inline `maxWidth` gesetzt wird (kein `width`, kein CSS-Media-Query), greift auf schmalen/mobilen Viewports automatisch die Bildschirmbreite selbst — die Änderung wirkt sich rein rechnerisch ausschließlich auf Bildschirme >680px aus, das bestätigt korrekte mobile Verhalten bleibt unverändert. Einzeiliger Fix an der zentralen Design-Token-Datei (Prinzip: eine Stelle ändern, alle Seiten ziehen nach).
