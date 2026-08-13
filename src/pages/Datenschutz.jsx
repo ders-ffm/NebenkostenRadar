@@ -18,6 +18,7 @@
 // etwas ändert — siehe CHANGELOG.md für die Historie.
 // ─────────────────────────────────────────────────────────────────────────
 import { THEME } from "../config/theme.js";
+import { BUSINESS } from "../config/business.js";
 import BrandAnschrift from "../components/layout/BrandAnschrift.jsx";
 
 const ABSCHNITTE = [
@@ -55,17 +56,17 @@ const ABSCHNITTE = [
     "Google Analytics Datenschutzerklärung: policies.google.com/privacy",
   ]},
   { t: "5. Hosting (Vercel)", lines: [
-    "Unser Hosting-Anbieter Vercel (Vercel Inc., USA) erhebt automatisch Server-Log-Dateien (IP-Adresse, Browser, Zeitstempel). Rechtsgrundlage: Art. 6 Abs. 1 lit. f DSGVO. Datenschutzerklärung: vercel.com/legal/privacy-policy",
+    "Unser Hosting-Anbieter Vercel (Vercel Inc., USA) erhebt automatisch Server-Log-Dateien (IP-Adresse, Browser, Zeitstempel). Rechtsgrundlage: Art. 6 Abs. 1 lit. f DSGVO. Datenübermittlung in die USA auf Basis von Standardvertragsklauseln der EU-Kommission (Art. 46 Abs. 2 lit. c DSGVO). Datenschutzerklärung: vercel.com/legal/privacy-policy",
   ]},
   { t: "6. Zahlungsabwicklung (Stripe)", lines: [
-    "Beim Kauf einer Auswertung (7,99 €) oder Auswertung mit Brief (9,99 €) leiten wir dich zur Zahlungsseite von Stripe Payments Europe, Ltd. (Dublin, Irland) weiter. Dabei werden Name, E-Mail-Adresse und Zahlungsdaten an Stripe übermittelt.",
+    "Beim Kauf einer Auswertung (" + BUSINESS.PREIS_AUSWERTUNG.toFixed(2) + " €) oder Auswertung mit Brief (" + BUSINESS.PREIS_VOLL.toFixed(2) + " €) leiten wir dich zur Zahlungsseite von Stripe Payments Europe, Ltd. (Dublin, Irland) weiter. Dabei werden Name, E-Mail-Adresse und Zahlungsdaten an Stripe übermittelt.",
     "Rechtsgrundlage: Art. 6 Abs. 1 lit. b DSGVO. Datenübermittlung in die USA auf Basis von Standardvertragsklauseln (Art. 46 Abs. 2 lit. c DSGVO). Datenschutzerklärung: stripe.com/de/privacy",
   ]},
   { t: "7. Bildmaterial (Unsplash)", lines: [
     "Einige Bilder in den Ratgeber-Artikeln werden direkt von Unsplash geladen, wobei deine IP-Adresse übermittelt wird. Rechtsgrundlage: Art. 6 Abs. 1 lit. f DSGVO. Datenschutzerklärung: unsplash.com/privacy",
   ]},
   { t: "8. E-Mail-Versand (Resend)", lines: [
-    "Nach einem Kauf verschicken wir deinen Prüfbericht als PDF-Anhang automatisch an deine E-Mail-Adresse — über den Dienstleister Resend (Resend, Inc., USA). Rechtsgrundlage: Art. 6 Abs. 1 lit. b DSGVO (Vertragserfüllung).",
+    "Nach einem Kauf verschicken wir deinen Prüfbericht als PDF-Anhang automatisch an deine E-Mail-Adresse — über den Dienstleister Resend (Resend, Inc., USA). Rechtsgrundlage: Art. 6 Abs. 1 lit. b DSGVO (Vertragserfüllung). Datenübermittlung in die USA auf Basis von Standardvertragsklauseln der EU-Kommission (Art. 46 Abs. 2 lit. c DSGVO).",
     "Bei Zustimmung (siehe Abschnitt 3a) verschicken wir darüber hinaus ca. 10 Monate nach Kauf eine Rabatt-Mail, ebenfalls über Resend. Rechtsgrundlage: Art. 6 Abs. 1 lit. a DSGVO (Einwilligung).",
     "Bei Nutzung des Kontaktformulars im Impressum übermitteln wir deine Angaben ebenfalls über Resend an support@nebenkostenradar.com. Rechtsgrundlage: Art. 6 Abs. 1 lit. f bzw. lit. b DSGVO.",
   ]},

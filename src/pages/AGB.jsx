@@ -32,8 +32,11 @@ export default function AGB({ navigateTo }) {
       "Es handelt sich um einen einmaligen Kauf — kein Abonnement, kein Dauerschuldverhältnis.",
     ]},
     { t: "§ 6 Widerrufsrecht", lines: [
-      "Das Widerrufsrecht erlischt gemäß § 356 Abs. 5 BGB, wenn der Käufer ausdrücklich zugestimmt hat, dass mit der Ausführung sofort begonnen wird, und er zur Kenntnis genommen hat, dass er dadurch sein Widerrufsrecht verliert.",
-      "Diese Zustimmung wird beim Kauf durch Aktivierung der Checkbox erteilt. Ohne Aktivierung ist ein Kauf nicht möglich.",
+      "Verbrauchern steht grundsätzlich ein gesetzliches Widerrufsrecht zu: Du hast das Recht, binnen vierzehn Tagen ohne Angabe von Gründen diesen Vertrag zu widerrufen. Die Widerrufsfrist beträgt vierzehn Tage ab dem Tag des Vertragsschlusses.",
+      "Um dein Widerrufsrecht auszuüben, musst du uns (NebenkostenRadar, Stefan Hennig, Ludwigstr. 33-37, 60327 Frankfurt am Main, support@nebenkostenradar.com) mittels einer eindeutigen Erklärung (z. B. per E-Mail) über deinen Entschluss, diesen Vertrag zu widerrufen, informieren. Du kannst dafür das Muster-Widerrufsformular in § 6a verwenden, musst dies aber nicht. Zur Wahrung der Widerrufsfrist reicht es aus, dass du die Mitteilung über die Ausübung des Widerrufsrechts vor Ablauf der Widerrufsfrist absendest.",
+      "Folgen des Widerrufs: Im Falle eines wirksamen Widerrufs erstatten wir dir alle bereits erhaltenen Zahlungen unverzüglich, spätestens binnen 14 Tagen ab dem Tag, an dem deine Widerrufserklärung bei uns eingegangen ist. Für die Rückzahlung verwenden wir dasselbe Zahlungsmittel, das du bei der ursprünglichen Zahlung genutzt hast, sofern nicht ausdrücklich etwas anderes vereinbart wurde; es werden dir dafür keine zusätzlichen Entgelte berechnet.",
+      "Vorzeitiges Erlöschen bei digitalen Inhalten (§ 356 Abs. 5 BGB): Da der Prüfbericht ein digitaler Inhalt ist, der nicht auf einem körperlichen Datenträger geliefert wird, erlischt dein Widerrufsrecht vorzeitig, sobald wir mit der Erstellung und Bereitstellung des PDFs begonnen haben — vorausgesetzt, du hast zuvor ausdrücklich zugestimmt, dass wir vor Ablauf der Widerrufsfrist mit der Ausführung beginnen, und gleichzeitig zur Kenntnis genommen, dass du dadurch dein Widerrufsrecht verlierst, sobald wir mit der Ausführung begonnen haben.",
+      "Diese Zustimmung und Kenntnisnahme erteilst du im Bestellprozess durch Aktivierung der entsprechenden Checkbox vor Kaufabschluss. Ohne Aktivierung ist ein Kauf nicht möglich.",
     ]},
     { t: "§ 7 Haftungsausschluss", lines: [
       "Der Prüfbericht ersetzt keine Rechtsberatung im Sinne des RDG. Eine Haftung für rechtliche Richtigkeit oder Vollständigkeit der Analyseergebnisse wird ausgeschlossen.",

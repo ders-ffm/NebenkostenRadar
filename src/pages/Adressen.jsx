@@ -10,7 +10,7 @@ import Field from "../components/ui/Field.jsx";
 import Btn from "../components/ui/Btn.jsx";
 import StepBar from "../components/ui/StepBar.jsx";
 
-export default function Adressen({ navigateTo, adressen, setAdressen, stufe, werte, wohnung, marketingOptIn, setMarketingOptIn }) {
+export default function Adressen({ navigateTo, adressen, setAdressen, stufe, werte, wohnung, marketingOptIn, setMarketingOptIn, widerrufOk }) {
   const C = THEME.color;
   const [errors, setErrors] = useState({});
   const [emailWiederholen, setEmailWiederholen] = useState("");
@@ -103,7 +103,7 @@ export default function Adressen({ navigateTo, adressen, setAdressen, stufe, wer
             await fetch("/api/save-report", {
               method: "POST",
               headers: { "Content-Type": "application/json" },
-              body: JSON.stringify({ sessionId, stufe, adressen, werte, wohnung, marketingOptIn: !!marketingOptIn }),
+              body: JSON.stringify({ sessionId, stufe, adressen, werte, wohnung, marketingOptIn: !!marketingOptIn, widerrufOk: !!widerrufOk }),
             });
           } catch (e) {
             console.error("Zwischenspeichern fehlgeschlagen:", e);

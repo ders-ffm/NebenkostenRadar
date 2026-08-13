@@ -123,6 +123,12 @@ export default function App() {
   // Opt-in für Rabatt-Mail 10 Monate nach Kauf (Art. 6 Abs. 1 lit. a DSGVO — siehe Datenschutz.jsx Abschnitt 3a).
   // Bewusst NICHT vorausgewählt (echtes Opt-in, keine Vorbelegung).
   const [marketingOptIn, setMarketingOptIn] = useState(false);
+  // Zustimmung zum vorzeitigen Erlöschen des Widerrufsrechts (§ 356 Abs. 5 BGB,
+  // siehe Result.jsx-Checkbox). Bewusst hier oben statt lokal in Result.jsx,
+  // damit der Wert bis zum Kauf-Request in Adressen.jsx erhalten bleibt und
+  // dort mit an /api/save-report gesendet werden kann (Nachweispflicht liegt
+  // im Streitfall bei uns als Anbieter, siehe CHANGELOG 13.08.2026).
+  const [widerrufOk, setWiderrufOk] = useState(false);
   const [result, setResult] = useState(null);
   const [gekauft, setGekauft] = useState(() => window.location.pathname === "/danke" || window.location.pathname === "/pruefen/download");
   const [stufe, setStufe] = useState(null); // "auswertung" | "voll"
@@ -139,7 +145,7 @@ export default function App() {
 
   function resetAll() {
     navigateTo("welcome");
-    setResult(null); setWerte({}); setGekauft(false); setStufe(null); setGesamtsummeAbrechnung("");
+    setResult(null); setWerte({}); setGekauft(false); setStufe(null); setGesamtsummeAbrechnung(""); setWiderrufOk(false);
   }
 
   const pageProps = {
@@ -149,6 +155,7 @@ export default function App() {
     result, setResult, runAnalyse, resetAll,
     gekauft, setGekauft, stufe, setStufe,
     marketingOptIn, setMarketingOptIn,
+    widerrufOk, setWiderrufOk,
     ratgeberArtikel, IS_DEMO,
   };
 

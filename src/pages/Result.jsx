@@ -2,9 +2,9 @@
 // Result.jsx — Ergebnis-Seite + Preisstufen-Auswahl. URL: "/pruefen/ergebnis"
 //
 // Zeigt eine kostenlose Vorschau (3 Positionen). Bei Kaufwunsch: Nutzer wählt
-// Stufe (Auswertung 7,99€ / Auswertung+Brief 9,99€), Widerrufs-Checkbox
-// (Pflicht nach § 356 Abs. 5 BGB), dann weiter zu Adressen (nur bei "voll")
-// oder direkt zu handleKaufen() (bei "auswertung").
+// Stufe (Preise siehe BUSINESS.PREIS_AUSWERTUNG/PREIS_VOLL), Widerrufs-Checkbox
+// (Pflicht nach § 356 Abs. 5 BGB, Zustand liegt in App.jsx, siehe Kommentar
+// dort), dann weiter zu Adressen (für beide Stufen, siehe weiterZumKauf()).
 // ─────────────────────────────────────────────────────────────────────────
 import { useState } from "react";
 import { THEME } from "../config/theme.js";
@@ -16,9 +16,8 @@ import LegalFooter from "../components/layout/LegalFooter.jsx";
 
 const STATUS_LABEL = { ok: "✓ Unauffällig", hoch: "↑ Erhöht", sehr_hoch: "↑↑ Stark erhöht", nicht_umlagefaehig: "✗ Nicht zulässig", pruefen: "? Prüfen" };
 
-export default function Result({ navigateTo, result, wohnung, setStufe, resetAll }) {
+export default function Result({ navigateTo, result, wohnung, setStufe, resetAll, widerrufOk, setWiderrufOk }) {
   const C = THEME.color;
-  const [widerrufOk, setWiderrufOk] = useState(false);
   // Empfehlung jetzt dreistufig statt nur "ok vs. nicht ok" (10.08.2026,
   // siehe CHANGELOG — Stefans Wunsch, den Brief nur zu empfehlen, wenn
   // wirklich ein eindeutiger Verstoß vorliegt):

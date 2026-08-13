@@ -2,6 +2,26 @@
 
 Alle wesentlichen Änderungen an diesem Projekt, mit Datum und Begründung. Dient der Nachvollziehbarkeit, damit auch ohne KI-Unterstützung verstanden werden kann, warum etwas so ist, wie es ist.
 
+## 13.08.2026 — Rechtstexte: Preisfehler behoben, Drittlandtransfer und Widerrufsbelehrung ergänzt
+
+Auf Stefans Nachfrage zu DSGVO-Konformität/Abmahnsicherheit geprüft (Code-Audit, keine Rechtsberatung). Drei konkrete Lücken gefunden und behoben:
+
+**1. Falsche Preise in `Datenschutz.jsx` (Abschnitt 6):** Zeigte sichtbar "7,99 €/9,99 €" statt der aktuellen 9,99 €/12,99 € aus `business.js` — Irreführungsrisiko (§ 5 UWG). Fix: Preise werden jetzt aus `BUSINESS.PREIS_AUSWERTUNG`/`PREIS_VOLL` gerendert statt hartkodiert, damit das bei künftigen Preisänderungen nicht wieder auseinanderläuft.
+
+**2. Fehlender Drittlandtransfer-Hinweis für Vercel und Resend** (`Datenschutz.jsx`, Abschnitte 5 und 8): Beide sind US-Unternehmen, hatten aber — anders als Supabase/Anthropic/Stripe im selben Dokument — keinen SCC-Hinweis (Art. 46 Abs. 2 lit. c DSGVO). Ergänzt, gleiches Muster wie die übrigen Abschnitte.
+
+**3. AGB (`AGB.jsx` § 6) enthielt nur den Erlöschens-Hinweis, keine vollständige Widerrufsbelehrung.** Stefan hat die AGB von mineko.de als Referenz vorgelegt (§ 3.4, dortiges Geschäftsmodell: Forderungskauf/Inkasso, Widerruf-Ausschluss über § 356 Abs. 4 BGB "vollständige Erbringung"). Nicht 1:1 übernommen, sondern angepasst: NebenkostenRadar liefert ein automatisiert erzeugtes PDF ohne menschliche Prüfung und ohne Forderungsankauf — das ist rechtlich eher "digitaler Inhalt" (§ 356 Abs. 5 BGB) als "Dienstleistung" (§ 356 Abs. 4 BGB), was auch schon die bestehende Checkbox in `Result.jsx` so referenziert. § 6 jetzt um die vollständige Belehrung (14-Tage-Frist, Ausübung, Rechtsfolgen) ergänzt, konsistent mit § 356 Abs. 5 statt Abs. 4. Neuer § 6a mit Muster-Widerrufsformular (angelehnt an die amtliche Vorlage nach Art. 246a EGBGB, ohne Warenversand-Passagen, die bei uns nicht zutreffen).
+
+**Offener Punkt, von Stefan zu prüfen:** § 6/§ 6a ist die inhaltlich vollständigste bisher im Projekt verwendete Widerrufsbelehrung, aber keine anwaltliche Prüfung. Fehlende/fehlerhafte Widerrufsbelehrungen sind einer der häufigsten Abmahngründe im deutschen Online-Handel — bevor mit den Ad-Flights spürbar mehr echter Traffic/Käufe reinkommen, lohnt sich ein kurzer Check durch einen Anwalt oder ein Tool wie IT-Recht Kanzlei/Trusted Shops. Ebenfalls offen: ob eine USt-IdNr im Impressum fehlt, weil nicht vorhanden, oder weil vergessen — das weiß nur Stefan.
+
+## 13.08.2026 — Widerruf-Zustimmung jetzt nachweisbar gespeichert
+
+Stefan wies zu Recht darauf hin: Wenn wir uns im Streitfall auf die vorzeitige Erlöschung des Widerrufsrechts (§ 356 Abs. 5 BGB) berufen, tragen wir die Beweislast dafür, dass der Kunde tatsächlich zugestimmt hat — wer sich auf eine Ausnahme vom gesetzlichen Regelfall beruft, muss sie belegen. Bei der Prüfung fiel auf: Die Checkbox-Zustimmung (`widerrufOk` in `Result.jsx`) war bis eben reiner Browser-State, der beim Seitenwechsel verpuffte — nirgends serverseitig gespeichert, weder in Supabase noch bei Stripe. Im Streitfall hätten wir nichts vorweisen können.
+
+**Fix:** `widerrufOk` liegt jetzt zentral in `App.jsx` (analog zu `marketingOptIn`), wird über `Adressen.jsx` an `/api/save-report` mitgeschickt und dort als `widerruf_ok` in `nkr_reports` gespeichert — mit serverseitigem `created_at`-Zeitstempel (nicht vom Client übernommen, da sonst manipulierbar). Wird bei `resetAll()` zurückgesetzt, damit nicht versehentlich eine alte Zustimmung für einen neuen Kauf übernommen wird.
+
+**Offener Punkt, von Stefan zu erledigen:** Die Spalte `widerruf_ok` (boolean) existiert noch nicht in der Supabase-Tabelle `nkr_reports` — muss einmalig per SQL angelegt werden, bevor der Code live geht: `ALTER TABLE nkr_reports ADD COLUMN widerruf_ok boolean DEFAULT false;` (im Supabase-Dashboard unter SQL Editor ausführen). Ohne diese Spalte schlägt der Insert in `save-report.js` fehl (Supabase lehnt unbekannte Spalten ab).
+
 ## 13.08.2026 — Foto-Erkennung: Timeout-Bug live gefunden und behoben
 
 Stefan meldete drei fehlgeschlagene Live-Versuche mit einer eigenen, dicht befüllten Abrechnung (5 Seiten, weit innerhalb des beworbenen Limits "Bis zu 6 Seiten hochladen" in `Wohnung.jsx`) — beim vierten Versuch lief es durch. Ursache: `vercel.json` setzte `maxDuration: 60` für `api/analyse-foto.js`. Der zweistufige Prompt (erst jede Kostenzeile einzeln abschreiben, dann erst zuordnen — siehe Kommentar in `analyse-foto.js`) braucht bei einer Abrechnung mit vielen Einzelpositionen wie dieser (15+ Betriebskosten-Zeilen, Heiz-/Wasserkosten-Aufteilung, CO2-Berechnung) auch ohne Höchstwert an Seiten teils deutlich mehr als 60 Sekunden — ein früherer Testlauf mit demselben Beleg brauchte laut Code-Kommentar 2 Min. 18 Sek. Reine Varianz um die 60s-Grenze, kein deterministischer Logikfehler — passt zum Muster "3x fehlgeschlagen, beim 4. Versuch ohne Änderung erfolgreich".

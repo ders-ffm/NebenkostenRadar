@@ -15,7 +15,7 @@ export default async function handler(req, res) {
   if (req.method === "OPTIONS") return res.status(200).end();
   if (req.method !== "POST") return res.status(405).end();
 
-  const { sessionId, stufe, adressen, werte, wohnung, marketingOptIn } = req.body || {};
+  const { sessionId, stufe, adressen, werte, wohnung, marketingOptIn, widerrufOk } = req.body || {};
   const supabaseUrl = process.env.SUPABASE_URL;
   const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
 
@@ -39,6 +39,10 @@ export default async function handler(req, res) {
         werte,
         wohnung,
         marketing_opt_in: !!marketingOptIn,
+        // Nachweis der Zustimmung zum vorzeitigen Erlöschen des Widerrufsrechts
+        // (§ 356 Abs. 5 BGB) — Zeitstempel ist server-seitig (created_at unten),
+        // nicht vom Client übernommen, damit er im Streitfall belastbar ist.
+        widerruf_ok: !!widerrufOk,
         created_at: new Date().toISOString(),
       }),
     });
