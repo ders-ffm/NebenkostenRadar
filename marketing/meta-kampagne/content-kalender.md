@@ -82,6 +82,19 @@ Sieben weitere Posts, andere Richtung als oben: kein Marken-Spruch, sondern ein 
 > Macht Dein Vermieter Hausmeister- oder Gartenarbeiten selbst statt über eine Firma? Dann darf er trotzdem nur ansetzen, was ein externer Anbieter gekostet hätte — keinen eigenen Gewinnaufschlag.
 > #Nebenkosten #Mietrecht
 
+## Steuer-Bonus (§ 35a EStG) — neu seit 14.08.2026, noch ohne eigenes Bildmaterial
+
+Ergänzt laut `planung/steuerbonus-35a-rollout.md` Abschnitt 2.9. Termin frei wählbar, am besten in die bestehende Reihe einsortieren (z. B. als nächster oder übernächster Slot nach dem 16.08.). Für beide Posts fehlt noch ein passendes Bild — bestehende Grafiken zeigen das Feature nicht, neue PNGs müssten in derselben Pipeline wie das übrige Bildmaterial erzeugt werden (separater Schritt, kein Compliance-Problem, nur verpasste Werbefläche bis dahin).
+
+**16. Termin frei wählbar — Bild: noch zu erstellen**
+> Neu im 12,99-€-Paket: der Steuer-Bonus. Wir zeigen dir zusätzlich zur Prüfung, welche Positionen deiner Abrechnung nach § 35a EStG steuerlich absetzbar sein können — Hausmeister, Gartenpflege, Aufzug und mehr — inklusive fertiger Anfrage-Vorlage an deinen Vermieter. Kein Aufpreis, einfach mit drin. Unverbindlicher Hinweis, keine Steuerberatung.
+> #Steuertipp #Nebenkosten #Mietrecht
+
+**17. Termin frei wählbar — Bild: noch zu erstellen** *(Fakt-Karte im "Schon gewusst?"-Stil, allgemeiner Rechtsfakt als Türöffner zum Feature)*
+> Wusstest du, dass du bestimmte Posten aus deiner Nebenkostenabrechnung von der Steuer absetzen kannst? Hausmeister, Gartenpflege, Aufzugs- oder Heizungswartung zählen als haushaltsnahe Dienstleistungen oder Handwerkerleistungen — § 35a EStG, bis zu 20 % der Arbeitskosten.
+> Verlasse Dich nicht nur auf Deinen Vermieter — überprüfe es selbst unter nebenkostenradar.com
+> #Steuertipp #Nebenkosten #Mietrecht
+
 ## 1 Tipp für mehr "Leben" ohne Mehraufwand
 
 Kommentiere deinen eigenen Post kurz nach dem Veröffentlichen einmal selbst — ein kleiner Zusatzgedanke, keine Werbung ("Bin gespannt, wie viele bei sich auch was finden"). Das wirkt aktiver als ein stiller Post und ist in 10 Sekunden erledigt.

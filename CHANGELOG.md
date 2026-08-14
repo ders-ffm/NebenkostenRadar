@@ -2,6 +2,10 @@
 
 Alle wesentlichen Änderungen an diesem Projekt, mit Datum und Begründung. Dient der Nachvollziehbarkeit, damit auch ohne KI-Unterstützung verstanden werden kann, warum etwas so ist, wie es ist.
 
+## 14.08.2026 — Presse-Einordnung + Wert-/Stunden-Aufrechnung (Businessplan Abschnitt 12+13)
+
+Auf Stefans Frage geprüft: Kontaktaufnahme mit Medien wie Bild (aktueller Aufhänger: CO2-Preis-Umstellung 2026 treibt Heizkosten weiter, echt recherchiert) sowie eine Aufrechnung der bisher investierten Arbeit in Marktwert/Stunden. Ergebnis: Bild direkt aktuell nicht realistisch (keine Nutzerzahlen/Traktion als Aufhänger), Startup-Szene-Blogs und lokale Presse sind der realistischere erste Schritt. Wert-Aufrechnung: ≈ 256 marktübliche Freelancer-/Beratungsstunden (≈ 26.650 € Wiederbeschaffungswert) aus den ~60 CHANGELOG-Einträgen hergeleitet, klar getrennt vom aktuellen Verkaufswert (nahe null ohne Umsatzhistorie) und vom bereits dokumentierten Umsatzpotential (Abschnitt 4/9). Reine Recherche/Analyse, kein Code geändert.
+
 ## 14.08.2026 — Steuer-Bonus (§ 35a EStG) als neue PDF-Seite 3 eingebaut (nur Stufe "voll", kein Aufpreis)
 
 Auf Basis der Recherche in `planung/businessplan-umsatzprognose.md` Abschnitt 10 und dem freigegebenen Rollout-Plan `planung/steuerbonus-35a-rollout.md` umgesetzt. On-top-Feature, keine Preisänderung, nur im 12,99-€-Paket.

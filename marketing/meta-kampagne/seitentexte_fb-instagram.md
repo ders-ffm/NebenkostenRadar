@@ -14,7 +14,9 @@ Stand: 12.08.2026
 **Langtext / Info-Bereich ("Über diese Seite" bzw. "Unternehmensbeschreibung"):**
 > Jede zweite Nebenkostenabrechnung in Deutschland enthält Fehler — von falschen Umlageschlüsseln bis zu nicht umlagefähigen Positionen. NebenkostenRadar prüft deine Abrechnung automatisch gegen die gesetzlichen Vorgaben (BGB, BetrKV) und aktuelle Vergleichswerte (Deutscher Mieterbund) und zeigt dir in wenigen Minuten, ob und wo sich ein Widerspruch lohnt. Kein Vertrag, keine Anmeldung, keine Weitergabe deiner Daten an Dritte.
 >
-> Wichtig: NebenkostenRadar ist ein automatisiertes Prüf-Tool, keine Rechtsberatung und kein Mieterverein. Bei komplexen Fällen empfehlen wir zusätzlich den örtlichen Mieterverein oder eine Rechtsanwältin/einen Rechtsanwalt für Mietrecht.
+> Im Paket "Auswertung + Brief" ist zusätzlich der Steuer-Bonus enthalten: Wir zeigen dir, welche Positionen nach § 35a EStG steuerlich absetzbar sein können, inklusive fertiger Anfrage-Vorlage an deinen Vermieter. On top, ohne Aufpreis.
+>
+> Wichtig: NebenkostenRadar ist ein automatisiertes Prüf-Tool, keine Rechtsberatung und kein Mieterverein — auch der Steuer-Bonus ist ein unverbindlicher Hinweis, keine Steuerberatung. Bei komplexen Fällen empfehlen wir zusätzlich den örtlichen Mieterverein, eine Rechtsanwältin/einen Rechtsanwalt für Mietrecht oder eine Steuerberaterin/einen Steuerberater.
 
 **Website:** https://nebenkostenradar.com
 
@@ -37,6 +39,14 @@ Stand: 12.08.2026
 **Link (Link-in-Bio-Feld):** https://nebenkostenradar.com
 
 **Hinweis zur Emoji-Nutzung:** Die 🔍/👇 oben sind optional — falls eine zurückhaltendere, sachlichere Außendarstellung gewünscht ist (passend zum "unabhängige Prüfung"-Anspruch der Marke), ersatzlos streichen.
+
+**Steuer-Bonus in der Bio:** Das 150-Zeichen-Limit ist mit der aktuellen Bio (4 Zeilen inkl. Emojis) bereits fast ausgeschöpft. Möglicher Kompromiss, falls der Hinweis rein soll — eine Zeile ersetzen statt ergänzen:
+> Ist deine Nebenkostenabrechnung korrekt? 🔍
+> + Steuer-Bonus (§ 35a EStG) inklusive
+> Kostenloser Check, keine Anmeldung
+> 👇
+
+Damit fällt die separate "Keine Anmeldung nötig"-Zeile weg (in "Kostenloser Check, keine Anmeldung" zusammengezogen). Zeichenzahl bitte direkt im Instagram-Bio-Feld prüfen, bevor du es einträgst — Emoji-Zählweise variiert je nach Plattform-Encoding, verlässlich ist nur der Zähler in der App selbst.
 
 ---
 

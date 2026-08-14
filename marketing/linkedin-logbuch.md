@@ -10,65 +10,65 @@ Stand: 13.08.2026. Persönliche Posts (nicht die Marke, sondern Stefan als Perso
 
 ---
 
-## Post 1 — Auftakt
+## Post 1 — Auftakt (gepostet 14.08.2026)
 
-> Neue Aufgabe bei der MMG: Als Produktmanager bringe ich mit einem starken Team bestehende Produkte und deren Websites aufs nächste Level. Wir arbeiten seit Jahren zusammen, ich freue mich auf viele weitere Jahre.
+> Yeah, eine neue Aufgabe innerhalb der MMG! Langweilig wird's ohnehin nie. Angefangen im Kunden-Support, dann Abteilungsleitung und die Verantwortung für die interne Organisation. Jetzt kommt mit dem Produktmanagement ein weiterer Baustein hinzu. Mit dem tollsten Team der Welt (when you know, you know) werden wir unsere bestehenden Produkte und deren Websites aufs nächste Level heben. Wir arbeiten alle seit Jahren zusammen und ich freue mich auf viele weitere und bin ehrlich dankbar dafür.
 >
-> Parallel dazu, in meiner Freizeit, ein kleines eigenes Projekt: NebenkostenRadar, ein Tool, das Nebenkostenabrechnungen automatisch prüft.
+> Parallel dazu und ausschließlich in meiner Freizeit habe ich außerdem ein kleines eigenes Projekt begonnen: NebenkostenRadar, ein Tool, das Nebenkostenabrechnungen automatisch prüft.
 >
-> Mit Programmieren, Rechtstexten oder Online-Marketing hatte ich vorher keinerlei Berührungspunkte. Der eigentliche Antrieb: herausfinden, wie weit man mit KI tatsächlich kommt, wenn man selbst keine dieser Fähigkeiten mitbringt. Wie wichtig gutes Prompten wirklich ist. Wo die Grenzen liegen — und wo nicht.
+> Mit Programmieren, Compliance oder Online-Marketing hatte ich vorher keinerlei Berührungspunkte. Mein Antrieb: Herausfinden, wie weit ich tatsächlich komme, obwohl ich mich hier auf unbekanntes Terrain begebe. Wo die Grenzen liegen und wo nicht.
 >
-> Nicht mit dem Ziel, große Umsätze zu machen — sondern um Scheuklappen abzulegen und Prozesse zu begleiten, die außerhalb meiner eigentlichen Kompetenz liegen, administrativ wie exekutiv, von A bis Z. Grenzen ausloten, Hürden überwinden — und das hier als Logbuch dokumentieren.
+> Nicht mit dem Ziel große Umsätze zu machen sondern um Scheuklappen abzulegen und Prozesse zu begleiten, die außerhalb meiner eigentlichen Kompetenz liegen, administrativ wie operativ, einmal "mit Allem bitte" und zwar von A bis Z.
 >
-> Die nächsten Posts: Schritt für Schritt, was passiert ist, welche Probleme auftauchen, wie KI dabei geholfen hat (und wo nicht). Ausgang ungewiss.
+> Vielleicht schreibe ich über beide Themen künftig auch öfter — eine Art Logbuch über aktuelle Probleme, Hürden und Lösungsansätze, sowohl aus dem neuen Job als auch aus dem kleinen sideproject.
 >
-> Wer hat Ähnliches vor oder schon hinter sich — als Quereinsteiger mit KI etwas Eigenes gebaut? Über Erfahrungen, Tipps und Denkanstöße freue ich mich.
+> Über Erfahrungen, Tipps und Denkanstöße freue ich mich - sowohl was Produktmanagement als auch das komplett selbstständige begleiten solcher Prozesse angeht.
 >
-> #buildinpublic #ki #sideproject
+> #produktmanagement #lebenslangeslernen #buildinpublic #sideproject #neuerjob
 
 ## Post 2 — Der Kurswechsel vor dem Start (früh in der Entwicklung)
 
-> Ursprünglich sollten Nutzer jede Position ihrer Nebenkostenabrechnung von Hand eintippen.
+> Mein ursprünglicher Plan: Nutzer tippen jede Position ihrer Nebenkostenabrechnung von Hand ein. Klang simpel.
 >
-> Beim Testen mit echten Abrechnungen wurde klar: unrealistisch. Jeder Vermieter, jede Hausverwaltung strukturiert anders — andere Positionsnamen, andere Reihenfolge, andere Detailtiefe. Ein starres Eingabeformular passt zu keiner echten Abrechnung wirklich.
+> Dann hab ich's mit echten Abrechnungen getestet — und gemerkt: unrealistisch. Jeder Vermieter, jede Hausverwaltung macht das anders. Andere Positionsnamen, andere Reihenfolge, andere Detailtiefe. Kein starres Formular passt da wirklich drauf.
 >
-> Konsequenz: zurück auf Anfang, kurz vor dem geplanten Start. Statt Handeingabe eine Foto-/PDF-Upload-Funktion gebaut, die die Abrechnung automatisch ausliest.
+> Konsequenz, kurz vor dem geplanten Start: zurück auf Anfang. Statt Handeingabe hab ich eine Foto-/PDF-Upload-Funktion gebaut, die die Abrechnung automatisch ausliest.
 >
-> Ungeplanter Umweg. Aber das ursprüngliche Formular hätte in der Praxis kaum jemand zu Ende ausgefüllt.
+> Ungeplanter Umweg, keine Frage. Aber ehrlich — das alte Formular hätte in der Praxis kaum jemand zu Ende ausgefüllt.
 >
-> Wer kennt das — eine erste Idee verworfen, weil die Realität komplexer war als am Schreibtisch gedacht? Wie seid ihr da rangegangen?
+> Wer kennt das: eine erste Idee verworfen, weil die Realität komplexer war als am Schreibtisch gedacht? Wie seid ihr da rangegangen?
 
 ## Post 3 — Der Bug, den ich zweimal fixen musste (12.–13.08.2026)
 
-> Beim Testen mit meiner eigenen Abrechnung stimmte die Summe nicht: 80,87 € Differenz, die sich nicht erklären ließ.
+> Beim Testen mit meiner eigenen Abrechnung stimmte die Summe nicht. 80,87 € Differenz, die sich einfach nicht erklären ließ. Erstmal ratlos.
 >
-> Ursache gefunden: Die CO2-Kosten standen auf einer Extra-Seite der Abrechnung (Pflichtangabe seit diesem Jahr), waren aber rechnerisch schon in den Heizkosten enthalten. Wer sie zusätzlich einträgt, zählt doppelt.
+> Dann die Ursache gefunden: Die CO2-Kosten standen auf einer Extra-Seite (Pflichtangabe seit diesem Jahr), waren aber rechnerisch schon in den Heizkosten drin. Wer sie zusätzlich einträgt, zählt doppelt.
 >
-> Am nächsten Tag derselbe Fehler nochmal — diesmal an einer anderen Stelle im Code, die ich beim ersten Fix übersehen hatte. Gleicher Bug, zweites Mal richtig gefixt.
+> Am nächsten Tag — derselbe Fehler nochmal. Diesmal an einer anderen Stelle im Code, die ich beim ersten Fix übersehen hatte. Gleicher Bug, zweites Mal richtig gefixt.
 >
-> Eigene Daten zum Testen zu benutzen, ist unbequem. Aber es findet Dinge, die kein synthetischer Testfall findet.
+> Eigene Daten zum Testen zu nehmen ist unbequem, ehrlich gesagt auch etwas nervig. Aber genau das findet Dinge, die kein synthetischer Testfall findet.
 >
 > Testet ihr eigene Tools mit echten eigenen Daten, oder reicht euch synthetisches Testmaterial? Was habt ihr dabei schon übersehen?
 
 ## Post 4 — Der Live-Timeout-Bug (13.08.2026)
 
-> Erste echte Nebenkostenabrechnung hochgeladen, dreimal hintereinander gescheitert. Meldung: "kann nicht ausgewertet werden".
+> Erste echte Nebenkostenabrechnung hochgeladen — dreimal hintereinander gescheitert. Meldung: "kann nicht ausgewertet werden". Kein gutes Gefühl.
 >
-> Ursache: Die Foto-Erkennung lief serverseitig gegen ein Zeitlimit von 60 Sekunden. Bei einer dichten Abrechnung mit 15+ Einzelpositionen reicht das nicht immer.
+> Ursache: Die Foto-Erkennung lief serverseitig gegen ein Zeitlimit von 60 Sekunden. Bei einer dichten Abrechnung mit 15+ Einzelpositionen reicht das einfach nicht immer.
 >
-> Fix: Limit auf 180 Sekunden hochgesetzt — vorher geprüft, ob der Hosting-Plan das überhaupt zulässt. Tat er, mit einer Einstellung, die ich vorher nicht kannte.
+> Fix: Limit auf 180 Sekunden hochgesetzt — vorher natürlich geprüft, ob der Hosting-Plan das überhaupt zulässt. Tat er, über eine Einstellung, die ich vorher gar nicht kannte.
 >
-> Der erste echte Nutzer meines eigenen Tools war ich selbst. Hat sich gelohnt.
+> Der erste echte Nutzer meines eigenen Tools war übrigens ich selbst. Hat sich gelohnt.
 >
-> Wer kennt das — ein Wert, der in den meisten Fällen passt, aber beim komplexeren Rest reißt? Wie geht ihr mit solchen Grenzfällen um?
+> Wer kennt das: ein Wert, der in den meisten Fällen passt, aber beim komplexeren Rest reißt? Wie geht ihr mit solchen Grenzfällen um?
 
 ## Post 5 — Die rechtliche Seite, die ich unterschätzt habe (13.08.2026)
 
-> Wer online etwas verkauft, muss über das Widerrufsrecht informieren — auch wenn man es später ausschließen will.
+> Wer online etwas verkauft, muss über das Widerrufsrecht informieren — auch wenn man es später ausschließen will. Klingt banal, war's für mich nicht.
 >
-> Hatte ich zunächst falsch im Kopf: einfach behaupten, es gelte keins. Falsch. Es gilt grundsätzlich, es sei denn, der Kunde stimmt aktiv zu, dass sofort mit der Leistung begonnen wird, und wird darüber informiert, dass er dadurch sein Recht verliert.
+> Hatte ich zunächst falsch im Kopf: einfach behaupten, es gelte keins. Falsch. Es gilt grundsätzlich, außer der Kunde stimmt aktiv zu, dass sofort mit der Leistung begonnen wird — und wird klar darüber informiert, dass er dadurch sein Recht verliert.
 >
-> Und: Die Beweislast dafür liegt bei mir. Also nicht nur eine Checkbox im Formular, sondern eine nachweisbare, serverseitig gespeicherte Zustimmung mit Zeitstempel.
+> Und dann kommt noch dazu: Die Beweislast liegt bei mir. Also reicht keine Checkbox im Formular, sondern es braucht eine nachweisbare, serverseitig gespeicherte Zustimmung mit Zeitstempel.
 >
 > Nichts davon stand auf meinem Schirm, bevor ich es gebraucht habe.
 >
@@ -78,25 +78,25 @@ Stand: 13.08.2026. Persönliche Posts (nicht die Marke, sondern Stefan als Perso
 
 > Google hatte nur 9 von 16 Seiten meines kleinen Projekts indexiert. Erste Vermutung: doppelte Inhalte.
 >
-> Falsch. Beim genauen Nachschauen waren es tote Links in der Sitemap — Reste aus Testläufen, die nie aufgeräumt wurden. Google fand die URL, bekam aber "Seite nicht gefunden".
+> Falsch. Beim genauen Nachschauen waren es tote Links in der Sitemap — Reste aus Testläufen, die nie aufgeräumt wurden. Google fand die URL, bekam aber nur "Seite nicht gefunden".
 >
-> Zweiter, echter Befund: Die Seite ist eine reine JavaScript-App. Google sieht beim ersten, schnellen Scan nur eine leere Hülle, den Inhalt erst in einem zweiten, langsameren Durchlauf — wenn überhaupt zuverlässig.
+> Zweiter, echter Befund: Die Seite ist eine reine JavaScript-App. Google sieht beim ersten, schnellen Scan erstmal nur eine leere Hülle, den eigentlichen Inhalt erst in einem zweiten, langsameren Durchlauf — wenn überhaupt zuverlässig.
 >
-> Beides jetzt behoben. Ob es wirkt, sehe ich in den nächsten Wochen in der Search Console.
+> Beides jetzt behoben. Ob's wirkt, sehe ich in den nächsten Wochen in der Search Console.
 >
 > Erste Vermutung falsch, zweite dann richtig — kennt ihr das aus eigenen Debugging-Geschichten? Wie oft lag eure erste Theorie daneben?
 
 ## Post 7 — Was ich für organisches Wachstum tue, ganz ohne Werbebudget (13.08.2026, aktueller Stand)
 
-> Kein Marketingbudget, also die einzige Stellschraube: organisch gefunden werden.
+> Kein Marketingbudget, also bleibt nur eine Stellschraube: organisch gefunden werden.
 >
-> Konkret bisher: Ratgeber-Artikel zu echten Nutzerfragen (Fristen, Rechte, häufige Fehler in Abrechnungen) statt nur Produktseiten. Die Artikel serverseitig vorgerendert, damit Google den Inhalt auch ohne JavaScript sofort sieht. Tote Links aus der Sitemap entfernt, damit keine Crawl-Kapazität an Seiten verschwendet wird, die es gar nicht gibt.
+> Konkret bisher: Ratgeber-Artikel zu echten Nutzerfragen (Fristen, Rechte, häufige Fehler in Abrechnungen) statt nur Produktseiten. Die Artikel serverseitig vorgerendert, damit Google den Inhalt auch ohne JavaScript sofort sieht. Tote Links aus der Sitemap entfernt, damit keine Crawl-Kapazität an Seiten verschwendet wird, die es gar nicht mehr gibt.
 >
 > Nächster Schritt: beobachten, was in der Search Console tatsächlich ankommt, und nachschärfen statt raten.
 >
-> 1–2 Stunden pro Woche, kein Budget — heißt: jede Maßnahme muss sich mehrfach auszahlen, einmalig bauen statt dauerhaft betreuen.
+> 1–2 Stunden pro Woche, kein Budget — heißt im Klartext: jede Maßnahme muss sich mehrfach auszahlen. Einmal bauen, nicht dauerhaft betreuen.
 >
-> Wie macht ihr das mit organischem Wachstum ohne Budget? Was hat bei euch am meisten gebracht — und was war Zeitverschwendung?
+> Wie macht ihr das mit organischem Wachstum ohne Budget? Was hat bei euch am meisten gebracht — und was war am Ende Zeitverschwendung?
 
 ---
 
