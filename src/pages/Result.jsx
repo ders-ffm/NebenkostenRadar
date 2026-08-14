@@ -163,7 +163,11 @@ export default function Result({ navigateTo, result, wohnung, setStufe, resetAll
               <div style={{ position: "absolute", top: -9, right: 10, background: C.accent, color: C.accentText, fontSize: 9, fontWeight: 700, padding: "2px 8px", borderRadius: 10 }}>Empfohlen</div>
               <div style={{ fontSize: 11, color: C.textMuted, marginBottom: 4 }}>Auswertung + Brief</div>
               <div style={{ fontFamily: THEME.font.heading, fontSize: 19, fontWeight: 600, color: C.text }}>{BUSINESS.PREIS_VOLL.toFixed(2)} €</div>
-              <div style={{ fontSize: 10, color: C.textDim, marginTop: 4 }}>2-seitiges PDF inkl. Musterbrief</div>
+              <div style={{ fontSize: 10, color: C.textDim, marginTop: 4 }}>3-seitiges PDF inkl. Musterbrief und Steuer-Bonus (§ 35a EStG)</div>
+              {/* 14.08.2026, siehe planung/steuerbonus-35a-rollout.md: kleiner
+                  eigener Badge für den Kaufanreiz, zusätzlich zum Beschreibungstext
+                  — Stefan hat das Mockup mit diesem Badge freigegeben. */}
+              <div style={{ display: "inline-block", marginTop: 8, background: C.accentBg, color: C.textDim, fontSize: 9, fontWeight: 600, padding: "3px 8px", borderRadius: 8 }}>+ Steuer-Bonus</div>
             </button>
           </div>
 

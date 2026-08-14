@@ -2,6 +2,29 @@
 
 Alle wesentlichen Änderungen an diesem Projekt, mit Datum und Begründung. Dient der Nachvollziehbarkeit, damit auch ohne KI-Unterstützung verstanden werden kann, warum etwas so ist, wie es ist.
 
+## 14.08.2026 — Steuer-Bonus (§ 35a EStG) als neue PDF-Seite 3 eingebaut (nur Stufe "voll", kein Aufpreis)
+
+Auf Basis der Recherche in `planung/businessplan-umsatzprognose.md` Abschnitt 10 und dem freigegebenen Rollout-Plan `planung/steuerbonus-35a-rollout.md` umgesetzt. On-top-Feature, keine Preisänderung, nur im 12,99-€-Paket.
+
+**`src/lib/analyse.js`:** Neues Flag `steuerlich_35a: true` an den `posten_bewertung`-Einträgen für Positionen, die typischerweise unter § 35a EStG fallen können (Hausmeister, Gartenpflege, Hausreinigung, Winterdienst, Schornsteinreinigung, Aufzug- und Heizungswartung, Rauchwarnmelder-Wartung). Bewusst als Flag an bereits bestehenden, längst getesteten Einträgen — nicht als neue Datenstruktur, kein neues Feld in Supabase, kein zusätzlicher Datenfluss durch `save-report.js`/`get-report.js`. Explizit NICHT geflaggt: reine Straßenreinigung sowie die "(kombiniert)"-Sammelzeilen (Straßenreinigung+Winterdienst, Versicherungen) — dort würde eine pauschale Markierung nicht-begünstigte Kosten mit einschließen.
+
+**`src/pdf/SteuerbonusPDF.jsx`** (neu): Dritte PDF-Seite, nur Stufe "voll". Listet die gefundenen § 35a-Positionen mit Beträgen, einen rechnerischen 20-%-Hinweis (mit klarer Kennzeichnung, dass nur der Arbeitskostenanteil zählt und die Abrechnung das meist nicht getrennt ausweist), sowie eine fertige Anfrage-Vorlage an den Vermieter um Aufschlüsselung des Arbeitskostenanteils. Durchgehender Disclaimer "reine Rechenhilfe, keine Steuerberatung" (§ 5/§ 6 Nr. 3 StBerG, Formulierung angelehnt an eine bei einem Wettbewerber beobachtete, in der Nische offenbar akzeptierte Praxis, siehe Businessplan 10.4). Leerfall (keine gefundenen Positionen) wird explizit abgefangen, keine leere Tabelle.
+
+**`src/pdf/PruefberichtDocument.jsx`:** SteuerbonusPDF als dritte Seite eingebunden, `seitenGesamt` von 2 auf 3 erhöht.
+
+**Textliche Anpassungen** (siehe Rollout-Plan für alle Einzelstellen): `Welcome.jsx` (Einleitungssatz stellt jetzt explizit klar, dass es nicht nur die Prüfung, sondern zusätzlich einen Steuervorteil gibt — Stefans ausdrückliche Vorgabe; neue Feature-Zeile; Preisteaser; Preisvergleichs-Karte), `Result.jsx` (Stufenwahl-Karte im eigentlichen Kaufmoment: neue Beschreibung + Badge "+ Steuer-Bonus"), `AGB.jsx` § 2 (Leistungsbeschreibung um die 3. PDF-Seite ergänzt — ohne diese Änderung hätte die AGB nicht mehr zur tatsächlichen Leistung gepasst). `Datenschutz.jsx` bewusst NICHT geändert — keine neue Datenverarbeitung (siehe Businessplan 10.1 Compliance-Check).
+
+**Getestet, bevor als fertig gemeldet (Stefans ausdrückliche Vorgabe: kein Nachtesten seinerseits nötig):**
+1. Vollständiger `npm run build` in einer Sandbox-Kopie (nicht im echten iCloud-Ordner) — 286 Module fehlerfrei gebündelt, keine Syntax-/Importfehler in den neuen/geänderten Dateien.
+2. Gezielter Node-Test von `buildResult()` gegen 5 synthetische Fälle (u. a. der kritische Grenzfall: Straßenreinigung + Winterdienst kombiniert eingegeben — nur der Winterdienst-Anteil darf markiert werden, nicht die Sammelzeile; Versicherungen kombiniert darf gar nichts markieren) — alle 5 bestanden.
+3. Echter PDF-Rendertest (nicht nur Syntax): das vollständige 3-seitige Dokument einmal mit mehreren § 35a-Positionen und einmal im Leerfall über `@react-pdf/renderer` tatsächlich zu einer gültigen PDF-Datei gerendert (Byte-Header `%PDF-` verifiziert) — beide erfolgreich, kein Laufzeitfehler.
+
+**Noch offen, auf Stefans Wunsch bewusst zurückgestellt:** Marketing-Textdateien (Content-Kalender, LinkedIn-Logbuch) und neue Anzeigen-Grafiken folgen in einem separaten Schritt, sobald das Kernfeature live ist und sich bewährt hat.
+
+## 14.08.2026 — Recherche: Steuer-Modul (§ 35a EStG) geprüft, Businessplan Abschnitt 10 ergänzt
+
+Stefans Idee geprüft: Nebenkosten-Positionen (Hausmeister, Gartenpflege etc.) sind nach § 35a EStG steuerlich absetzbar, als Upsell-Modul zu NKR denkbar. Rechtsgrundlage verifiziert (§ 35a Abs. 2/3 EStG, BFH-Urteil VI R 24/20 zum Nachweis per Nebenkostenabrechnung). Zwei Annahmen korrigiert: (1) Der von Stefan mitgeschickte KPMG-Link behandelt österreichische Mietpreisbremse, nicht § 35a — falscher Link. (2) Die Annahme "kein Wettbewerber bietet das an" trifft nicht zu — NebenkostenPro hat bereits einen produktiven, interaktiven § 35a-Rechner mit KI-Positionserkennung live. Technische Prüfung von `api/analyse-foto.js`/`analyse.js`: Rohdaten-Feld `zeilenErfasst` und bestehende Kategorie-Keys (`hauswart`, `gartenpflege` etc.) decken die meisten § 35a-Positionen bereits ab, es fehlt aber die Trennung Arbeits-/Materialkosten — eine reine 20%-Automatik auf Kategorie-Summen würde den Steuervorteil überschätzen. Zusätzlich auf ein bisher nicht bedachtes Risiko hingewiesen: § 5 StBerG (unbefugte Hilfeleistung in Steuersachen) — NebenkostenPros Lösung ("reine Rechenhilfe, keine Steuerberatung") als Vorbild dokumentiert. Vollständige Analyse in `planung/businessplan-umsatzprognose.md`, Abschnitt 10. Kein Code geändert, reine Recherche.
+
 ## 13.08.2026 — LinkedIn-Logbuch angelegt, nachgeschärft und chronologisch sortiert
 
 Neue Datei `marketing/linkedin-logbuch.md`: Post 1 (Auftakt) sprachlich geglättet und um die eigentliche Motivation ergänzt — keinerlei Vorerfahrung mit Programmieren/Recht/Marketing, Ziel ist herauszufinden, wie weit man mit KI kommt und wie wichtig gutes Prompten dabei ist. Diese "Lernen mit KI"-Schiene zieht sich jetzt durch die ganze Serie, nicht nur den ersten Post.

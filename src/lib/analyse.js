@@ -23,6 +23,24 @@ import { toNum, fmt } from "./format.js";
 import { BUSINESS } from "../config/business.js";
 import { THEME } from "../config/theme.js";
 
+// NEU 14.08.2026 (siehe CHANGELOG.md, planung/steuerbonus-35a-rollout.md):
+// Kategorien, die typischerweise unter § 35a EStG (haushaltsnahe Dienst-
+// leistungen/Handwerkerleistungen) fallen können — für die neue PDF-Seite 3
+// "Steuer-Bonus" (nur Stufe "voll"). Bewusst als Set von ALLE_POSTEN-Keys
+// definiert und unten direkt an den jeweiligen posten_bewertung-Eintrag als
+// `steuerlich_35a: true` angehängt (statt eine eigene Datenstruktur/einen
+// neuen Supabase-Spalte anzulegen) — SteuerbonusPDF.jsx liest ausschließlich
+// aus result.posten_bewertung, das ohnehin schon vollständig durch
+// save-report.js/get-report.js persistiert wird. Kein neues Feld in der
+// Datenbank, keine neue Stelle, an der Daten verloren gehen können.
+// Bewusst NICHT "strassenreinigung" (reine Straßenreinigung fällt nicht
+// unter § 35a) und NICHT die "(kombiniert)"-Sammelzeilen, die nicht-
+// begünstigte Anteile enthalten — nur eindeutig zuordenbare Einzelpositionen.
+const STEUERLICH_35A = new Set([
+  "gartenpflege", "hausreinigung", "schornsteinreinigung", "aufzug",
+  "heizung_wartung", "rauchwarnmelder_wartung",
+]);
+
 // Kein `beispiel`-Feld mehr (bis 13.08.2026 gab es hier graue Platzhalter-
 // Beispielbeträge je Posten, hergeleitet aus den DMB-Richtwerten). Stefans
 // Entscheidung: Auch als reiner Placeholder (kein echter Wert, siehe
@@ -294,7 +312,7 @@ export function analysierePosten(w, wohn) {
       st = "hoch";
       widerspruch.push({ typ: "statistisch", text: "Hausmeisterkosten " + fmt(b) + " (" + a + "% über Richtwert). Nachweis anfordern." });
     }
-    posten_bewertung.push({ posten: "Hauswart/Hausmeister", betrag: b, richtwert: rw, abweichung_prozent: a, status: st, hinweis: hi, paragraf: "§ 2 Nr. 14 BetrKV" });
+    posten_bewertung.push({ posten: "Hauswart/Hausmeister", betrag: b, richtwert: rw, abweichung_prozent: a, status: st, hinweis: hi, paragraf: "§ 2 Nr. 14 BetrKV", steuerlich_35a: true });
   }
 
   // Wasser + Abwasser
@@ -337,11 +355,11 @@ export function analysierePosten(w, wohn) {
     if (sr > 0 && se > 0) {
       posten_bewertung.push({ posten: "Straßenreinigung & Winterdienst (kombiniert)", betrag: srg, richtwert: rw, abweichung_prozent: a, status: st, hinweis: hi, paragraf: "§ 2 Nr. 8 BetrKV" });
       posten_bewertung.push({ posten: "davon Straßenreinigung", betrag: sr, richtwert: 0, abweichung_prozent: 0, status: "ok", hinweis: "Bereits in der Vergleichsrechnung oben enthalten.", paragraf: "§ 2 Nr. 8 BetrKV" });
-      posten_bewertung.push({ posten: "davon Schnee-/Eisbeseitigung", betrag: se, richtwert: 0, abweichung_prozent: 0, status: "ok", hinweis: "Bereits in der Vergleichsrechnung oben enthalten.", paragraf: "§ 2 Nr. 8 BetrKV" });
+      posten_bewertung.push({ posten: "davon Schnee-/Eisbeseitigung", betrag: se, richtwert: 0, abweichung_prozent: 0, status: "ok", hinweis: "Bereits in der Vergleichsrechnung oben enthalten.", paragraf: "§ 2 Nr. 8 BetrKV", steuerlich_35a: true });
     } else if (sr > 0) {
       posten_bewertung.push({ posten: "Straßenreinigung", betrag: sr, richtwert: rw, abweichung_prozent: a, status: st, hinweis: hi, paragraf: "§ 2 Nr. 8 BetrKV" });
     } else {
-      posten_bewertung.push({ posten: "Schnee- und Eisbeseitigung", betrag: se, richtwert: rw, abweichung_prozent: a, status: st, hinweis: hi, paragraf: "§ 2 Nr. 8 BetrKV" });
+      posten_bewertung.push({ posten: "Schnee- und Eisbeseitigung", betrag: se, richtwert: rw, abweichung_prozent: a, status: st, hinweis: hi, paragraf: "§ 2 Nr. 8 BetrKV", steuerlich_35a: true });
     }
   }
 
@@ -432,9 +450,9 @@ export function analysierePosten(w, wohn) {
         });
       }
       else if (a > 40) { st = "hoch"; hi = a + "% über DMB-Richtwert. Prüfenswert."; }
-      posten_bewertung.push({ posten: p.label, betrag: b, richtwert: rw, abweichung_prozent: Math.max(0, a), status: st, hinweis: hi, paragraf: para });
+      posten_bewertung.push({ posten: p.label, betrag: b, richtwert: rw, abweichung_prozent: Math.max(0, a), status: st, hinweis: hi, paragraf: para, steuerlich_35a: STEUERLICH_35A.has(p.key) });
     } else {
-      posten_bewertung.push({ posten: p.label, betrag: b, richtwert: 0, abweichung_prozent: 0, status: "pruefen", hinweis: "Kein offizieller Vergleichswert für diese Position verfügbar. Prüfe ob im Mietvertrag vereinbart und nach § 2 BetrKV zulässig.", paragraf: "§ 2 BetrKV" });
+      posten_bewertung.push({ posten: p.label, betrag: b, richtwert: 0, abweichung_prozent: 0, status: "pruefen", hinweis: "Kein offizieller Vergleichswert für diese Position verfügbar. Prüfe ob im Mietvertrag vereinbart und nach § 2 BetrKV zulässig.", paragraf: "§ 2 BetrKV", steuerlich_35a: STEUERLICH_35A.has(p.key) });
     }
   });
 

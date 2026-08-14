@@ -28,7 +28,11 @@ export default function Welcome({ navigateTo, IS_DEMO }) {
           <div style={{ color: C.brand }}>Geprüft. Transparent. Rechtssicher.</div>
         </h1>
         <p style={{ fontSize: 16, color: C.textMuted, margin: "0 0 32px", lineHeight: 1.7, maxWidth: 520, marginLeft: "auto", marginRight: "auto" }}>
-          Prüfe deine Nebenkosten in wenigen Schritten. Vollautomatisch, nachvollziehbar, ohne juristische Vorkenntnisse.
+          {/* 14.08.2026, Stefans Vorgabe (siehe planung/steuerbonus-35a-rollout.md):
+              muss klar trennen zwischen "wir prüfen deine Abrechnung" und dem
+              zusätzlichen Steuervorteil — nicht nur eine von mehreren
+              Feature-Bullets weiter unten, sondern schon im ersten Satz. */}
+          Prüfe deine Nebenkosten in wenigen Schritten — und finde zusätzlich heraus, was du davon von der Steuer absetzen kannst. Vollautomatisch, nachvollziehbar, ohne juristische Vorkenntnisse.
         </p>
 
         <div style={{ display: "flex", flexDirection: "column", gap: 12, marginBottom: 36 }}>
@@ -37,6 +41,7 @@ export default function Welcome({ navigateTo, IS_DEMO }) {
             ["Erkennung nicht umlagefähiger Kosten", "Wir erkennen Posten, die dein Vermieter nicht abrechnen darf — z. B. Verwaltungskosten oder seit Juli 2024 den Kabelanschluss."],
             ["Heizkostenverordnung & CO₂-Abgabe", "Prüfung der 50/70-Regel nach HeizkostenV sowie der korrekten Aufteilung der CO₂-Abgabe."],
             ["Versandfertiges PDF mit Mustertext", "Bei Auffälligkeiten erstellen wir einen vollständigen Prüfbericht mit Rechtsgrundlagen als PDF — sofort nutzbar."],
+            ["Extra: Steuer-Bonus inklusive", "Nicht nur geprüft — im Paket \"Auswertung + Brief\" zeigen wir dir zusätzlich, welche Positionen du von der Steuer absetzen kannst, inklusive fertiger Anfrage-Vorlage an deinen Vermieter."],
           ].map(([title, desc]) => (
             <div key={title} style={{ display: "flex", gap: 14, alignItems: "flex-start", padding: "14px 16px", background: C.surface, border: "1px solid " + C.border, borderRadius: THEME.radius.md, textAlign: "left" }}>
               <div style={{ width: 20, height: 20, borderRadius: "50%", background: C.brand, flexShrink: 0, marginTop: 2, display: "flex", alignItems: "center", justifyContent: "center" }}>
@@ -57,7 +62,7 @@ export default function Welcome({ navigateTo, IS_DEMO }) {
           Jetzt kostenlos prüfen
         </button>
         <p style={{ textAlign: "center", fontSize: 12, color: C.textDim, marginTop: 10 }}>
-          Basisanalyse kostenlos · Auswertung als PDF {BUSINESS.PREIS_AUSWERTUNG.toFixed(2)} € · mit Brief {BUSINESS.PREIS_VOLL.toFixed(2)} € · Kein Abo
+          Basisanalyse kostenlos · Auswertung als PDF {BUSINESS.PREIS_AUSWERTUNG.toFixed(2)} € · mit Brief + Steuer-Bonus {BUSINESS.PREIS_VOLL.toFixed(2)} € · Kein Abo
         </p>
         <p style={{ textAlign: "center", fontSize: 12, color: C.textMuted, marginTop: 14 }}>
           Schon dabei?{" "}
@@ -98,9 +103,9 @@ export default function Welcome({ navigateTo, IS_DEMO }) {
             <div style={{ fontSize: 12, color: C.textMuted, lineHeight: 1.6 }}>Vollständiges 1-seitiges PDF mit allen Positionen, Richtwerten und Begründungen</div>
           </div>
           <div style={{ background: C.text, borderRadius: THEME.radius.lg, padding: "20px 18px", textAlign: "left" }}>
-            <div style={{ fontSize: 12, color: "#D8D2C4", marginBottom: 4 }}>Auswertung + Brief</div>
+            <div style={{ fontSize: 12, color: "#D8D2C4", marginBottom: 4 }}>Auswertung + Brief + Steuer-Bonus</div>
             <div style={{ fontFamily: THEME.font.heading, fontSize: 22, fontWeight: 600, color: "#fff", marginBottom: 10 }}>{BUSINESS.PREIS_VOLL.toFixed(2)} €</div>
-            <div style={{ fontSize: 12, color: "#D8D2C4", lineHeight: 1.6 }}>2-seitiges PDF: Auswertung plus versandfertiger Musterbrief an deinen Vermieter</div>
+            <div style={{ fontSize: 12, color: "#D8D2C4", lineHeight: 1.6 }}>3-seitiges PDF: Auswertung, versandfertiger Musterbrief an deinen Vermieter, plus Hinweis auf steuerlich absetzbare Positionen (§ 35a EStG)</div>
           </div>
         </div>
         <button onClick={() => navigateTo("wohnung")}

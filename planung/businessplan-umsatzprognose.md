@@ -192,7 +192,78 @@ Deine Ansage: mittelfristig 250–1.000 Verkäufe/Jahr als Nebeneinkommen, kein 
 
 **Kurz:** 250/Jahr halte ich für ein plausibles, ambitioniertes Zwischenziel auf Sicht von 1,5–2 Jahren, wenn die technischen SEO-Fixes wirken und du 1–2 der oben genannten Zusatzkanäle wirklich bespielst. 1.000/Jahr würde ich eher als Vision für "wenn alles gut läuft" einordnen als als Planungsgrundlage — nicht unmöglich, aber mit den aktuellen Mitteln (Zeit, Budget) nicht zuverlässig herbeiführbar. Das ist keine Absage, nur eine ehrliche Erwartungssteuerung: Bei einer Seite ohne jede Traffic-Historie sind das Schätzungen aus Marktlogik, keine Prognose mit Gewähr.
 
-## 10. Offene Punkte, die diese Prognose genauer machen würden
+## 10. Recherche: Steuer-Modul (§ 35a EStG) als Zusatzfunktion (14.08.2026, auf Stefans Anfrage)
+
+Deine These: Mieter können Teile der Nebenkostenabrechnung steuerlich geltend machen (§ 35a EStG), kaum jemand weiß das, kein Tool berechnet den konkreten Vorteil, das ließe sich als Upsell-Modul (Einmalkauf ~4,99 €) direkt an NKR andocken, mit minimalem Zusatzaufwand, da die Upload-/Erkennungs-Architektur schon existiert. Geprüft: rechtliche Grundlage, Wettbewerbslage, technische Machbarkeit, rechtliches Risiko. Ergebnis vorweg: Grundidee trägt, zwei deiner Annahmen stimmen aber nicht — dazu unten mehr.
+
+**Zur mitgeschickten Quelle:** Der verlinkte KPMG-Artikel behandelt die österreichische Mietpreisbremse für Altbauten 2025 — inhaltlich ohne jeden Bezug zu § 35a EStG oder deutschem Steuerrecht. Vermutlich versehentlich der falsche Link, für diese Recherche nicht verwertbar.
+
+### 10.1 Rechtliche Grundlage — was Primärquellen belegen
+
+| Kategorie | Rechtsgrundlage | Steuerermäßigung | Höchstbetrag/Jahr |
+|---|---|---|---|
+| Haushaltsnahe Dienstleistungen | § 35a Abs. 2 EStG | 20 % der Arbeitskosten | 4.000 € |
+| Handwerkerleistungen | § 35a Abs. 3 EStG | 20 % der Arbeitskosten | 1.200 € |
+
+Fakten, primärquellengestützt:
+- Nur **Arbeits-, Fahrt- und Maschinenkosten** sind begünstigt, **keine Materialkosten** — die Abrechnung müsste beides getrennt ausweisen ([juraforum.de, Gesetzestext § 35a EStG](https://www.juraforum.de/gesetze/estg/35a-steuerermaessigung-bei-aufwendungen-fuer-haushaltsnahe-beschaeftigungsverhaeltnisse-haushaltsnah)).
+- Die Ermäßigung wird **direkt von der Steuerschuld abgezogen**, nicht vom zu versteuernden Einkommen — deutlich wirksamer als ein Werbungskostenabzug.
+- **BFH-Urteil vom 20.04.2023, VI R 24/20** ([bundesfinanzhof.de](https://www.bundesfinanzhof.de/en/entscheidungen/entscheidungen-online/decision-detail/STRE202310138/)): Mieter können § 35a EStG auch geltend machen, wenn sie die Verträge mit den Dienstleistern nicht selbst abgeschlossen haben. Als Nachweis genügt regelmäßig die **Nebenkostenabrechnung selbst** (oder eine gesonderte Vermieterbescheinigung), **sofern die begünstigten Positionen und deren Arbeitskostenanteil gesondert ausgewiesen sind** — "es sei denn, es drängen sich Zweifel an deren Richtigkeit auf".
+- Der Vermieter ist **nicht gesetzlich verpflichtet**, eine gesonderte Bescheinigung auszustellen, muss aber auf Anfrage Auskunft geben; in der Praxis stellen die meisten Hausverwaltungen das auf Anfrage aus ([mineko.de-Ratgeber](https://www.mineko.de/ratgeber/nebenkosten-steuererklaerung)).
+
+Typischerweise begünstigte vs. ausgeschlossene Positionen (Abgleich mehrerer Quellen, s.u.):
+
+| Begünstigt (Arbeitskostenanteil) | Nicht begünstigt |
+|---|---|
+| Hausmeister/Hauswart | Grundsteuer |
+| Gartenpflege | Gebäudeversicherung |
+| Treppenhaus-/Hausreinigung | Müllabfuhr als solche |
+| Winterdienst/Schneeräumung | reine Energiekosten (Gas, Öl, Fernwärme) |
+| Schornsteinfeger (seit BMF-Schreiben 10.11.2015 **auch** Mess-/Prüfarbeiten, nicht mehr nur Kehrarbeiten — BFH-Urteil 06.11.2014 hatte das vorher eingeschränkt) | Verwaltungskosten |
+| Wartung Heizung/Aufzug/Rauchmelder | Materialanteil jeder Position |
+| Ungezieferbekämpfung, Dachrinnen-/Rohrreinigung | — |
+
+Quellen: [nebenkostenpro.de-Ratgeber](https://nebenkostenpro.de/ratgeber/nebenkosten-steuererklaerung), [mineko.de-Ratgeber](https://www.mineko.de/ratgeber/nebenkosten-steuererklaerung), [lohnsteuer-kompakt.de zu Schornsteinfeger](https://www.lohnsteuer-kompakt.de/steuerwissen/schornsteinfeger-kosten-wieder-voll-abzugsfaehig/).
+
+**Offen/nicht abschließend geklärt:** Ob unser bestehendes `hauswart`-Feld in `analyse.js` ("nur Betriebskostenanteile") schon sauber vom nicht-umlagefähigen Verwaltungsanteil getrennt ist, reicht für die BetrKV-Prüfung — für § 35a bräuchte es zusätzlich die Trennung Arbeits- vs. Materialkosten, die in keiner der beiden Prüfungen bisher erfasst wird (siehe 10.3).
+
+### 10.2 Wettbewerbslage — deine Annahme "das bietet noch niemand an" trifft so nicht zu
+
+Direkt geprüft (Live-Fetch der Seiten, nicht nur Suchergebnis-Snippets):
+
+**NebenkostenPro hat dieses Feature bereits produktiv im Einsatz.** Auf `nebenkostenpro.de/ratgeber/nebenkosten-steuererklaerung` liegt ein vollständiger, interaktiver § 35a-Rechner: Nutzer geben "Haushaltsnahe Dienstleistungen – nur Arbeitskosten" und "Handwerkerleistungen – nur Lohnanteil" ein, der Rechner zeigt die Steuerermäßigung live. Zusätzlich wirbt die Seite ausdrücklich: "Unsere KI erkennt absetzbare Positionen in Ihrer Nebenkostenabrechnung und zeigt Ihre Prüfpunkte" — inklusive ELSTER-Feldzuordnung (Zeile 5/6 der Haupterklärung) und Rechtsgrundlagen-Hinweis auf BFH VI R 24/20. Das ist inhaltlich fast deckungsgleich mit deiner Modul-Idee.
+
+**Mineko** hat zum selben Thema nur einen informativen Ratgeber-Artikel (seit 2023, zuletzt aktualisiert 03/2026) — Empfehlung, beim Vermieter eine Bescheinigung anzufordern, aber kein Hinweis auf einen interaktiven Rechner oder eine automatische Erkennung in ihrem eigenen Prüf-Flow.
+
+**Einordnung:** Das Feature ist damit kein Alleinstellungsmerkmal, sondern beim direktesten Wettbewerber (NebenkostenPro) bereits Marktstandard. Sinnvoll bleibt es trotzdem — aber als **Aufholen zur Konkurrenz**, nicht als Abgrenzung. Die Kommunikation "damit heben wir uns ab" wäre auf dieser Faktenlage nicht haltbar.
+
+### 10.3 Technische Machbarkeit — was der bestehende Code schon hergibt
+
+Geprüft: `api/analyse-foto.js`, `src/lib/analyse.js`.
+
+**Guter Ausgangspunkt, unerwartet vorhanden:** Das Feld `zeilenErfasst` im Foto-Erkennungs-Schema erfasst schon heute **jede einzelne Kostenzeile mit Originalbezeichnung** (`bezeichnungLautAbrechnung`) und Betrag, bevor irgendeine Zuordnung zu unseren BetrKV-Kategorien passiert (eingeführt 08/2026 gegen Fehlzuordnungen, siehe CHANGELOG). Diese Rohdaten werden aktuell nur als Zwischenschritt genutzt und nicht an die UI durchgereicht — für ein Steuer-Modul wäre genau das aber die Grundlage, um Positionen wie "Kaminkehrer Kehrgebühr 2025" oder "Winterdienst Nov-Mär" texterkennbar zu identifizieren.
+
+**Bestehende Kategorie-Keys decken die meisten § 35a-relevanten Positionen bereits ab:** `hauswart`, `gartenpflege`, `hausreinigung`, `schnee_eis_beseitigung`, `schornsteinreinigung`, `aufzug`, `heizung_wartung`, `rauchwarnmelder_wartung` — praktisch deckungsgleich mit der Liste in 11.1.
+
+**Echte Lücke:** Keiner dieser Keys trennt bisher Arbeits-/Lohnkosten von Materialkosten — genau die Trennung, die § 35a verlangt. Die Nebenkostenabrechnung selbst weist das oft nicht getrennt aus (siehe 11.1, "muss Vermieter auf Anfrage liefern"). Ein Modul, das den vollen Kategorie-Betrag pauschal mit 20 % multipliziert, würde den Steuervorteil systematisch **überschätzen** — ein Zahlenfehler in einem Bereich, den Nutzer direkt gegenüber dem Finanzamt verwenden. Bei deinem eigenen Prinzip "0-Fehler-Toleranz bei Zahlen" (siehe `richtwerte-monitor.mjs`) wäre das nicht akzeptabel.
+
+**Pragmatische Lösung, orientiert an NebenkostenPro:** Nicht den vollen Betrag automatisch als Steuervorteil ausweisen, sondern das automatisch erkannte Kategorie-Ergebnis als **vorbefüllten, aber vom Nutzer zu bestätigenden Ausgangswert** anzeigen ("Wir haben X € Gartenpflege gefunden — wie viel davon ist laut deiner Abrechnung/Bescheinigung reiner Arbeitslohn?"), Endberechnung erst nach Nutzereingabe. Reduziert sowohl das Zahlenfehler-Risiko als auch — siehe 10.4 — das rechtliche Risiko.
+
+### 10.4 Rechtliches Risiko: Steuerberatungsgesetz (§ 5 StBerG)
+
+Nicht in deiner Anfrage erwähnt, aber relevant: **§ 5 StBerG verbietet die unbefugte geschäftsmäßige Hilfeleistung in Steuersachen** ([juraforum.de](https://www.juraforum.de/gesetze/stberg/5-verbot-der-unbefugten-hilfeleistung-in-steuersachen-missbrauch-von-berufsbezeichnungen)). § 6 Nr. 3 StBerG erlaubt zwar "mechanische Rechenarbeiten" ohne besondere Qualifikation, individuelle steuerliche Beurteilung des Einzelfalls bleibt aber Steuerberatern vorbehalten.
+
+**Wie der direkte Wettbewerber das offenbar löst:** NebenkostenPro positioniert sein Modul explizit als "**reine Rechenhilfe, keine Steuerberatung**: ob und in welcher Höhe die Ermäßigung im Einzelfall greift, hängt von Ihrer Steuererklärung ab" — verbunden mit dem Hinweis, dass Ergebnisse automatisiert per KI erstellt werden, ohne Gewähr. Diese Positionierung (reine Berechnung nach öffentlich bekannten Prozentsätzen/Höchstbeträgen, keine Aussage zum Einzelfall, keine Übernahme der Steuererklärung) scheint in dieser Nische verbreitet akzeptierte Praxis zu sein.
+
+**Einordnung, keine Rechtsberatung:** Ein NKR-Steuer-Modul nach demselben Muster (reine Prozentrechnung, expliziter Hinweis "keine Steuerberatung", keine Übernahme der Steuererklärung, kein automatischer ELSTER-Export) bewegt sich vermutlich im selben, in der Praxis akzeptierten Rahmen wie bei NebenkostenPro. Eine Garantie dafür kann ich nicht geben — bei einem Produkt mit direktem Bezug zur Steuererklärung würde sich, genau wie beim Widerrufsrecht in Abschnitt zu den Rechtstexten, eine kurze anwaltliche Prüfung der genauen Formulierung lohnen, bevor das Modul live geht.
+
+### 10.5 Einschätzung
+
+Grundidee bleibt sinnvoll: niedriger Zusatzaufwand (die Roh-Erkennung existiert bereits), passt zur bestehenden Architektur, kein neues Produkt, keine neue Zielgruppe — deine Einschätzung "günstigster Zusatzumsatz" stimmt der Größenordnung nach. Zwei Korrekturen an der Ausgangsthese: Es ist kein Alleinstellungsmerkmal (10.2), und die reine Kategorie-Summe reicht ohne Lohn-/Material-Abfrage nicht für eine belastbare Zahl (10.3) — beides ändert nichts an der Machbarkeit, nur an der Kommunikation ("wir bieten das jetzt auch" statt "das bietet sonst niemand") und am nötigen Umsetzungsschritt (ein zusätzliches Eingabefeld statt reiner Automatik).
+
+**Zu deiner Preisfrage:** Ob 4,99 € on top realistisch sind, konnte ich nicht verifizieren — unklar, ob NebenkostenPro dieses Feature separat bezahlt anbietet oder kostenlos in den bestehenden Prüf-Flow integriert (auf der Seite selbst kein Preis für das Steuer-Modul sichtbar, nur der allgemeine Prüf-Flow). Bevor du einen Preis festlegst, lohnt sich ein kurzer Blick, ob NebenkostenPro das Modul kostenlos als Lead-Magnet nutzt — falls ja, würde ein separater Aufpreis bei uns im Vergleich auffallen.
+
+## 11. Offene Punkte, die diese Prognose genauer machen würden
 
 - **Echte Anthropic-API-Kosten** aus der Console statt meiner Schätzung (Abschnitt 2).
 - ~~Google Search Console~~ — erledigt, bereits eingerichtet, echte Daten in Abschnitt 3 eingearbeitet (13.08.2026).
