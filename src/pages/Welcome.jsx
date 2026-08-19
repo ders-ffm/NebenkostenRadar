@@ -23,9 +23,13 @@ export default function Welcome({ navigateTo, IS_DEMO }) {
           {/* Zwei eigenständige Blöcke statt Text+<br/>+Text: jeder Block
               bricht bei Bedarf unabhängig um, statt dass ein harter
               Zeilenumbruch die erste Zeile auf schmalen Screens zu breit
-              werden lässt (08/2026, Layout-Audit). */}
+              werden lässt (08/2026, Layout-Audit).
+              "Rechtssicher" (bis 19.08.2026) durch "Verständlich" ersetzt:
+              NebenkostenRadar macht keine individuelle anwaltliche Prüfung,
+              "rechtssicher" konnte als Zusicherung missverstanden werden,
+              die das automatisierte Tool nicht einlösen kann. */}
           <div>Deine Abrechnung</div>
-          <div style={{ color: C.brand }}>Geprüft. Transparent. Rechtssicher.</div>
+          <div style={{ color: C.brand }}>Geprüft. Transparent. Verständlich.</div>
         </h1>
         <p style={{ fontSize: 16, color: C.textMuted, margin: "0 0 32px", lineHeight: 1.7, maxWidth: 520, marginLeft: "auto", marginRight: "auto" }}>
           {/* 14.08.2026, Stefans Vorgabe (siehe planung/steuerbonus-35a-rollout.md):

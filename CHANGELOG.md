@@ -2,6 +2,12 @@
 
 Alle wesentlichen Änderungen an diesem Projekt, mit Datum und Begründung. Dient der Nachvollziehbarkeit, damit auch ohne KI-Unterstützung verstanden werden kann, warum etwas so ist, wie es ist.
 
+## 19.08.2026 — "Rechtssicher" aus Startseiten-Headline entfernt + Wettbewerber nebify recherchiert
+
+**Wording-Fix:** `Welcome.jsx` Headline "Geprüft. Transparent. Rechtssicher." → "Geprüft. Transparent. Verständlich." NebenkostenRadar macht keine individuelle anwaltliche Prüfung — "rechtssicher" konnte als Zusicherung gelesen werden, die das automatisierte Tool nicht einlösen kann. Reiner Text-Swap, keine Logikänderung, kein Test nötig. Andere Fundstelle in `AGB.jsx` ("für rechtssichere Prüfung empfehlen wir den Deutschen Mieterbund oder einen Rechtsanwalt") bewusst unverändert gelassen — dort schon korrekt im Sinne von "das bieten wir nicht, das bietet ein Anwalt".
+
+**Wettbewerber nebify:** Stefan hat nebify.de entdeckt, ein nahezu identisches Produkt (kostenloser Vorab-Check → kostenpflichtiger Report + Musterbrief), ähnlicher Bauzeitraum, Betreiber Kolibri eCommerce GbR. Direkt auf nebify.de recherchiert und in `planung/businessplan-umsatzprognose.md` Abschnitt 5 als dritten Wettbewerber (nach Mineko, NebenkostenPro) aufgenommen. Zentraler Unterschied: nebify wirbt mit expliziter Geld-zurück-Garantie und durchgehender "Geld zurückfordern"-Sprache — genau die Positionierung, gegen die hier am 10.08.2026 bewusst entschieden wurde. Einordnung: kein Grund zur Anpassung, eher Bestätigung der bisherigen, zurückhaltenderen Positionierung als bewusste Abgrenzung.
+
 ## 14.08.2026 — Presse-Einordnung + Wert-/Stunden-Aufrechnung (Businessplan Abschnitt 12+13)
 
 Auf Stefans Frage geprüft: Kontaktaufnahme mit Medien wie Bild (aktueller Aufhänger: CO2-Preis-Umstellung 2026 treibt Heizkosten weiter, echt recherchiert) sowie eine Aufrechnung der bisher investierten Arbeit in Marktwert/Stunden. Ergebnis: Bild direkt aktuell nicht realistisch (keine Nutzerzahlen/Traktion als Aufhänger), Startup-Szene-Blogs und lokale Presse sind der realistischere erste Schritt. Wert-Aufrechnung: ≈ 256 marktübliche Freelancer-/Beratungsstunden (≈ 26.650 € Wiederbeschaffungswert) aus den ~60 CHANGELOG-Einträgen hergeleitet, klar getrennt vom aktuellen Verkaufswert (nahe null ohne Umsatzhistorie) und vom bereits dokumentierten Umsatzpotential (Abschnitt 4/9). Reine Recherche/Analyse, kein Code geändert.
