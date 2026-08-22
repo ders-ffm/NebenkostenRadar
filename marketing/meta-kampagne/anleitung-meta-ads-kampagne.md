@@ -1,6 +1,8 @@
 # Anleitung: Meta-Ads-Kampagne (Flight 1: Wochenende, Flight 2: September)
 
-Stand: 13.08.2026. Budget-Split wie besprochen: 120 € jetzt, 80 € im September. Zielregion: ganz Deutschland.
+Stand: 19.08.2026 (Datum unten korrigiert — Flight 1 war ursprünglich für 14.–16.08. geplant, ist aber nicht gelaufen). Budget-Split wie besprochen: 120 € jetzt, 80 € im September. Zielregion: ganz Deutschland.
+
+**Vorbedingung, vor dem Start prüfen:** Instagram hat bereits Content-Kalender-Posts, Facebook ist nur eingerichtet, noch ohne Posts (Stand 19.08.2026). Da die Kampagne laut Placements unten auf Facebook Feed UND Instagram Feed läuft, sollten auf der Facebook-Seite vorher mindestens 1–2 Posts aus `content-kalender.md` stehen (z. B. Post 1 und 2, Texte + Bilder liegen fertig vor) — sonst wirkt die Seite leer, falls jemand aus der Anzeige aufs Profil klickt.
 
 ## Vorab: Wie du siehst, ob es wirkt
 
@@ -18,7 +20,7 @@ Für den Anfang reicht das. Wenn du später genauer wissen willst, welcher Klick
 - **Separate "Meta Ads Manager"-App:** Kann ich von hier aus nicht verlässlich prüfen (kein Zugriff auf dein Konto) — nach meiner Kenntnis ist die App-Oberfläche eingeschränkter als die Desktop-Ansicht, insbesondere bei manuellen Platzierungen. Falls die App die entsprechende Option nicht zeigt, ist der Safari-Weg mit Desktop-Anforderung die sicherere Variante. Bitte selbst gegenchecken, bevor du dich darauf verlässt.
 - **Bild-Upload beim Anlegen der Anzeige:** Die PNGs liegen in Files, nicht automatisch in der Fotos-App. Beim Upload-Dialog in Safari auf "Durchsuchen" bzw. "Datei wählen" → "Auf meinem iPhone" → iCloud Drive gehen, falls sie nicht direkt zur Auswahl stehen.
 
-## Flight 1 — Wochenende (Fr 14.08. abends bis So 16.08.)
+## Flight 1 — kommendes Wochenende (konkretes Datum von dir festlegen, sobald FB die Vorbedingung oben erfüllt)
 
 1. **Ads Manager öffnen:** Facebook-Seite → "Werbung schalten" (kennst du schon vom Screenshot) oder direkt über business.facebook.com/adsmanager.
 2. **Kampagne erstellen:**
@@ -29,7 +31,7 @@ Für den Anfang reicht das. Wenn du später genauer wissen willst, welcher Klick
    - Conversion-Ort: Website
    - Performance-Ziel: „Anzahl der Linkklicks maximieren"
    - Budget: **Laufzeitbudget 120 €**
-   - Zeitraum: Fr 14.08. 18:00 Uhr – So 16.08. 23:59 Uhr (gibt der Auslieferung etwas mehr Zeit als nur Sa/So — bei so kurzen Flights kommt die Lernphase kaum in Schwung, das ist normal, kein Fehler)
+   - Zeitraum: Freitagabend (18:00 Uhr) bis Sonntag 23:59 Uhr des kommenden Wochenendes (gibt der Auslieferung etwas mehr Zeit als nur Sa/So — bei so kurzen Flights kommt die Lernphase kaum in Schwung, das ist normal, kein Fehler)
    - Zielgruppe: Standort Deutschland, Alter 22–55, alle Geschlechter, Sprache Deutsch — **keine** engen Interessen-Filter setzen. Bei kleinem Budget liefert Meta mit breiter Zielgruppe zuverlässiger aus als mit eng gefasstem Interessen-Targeting (und eine treffende Kategorie wie "Mietrecht" gibt es im Interessen-Katalog ohnehin nicht).
    - Placements: **Manuell**, nur Facebook Feed + Instagram Feed auswählen (kein "Erweiterte/automatische Platzierungen"). Grund: Es gibt bisher nur 1:1-Creatives — in Stories/Reels (9:16) würden die schlecht zugeschnitten.
 4. **Anzeige (im selben Ad Set alle drei anlegen — Meta testet automatisch, welche am besten läuft):**
