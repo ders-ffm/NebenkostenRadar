@@ -1,6 +1,8 @@
 # NebenkostenRadar
 
-Prüfung von Nebenkostenabrechnungen — kostenlos, automatisch, rechtssicher.
+Prüfung von Nebenkostenabrechnungen — kostenlos, automatisch, verständlich.
+
+<!-- "rechtssicher" am 19.08.2026 auch hier entfernt, siehe src/pages/Welcome.jsx und CHANGELOG.md: das Tool macht keine individuelle anwaltliche Prüfung, "rechtssicher" konnte als Zusicherung missverstanden werden. -->
 
 ## Quick Start
 

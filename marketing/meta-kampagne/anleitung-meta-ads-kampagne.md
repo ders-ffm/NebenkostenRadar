@@ -55,6 +55,22 @@ In Ads Manager pro Anzeige: Linkklicks und CPC (Kosten pro Klick) vergleichen. D
 3. Laufzeitbudget: 80 €, Zeitraum eine ganze Woche statt nur ein Wochenende (stabilere Auslieferung bei kleinerem Tagesbudget als ein sehr kurzer Flight).
 4. Gleiche Zielgruppen- und Placement-Einstellungen wie Flight 1.
 
+## GA4 Auswertung einrichten (22.08.2026 ergänzt)
+
+Voraussetzung: die Anzeigen laufen mit UTM-Parametern (siehe Schritt 4, Tracking-Feld je Anzeige), z. B. `utm_source=facebook&utm_medium=paid_social&utm_campaign=flight1_aug26&utm_content=provokant-drauf`. Ohne diese Parameter siehst du in GA4 nur "Social" als groben Kanal, nicht welche einzelne Anzeige den Besuch gebracht hat.
+
+1. **GA4 öffnen**: analytics.google.com, Property `G-KE9LWG22QW` auswählen.
+2. **Fertigen Bericht statt Explore, wenn schneller genug**: Berichte → Akquisition → "Traffic-Akquisition" — dort nach "Sitzungskampagne" gruppieren lassen (Spalten-Icon oben rechts im Bericht → "Sitzungskampagne" statt "Standardkanalgruppierung" wählen). Zeigt dir grob, wie viele Sitzungen `flight1_aug26` gebracht hat — aber noch nicht pro Creative.
+3. **Für den Creative-Vergleich (der eigentliche Zweck)**: linkes Menü → "Explorer" (Explore) → "Freie Form" → neue Erkundung.
+   - Dimensionen hinzufügen: "Sitzungsinhalt" (das ist `utm_content`, also z. B. `provokant-drauf`, `provokant-glaubnicht`, `vertrauen-mieter`)
+   - Metriken hinzufügen: "Sitzungen", "Interessierte Sitzungen" oder "Conversions" (falls ihr ein GA4-Conversion-Event definiert habt, z. B. "PDF gekauft")
+   - In der Tabelle: Zeilen = "Sitzungsinhalt", Werte = die gewählten Metriken
+   - Filter setzen: "Sitzungskampagne" enthält `flight1_aug26` (oder `flight2_sep26` für den nächsten Flight), damit nur die Ad-Traffic-Daten zählen, nicht der organische Content-Kalender-Traffic
+4. **Ergebnis ablesen**: die Zeile mit den meisten Sitzungen/Conversions ist das Creative, das in echten Website-Besuchen am besten performt — nicht nur in Meta's eigenen Linkklick-Zahlen (die können sich unterscheiden, z. B. wenn ein Creative viele Klicks aber wenige tatsächliche Ladevorgänge erzeugt).
+5. **Report speichern**: oben rechts "Speichern" — dann muss die Erkundung beim nächsten Flight nicht neu gebaut werden, nur der Kampagnen-Filter auf den neuen UTM-Wert ändern.
+
+Wichtig zur Einordnung: GA4 zählt nur Besucher, die den Cookie-Banner akzeptiert haben (siehe Hinweis oben im Dokument) — die absoluten Zahlen sind eine Unter-, nicht Übertreibung der echten Besucherzahl. Für den reinen Creative-Vergleich (welches am besten abschneidet) ist das trotzdem aussagekräftig, weil der Effekt alle drei Creatives gleichermaßen betrifft.
+
 ## Kurz zur Einordnung
 
 200 € über zwei kurze Flights sind ein Test, kein Wachstumsbudget — realistisch sind damit ein paar hundert bis niedrig vierstellig Linkklicks, abhängig vom CPC (grober Richtwert für diese Nische: 0,50–1,50 € pro Klick). Das reicht, um zu sehen, welches Creative funktioniert und ob die Zielgruppe grundsätzlich passt — nicht, um allein daraus schon eine große, bekannte Marke zu machen. Der Content-Kalender (organisch) und die Anzeigen ergänzen sich: Ads bringen die ersten Besucher, die Content-Posts sorgen dafür, dass die Seite nicht leer wirkt, wenn jemand draufklickt.

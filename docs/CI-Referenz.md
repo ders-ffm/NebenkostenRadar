@@ -30,7 +30,9 @@ Beide sind kostenlose, freie Alternativen zu den lizenzpflichtigen Schriften Euc
 
 ## Logo
 
-Bestehendes Radar-Icon (konzentrische Kreise) bleibt unverändert — nicht neu gestalten. Wird bereits extern verwendet (Google Business Profile, Trustpilot, Social-Media-Profile), eine Änderung würde diese Konsistenz zerstören.
+Bestehendes Radar-Icon (konzentrische Kreise) bleibt unverändert — nicht neu gestalten. Wird bereits extern verwendet (Google Business Profile, Social-Media-Profile), eine Änderung würde diese Konsistenz zerstören.
+
+Korrektur 23.08.2026: Trustpilot fälschlich mitgelistet — es existiert ein Trustpilot-Account, der aber bisher ungenutzt ist (keine Bewertungen, kein aktiver Auftritt). Kein Beleg für "bereits extern verwendet", daher hier entfernt.
 
 ## Eine Design-Änderung selbst vornehmen — Beispiel
 
