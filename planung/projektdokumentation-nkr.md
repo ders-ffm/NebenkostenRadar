@@ -52,7 +52,7 @@ Offene/laufend zu pflegende Punkte stehen im CHANGELOG.md mit Datum — das blei
 Vollständige Analyse (Kosten, Umsatzprognose, Break-even, Wettbewerbsvergleich Mineko/NebenkostenPro/nebify, Zeitplan): **`planung/businessplan-umsatzprognose.md`**. Wichtigste Eckpunkte von dort:
 
 - Ziel realistisch eingeordnet: 250–1.000 Verkäufe/Jahr (Abschnitt 9), nicht als Behauptung, sondern als Spanne mit Annahmen
-- Wettbewerb: Mineko (≥49€, manuelle Prüfung), NebenkostenPro (5€, KI-basiert), nebify (kostenloser Vorab-Check, Prüfbericht ab 14,90€, Geld-zurück-Garantie, betrieben von Kolibri eCommerce GbR) — NKR positioniert sich bewusst zurückhaltender (keine Geld-zurück-Garantie, da diese ein Versprechen macht, das die automatisierte Prüfung nicht in jedem Fall halten kann)
+- Wettbewerb: Mineko (ab 49€ oder kostenlos über 16+ Rechtsschutzversicherer, manuelle Prüfung durch 24+ Prüfer, 149.000+ geprüfte Abrechnungen), NebenkostenPro (Vorschau 0€, Schnell-Check 7,90€, Premium-Report 14,90€, KI-basiert, zusätzlich Vermieter-Geschäft), nebify (kostenloser Vorab-Check, Prüfbericht ab 14,90€, Geld-zurück-Garantie, echte Fallbeispiele als Social Proof, betrieben von Kolibri eCommerce GbR) — NKR positioniert sich bewusst zurückhaltender (keine Geld-zurück-Garantie, da diese ein Versprechen macht, das die automatisierte Prüfung nicht in jedem Fall halten kann). Vertiefte Analyse (was übertragbar ist, was nicht) in `planung/businessplan-umsatzprognose.md` Abschnitt 5.1.
 
 ## 6. Marketing & Werbung
 
@@ -81,6 +81,7 @@ Stefans persönliche Aufwands-/Ertragsdokumentation für die eigene Steuererklä
 
 ## 9. Offene Punkte
 
+- **Backlog-Idee (nicht kurzfristig umsetzbar), 23.08.2026 aus Foren-Recherche**: Jahresvergleich Verbrauch — Nutzer in r/wohnen konnte einen plötzlichen Verbrauchsanstieg (Warmwasser +100 %, vermutlich defekter Zähler) nicht gegen die Abrechnung argumentieren. NKR vergleicht aktuell nur gegen DMB-Richtwerte, nicht gegen den eigenen Vorjahreswert. Setzt voraus, dass ein Nutzer mit Konto die Vorjahresabrechnung schon einmal erfasst hat — nur für wiederkehrende Nutzer sinnvoll, daher als späterer Ausbauschritt vormerken, nicht jetzt bauen.
 - ~~Neue weiße Hintergrundbilder für 6 geplante Werbe-Posts~~ — erledigt 22.08.2026: alle 13 benötigten Bilder per Python/Pillow (lokale Poppins-Schriftart, kein externes Tool) erzeugt. Ordner `marketing/meta-kampagne/instagram-content/` ist jetzt in `online gestellt/` (6 Dateien, tatsächlich live, Wortlaut mit echtem Insta-Stand abgeglichen) und `noch nicht online/` (8 Dateien) unterteilt.
-- nebify-Primärquelle (Mieterverein Düsseldorf, behauptetes Pressemitteilungsdatum 08.10.2025) nicht verifiziert — Fetch zweimal fehlgeschlagen
+- nebify-Primärquelle: nebify nennt auf der eigenen Seite jetzt die exakte Quelle ("Deutscher Mieterbund e.V.; Mieterverein Düsseldorf e.V., Pressemitteilung „Jede zweite Nebenkostenabrechnung ist fehlerhaft!", 08.10.2025"). Die Pressemitteilung selbst bleibt nach drei Versuchen nicht auffindbar. Gefunden: eine wortgleiche Meldung des Gießener Mietervereins vom 16.10.2023 (andere Stadt, zwei Jahre früher). Einordnung: vermutlich eine seit Jahren wiederkehrende Faustregel mehrerer Mietervereine, keine einzelne belegbare Studie — Details in `planung/businessplan-umsatzprognose.md` Abschnitt 5.1.
 - Stefans persönliche Steuerdaten (ShopWatcher-Status, Stripe-Umsätze, Gewerbeschein, laufende Abo-Kosten) noch nicht vollständig für Steuerleitfaden erfasst

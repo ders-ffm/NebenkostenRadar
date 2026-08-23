@@ -120,11 +120,43 @@ Größte Unsicherheit, aber auch der Zeitraum, in dem SEO laut Recherche "volle 
 | Anbieter | Preis | Modell | Positionierung |
 |---|---|---|---|
 | **Mineko** | Ab 49 € (Vollprüfung), kostenlose Erstscheinschätzung | Manuelle Expertenprüfung, 24+ Prüfer | Marktführer, teuer, ausführlich (ca. 30-seitiger Bericht) |
-| **NebenkostenPro** | 5 € | KI-basiert, Ergebnis in Minuten | Direkter KI-Konkurrent, günstiger als NebenkostenRadar |
+| **NebenkostenPro** | Vorschau 0 €, Schnell-Check 7,90 €, Premium-Report 14,90 € | KI-basiert, Ergebnis in Minuten | Preis am 23.08.2026 direkt auf nebenkostenpro.de/preise geprüft — die zuvor hier stehenden 5 € waren veraltet (Quelle war eine Suchergebnis-Zusammenfassung, keine Primärquelle). Bedient zusätzlich Vermieter (Jahrespakete, Abrechnung erstellen) — zweites Standbein, das NKR nicht hat. |
 | **nebify** | Kostenloser Vorab-Check, Prüfbericht ab 14,90 € | KI-Vorab-Check + kostenpflichtiger Report (48 Std.), inkl. Widerspruchsschreiben | Von Stefan am 19.08.2026 entdeckt, sehr ähnlicher zeitlicher Bauzeitraum. Fast identischer Funnel (kostenloser Check → kostenpflichtiger Report + Musterbrief), aber **explizite Geld-zurück-Garantie** ("Wir finden nichts? Du zahlst nichts.") und durchgängige "Geld zurückfordern"-Sprache — genau die Positionierung, gegen die sich NebenkostenRadar bewusst entschieden hat (siehe Kommentar in `Welcome.jsx` zur gestrichenen "Ø 320€ mögliche Rückforderung"-Kachel). Verlangt zusätzlich den Mietvertrag (optional), hat veröffentlichte anonymisierte Fallbeispiele ("Unsere Fälle") und Trustpilot-Verlinkung — Social-Proof-Elemente, die NebenkostenRadar bisher nicht nutzt (Trustpilot-Account existiert, ist aber noch ohne Bewertungen/Aktivität; Stand 23.08.2026). Betreiber: Kolibri eCommerce GbR (Quelle: nebify.de, direkt eingesehen 19.08.2026). |
 | **NebenkostenRadar** | 9,99 € / 12,99 € | KI-basiert, automatisiert | Zwischen NebenkostenPro (billiger) und Mineko/nebify (teurer bzw. mit Geld-zurück-Versprechen) |
 
 ([Quelle Mineko/NebenkostenPro: Anbietervergleich](https://www.heizkostenchecker.de/blog/nebenkostenabrechnung-pruefen-lassen-anbieter-test), nicht selbst verifiziert, nur eine externe Quelle — bei einer wichtigen Positionierungsentscheidung würde ich das noch mit 1–2 weiteren Quellen gegenchecken. nebify-Angaben dagegen direkt von nebify.de selbst eingesehen, damit Primärquelle.)
+
+### 5.1 Vertiefte Konkurrenzanalyse (23.08.2026, alle drei Anbieter direkt besucht)
+
+Alle Angaben unten stammen aus einem direkten Besuch der jeweiligen Website am 23.08.2026, nicht aus Sekundärquellen.
+
+**Was die Konkurrenz besser kann:**
+
+- **Mineko**: Skalierte Vertrauensbeweise. 149.000+ geprüfte Abrechnungen, 775 + 1.283 Bewertungen auf zwei Plattformen, echte namentliche Kundenstimmen mit Beträgen. Über 16 Rechtsschutzversicherungen empfehlen Mineko aktiv — das ist ein strukturell kostenloser Vertriebskanal, den NKR nicht hat und kaum kopieren kann (setzt Jahre an Beziehungsaufbau mit Versicherern voraus). Große SEO-Fläche: dutzende Ratgeber-Artikel, eigener Fristenrechner als interaktives Lead-Tool, städtespezifische Footer-Links (Berlin, München, Hamburg, Köln, Leipzig, Stuttgart, Bremen).
+- **NebenkostenPro**: Programmatische Stadt-Landingpages (z. B. "Nebenkostenabrechnung prüfen Hamburg", "…München") — eine skalierbare SEO-Taktik, die NKR aktuell nicht nutzt. Zusätzliches Geschäftsfeld: Vermieter-Jahrespakete und Abrechnung-Erstellung, nicht nur Prüfung. Betont explizit "Server in Deutschland" als Vertrauenssignal.
+- **nebify**: Sehr konkrete Social Proof: "Unsere Fälle" mit echten, anonymisierten Prüfergebnissen (Betrag, Datum, Stadt, konkrete Rechtsgrundlage, verlinkter Volltext). Interaktive Produkt-Vorschau direkt auf der Startseite (Beispiel-Prüfbericht mit echten Zahlen). Breite Zahlungsmethoden über Stripe (Visa, Mastercard, Amex, Apple Pay, Google Pay, PayPal, Klarna, SEPA) — deutlich mehr als NKRs zwei Payment Links. Geld-zurück-Garantie ist zentrales Werbeversprechen, mehrfach wiederholt.
+
+**Was NKR besser kann bzw. bewusst anders macht:**
+
+- Ehrliche Positionierung ohne Geld-zurück-Garantie (siehe Abschnitt 1 werbeplan-nkr.md) — Risiko bei nebify: die Garantie verspricht mehr, als eine automatisierte Prüfung im Einzelfall sicher halten kann.
+- Klare Trennung Auswertung / Auswertung+Brief+Steuer-Bonus zu einem Fixpreis (9,99 €/12,99 €) ohne Tarif-Dschungel — einfacher als NebenkostenPros Drei-Stufen-Tabelle mit Zusatz-eBook.
+- Steuer-Bonus-Hinweis (§ 35a EStG) als eigenständiges Merkmal — keiner der drei Wettbewerber bewirbt das vergleichbar prominent.
+
+**Was NKR übernehmen sollte (konkrete, umsetzbare Punkte):**
+
+1. Programmatische Stadt-Landingpages nach NebenkostenPro-Vorbild (z. B. "Nebenkostenabrechnung prüfen Berlin/Hamburg/München") — skaliert SEO ohne redaktionellen Mehraufwand pro Stadt, da Inhalt aus vorhandenen Richtwerten generierbar ist. Größerer Umsetzungsaufwand, für Backlog vormerken.
+2. Anonymisierte echte Fallbeispiele nach nebify-Vorbild ("Diese Abrechnung wurde geprüft, X € gefunden, Rechtsgrundlage Y") — sobald genug echte Kundenfälle mit Einwilligung vorliegen. Governance-frage: Einwilligung zur anonymisierten Veröffentlichung müsste sauber eingeholt werden (Datenschutz).
+3. Mehr Zahlungsmethoden prüfen (aktuell nur Stripe Payment Links) — Klarna/Apple Pay/Google Pay senken ggf. Kaufabbrüche, müsste technisch mit Stripe Checkout statt Payment Links geprüft werden.
+
+**Was strukturell zum jeweiligen Geschäftsmodell gehört, nicht übertragbar:**
+
+- Mineko: Rechtsschutzversicherer-Partnerschaften brauchen Jahre Beziehungsarbeit, kein kurzfristiger Hebel.
+- Mineko/NebenkostenPro: manuelle Experten (Mineko) bzw. Vermieter-Zusatzgeschäft (NebenkostenPro) sind eigene Geschäftsmodell-Entscheidungen, kein Feature-Nachbau.
+- nebify: Geld-zurück-Garantie ist eine bewusste Risikoentscheidung von nebify (Betreiber Kolibri eCommerce GbR), die NKR bereits geprüft und abgelehnt hat (siehe werbeplan-nkr.md Abschnitt 6).
+
+**Kalkulations-Einordnung:** NKR liegt preislich zwischen NebenkostenPro (7,90 €/14,90 €, direkter Konkurrent auf Augenhöhe) und Mineko/nebify (49 € bzw. ab 14,90 € mit Garantie-Aufschlag). Das bestätigt die bisherige Positionierung "zwischen NebenkostenPro und Mineko/nebify" weiterhin — Mineko ist wegen der Versicherer-Kanäle kein direkter Preisvergleich, da ein großer Teil der Kunden dort faktisch 0 € zahlt.
+
+**Randnotiz zur "jede zweite Abrechnung ist fehlerhaft"-Zahl:** nebify nennt jetzt selbst die genaue Quelle: „Deutscher Mieterbund e.V.; Mieterverein Düsseldorf e.V., Pressemitteilung 'Jede zweite Nebenkostenabrechnung ist fehlerhaft!' (08.10.2025)". Die Original-Pressemitteilung selbst bleibt trotz drei Versuchen nicht auffindbar. Gefunden dagegen: eine wortgleiche Meldung des Gießener Mietervereins vom 16.10.2023 (zwei Jahre früher, andere Stadt) mit derselben Formulierung. Das spricht dafür, dass es sich um eine wiederkehrende, von mehreren Mietervereinen über Jahre verwendete Faustregel handelt, nicht um eine einzelne, einmalige Studie — für eigene Verwendung auf der Website entsprechend als Faustregel, nicht als belastbare Studienzahl einordnen.
 
 Relevant für deine Positionierung: Es gibt bereits einen günstigeren KI-Wettbewerber (NebenkostenPro) und jetzt auch einen nahezu identischen mit aggressiverer Geld-zurück-Positionierung (nebify). "Von Mieter für Mieter" (dein bereits gewählter Vertrauens-Claim) und die Qualität/Verständlichkeit deiner Analyse sind vermutlich wichtigere Differenzierungsmerkmale als der Preis allein — bei 5 € Konkurrenz gewinnst du den Preiskampf nicht, und bei einer Geld-zurück-Garantie auch nicht das Werbeversprechen. Die ehrlichere, zurückhaltendere Positionierung (kein Geld-zurück-Versprechen, siehe Abschnitt weiter oben zu "Rechtssicher") wird durch nebifys Auftreten eher bestätigt als infrage gestellt — es ist jetzt eine bewusste Abgrenzung, kein reiner Vorsichtsgrund mehr.
 

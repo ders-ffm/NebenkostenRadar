@@ -83,6 +83,23 @@ Neue Reihenfolge wie gewünscht: im Wechsel Werbe-Post / Schon-gewusst-Fakt. Ter
 > Verwaltungskosten dürfen nie auf Dich umgelegt werden — auch nicht die Kosten für die Abrechnung selbst. Quelle: § 1 Abs. 2 BetrKV.
 > #Nebenkosten #Mietrecht
 
+**15 (Schon gewusst) — Bild: `fakt_belegeinsicht-distanz_1080x1080.png`** (neu, 23.08.2026, aus Foren-Recherche)
+> Wohnt Dein Vermieter zu weit weg für eine Einsicht vor Ort? Dann muss er Dir Kopien schicken. Verweigert er das, darfst Du die Nachzahlung zurückhalten.
+> Verlasse Dich nicht nur auf Deinen Vermieter — überprüfe es selbst unter nebenkostenradar.com
+> #Mietrecht #Nebenkostenabrechnung
+
+**16 (Werbe) — Bild: `werbe_anwalt-lohnt-sich-nicht_1080x1080.png`** (neu, 23.08.2026, aus Foren-Recherche)
+> Anwalt bei 500 € Streitwert? Selbstbehalt frisst den Vorteil. Mit oder ohne Rechtsschutz bleibt bei kleinen Beträgen oft nichts übrig. Eine kostenlose Prüfung kostet Dich nichts.
+> #Nebenkostenabrechnung #Mietrecht
+
+## Recherche-Hinweis (23.08.2026)
+
+Posts 15 und 16 stammen aus einer echten Foren-Recherche (r/wohnen, aktiv — r/Mietrecht dagegen praktisch inaktiv, 9 wöchentliche Besucher, dort keine Zeit investieren). Drei reale, aktuelle Threads (3–11 Tage alt) ausgewertet:
+
+- Vermieter liefert nur eine selbst erstellte Excel-Tabelle statt ordentlicher Abrechnung, verweigert Belegeinsicht vor Ort und will nicht zusenden (Vermieter wohnt 2+ Std. entfernt) → Grundlage für Post 15. Rechtslage dazu gegengeprüft (nicht die vereinfachte Reddit-Aussage "Belegeinsicht muss immer in Wohnungsnähe stattfinden" übernommen — das stimmt so nicht): Regel ist Einsicht beim Vermieter/der Hausverwaltung vor Ort (AG Recklinghausen, Az. 17 C 24/23), Ausnahme bei unzumutbarer Distanz.
+- Wiederkehrende Frage: "Lohnt sich ein Anwalt bei niedrigem Streitwert (~500 €)?" → Grundlage für Post 16.
+- Unerklärlicher Verbrauchsanstieg (Warmwasser +100 %, vermutlich defekter Zähler) → siehe Backlog-Idee "Jahresvergleich Verbrauch" in `planung/projektdokumentation-nkr.md` Abschnitt 9, nicht kurzfristig umsetzbar (braucht Vorjahresdaten im Konto).
+
 ## 1 Tipp für mehr "Leben" ohne Mehraufwand
 
 Kommentiere deinen eigenen Post kurz nach dem Veröffentlichen einmal selbst — ein kleiner Zusatzgedanke, keine Werbung ("Bin gespannt, wie viele bei sich auch was finden"). Das wirkt aktiver als ein stiller Post und ist in 10 Sekunden erledigt.
