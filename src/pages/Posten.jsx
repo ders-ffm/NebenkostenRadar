@@ -73,12 +73,23 @@ export default function Posten({ navigateTo, werte, setWerte, runAnalyse, gesamt
     });
   }
 
+  // BUGFIX 30.08.2026 (UX-Test, siehe projektdokumentation-nkr.md Abschnitt 9):
+  // Der "Weiter"-Button ist als fixe Fußzeile immer sichtbar, die Fehler-
+  // meldung erschien bisher aber nur weit oben auf der Seite. Bei langem
+  // Formular + Klick weit unten sah es für den Nutzer so aus, als würde der
+  // Button gar nicht reagieren — die Meldung war schlicht außerhalb des
+  // sichtbaren Bereichs. Fix: bei fehlgeschlagener Validierung aktiv nach
+  // oben zur Fehlermeldung scrollen, PLUS Kurzhinweis direkt am Button selbst
+  // (siehe unten), damit der Nutzer nie ohne sichtbares Feedback dasteht.
   function validate() {
     const e = {};
     const pflichtfehlend = ALLE_POSTEN.filter(p => p.pflicht && toNum(werte[p.key]) <= 0);
     if (pflichtfehlend.length > 0) e.pflicht = "Pflichtfelder fehlen: " + pflichtfehlend.map(p => p.label).join(", ");
     if (filledPosten === 0) e.gesamt = "Mindestens einen Posten eingeben";
     setErrors(e);
+    if (Object.keys(e).length > 0) {
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
     return Object.keys(e).length === 0;
   }
 
@@ -178,6 +189,11 @@ export default function Posten({ navigateTo, werte, setWerte, runAnalyse, gesamt
       </div>
       <div style={{ position: "fixed", bottom: 0, left: 0, right: 0, background: C.surface, borderTop: "1px solid " + C.border, boxShadow: "0 -4px 20px rgba(0,0,0,0.06)" }}>
         <div style={{ padding: "20px 20px 24px", maxWidth: THEME.layout.formMax, margin: "0 auto", boxSizing: "border-box" }}>
+          {errors.pflicht && (
+            <div style={{ fontSize: 12, color: C.warn, marginBottom: 8, textAlign: "center" }}>
+              ⚠ Pflichtfeld fehlt — wir haben nach oben gescrollt, dort steht welches.
+            </div>
+          )}
           <button
             onClick={() => { if (validate()) runAnalyse(); }}
             style={{ width: "100%", background: filledPosten > 0 ? C.accent : C.border, color: filledPosten > 0 ? C.accentText : C.textDim, border: "none", borderRadius: THEME.radius.lg, padding: "16px", fontSize: 15, fontFamily: THEME.font.heading, fontWeight: 600, cursor: filledPosten > 0 ? "pointer" : "default" }}>
