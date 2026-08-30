@@ -19,7 +19,7 @@ const STATUS_LABEL = { ok: "✓ Unauffällig", hoch: "↑ Erhöht", sehr_hoch: "
 export default function Result({ navigateTo, result, wohnung, werte, gesamtsummeAbrechnung, setStufe, resetAll, widerrufOk, setWiderrufOk }) {
   const C = THEME.color;
   // "Später fortsetzen" 30.08.2026 (siehe projektdokumentation-nkr.md
-  // Abschnitt 9, UX-Test-Nachtrag + api/save-draft.js): Wer nicht sofort
+  // Abschnitt 9, UX-Test-Nachtrag + api/draft.js): Wer nicht sofort
   // kaufen will (z.B. erst mit Partner:in besprechen oder Mieterverein
   // fragen), soll das nicht mit Datenverlust bezahlen. Erzeugt einen Link mit
   // unratbarer ID (crypto.randomUUID()), unter der der aktuelle Stand
@@ -34,7 +34,7 @@ export default function Result({ navigateTo, result, wohnung, werte, gesamtsumme
     setFortsetzenStatus("speichert");
     try {
       const id = crypto.randomUUID();
-      const res = await fetch("/api/save-draft", {
+      const res = await fetch("/api/draft", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ id, wohnung, werte, gesamtsummeAbrechnung }),

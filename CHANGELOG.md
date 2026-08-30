@@ -2,6 +2,16 @@
 
 Alle wesentlichen Änderungen an diesem Projekt, mit Datum und Begründung. Dient der Nachvollziehbarkeit, damit auch ohne KI-Unterstützung verstanden werden kann, warum etwas so ist, wie es ist.
 
+## 31.08.2026 — Nachtrag: Vercel-Deployment-Fehler behoben (Serverless-Function-Limit Hobby-Plan)
+
+**Fakt:** Der Deploy von Commit `8c03d9d` ("Add files via upload") schlug fehl mit der Vercel-Fehlermeldung "No more than 12 Serverless Functions can be added to a Deployment on the Hobby plan." Ursache: `api/save-draft.js` und `api/get-draft.js` (siehe Eintrag 30.08.2026) waren zwei zusätzliche Dateien unter `api/` — jede Datei dort zählt bei Vercel als eigene Serverless Function, und das Hobby-Plan-Limit liegt bei 12.
+
+**Fix:** Beide Dateien zu einer einzigen `api/draft.js` zusammengeführt, die nach HTTP-Methode verzweigt (`POST` = speichern, `GET` = laden) — inhaltlich identisches Verhalten, aber nur noch eine neue Datei statt zwei. Aufrufe in `App.jsx` (`/api/get-draft?id=…` → `/api/draft?id=…`) und `Result.jsx` (`/api/save-draft` → `/api/draft`) entsprechend angepasst. `api/save-draft.js` und `api/get-draft.js` gelöscht.
+
+**Wichtige Einschränkung, keine Annahme verschwiegen:** Der lokale iCloud-Ordner enthält *nicht* alle Dateien des echten, bei GitHub/Vercel deployten Repos — z.B. referenziert `vercel.json` eine Datei `api/admin-auth.js`, die hier lokal gar nicht existiert. Ich kann die tatsächliche Gesamtzahl der Dateien unter `api/` im echten Repo daher nicht exakt bestätigen, nur dass diese Änderung die Zahl der *neu hinzugekommenen* Dateien von 2 auf 1 reduziert. Falls der nächste Deploy immer noch am 12er-Limit scheitert, liegt es daran, dass bereits vor dieser Funktion mehr als 11 Dateien unter `api/` lagen — dann hilft nur noch, eine bestehende, selten genutzte Funktion ebenfalls zusammenzulegen, oder ein Vercel-Pro-Upgrade.
+
+**Getestet:** `npm run build` lokal (mit testweise gestubbtem `src/artikel.js`, danach entfernt) — fehlerfrei, gleiche Warnung wie zuvor (Chunk-Größe, unabhängig von dieser Änderung).
+
 ## 30.08.2026 — Funnel-UX-Überarbeitung: Bug-Fix, Upload zum Standardweg, Zwischenspeichern, Startseite gestrafft
 
 Anlass: Meta-Ads Flight 1 + Zusatz-Flight ausgewertet — 0 Käufe trotz ~520 Ad-Interaktionen. Eigener Live-Test des kompletten Funnels als Nutzer aufgedeckt: ein echter Bug im Posten-Schritt, ein sehr langes Formular als erste Begegnung, kein Zwischenspeichern. Vor Umsetzung Konkurrenz (Mineko, NebenkostenPro, nebify) live nachgetestet sowie externe UX-Research (Nielsen Norman Group, Baymard Institute, CXL) herangezogen — Quellen und Einzelbefunde in `planung/projektdokumentation-nkr.md` Abschnitt 9.
@@ -14,7 +24,7 @@ Anlass: Meta-Ads Flight 1 + Zusatz-Flight ausgewertet — 0 Käufe trotz ~520 Ad
 
 **Zwischenspeichern, zweistufig:**
 1. Automatisches, unsichtbares Speichern im Browser (`localStorage`, Schlüssel `nkr-entwurf`) bei jeder Änderung in `App.jsx` — schützt gegen versehentliches Neuladen/Schließen, ohne Konto oder Server. 30 Tage clientseitige Gültigkeit, wird bei `resetAll()` gelöscht.
-2. Neuer, optionaler "Später fortsetzen"-Link auf der Ergebnis-Seite (`Result.jsx`): erzeugt eine per `crypto.randomUUID()` unratbare ID, speichert Wohnung/Posten/Gesamtsumme über neue Endpunkte `api/save-draft.js` / `api/get-draft.js` in einer neuen, von den bezahlten Berichten (`nkr_reports`) bewusst getrennten Tabelle `nkr_drafts` — kein Zahlungsbezug, daher auch keine Zahlungsprüfung nötig, Sicherheit kommt allein aus der Unratbarkeit der ID (wie ein Cloud-Freigabelink). `scripts/datenloeschung.mjs` löscht `nkr_drafts` jetzt zusätzlich, mit kurzer 30-Tage-Frist statt der 365 Tage bei bezahlten Berichten (Grundsatz der Speicherbegrenzung, Art. 5 Abs. 1 lit. e DSGVO — ein unbezahlter Entwurf hat keinen Zweck, der eine längere Aufbewahrung rechtfertigt).
+2. Neuer, optionaler "Später fortsetzen"-Link auf der Ergebnis-Seite (`Result.jsx`): erzeugt eine per `crypto.randomUUID()` unratbare ID, speichert Wohnung/Posten/Gesamtsumme über einen neuen Endpunkt `api/draft.js` (ursprünglich zwei Dateien `save-draft.js`/`get-draft.js`, am 31.08.2026 wegen des Vercel-Hobby-Function-Limits zusammengeführt — siehe Eintrag oben) in einer neuen, von den bezahlten Berichten (`nkr_reports`) bewusst getrennten Tabelle `nkr_drafts` — kein Zahlungsbezug, daher auch keine Zahlungsprüfung nötig, Sicherheit kommt allein aus der Unratbarkeit der ID (wie ein Cloud-Freigabelink). `scripts/datenloeschung.mjs` löscht `nkr_drafts` jetzt zusätzlich, mit kurzer 30-Tage-Frist statt der 365 Tage bei bezahlten Berichten (Grundsatz der Speicherbegrenzung, Art. 5 Abs. 1 lit. e DSGVO — ein unbezahlter Entwurf hat keinen Zweck, der eine längere Aufbewahrung rechtfertigt).
 
 **Offener Punkt, von Stefan zu erledigen (analog zum bekannten Muster bei `nkr_reports`/`widerruf_ok`):** Tabelle `nkr_drafts` existiert noch nicht in Supabase — einmalig im Supabase-Dashboard → SQL Editor anlegen:
 ```sql
@@ -26,7 +36,7 @@ create table nkr_drafts (
   created_at timestamptz default now()
 );
 ```
-Ohne diese Tabelle schlägt `api/save-draft.js` fehl (Supabase lehnt unbekannte Tabellen ab) — der Rest der Seite ist davon nicht betroffen, das Feature scheitert dann nur mit der bereits eingebauten Fehlermeldung ("Konnte nicht gespeichert werden"), kein harter Absturz.
+Ohne diese Tabelle schlägt `api/draft.js` (POST-Zweig) fehl (Supabase lehnt unbekannte Tabellen ab) — der Rest der Seite ist davon nicht betroffen, das Feature scheitert dann nur mit der bereits eingebauten Fehlermeldung ("Konnte nicht gespeichert werden"), kein harter Absturz.
 
 **Getestet:** Vollständiger `npm run build` nach jeder Änderung in einer Sandbox-Kopie (nicht im echten iCloud-Ordner, `src/artikel.js` dort testweise gestubbt und wieder entfernt) — fehlerfrei, keine Syntax-/Importfehler. Kein Live-Funktionstest des Zwischenspeicherns möglich, da die Supabase-Tabelle noch fehlt (siehe offener Punkt oben) — Stefan sollte nach dem Anlegen der Tabelle einmal den "Später fortsetzen"-Link selbst durchklicken.
 

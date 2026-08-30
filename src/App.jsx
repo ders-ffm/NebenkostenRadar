@@ -117,7 +117,7 @@ export default function App() {
   // Browser (localStorage) als erste, einfachste Stufe: kein Konto, keine
   // E-Mail, kein Serverzugriff nötig. Für geräteübergreifendes Fortsetzen siehe
   // den separaten "Später fortsetzen"-Link auf der Ergebnis-Seite (Result.jsx,
-  // nutzt api/save-draft.js + api/get-draft.js).
+  // nutzt api/draft.js).
   const NKR_DRAFT_KEY = "nkr-entwurf";
 
   function ladeEntwurf() {
@@ -128,7 +128,7 @@ export default function App() {
       // Grobe Alterprüfung clientseitig (30 Tage) — verhindert, dass ein sehr
       // alter, längst irrelevanter Entwurf (z.B. altes Abrechnungsjahr) Monate
       // später überraschend wieder auftaucht. Server-seitige Entwürfe (siehe
-      // api/save-draft.js) haben zusätzlich eine eigene, kürzere Löschfrist.
+      // api/draft.js) haben zusätzlich eine eigene, kürzere Löschfrist.
       if (!data?.savedAt || Date.now() - data.savedAt > 30 * 24 * 60 * 60 * 1000) return null;
       return data;
     } catch { return null; }
@@ -149,7 +149,7 @@ export default function App() {
   // manueller Eingabe.
   const [gesamtsummeAbrechnung, setGesamtsummeAbrechnung] = useState(() => ladeEntwurf()?.gesamtsummeAbrechnung || "");
   // "Später fortsetzen"-Link: /pruefen/wohnung?fortsetzen=<id> (siehe Button in
-  // Result.jsx). Lädt den serverseitig gespeicherten Entwurf (api/get-draft.js)
+  // Result.jsx). Lädt den serverseitig gespeicherten Entwurf (api/draft.js)
   // und ERSETZT den lokalen Stand damit — bewusst nur bei explizitem Aufruf
   // über diesen Link, nicht automatisch, damit ein Gerätewechsel nie
   // stillschweigend eine andere Eingabe überschreibt.
@@ -158,7 +158,7 @@ export default function App() {
     const params = new URLSearchParams(window.location.search);
     const id = params.get("fortsetzen");
     if (!id) return;
-    fetch("/api/get-draft?id=" + encodeURIComponent(id))
+    fetch("/api/draft?id=" + encodeURIComponent(id))
       .then(res => res.ok ? res.json() : Promise.reject(new Error(res.status === 404 ? "Dieser Link ist abgelaufen oder ungültig." : "Entwurf konnte nicht geladen werden.")))
       .then(data => {
         if (data.wohnung) setWohnung(data.wohnung);
