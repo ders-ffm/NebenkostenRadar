@@ -2,6 +2,16 @@
 
 Alle wesentlichen Änderungen an diesem Projekt, mit Datum und Begründung. Dient der Nachvollziehbarkeit, damit auch ohne KI-Unterstützung verstanden werden kann, warum etwas so ist, wie es ist.
 
+## 31.08.2026 — Zweiter Nachtrag: "Später fortsetzen"-Link lud nie den gespeicherten Entwurf (Bug-Fix)
+
+**Fakt (per Live-Test bestätigt):** Nach erfolgreichem Deploy wurde der komplette Funnel live durchgetestet (Startseite, Wohnung.jsx, Posten.jsx-Bugfix, Result.jsx — alle vier bestätigt korrekt live). Der "Später fortsetzen"-Link selbst funktionierte jedoch nicht: Link wurde erzeugt, die URL beim Öffnen korrekt aufgerufen, aber es wurde nachweislich (Netzwerk-Log geprüft) nie eine Anfrage an `api/draft.js` gestellt — die Formularfelder blieben leer statt mit den gespeicherten Werten befüllt zu werden.
+
+**Ursache:** In `App.jsx` gab es zwei `useEffect`-Blöcke mit leerem Abhängigkeits-Array, die beide beim ersten Laden ausgeführt werden. Der erste (History-State-Sync, seit Längerem bestehend) rief `window.history.replaceState({step}, "", window.location.pathname)` auf — **ohne** den Query-String. Das hat `?fortsetzen=<id>` sofort aus der URL entfernt, bevor der zweite, neue `useEffect` (der den Entwurf lädt) `window.location.search` überhaupt lesen konnte. Ergebnis: keine Fehlermeldung, einfach stiller Datenverlust für den Nutzer — der zweite Effekt fand keinen `fortsetzen`-Parameter mehr vor und tat schlicht nichts.
+
+**Fix:** `window.history.replaceState({step}, "", window.location.pathname + window.location.search)` — Query-String bleibt beim History-Sync erhalten. Das gezielte Entfernen von `?fortsetzen=…` nach erfolgreichem Laden übernimmt weiterhin ausschließlich der Lade-Effekt selbst (unverändert).
+
+**Getestet:** `npm run build` lokal — fehlerfrei. Der eigentliche End-to-End-Test (Link öffnen → Felder befüllt) kann erst nach dem nächsten Deploy dieser Korrektur wiederholt werden.
+
 ## 31.08.2026 — Nachtrag: Vercel-Deployment-Fehler behoben (Serverless-Function-Limit Hobby-Plan)
 
 **Fakt:** Der Deploy von Commit `8c03d9d` ("Add files via upload") schlug fehl mit der Vercel-Fehlermeldung "No more than 12 Serverless Functions can be added to a Deployment on the Hobby plan." Ursache: `api/save-draft.js` und `api/get-draft.js` (siehe Eintrag 30.08.2026) waren zwei zusätzliche Dateien unter `api/` — jede Datei dort zählt bei Vercel als eigene Serverless Function, und das Hobby-Plan-Limit liegt bei 12.

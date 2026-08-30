@@ -80,7 +80,15 @@ export default function App() {
   }, []);
 
   useEffect(() => {
-    window.history.replaceState({ step }, "", window.location.pathname);
+    // BUG-FIX 31.08.2026 (siehe CHANGELOG.md): Vorher hier nur pathname ohne
+    // Query-String — das hat "?fortsetzen=<id>" (Später-fortsetzen-Link,
+    // siehe App.jsx weiter unten) SOFORT aus der URL entfernt, bevor die
+    // spätere useEffect ihn überhaupt lesen konnte. Live bestätigt: der Link
+    // wurde geöffnet, aber api/draft.js nie aufgerufen — reiner Datenverlust
+    // für den Nutzer, ohne jede Fehlermeldung. Jetzt bleibt der Query-String
+    // erhalten, das Entfernen übernimmt weiterhin gezielt die fortsetzen-
+    // Effekt selbst, NACHDEM der Entwurf geladen wurde (siehe unten).
+    window.history.replaceState({ step }, "", window.location.pathname + window.location.search);
     const onPop = (e) => {
       const p = window.location.pathname;
       if (p.startsWith("/ratgeber/")) { setRatgeberArtikel(p.replace("/ratgeber/", "")); setStep("artikel"); }
