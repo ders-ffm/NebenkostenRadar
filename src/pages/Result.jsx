@@ -16,8 +16,43 @@ import LegalFooter from "../components/layout/LegalFooter.jsx";
 
 const STATUS_LABEL = { ok: "✓ Unauffällig", hoch: "↑ Erhöht", sehr_hoch: "↑↑ Stark erhöht", nicht_umlagefaehig: "✗ Nicht zulässig", pruefen: "? Prüfen" };
 
-export default function Result({ navigateTo, result, wohnung, setStufe, resetAll, widerrufOk, setWiderrufOk }) {
+export default function Result({ navigateTo, result, wohnung, werte, gesamtsummeAbrechnung, setStufe, resetAll, widerrufOk, setWiderrufOk }) {
   const C = THEME.color;
+  // "Später fortsetzen" 30.08.2026 (siehe projektdokumentation-nkr.md
+  // Abschnitt 9, UX-Test-Nachtrag + api/save-draft.js): Wer nicht sofort
+  // kaufen will (z.B. erst mit Partner:in besprechen oder Mieterverein
+  // fragen), soll das nicht mit Datenverlust bezahlen. Erzeugt einen Link mit
+  // unratbarer ID (crypto.randomUUID()), unter der der aktuelle Stand
+  // (Wohnung/Posten/Gesamtsumme) serverseitig 30 Tage abrufbar bleibt. Rein
+  // clientseitiges Zwischenspeichern (localStorage) läuft zusätzlich und
+  // automatisch, unabhängig davon — siehe App.jsx.
+  const [fortsetzenStatus, setFortsetzenStatus] = useState("idle"); // idle | speichert | fertig | fehler
+  const [fortsetzenLink, setFortsetzenLink] = useState("");
+  const [linkKopiert, setLinkKopiert] = useState(false);
+
+  async function spaeterFortsetzen() {
+    setFortsetzenStatus("speichert");
+    try {
+      const id = crypto.randomUUID();
+      const res = await fetch("/api/save-draft", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ id, wohnung, werte, gesamtsummeAbrechnung }),
+      });
+      if (!res.ok) throw new Error();
+      setFortsetzenLink(window.location.origin + "/pruefen/wohnung?fortsetzen=" + id);
+      setFortsetzenStatus("fertig");
+    } catch {
+      setFortsetzenStatus("fehler");
+    }
+  }
+
+  function linkKopieren() {
+    navigator.clipboard?.writeText(fortsetzenLink).then(() => {
+      setLinkKopiert(true);
+      setTimeout(() => setLinkKopiert(false), 2500);
+    });
+  }
   // Empfehlung jetzt dreistufig statt nur "ok vs. nicht ok" (10.08.2026,
   // siehe CHANGELOG — Stefans Wunsch, den Brief nur zu empfehlen, wenn
   // wirklich ein eindeutiger Verstoß vorliegt):
@@ -228,6 +263,35 @@ export default function Result({ navigateTo, result, wohnung, setStufe, resetAll
             und{" "}
             <button onClick={() => navigateTo("datenschutz")} style={{ background: "none", border: "none", color: C.textDim, textDecoration: "underline", cursor: "pointer", fontSize: 10, padding: 0 }}>Datenschutzerklärung</button>
           </div>
+        </div>
+
+        <div style={{ marginTop: 14, background: C.surface, border: "1px solid " + C.border, borderRadius: THEME.radius.lg, padding: "14px 16px" }}>
+          {fortsetzenStatus !== "fertig" ? (
+            <>
+              <div style={{ fontSize: 13, fontWeight: 600, color: C.text, marginBottom: 4, fontFamily: THEME.font.heading }}>Noch nicht sicher?</div>
+              <div style={{ fontSize: 12, color: C.textMuted, marginBottom: 10, lineHeight: 1.6 }}>
+                Kein Konto nötig: Ein Link merkt sich deine Eingabe für 30 Tage, du kannst später auf jedem Gerät weitermachen.
+              </div>
+              <button onClick={spaeterFortsetzen} disabled={fortsetzenStatus === "speichert"}
+                style={{ width: "100%", background: "none", border: "1px solid " + C.brand, color: C.brand, borderRadius: THEME.radius.md, padding: "11px", fontSize: 13, fontWeight: 600, fontFamily: THEME.font.heading, cursor: fortsetzenStatus === "speichert" ? "default" : "pointer" }}>
+                {fortsetzenStatus === "speichert" ? "Wird gespeichert …" : "Link zum späteren Fortsetzen erstellen"}
+              </button>
+              {fortsetzenStatus === "fehler" && (
+                <div style={{ fontSize: 11, color: C.warn, marginTop: 8 }}>Konnte nicht gespeichert werden. Bitte kurz erneut versuchen — deine Eingabe bleibt in diesem Browser trotzdem automatisch erhalten.</div>
+              )}
+            </>
+          ) : (
+            <>
+              <div style={{ fontSize: 13, fontWeight: 600, color: C.brand, marginBottom: 6, fontFamily: THEME.font.heading }}>✓ Link erstellt — 30 Tage gültig</div>
+              <div style={{ display: "flex", gap: 8, alignItems: "center", background: C.bg, border: "1px solid " + C.border, borderRadius: THEME.radius.md, padding: "8px 10px" }}>
+                <div style={{ flex: 1, fontSize: 11, color: C.textMuted, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{fortsetzenLink}</div>
+                <button onClick={linkKopieren} style={{ flexShrink: 0, background: C.brand, color: "#fff", border: "none", borderRadius: 6, padding: "6px 12px", fontSize: 11, fontWeight: 600, cursor: "pointer" }}>
+                  {linkKopiert ? "Kopiert ✓" : "Kopieren"}
+                </button>
+              </div>
+              <div style={{ fontSize: 11, color: C.textDim, marginTop: 8, lineHeight: 1.6 }}>Am besten gleich an dich selbst schicken (E-Mail/Notiz-App), z. B. um auf dem Computer weiterzumachen.</div>
+            </>
+          )}
         </div>
 
         <button onClick={resetAll} style={{ width: "100%", marginTop: 12, background: "transparent", border: "1px solid " + C.border, color: C.textMuted, borderRadius: THEME.radius.lg, padding: "14px", fontSize: 14, fontFamily: THEME.font.body, cursor: "pointer" }}>

@@ -31,7 +31,7 @@ export default function Welcome({ navigateTo, IS_DEMO }) {
           <div>Deine Abrechnung</div>
           <div style={{ color: C.brand }}>Geprüft. Transparent. Verständlich.</div>
         </h1>
-        <p style={{ fontSize: 16, color: C.textMuted, margin: "0 0 32px", lineHeight: 1.7, maxWidth: 520, marginLeft: "auto", marginRight: "auto" }}>
+        <p style={{ fontSize: 16, color: C.textMuted, margin: "0 0 28px", lineHeight: 1.7, maxWidth: 520, marginLeft: "auto", marginRight: "auto" }}>
           {/* 14.08.2026, Stefans Vorgabe (siehe planung/steuerbonus-35a-rollout.md):
               muss klar trennen zwischen "wir prüfen deine Abrechnung" und dem
               zusätzlichen Steuervorteil — nicht nur eine von mehreren
@@ -39,7 +39,34 @@ export default function Welcome({ navigateTo, IS_DEMO }) {
           Prüfe deine Nebenkosten in wenigen Schritten — und finde zusätzlich heraus, was du davon von der Steuer absetzen kannst. Vollautomatisch, nachvollziehbar, ohne juristische Vorkenntnisse.
         </p>
 
-        <div style={{ display: "flex", flexDirection: "column", gap: 12, marginBottom: 36 }}>
+        {/* CTA 30.08.2026 nach oben gezogen (siehe projektdokumentation-nkr.md
+            Abschnitt 9, UX-Research-Nachtrag): vorher stand der Button ERST
+            nach 5 Feature-Karten — auf dem Handy damit oft erst nach 2-3
+            Scrolls sichtbar. Nielsen-Norman- und CXL-Research zu Landingpages
+            (siehe Quellen im Chat vom 30.08.2026) ist hier eindeutig: möglichst
+            wenig Text/Inhalt zwischen Hero-Text und erstem Call-to-Action,
+            Details dürfen unterhalb folgen — Scrollen ist kein Problem, ein
+            verzögerter erster Button schon. Die Feature-Karten bleiben
+            vollständig erhalten, nur weiter unten als Beleg/Vertiefung statt
+            als Hürde vor dem Start. */}
+        {IS_DEMO && <div style={{ background: C.warnBg, borderRadius: 6, padding: "8px 14px", marginBottom: 16, fontSize: 11, color: C.warn }}>Demo-Modus — Stripe nicht konfiguriert</div>}
+
+        <button onClick={() => navigateTo("wohnung")}
+          style={{ width: "100%", background: C.accent, color: C.accentText, border: "none", borderRadius: THEME.radius.lg, padding: "18px 40px", fontSize: 16, fontFamily: THEME.font.heading, fontWeight: 600, cursor: "pointer" }}>
+          Jetzt kostenlos prüfen
+        </button>
+        <p style={{ textAlign: "center", fontSize: 12, color: C.textDim, marginTop: 10 }}>
+          Basisanalyse kostenlos · Auswertung als PDF {BUSINESS.PREIS_AUSWERTUNG.toFixed(2)} € · mit Brief + Steuer-Bonus {BUSINESS.PREIS_VOLL.toFixed(2)} € · Kein Abo
+        </p>
+        <p style={{ textAlign: "center", fontSize: 12, color: C.textMuted, margin: "14px 0 36px" }}>
+          Schon dabei?{" "}
+          <a href="/login" onClick={e => { e.preventDefault(); navigateTo("login"); }} style={{ color: C.brand, fontWeight: 600 }}>Anmelden</a>
+        </p>
+
+        <div style={{ fontSize: 11, color: C.textDim, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.06em", marginBottom: 14, textAlign: "left" }}>
+          Was genau geprüft wird
+        </div>
+        <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
           {[
             ["Vollständige Prüfung aller Posten", "Jede Position wird mit dem DMB-Betriebskostenspiegel verglichen und auf rechtliche Zulässigkeit nach § 2 BetrKV geprüft."],
             ["Erkennung nicht umlagefähiger Kosten", "Wir erkennen Posten, die dein Vermieter nicht abrechnen darf — z. B. Verwaltungskosten oder seit Juli 2024 den Kabelanschluss."],
@@ -58,20 +85,6 @@ export default function Welcome({ navigateTo, IS_DEMO }) {
             </div>
           ))}
         </div>
-
-        {IS_DEMO && <div style={{ background: C.warnBg, borderRadius: 6, padding: "8px 14px", marginBottom: 16, fontSize: 11, color: C.warn }}>Demo-Modus — Stripe nicht konfiguriert</div>}
-
-        <button onClick={() => navigateTo("wohnung")}
-          style={{ width: "100%", background: C.accent, color: C.accentText, border: "none", borderRadius: THEME.radius.lg, padding: "18px 40px", fontSize: 16, fontFamily: THEME.font.heading, fontWeight: 600, cursor: "pointer" }}>
-          Jetzt kostenlos prüfen
-        </button>
-        <p style={{ textAlign: "center", fontSize: 12, color: C.textDim, marginTop: 10 }}>
-          Basisanalyse kostenlos · Auswertung als PDF {BUSINESS.PREIS_AUSWERTUNG.toFixed(2)} € · mit Brief + Steuer-Bonus {BUSINESS.PREIS_VOLL.toFixed(2)} € · Kein Abo
-        </p>
-        <p style={{ textAlign: "center", fontSize: 12, color: C.textMuted, marginTop: 14 }}>
-          Schon dabei?{" "}
-          <a href="/login" onClick={e => { e.preventDefault(); navigateTo("login"); }} style={{ color: C.brand, fontWeight: 600 }}>Anmelden</a>
-        </p>
       </div>
 
       {/* Dritte Kachel umformuliert (10.08.2026, siehe CHANGELOG): "Ø 320€

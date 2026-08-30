@@ -114,7 +114,7 @@ function pdfAufBase64(file) {
   });
 }
 
-export default function Wohnung({ navigateTo, wohnung, setWohnung, werte, setWerte, gesamtsummeAbrechnung, setGesamtsummeAbrechnung }) {
+export default function Wohnung({ navigateTo, wohnung, setWohnung, werte, setWerte, gesamtsummeAbrechnung, setGesamtsummeAbrechnung, entwurfLadeFehler }) {
   const C = THEME.color;
   const [errors, setErrors] = useState({});
 
@@ -129,13 +129,18 @@ export default function Wohnung({ navigateTo, wohnung, setWohnung, werte, setWer
   // pro Datei, mehrfach nacheinander möglich), 2) explizit "analysieren".
   // "dateien" statt "fotos" benannt, seit auch PDFs möglich sind (typ: 'bild'|'pdf').
   const [dateien, setDateien] = useState([]); // { id, name, typ, previewUrl, status: 'laedt'|'bereit'|'fehler', fehlerText, base64 }
-  // Karte startet eingeklappt (08/2026, siehe CHANGELOG.md): Das Feature ist
-  // optional, wer es ignoriert soll nicht erst an sieben UI-Elementen
-  // vorbeiscrollen, bevor das erste echte Formularfeld kommt. Dateien können
-  // nur ausgewählt werden, wenn aufgeklappt (der Upload-Button steckt im
-  // ausgeklappten Bereich) — daher kein Sonderfall nötig, der die Karte von
-  // selbst wieder öffnet.
-  const [aufgeklappt, setAufgeklappt] = useState(false);
+  // Karte startet AUFGEKLAPPT (geändert 30.08.2026, siehe projektdokumentation-
+  // nkr.md Abschnitt 9 — UX-Test + Konkurrenzvergleich Mineko/NebenkostenPro/
+  // nebify: alle drei zeigen Dokument-Upload als ERSTEN, direkt sichtbaren
+  // Schritt, nicht als eingeklappte Zusatzoption. Ursprünglich (08/2026) bewusst
+  // eingeklappt, mit der Begründung, wer das Feature ignoriert solle nicht erst
+  // daran vorbeiscrollen — das hat sich im GA4-Funnel als vermutlich zu
+  // vorsichtig erwiesen (61 % Abbruch zwischen Wohnung- und Posten-Schritt,
+  // wahrscheinlich u.a. weil die meisten Nutzer nie bis zum Upload-Hinweis
+  // vorstoßen und stattdessen das lange manuelle Formular sehen). Manuelle
+  // Eingabe bleibt vollständig erhalten und funktioniert unverändert — nur
+  // die Reihenfolge/Sichtbarkeit ändert sich, keine Funktion entfällt.
+  const [aufgeklappt, setAufgeklappt] = useState(true);
   const [fotoStatus, setFotoStatus] = useState("idle"); // idle | analysiert | fertig | fehler — bezieht sich nur auf den Analyse-Schritt
   const [fotoAnzahl, setFotoAnzahl] = useState(0);
   const [analyseFehler, setAnalyseFehler] = useState(""); // konkrete Server-/Netzwerk-Fehlermeldung statt generischem Text
@@ -310,6 +315,12 @@ export default function Wohnung({ navigateTo, wohnung, setWohnung, werte, setWer
       <div style={{ padding: "22px 20px 40px", maxWidth: THEME.layout.formMax, margin: "0 auto", boxSizing: "border-box" }}>
         <h2 style={{ fontFamily: THEME.font.heading, fontSize: 21, fontWeight: 600, margin: "0 0 6px", textAlign: "center" }}>Angaben zur Mietsache</h2>
         <p style={{ fontSize: 13, color: C.textMuted, margin: "0 0 16px", lineHeight: 1.55, textAlign: "center" }}>Steht auf dem Deckblatt deiner Abrechnung.</p>
+
+        {entwurfLadeFehler && (
+          <div style={{ background: C.warnBg, borderLeft: "3px solid " + C.warn, borderRadius: THEME.radius.md, padding: "10px 14px", marginBottom: 16, fontSize: 12, color: C.warn }}>
+            {entwurfLadeFehler}
+          </div>
+        )}
         <div style={{ background: C.brandBg, borderRadius: THEME.radius.md, padding: "13px 14px", marginBottom: 20, fontSize: 12, color: C.textMuted, lineHeight: 1.75 }}>
           <div style={{ color: C.text, fontWeight: 600, marginBottom: 5, fontSize: 13, fontFamily: THEME.font.heading }}>Wie funktioniert eine Nebenkostenabrechnung?</div>
           Du zahlst monatlich Abschläge für Heizung, Wasser, Müll u. a. Einmal im Jahr rechnet dein Vermieter ab, was tatsächlich angefallen ist. Im nächsten Schritt siehst du jeden Posten zur Prüfung: per Foto- oder PDF-Upload automatisch befüllt oder komplett manuell, genau so wie er auf der Abrechnung steht.
@@ -333,8 +344,9 @@ export default function Wohnung({ navigateTo, wohnung, setWohnung, werte, setWer
           >
             <div style={{ fontSize: 26, lineHeight: 1, flexShrink: 0 }}>📱</div>
             <div style={{ flex: 1, minWidth: 0 }}>
-              <div style={{ fontSize: 15, fontWeight: 700, color: C.text, fontFamily: THEME.font.heading }}>Keine Lust abzutippen?<br />Mach Fotos!</div>
-              <div style={{ fontSize: 12, color: C.textMuted, marginTop: 2 }}>Optional. Felder automatisch ausfüllen lassen.</div>
+              <div style={{ display: "inline-block", background: C.brandBg, color: C.brand, fontSize: 10, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.04em", borderRadius: 4, padding: "2px 8px", marginBottom: 4 }}>Empfohlen — spart Abtippen</div>
+              <div style={{ fontSize: 15, fontWeight: 700, color: C.text, fontFamily: THEME.font.heading }}>Foto oder PDF hochladen</div>
+              <div style={{ fontSize: 12, color: C.textMuted, marginTop: 2 }}>Wir lesen die Beträge automatisch aus, du prüfst nur noch und bestätigst.</div>
             </div>
             <div style={{ fontSize: 16, color: C.textDim, flexShrink: 0, transform: aufgeklappt ? "rotate(180deg)" : "none", transition: "transform 0.15s" }}>⌄</div>
           </button>
@@ -542,7 +554,7 @@ export default function Wohnung({ navigateTo, wohnung, setWohnung, werte, setWer
         </div>
         <div style={{ display: "flex", alignItems: "center", gap: 10, margin: "0 0 16px" }}>
           <div style={{ flex: 1, height: 1, background: C.border }} />
-          <div style={{ fontSize: 11, color: C.textDim, textTransform: "uppercase" }}>oder manuell</div>
+          <div style={{ fontSize: 11, color: C.textDim, textTransform: "uppercase" }}>oder ohne Foto: manuell eingeben</div>
           <div style={{ flex: 1, height: 1, background: C.border }} />
         </div>
 

@@ -2,6 +2,34 @@
 
 Alle wesentlichen Änderungen an diesem Projekt, mit Datum und Begründung. Dient der Nachvollziehbarkeit, damit auch ohne KI-Unterstützung verstanden werden kann, warum etwas so ist, wie es ist.
 
+## 30.08.2026 — Funnel-UX-Überarbeitung: Bug-Fix, Upload zum Standardweg, Zwischenspeichern, Startseite gestrafft
+
+Anlass: Meta-Ads Flight 1 + Zusatz-Flight ausgewertet — 0 Käufe trotz ~520 Ad-Interaktionen. Eigener Live-Test des kompletten Funnels als Nutzer aufgedeckt: ein echter Bug im Posten-Schritt, ein sehr langes Formular als erste Begegnung, kein Zwischenspeichern. Vor Umsetzung Konkurrenz (Mineko, NebenkostenPro, nebify) live nachgetestet sowie externe UX-Research (Nielsen Norman Group, Baymard Institute, CXL) herangezogen — Quellen und Einzelbefunde in `planung/projektdokumentation-nkr.md` Abschnitt 9.
+
+**Bug-Fix `src/pages/Posten.jsx`:** Der fixe "Weiter"-Button reagierte bei fehlendem Pflichtfeld scheinbar gar nicht — die Fehlermeldung erschien nur weit oben auf der Seite, außerhalb des sichtbaren Bereichs bei langem, herunter gescrolltem Formular. Fix: `validate()` scrollt bei Fehler aktiv nach oben (`window.scrollTo`), zusätzlich erscheint jetzt ein Kurzhinweis direkt am Button in der fixen Fußzeile.
+
+**Foto-/PDF-Upload zum Standardweg gemacht (`src/pages/Wohnung.jsx`):** Upload-Karte startet jetzt aufgeklappt statt eingeklappt (`aufgeklappt`-State-Default `false` → `true`), umbenannt von "Keine Lust abzutippen? Mach Fotos!" (Neben-Feature-Framing) zu "Foto oder PDF hochladen" mit "Empfohlen"-Badge. Grund: alle drei geprüften Wettbewerber zeigen Dokument-Upload als ersten, direkt sichtbaren Schritt, nicht als Zusatzoption — NKR hatte das identische Feature bereits fertig gebaut (`api/analyse-foto.js`), nur UI-seitig versteckt. Manuelle Eingabe bleibt vollständig erhalten, jetzt als "oder ohne Foto: manuell eingeben" gerahmt.
+
+**Startseite gestrafft (`src/pages/Welcome.jsx`):** Primärer Call-to-Action ("Jetzt kostenlos prüfen") direkt nach dem Einleitungstext platziert statt erst nach 5 Feature-Karten — auf dem Handy vorher oft erst nach mehreren Scrolls sichtbar. Landingpage-Research (siehe Quellen) ist eindeutig: möglichst wenig Inhalt zwischen Hero-Text und erstem Button, Details dürfen darunter folgen. Feature-Karten inhaltlich unverändert, nur als "Was genau geprüft wird"-Vertiefung unterhalb des Buttons neu einsortiert.
+
+**Zwischenspeichern, zweistufig:**
+1. Automatisches, unsichtbares Speichern im Browser (`localStorage`, Schlüssel `nkr-entwurf`) bei jeder Änderung in `App.jsx` — schützt gegen versehentliches Neuladen/Schließen, ohne Konto oder Server. 30 Tage clientseitige Gültigkeit, wird bei `resetAll()` gelöscht.
+2. Neuer, optionaler "Später fortsetzen"-Link auf der Ergebnis-Seite (`Result.jsx`): erzeugt eine per `crypto.randomUUID()` unratbare ID, speichert Wohnung/Posten/Gesamtsumme über neue Endpunkte `api/save-draft.js` / `api/get-draft.js` in einer neuen, von den bezahlten Berichten (`nkr_reports`) bewusst getrennten Tabelle `nkr_drafts` — kein Zahlungsbezug, daher auch keine Zahlungsprüfung nötig, Sicherheit kommt allein aus der Unratbarkeit der ID (wie ein Cloud-Freigabelink). `scripts/datenloeschung.mjs` löscht `nkr_drafts` jetzt zusätzlich, mit kurzer 30-Tage-Frist statt der 365 Tage bei bezahlten Berichten (Grundsatz der Speicherbegrenzung, Art. 5 Abs. 1 lit. e DSGVO — ein unbezahlter Entwurf hat keinen Zweck, der eine längere Aufbewahrung rechtfertigt).
+
+**Offener Punkt, von Stefan zu erledigen (analog zum bekannten Muster bei `nkr_reports`/`widerruf_ok`):** Tabelle `nkr_drafts` existiert noch nicht in Supabase — einmalig im Supabase-Dashboard → SQL Editor anlegen:
+```sql
+create table nkr_drafts (
+  id text primary key,
+  wohnung jsonb,
+  werte jsonb,
+  gesamtsumme_abrechnung text,
+  created_at timestamptz default now()
+);
+```
+Ohne diese Tabelle schlägt `api/save-draft.js` fehl (Supabase lehnt unbekannte Tabellen ab) — der Rest der Seite ist davon nicht betroffen, das Feature scheitert dann nur mit der bereits eingebauten Fehlermeldung ("Konnte nicht gespeichert werden"), kein harter Absturz.
+
+**Getestet:** Vollständiger `npm run build` nach jeder Änderung in einer Sandbox-Kopie (nicht im echten iCloud-Ordner, `src/artikel.js` dort testweise gestubbt und wieder entfernt) — fehlerfrei, keine Syntax-/Importfehler. Kein Live-Funktionstest des Zwischenspeicherns möglich, da die Supabase-Tabelle noch fehlt (siehe offener Punkt oben) — Stefan sollte nach dem Anlegen der Tabelle einmal den "Später fortsetzen"-Link selbst durchklicken.
+
 ## 22.08.2026 — Meta-Ads Flight 1 gestartet, Bildmaterial-Korrektur, Projekt-/Werbeplan-Dokumentation
 
 **Meta-Ads Flight 1 live:** Kampagne "NKR – Traffic – Flight 1" mit drei Anzeigen (provokant-drauf, provokant-glaubnicht, vertrauen-mieter-fuer-mieter) im selben Ad Set veröffentlicht, 120 € Laufzeitbudget. FB-Seite hatte vorher bereits einen Post live (Vorbedingung erfüllt). Meta-eigene Vorschläge zur Anzeigengestaltung (automatische Musik/Animation, KI-generierte Bildvarianten) bewusst abgelehnt — Stilbruch zum Marken-Look, Metas eigene Performance-Zahlen dazu sind unverifizierte Eigenwerbung, keine für diese Nische validierte Evidenz.

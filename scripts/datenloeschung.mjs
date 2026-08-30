@@ -10,6 +10,11 @@
 // Bewusst 365 Tage ab dem jeweiligen Zeitstempel, nicht "einmal im Jahr am
 // Stichtag" — jede Zeile wird individuell nach ihrem eigenen Alter gelöscht.
 //
+// NEU 30.08.2026 (siehe api/save-draft.js): nkr_drafts sind unbezahlte
+// Zwischenstände fürs "Später fortsetzen" — dafür reicht eine deutlich
+// kürzere Frist von 30 Tagen, eine 365-Tage-Aufbewahrung wäre hier nicht durch
+// einen erkennbaren Zweck gedeckt.
+//
 // Läuft wöchentlich per GitHub Actions, $0 Zusatzkosten.
 //
 // Benötigte GitHub-Secrets: SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY
@@ -23,11 +28,14 @@ if (!SUPABASE_URL || !SUPABASE_KEY) {
   process.exit(1);
 }
 
-const stichtag = new Date();
-stichtag.setDate(stichtag.getDate() - 365);
-const stichtagISO = stichtag.toISOString();
+function stichtagVor(tage) {
+  const d = new Date();
+  d.setDate(d.getDate() - tage);
+  return d.toISOString();
+}
 
-async function loeschen(tabelle, spalte) {
+async function loeschen(tabelle, spalte, tage) {
+  const stichtagISO = stichtagVor(tage);
   const res = await fetch(
     `${SUPABASE_URL}/rest/v1/${tabelle}?${spalte}=lt.${encodeURIComponent(stichtagISO)}`,
     {
@@ -47,5 +55,6 @@ async function loeschen(tabelle, spalte) {
   console.log(`${tabelle}: ${geloescht.length} Zeile(n) älter als ${stichtagISO} gelöscht.`);
 }
 
-await loeschen("nkr_reports", "created_at");
-await loeschen("nkr_purchases", "purchased_at");
+await loeschen("nkr_reports", "created_at", 365);
+await loeschen("nkr_purchases", "purchased_at", 365);
+await loeschen("nkr_drafts", "created_at", 30);
