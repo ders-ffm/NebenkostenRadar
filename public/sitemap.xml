@@ -16,6 +16,42 @@
     <priority>0.5</priority>
   </url>
   <url>
+    <loc>https://nebenkostenradar.com/ratgeber/hausmeisterkosten-in-der-nebenkostenabrechnung-was-ist-umlagefaehig</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+    <lastmod>2026-08-01</lastmod>
+  </url>
+  <url>
+    <loc>https://nebenkostenradar.com/ratgeber/muellgebuehren-und-abfallentsorgung-als-betriebskosten-2026</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+    <lastmod>2026-08-01</lastmod>
+  </url>
+  <url>
+    <loc>https://nebenkostenradar.com/ratgeber/wasserkosten-und-kaltwasserzaehler-in-der-nebenkostenabrechnung</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+    <lastmod>2026-07-01</lastmod>
+  </url>
+  <url>
+    <loc>https://nebenkostenradar.com/ratgeber/betriebskostenabrechnung-fristen-und-verjaehrung-2026</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+    <lastmod>2026-07-01</lastmod>
+  </url>
+  <url>
+    <loc>https://nebenkostenradar.com/ratgeber/heizkostenabrechnung-vermieterfehler-2026-leitfaden</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+    <lastmod>2026-07-01</lastmod>
+  </url>
+  <url>
+    <loc>https://nebenkostenradar.com/ratgeber/bgh-urteile-mietrecht-nebenkosten-2026</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+    <lastmod>2026-07-01</lastmod>
+  </url>
+  <url>
     <loc>https://nebenkostenradar.com/ratgeber/widerspruch-nebenkostenabrechnung</loc>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
@@ -34,39 +70,9 @@
     <lastmod>2026-06-01</lastmod>
   </url>
   <url>
-    <loc>https://nebenkostenradar.com/ratgeber/bgh-urteile-mietrecht-nebenkosten-2026</loc>
+    <loc>https://nebenkostenradar.com/ratgeber/grundsteuerreform-2026-auswirkungen-auf-die-nebenkostenabrechnung</loc>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
-    <lastmod>2026-07-01</lastmod>
-  </url>
-  <url>
-    <loc>https://nebenkostenradar.com/ratgeber/heizkostenabrechnung-vermieterfehler-2026-leitfaden</loc>
-    <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
-    <lastmod>2026-07-01</lastmod>
-  </url>
-  <url>
-    <loc>https://nebenkostenradar.com/ratgeber/betriebskostenabrechnung-fristen-und-verjaehrung-2026</loc>
-    <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
-    <lastmod>2026-07-01</lastmod>
-  </url>
-  <url>
-    <loc>https://nebenkostenradar.com/ratgeber/wasserkosten-und-kaltwasserzaehler-in-der-nebenkostenabrechnung</loc>
-    <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
-    <lastmod>2026-07-01</lastmod>
-  </url>
-  <url>
-    <loc>https://nebenkostenradar.com/ratgeber/muellgebuehren-und-abfallentsorgung-als-betriebskosten-2026</loc>
-    <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
-    <lastmod>2026-08-01</lastmod>
-  </url>
-  <url>
-    <loc>https://nebenkostenradar.com/ratgeber/hausmeisterkosten-in-der-nebenkostenabrechnung-was-ist-umlagefaehig</loc>
-    <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
-    <lastmod>2026-08-01</lastmod>
+    <lastmod>2026-09-01</lastmod>
   </url>
 </urlset>
