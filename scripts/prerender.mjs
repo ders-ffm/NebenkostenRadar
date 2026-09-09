@@ -48,6 +48,9 @@
 import { readFileSync, writeFileSync, mkdirSync } from "fs";
 import { fileURLToPath } from "url";
 import { dirname, join } from "path";
+// Richtwerte kommen direkt aus derselben Datei wie die Analyse und die
+// React-Ansicht (09.09.2026) — siehe renderRichtwerteTabelle() weiter unten.
+import { BUSINESS } from "../src/config/business.js";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const ROOT = join(__dirname, "..");
@@ -85,9 +88,70 @@ function renderBlock(block, artikelById) {
     }
     case "cta":
       return `<p>${escapeHtml(block.text)} <a href="/pruefen/wohnung">Kostenlos prüfen →</a></p>`;
+    // ── NEU 09.09.2026 (siehe CHANGELOG) ──────────────────────────────────
+    // Diese drei Typen fehlten hier UND in Artikel.jsx. Der default-Zweig
+    // gibt "" zurück, unbekannte Blöcke verschwanden also spurlos — ohne
+    // Fehler, ohne Warnung. Betroffen war ausgerechnet das, was Google von
+    // den beiden sichtbarsten Seiten zu sehen bekam: die komplette
+    // DMB-Richtwerte-Tabelle (548 Impressionen) und die 5-Schritte-Anleitung
+    // zum Widerspruch (113). Beide Überschriften standen im HTML, der Inhalt
+    // darunter fehlte — aus Sicht einer Suchmaschine eine Seite, die ihr
+    // eigenes Versprechen nicht einlöst.
+    //
+    // WICHTIG: Dieses vorgerenderte HTML ist das, was Google beim ersten
+    // Crawl liest. Es zählt für die Bewertung mehr als das, was React
+    // später im Browser nachliefert. Änderungen an den Block-Typen müssen
+    // deshalb IMMER an beiden Stellen passieren (siehe Kommentar oben).
+    case "richtwerte":
+      return renderRichtwerteTabelle();
+    case "tabelle": {
+      const [kopf, ...rest] = block.zeilen || [];
+      if (!kopf) return "";
+      const thead = `<thead><tr>${kopf.map(z => `<th scope="col">${escapeHtml(z)}</th>`).join("")}</tr></thead>`;
+      const tbody = `<tbody>${rest.map(zeile => `<tr>${zeile.map(z => `<td>${escapeHtml(z)}</td>`).join("")}</tr>`).join("")}</tbody>`;
+      return `<table>${thead}${tbody}</table>`;
+    }
+    case "schritte":
+      return `<ol>${(block.items || []).map(i => `<li>${escapeHtml(i)}</li>`).join("")}</ol>`;
     default:
       return "";
   }
+}
+
+// Richtwerte-Tabelle aus business.js — gleiche Datenquelle und gleiche
+// Zeilenreihenfolge wie in src/pages/Artikel.jsx, damit vorgerendertes HTML
+// und die spätere React-Darstellung identisch sind. Bewusst NICHT aus dem
+// Artikeltext gespeist: Dort standen fest eingetippte Werte, die bei 8 von
+// 10 Kostenarten von den geprüften DMB-Werten abwichen.
+function renderRichtwerteTabelle() {
+  const R = BUSINESS.RICHTWERTE;
+  const QM = 75;
+  const eur = n => n.toLocaleString("de-DE", { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + " €";
+  const zeilen = [
+    ["Heizung + Warmwasser", "heizung_warmwasser"],
+    ["Heizung + Warmwasser (Höchstwert)", "heizung_max"],
+    ["Wasser + Abwasser", "wasser_abwasser"],
+    ["Grundsteuer", "grundsteuer"],
+    ["Müllbeseitigung", "muell"],
+    ["Hausmeister", "hausmeister"],
+    ["Versicherungen", "versicherungen"],
+    ["Gebäudereinigung", "gebaeudereinigung"],
+    ["Aufzug", "aufzug"],
+    ["Gartenpflege", "gartenpflege"],
+    ["Allgemeinstrom", "allgemeinstrom"],
+    ["Straßenreinigung", "strassenreinigung"],
+    ["Schornsteinreinigung", "schornstein"],
+    ["Sonstige Betriebskosten", "sonstiges"],
+  ];
+  const body = zeilen
+    .filter(([, key]) => R[key] != null)
+    .map(([label, key]) => `<tr><th scope="row">${escapeHtml(label)}</th><td>${eur(R[key])}</td><td>${eur(R[key] * QM * 12)}</td></tr>`)
+    .join("");
+  const summe = `<tr><th scope="row">Gesamt (Durchschnitt)</th><td>${eur(R.gesamt)}</td><td>${eur(R.gesamt * QM * 12)}</td></tr>`;
+  return `<table>` +
+    `<caption>Quelle: Deutscher Mieterbund, Betriebskostenspiegel für das Abrechnungsjahr ${escapeHtml(BUSINESS.RICHTWERTE_JAHR)}. Jahresbeträge beispielhaft für ${QM} m².</caption>` +
+    `<thead><tr><th scope="col">Kostenart</th><th scope="col">€/m²/Monat</th><th scope="col">Jahr, ${QM} m²</th></tr></thead>` +
+    `<tbody>${body}${summe}</tbody></table>`;
 }
 
 function buildArticleHtml(template, artikel, artikelById) {

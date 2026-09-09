@@ -2,6 +2,74 @@
 
 Alle wesentlichen Änderungen an diesem Projekt, mit Datum und Begründung. Dient der Nachvollziehbarkeit, damit auch ohne KI-Unterstützung verstanden werden kann, warum etwas so ist, wie es ist.
 
+## 09.09.2026 — SEO: Die beiden sichtbarsten Ratgeber-Seiten zeigten ihren Hauptinhalt gar nicht an
+
+Anlass: Entscheidung, vor der Okt–Dez-Hauptsaison die Reichweite anzugehen (Meta-Ads eingestellt, Begründung in `planung/werbeplan-nkr.md`). Beim Gegenlesen der sichtbarsten Google-Seite fiel auf, dass sie ihr eigenes Versprechen nicht einlöst.
+
+### Der Fund
+
+`src/pages/Artikel.jsx` unterstützte die Block-Typen `intro`, `h2`, `text`, `liste`, `hinweis`, `verweis`, `cta`. In `src/artikel.js` kommen aber zwei weitere Typen vor, die **beide stillschweigend verworfen wurden** — kein Fehler, keine Warnung, der Inhalt war einfach weg:
+
+| Seite | Google-Impressionen (90 T.) | fehlender Block |
+|---|---|---|
+| `betriebskostenspiegel-2024` | **548** | `tabelle` — die komplette DMB-Richtwerte-Tabelle, 11 Zeilen |
+| `widerspruch-nebenkostenabrechnung` | **113** | `schritte` — die 5-Schritte-Anleitung |
+
+Zusammen sind das 661 von 974 Impressionen, also **68 % der gesamten Suchsichtbarkeit**. Auf beiden Seiten stand die Überschrift ("Die wichtigsten Richtwerte 2024 im Überblick", "Schritt-für-Schritt: So legen Sie wirksam Widerspruch ein") — und direkt darunter nichts. Live im Browser und im Roh-HTML gleichermaßen geprüft.
+
+Dass die Seite mit dem Suchbegriff "betriebskostenspiegel" bei 548 Impressionen nur **1 Klick** und Position ~39 erreicht, ist damit gut erklärbar: Google bewertet eine Seite, die zum Thema nichts liefert.
+
+### Zweiter Fund: die Tabellenwerte waren veraltet
+
+Die im Artikel fest eingetippte Tabelle wich bei **8 von 10 Kostenarten** von den geprüften Werten in `src/config/business.js` ab:
+
+| Kostenart | im Artikel | in business.js |
+|---|---|---|
+| Wasser + Abwasser | 0,26 € | 0,29 € |
+| Grundsteuer | 0,21 € | 0,18 € |
+| Müllbeseitigung | 0,20 € | 0,16 € |
+| Hausmeister | 0,30 € | 0,21 € |
+| Versicherungen | 0,28 € | 0,31 € |
+| Aufzug | 0,18 € | 0,20 € |
+| Gartenpflege | 0,11 € | 0,15 € |
+| Allgemeinstrom | 0,08 € | 0,06 € |
+
+Ein bloßes "Tabelle jetzt anzeigen" hätte also veraltete Zahlen veröffentlicht, die dem eigenen Prüfbericht widersprechen — bei einem Produkt, dessen ganzer Zweck der Vergleich mit genau diesen Werten ist, der denkbar schlechteste Widerspruch.
+
+### Die Lösung
+
+Neuer Block-Typ **`richtwerte`**, der die Tabelle direkt aus `BUSINESS.RICHTWERTE` erzeugt (14 Kostenarten plus Gesamtzeile, mit Jahresbeträgen für 75 m² und Quellenangabe). Damit können Ratgeber und Analyse nie wieder auseinanderlaufen — aktualisiert jemand `business.js`, zieht die Tabelle automatisch mit. Passt zum bereits vorhandenen `scripts/richtwerte-monitor.mjs`, der auf neue DMB-Ausgaben hinweist.
+
+Zusätzlich ergänzt: generischer `tabelle`-Renderer und `schritte`-Renderer.
+
+**An zwei Stellen umgesetzt, und das ist der eigentliche Knackpunkt:** `scripts/prerender.mjs` baut das HTML für Suchmaschinen **selbst**, ohne React. Es hatte deshalb eine eigene, zweite Liste von Block-Typen — mit demselben Loch. Da dieses vorgerenderte HTML das ist, was Google beim ersten Crawl liest, zählt es für die Bewertung mehr als das, was React später nachliefert. Beide Stellen sind jetzt gleichgezogen und mit gegenseitigen Verweisen kommentiert.
+
+Bewusst echte `<table>`/`<th scope>`/`<ol>`-Elemente statt Divs: Eine Datentabelle als Tabelle auszuzeichnen ist für Google inhaltlich verwertbar und für Screenreader überhaupt erst navigierbar.
+
+**Getestet:** Test-Artikel mit allen drei neuen Blocktypen angelegt, `npm run build` inklusive Vorrendern ausgeführt und das erzeugte HTML geprüft — 2 Tabellen und 1 `<ol>` vorhanden, Richtwerte mit den korrigierten Werten (0,29 / 0,18 / 0,16 / 0,21 …). Testdatei danach wieder entfernt.
+
+### `src/artikel.js` in den iCloud-Ordner übernommen und angepasst
+
+Die Datei fehlte im lokalen Ordner (nur im Git-Checkout vorhanden), weshalb bisher jeder lokale Testbau mit einer leeren Attrappe laufen musste. Sie wurde jetzt aus dem GitHub-Stand übernommen und liegt unter `src/artikel.js`. Einzige inhaltliche Änderung: Im Artikel `betriebskostenspiegel-2024` wurde der 14-zeilige `{ typ: "tabelle", zeilen: […] }`-Block mit den veralteten Werten durch die eine Zeile `{ typ: "richtwerte" },` ersetzt.
+
+Damit laufen künftige Testbauten mit den echten Artikeln statt mit einem Platzhalter — Fehler wie der oben beschriebene fallen dadurch schon lokal auf.
+
+**Verifiziert nach der Übernahme:**
+
+| Prüfung | Ergebnis |
+|---|---|
+| Datei lädt (Syntax) | ✓ |
+| Artikel | 9, IDs identisch zur Live-Seite |
+| Zeilen | 988 = 1001 Original minus 13 (ersetzter Block) |
+| Blocktypen | 62 text, 52 h2, 37 verweis, 20 liste, 13 hinweis, 9 intro, 9 cta, 1 schritte, 1 richtwerte |
+| Interne Verweise | alle 37 Ziele existieren |
+| Artikeltext | 46.709 Zeichen |
+| `npm run build` inkl. Vorrendern | ✓, alle 9 Artikel |
+| Richtwerte im vorgerenderten HTML | alle 8 zuvor veralteten Werte korrekt aktualisiert (Grundsteuer 0,21→0,18, Müll 0,20→0,16, Hausmeister 0,30→0,21, Versicherungen 0,28→0,31, Aufzug 0,18→0,20, Gartenpflege 0,11→0,15, Allgemeinstrom 0,08→0,06, Wasser+Abwasser 0,26→0,29) |
+| Schritt-für-Schritt im Widerspruchs-Artikel | ✓ als `<ol>` im HTML |
+
+**Hinweis zur Kontrolle beim Upload:** Die Datei wurde aus einem Abzug rekonstruiert. Die GitHub-Diff-Ansicht sollte beim Hochladen **ausschließlich** den ersetzten Tabellen-Block als Änderung zeigen. Erscheinen dort weitere geänderte Zeilen, bitte nicht committen und Bescheid geben.
+
 ## 09.09.2026 — Systematischer Durchtest aller Eingabekonstellationen: zwei neue Testskripte, drei behobene Fehler
 
 Anlass: Drei aufeinanderfolgende Testkäufe haben jeweils erst NACH dem Kauf einen inhaltlichen Fehler im PDF offengelegt. Manuelles Durchklicken deckt immer nur die eine Konstellation ab, die man gerade eintippt. Stefans Auftrag deshalb: alle denkbaren Kundeneingaben durchspielen, Brief und Prüfbericht müssen in **jeder** Konstellation Sinn ergeben.

@@ -3,8 +3,43 @@
 // ─────────────────────────────────────────────────────────────────────────
 import { THEME } from "../config/theme.js";
 import { ARTIKEL } from "../artikel.js";
+import { BUSINESS } from "../config/business.js";
 import Nav from "../components/layout/Nav.jsx";
 import LegalFooter from "../components/layout/LegalFooter.jsx";
+
+// ─────────────────────────────────────────────────────────────────────────
+// Richtwerte-Tabelle für den Betriebskostenspiegel-Artikel.
+//
+// BEWUSST AUS business.js ERZEUGT statt im Artikel fest eingetippt
+// (09.09.2026, siehe CHANGELOG). Grund: Der Artikel enthielt eine fest
+// verdrahtete Tabelle, deren Werte inzwischen bei 8 von 10 Kostenarten von
+// den geprüften DMB-Werten in business.js abwichen (z. B. Hausmeister 0,30 €
+// statt 0,21 €, Müll 0,20 € statt 0,16 €). Ratgeber und Prüfbericht hätten
+// dem Kunden also unterschiedliche Richtwerte gezeigt — bei einem Produkt,
+// dessen ganzer Zweck der Vergleich mit genau diesen Werten ist, wäre das
+// der schlimmstmögliche Widerspruch.
+//
+// Wird business.js künftig aktualisiert (siehe scripts/richtwerte-monitor.mjs,
+// das auf neue DMB-Ausgaben hinweist), zieht diese Tabelle automatisch mit.
+// Die Reihenfolge unten bestimmt die Reihenfolge in der Tabelle.
+const RICHTWERT_ZEILEN = [
+  ["Heizung + Warmwasser", "heizung_warmwasser"],
+  ["Heizung + Warmwasser (Höchstwert)", "heizung_max"],
+  ["Wasser + Abwasser", "wasser_abwasser"],
+  ["Grundsteuer", "grundsteuer"],
+  ["Müllbeseitigung", "muell"],
+  ["Hausmeister", "hausmeister"],
+  ["Versicherungen", "versicherungen"],
+  ["Gebäudereinigung", "gebaeudereinigung"],
+  ["Aufzug", "aufzug"],
+  ["Gartenpflege", "gartenpflege"],
+  ["Allgemeinstrom", "allgemeinstrom"],
+  ["Straßenreinigung", "strassenreinigung"],
+  ["Schornsteinreinigung", "schornstein"],
+  ["Sonstige Betriebskosten", "sonstiges"],
+];
+const BEISPIEL_QM = 75;
+const eur = n => n.toLocaleString("de-DE", { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + " €";
 
 export default function Artikel({ navigateTo, navigateToArtikel, ratgeberArtikel }) {
   const C = THEME.color;
@@ -36,6 +71,93 @@ export default function Artikel({ navigateTo, navigateToArtikel, ratgeberArtikel
                 </li>
               ))}
             </ul>
+          );
+          // ── NEU 09.09.2026 (siehe CHANGELOG) ──────────────────────────
+          // Diese drei Block-Typen fehlten hier. Nicht unterstützte Typen
+          // fielen bisher stillschweigend hinten runter (kein Fehler, kein
+          // Hinweis — sie waren einfach weg). Betroffen waren ausgerechnet
+          // die beiden sichtbarsten Seiten: die komplette DMB-Tabelle im
+          // Betriebskostenspiegel-Artikel (548 Google-Impressionen) und die
+          // 5-Schritte-Anleitung im Widerspruchs-Artikel (113). Beide Seiten
+          // versprachen in der Überschrift genau das, was dann fehlte.
+          //
+          // Bewusst echte <table>/<ol>-Elemente statt Divs: Eine Datentabelle
+          // als Tabelle auszuzeichnen ist für Google inhaltlich verwertbar
+          // (Chance auf Rich Results) und für Screenreader überhaupt erst
+          // navigierbar.
+          if (block.typ === "richtwerte") return (
+            <div key={i} style={{ overflowX: "auto", margin: "0 0 20px" }}>
+              <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 13.5 }}>
+                <caption style={{ captionSide: "bottom", fontSize: 11.5, color: C.textDim, textAlign: "left", paddingTop: 8, lineHeight: 1.5 }}>
+                  Quelle: Deutscher Mieterbund, Betriebskostenspiegel für das Abrechnungsjahr {BUSINESS.RICHTWERTE_JAHR}. Jahresbeträge beispielhaft für {BEISPIEL_QM} m².
+                </caption>
+                <thead>
+                  <tr style={{ borderBottom: "2px solid " + C.border }}>
+                    <th scope="col" style={{ textAlign: "left", padding: "8px 10px 8px 0", fontWeight: 600, color: C.text }}>Kostenart</th>
+                    <th scope="col" style={{ textAlign: "right", padding: "8px 10px", fontWeight: 600, color: C.text, whiteSpace: "nowrap" }}>€/m²/Monat</th>
+                    <th scope="col" style={{ textAlign: "right", padding: "8px 0 8px 10px", fontWeight: 600, color: C.text, whiteSpace: "nowrap" }}>Jahr, {BEISPIEL_QM} m²</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {RICHTWERT_ZEILEN.map(([label, key]) => {
+                    const wert = BUSINESS.RICHTWERTE[key];
+                    if (wert == null) return null;
+                    return (
+                      <tr key={key} style={{ borderBottom: "1px solid " + C.border }}>
+                        <th scope="row" style={{ textAlign: "left", padding: "8px 10px 8px 0", fontWeight: 400, color: C.textMuted }}>{label}</th>
+                        <td style={{ textAlign: "right", padding: "8px 10px", color: C.textMuted, whiteSpace: "nowrap" }}>{eur(wert)}</td>
+                        <td style={{ textAlign: "right", padding: "8px 0 8px 10px", color: C.textMuted, whiteSpace: "nowrap" }}>{eur(wert * BEISPIEL_QM * 12)}</td>
+                      </tr>
+                    );
+                  })}
+                  <tr style={{ borderTop: "2px solid " + C.border }}>
+                    <th scope="row" style={{ textAlign: "left", padding: "10px 10px 10px 0", fontWeight: 700, color: C.text }}>Gesamt (Durchschnitt)</th>
+                    <td style={{ textAlign: "right", padding: "10px", fontWeight: 700, color: C.text, whiteSpace: "nowrap" }}>{eur(BUSINESS.RICHTWERTE.gesamt)}</td>
+                    <td style={{ textAlign: "right", padding: "10px 0 10px 10px", fontWeight: 700, color: C.text, whiteSpace: "nowrap" }}>{eur(BUSINESS.RICHTWERTE.gesamt * BEISPIEL_QM * 12)}</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          );
+          if (block.typ === "tabelle") {
+            const [kopf, ...rest] = block.zeilen || [];
+            if (!kopf) return null;
+            return (
+              <div key={i} style={{ overflowX: "auto", margin: "0 0 20px" }}>
+                <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 13.5 }}>
+                  <thead>
+                    <tr style={{ borderBottom: "2px solid " + C.border }}>
+                      {kopf.map((z, j) => (
+                        <th key={j} scope="col" style={{ textAlign: j === 0 ? "left" : "right", padding: "8px 10px", fontWeight: 600, color: C.text }}>{z}</th>
+                      ))}
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {rest.map((zeile, j) => (
+                      <tr key={j} style={{ borderBottom: "1px solid " + C.border }}>
+                        {zeile.map((z, k) => (
+                          <td key={k} style={{ textAlign: k === 0 ? "left" : "right", padding: "8px 10px", color: C.textMuted }}>{z}</td>
+                        ))}
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            );
+          }
+          if (block.typ === "schritte") return (
+            <ol key={i} style={{ margin: "0 0 20px", paddingLeft: 0, listStyle: "none", counterReset: "schritt" }}>
+              {block.items.map((item, j) => (
+                <li key={j} style={{ display: "flex", gap: 12, marginBottom: 14, fontSize: 14, color: C.textMuted, lineHeight: 1.65 }}>
+                  <span style={{
+                    flexShrink: 0, width: 24, height: 24, borderRadius: "50%",
+                    background: C.brandBg, color: C.brand, fontSize: 12, fontWeight: 700,
+                    display: "flex", alignItems: "center", justifyContent: "center", marginTop: 1,
+                  }}>{j + 1}</span>
+                  <span>{item}</span>
+                </li>
+              ))}
+            </ol>
           );
           if (block.typ === "hinweis") return (
             <div key={i} style={{ background: C.brandBg, borderLeft: "3px solid " + C.brand, borderRadius: THEME.radius.sm, padding: "14px 16px", margin: "0 0 20px", fontSize: 13, color: C.text, lineHeight: 1.65 }}>{block.text}</div>
