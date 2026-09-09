@@ -2,6 +2,72 @@
 
 Alle wesentlichen Änderungen an diesem Projekt, mit Datum und Begründung. Dient der Nachvollziehbarkeit, damit auch ohne KI-Unterstützung verstanden werden kann, warum etwas so ist, wie es ist.
 
+## 09.09.2026 — Systematischer Durchtest aller Eingabekonstellationen: zwei neue Testskripte, drei behobene Fehler
+
+Anlass: Drei aufeinanderfolgende Testkäufe haben jeweils erst NACH dem Kauf einen inhaltlichen Fehler im PDF offengelegt. Manuelles Durchklicken deckt immer nur die eine Konstellation ab, die man gerade eintippt. Stefans Auftrag deshalb: alle denkbaren Kundeneingaben durchspielen, Brief und Prüfbericht müssen in **jeder** Konstellation Sinn ergeben.
+
+### Neue Dauer-Testskripte (bleiben im Projekt)
+
+**`scripts/pdf-konsistenz-test.mjs`** — prüft 68 Eingabekonstellationen gegen 15 Regeln, die immer gelten müssen (950 Einzelprüfungen). Abgedeckt: leere Eingabe, nur Pflichtfelder, alle 34 Posten gleichzeitig, reine Befundlagen (nur harte Verstöße / nur statistische / nur "prüfen"), Kabelanschluss in allen drei Rechtsjahren (2023/2024/2025), CO2-Abgabe und Kabelanschluss als doppeldeutige Positionen, Extremwerte (Wohnfläche 0 bis 500 m², Cent-Beträge, Millionenbeträge), sechs Abrechnungsjahre, Fristvarianten mit und ohne Empfangsdatum, aufgeteilte Positionen ("davon"-Zeilen), sowie **jeder der 34 Posten einzeln**.
+
+**`scripts/eingaben-test.mjs`** — prüft 31 reale Tastatureingaben in ein Geldfeld, inklusive des Eingabefilters aus `EuroInput.jsx`.
+
+Beide sind mit `node scripts/…` ausführbar und geben Exit-Code 1 bei Verletzungen. Sie prüfen die LOGIK, nicht das Layout — Seitenumbrüche brauchen weiterhin einen Blick ins PDF.
+
+### Fehler 1: Brief blieb leer, wenn ALLE Positionen unauffällig sind
+
+Der Konsistenztest schlug in **27 von 68 Konstellationen** an. Der Fix von heute früh deckte nur den Fall ab, dass es Positionen ohne Vergleichswert gab. War dagegen schlicht jede Position im Rahmen — der häufigste Normalfall überhaupt — entstand weiterhin ein leerer Brief mit "Einwendungen gegen folgende Positionen:" und nichts darunter.
+
+`BriefPDF.jsx` kennt jetzt **drei Modi** statt zwei:
+
+| Modus | wann | Betreff |
+|---|---|---|
+| `einwendungen` | harte oder statistische Beanstandungen | "Einwendungen gegen die Betriebskostenabrechnung …" |
+| `auskunft` | keine Beanstandung, aber Positionen ohne Vergleichswert | "Belegeinsicht und Rückfragen zur …" |
+| `belegeinsicht` | **neu** — weder noch, alles im Rahmen | "Belegeinsicht zur Betriebskostenabrechnung …" |
+
+Im neuen dritten Modus entfällt die Positionsliste samt Tabellenrahmen; stattdessen steht dort ein vollwertiges Belegeinsichts-Verlangen nach § 259 BGB. Das ist sachlich korrekt und für den Mieter wertvoll: Unsere Prüfung vergleicht mit Durchschnittswerten — ein unauffälliger Vergleich beweist nicht, dass die Kosten tatsächlich angefallen sind oder der Umlageschlüssel stimmt. Das zeigen nur die Originalbelege, auf deren Einsicht jeder Mieter ohne Angabe von Gründen Anspruch hat. Der Brief sagt das ausdrücklich ("nicht als Beanstandung zu verstehen") und fordert konsequenterweise weder Korrektur noch Rückerstattung.
+
+### Fehler 2: Beträge wurden still um Faktor 1000 falsch gelesen
+
+`lib/format.js`, `toNum()`: Die Vorversion kannte nur ein Sonderformat (deutsche Tausenderpunkte) und ersetzte sonst stur das **erste** Komma durch einen Punkt. Folge, ohne jede Fehlermeldung:
+
+| eingetippt | vorher verstanden | jetzt |
+|---|---|---|
+| `1,234.56` (englisches Format) | 1,23 € | 1.234,56 € |
+| `1,2,3` (Vertipper) | 1,20 € | 12,30 € |
+| `1.2.3` (Vertipper) | 1,20 € | 12,30 € |
+
+Der Eingabefilter in `EuroInput.jsx` lässt Punkt und Komma beide zu, beide Formate sind also erreichbar. Ein solcher Wert wäre unbemerkt in den gekauften Prüfbericht und in den Brief an den Vermieter gewandert.
+
+Neue Regel: **das zuletzt stehende Trennzeichen ist das Dezimaltrennzeichen**, alle davor sind Gruppierung. Trifft deutsche und englische Schreibweise gleichzeitig, ohne die Sprache raten zu müssen. Sonderfall davor: ausschließlich Punkte in sauberen Dreiergruppen ("1.234", "12.345.678") sind Tausenderpunkte. Alle 31 Eingaben im Testskript bestehen, darunter jedes bisher korrekte Format — keine Regression.
+
+### Fehler 3: angezeigter und gerechneter Wert konnten auseinanderlaufen
+
+Die Eingabe "0,001" wurde als 0,001 gespeichert, das Feld zeigte aber "0,00" und galt zugleich als befüllt (grüner Rahmen). `EuroInput.jsx` rundet jetzt beim Verlassen des Feldes auf volle Cent und schreibt den bereinigten Wert zurück — was im Feld steht, ist exakt das, was in Auswertung und PDF geht.
+
+### Bewusst NICHT umgesetzt
+
+**Obergrenze für Beträge.** Eine Eingabe wie 99.999.999.999 € wird weiterhin angenommen. Begründung: Der realistische Tippfehler ist nicht die absurde Zahl (die sieht der Nutzer sofort im Feld), sondern die plausible — "12340" statt "1234". Dagegen hilft keine Obergrenze, sondern nur der bereits vorhandene Abgleich mit der Gesamtsumme laut Abrechnung. Eine zusätzliche Schwelle würde Sicherheit suggerieren, die sie nicht liefert.
+
+**Getestet:** beide Skripte fehlerfrei (31 Eingaben, 950 Regelprüfungen), `npx vite build` fehlerfrei, alle drei Briefmodi zusätzlich im Klartext gegengelesen.
+
+## 09.09.2026 — Nachbesserung nach zweitem Testkauf (echte Daten, Fall MIT Auffälligkeiten)
+
+Stefan hat einen zweiten Testkauf mit seiner echten Abrechnung durchgespielt — diesmal ein Fall mit tatsächlichen Auffälligkeiten, wodurch erstmals auch der Einwendungs-Zweig des Briefs live zu sehen war. **Beide Korrekturen von heute früh greifen nachweislich:** Die Kopfzeile zählt jetzt korrekt "3 von 17 Positionen auffällig" (statt vorher fälschlich inklusive der "Prüfen"-Positionen), und der neue Fragen-Block steht im Brief.
+
+Der Testkauf hat dabei drei weitere Punkte offengelegt, einer davon durch meine eigene Änderung von heute früh verursacht:
+
+**1. CO2-Abgabe stand doppelt im Brief (durch meine Änderung verursacht).** Positionen können gleichzeitig Status `pruefen` haben UND einen Widerspruchsgrund erzeugen — konkret die CO2-Abgabe (`lib/analyse.js`: `status: "pruefen"` plus `widerspruch.push({typ:"statistisch"})`) und der Kabelanschluss im Übergangsjahr 2024. Mein neuer Fragen-Block filterte nur auf `status === "pruefen"` und nahm sie deshalb ein zweites Mal auf. Im Brief stand die CO2-Abgabe damit als Ziffer 1 (Beanstandung) **und** als Ziffer 4 (Rückfrage). Behoben in `BriefPDF.jsx`: Positionen, deren Name bereits in einem Widerspruchsgrund vorkommt, werden aus dem Fragen-Block ausgeschlossen. Abgleich über den Positionsnamen in Kleinschreibung per "enthält", weil die Gründe reine Textzeilen ohne ID sind — bewusst großzügig, damit z. B. "Kabelanschlusskosten …" die Position "Kabelanschluss" trifft.
+
+**2. Summenzeile stand unter einer gemischten Liste.** "Summe der beanstandeten Positionen € 1212.56" stand ganz unten, also unterhalb der bloßen Rückfragen (Ziffern 4–7). Das las sich, als seien auch diese Positionen mitsummiert — sachlich falsch, da sie ausdrücklich keine Beanstandung sind. Die Zeile steht jetzt direkt unter den Beanstandungen und **vor** dem Fragen-Block.
+
+**3. "davon "-Präfix im Steuer-Bonus-Anschreiben.** Im Brief an den Vermieter stand "… für folgende Positionen aus der Betriebskostenabrechnung 2025: davon Schnee-/Eisbeseitigung (€ 22.00), …". In der Haupttabelle (`AbrechnungPDF.jsx`) ist "davon …" korrekt, weil direkt darüber die zusammengefasste Elternzeile steht. In `SteuerbonusPDF.jsx` fehlt dieser Bezug — dort wirkt es wie ein Textbaustein-Fehler, in einem Dokument, das der Kunde unverändert weiterschickt. Neue Hilfsfunktion `ohneDavon()`, angewendet auf Tabelle und Anschreiben.
+
+**Getestet:** Stefans Fall mit Wegwerf-Skript gegen `buildResult()` nachgestellt. Ergebnis: CO2-Abgabe kommt jetzt genau einmal vor (vorher zweimal), Fragen-Block enthält nur noch die drei Positionen ohne eigenen Widerspruchsgrund, `ohneDavon()` gegen alle vier im Code vorkommenden "davon "-Varianten geprüft. Skript danach gelöscht. `npx vite build` fehlerfrei.
+
+**Kosmetisch, nicht angefasst:** Der Brief läuft jetzt über zwei Seiten, wobei auf Seite 2 nur noch Schlussformel und Unterschrift stehen. Bei Geschäftsbriefen üblich und unkritisch, aber verbesserbar, falls es stört.
+
 ## 09.09.2026 — Zwei echte Produktfehler im gekauften PDF behoben (Fund aus Stefans Testkauf)
 
 Stefan hat den umgebauten Kaufweg mit einem echten Testkauf durchgespielt. **Der Umbau selbst funktioniert:** Die Adressdaten wurden nach der Zahlung erhoben und sind korrekt im PDF gelandet (alle drei Seiten). Das dabei erzeugte PDF hat aber zwei inhaltliche Fehler offengelegt, die vorher nie aufgefallen waren, weil ein Fall ohne jeden Widerspruchsgrund nie durchgetestet wurde.
@@ -26,7 +92,7 @@ Die neue Formulierung ist bewusst eine Frage, keine Behauptung: Ob eine Position
 
 **Getestet:** Stefans Fall aus dem Testkauf-PDF (76 m², 2025, 6 Positionen davon 3 ohne Vergleichswert) mit einem Wegwerf-Skript gegen `buildResult()` nachgestellt. Ergebnis: Kopfzeile rechts vorher "3 von 6 auffällig" → jetzt "3 von 6 ohne Vergleichswert", passend zu "Keine Auffälligkeiten" links. Brief-Modus schaltet korrekt auf Auskunftsschreiben, Summenzeile ausgeblendet, alle drei offenen Positionen (SAT-Anlage 78 €, Rauchwarnmelder-Wartung 26,80 €, Sonstige 328,32 €) stehen jetzt im Brief. Skript nach dem Test wieder gelöscht. `npx vite build` fehlerfrei.
 
-**Offen, nicht behoben — Ligaturen in der PDF-Textebene:** Beim Kopieren von Text aus dem PDF entstehen fehlerhafte Wörter ("Unaufällig" statt "Unauffällig", "Betref" statt "Betreff", "ofzieller" statt "offizieller"). Die **visuelle Darstellung ist korrekt** — betroffen ist nur die Textebene (fehlende ToUnicode-Zuordnung für die Ligaturen ff/ffi in der von react-pdf eingebetteten Schrift). Auswirkung: Copy-and-paste aus dem Brief, Suche im PDF und Screenreader. Nicht kritisch, aber für ein Dokument, das der Kunde weiterverwenden soll, unschön. Fix wäre eine Anpassung der Schrift-Einbettung — bewusst nicht zusammen mit den inhaltlichen Fehlern angefasst, um zwei unabhängige Risiken nicht zu vermischen.
+**Zurückgezogener Befund — angebliches Ligatur-Problem gab es nicht.** Ich hatte hier zunächst notiert, die PDF-Textebene sei fehlerhaft ("Unaufällig" statt "Unauffällig", "Betref" statt "Betreff", "ofzieller" statt "offizieller"), und auf eine fehlende ToUnicode-Zuordnung für ff/ffi getippt. Stefan hat denselben Text anschließend aus dem PDF kopiert und eingefügt — dort stehen alle Wörter korrekt. Die fehlerhaften Zeichenfolgen stammten aus meinem eigenen PDF-Auslesewerkzeug, nicht aus dem Dokument. **Kein Handlungsbedarf**, Eintrag hier nur zur Nachvollziehbarkeit belassen, damit dieselbe Fehlvermutung nicht erneut untersucht wird.
 
 ## 09.09.2026 — Kaufabschluss entschlackt: vor der Zahlung nur noch E-Mail, Adressdaten danach
 

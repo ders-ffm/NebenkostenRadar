@@ -51,6 +51,18 @@ const s = StyleSheet.create({
 // feststehendes Ergebnis.
 const PROZENTSATZ = 0.2;
 
+// Entfernt das "davon "-Präfix aus Positionsnamen (09.09.2026, Fund aus dem
+// zweiten Testkauf). In der Haupttabelle von AbrechnungPDF.jsx ist "davon
+// Schnee-/Eisbeseitigung" korrekt — dort steht direkt darüber die
+// zusammengefasste Elternzeile, auf die sich das "davon" bezieht. Hier gibt
+// es diese Elternzeile nicht, und im Anschreiben an den Vermieter landete
+// dadurch der Satz "… für folgende Positionen: davon Schnee-/Eisbeseitigung
+// (€ 22.00)". Das liest sich wie ein Textbaustein-Fehler in einem Dokument,
+// das der Kunde unverändert weiterschickt.
+function ohneDavon(name) {
+  return (name || "").replace(/^davon\s+/i, "");
+}
+
 export default function SteuerbonusPDF({ result, wohnung, adressen }) {
   const positionen = (result.posten_bewertung || []).filter(p => p.steuerlich_35a && p.betrag > 0);
   const summe = Math.round(positionen.reduce((s2, p) => s2 + p.betrag, 0) * 100) / 100;
@@ -80,7 +92,7 @@ export default function SteuerbonusPDF({ result, wohnung, adressen }) {
           <View style={s.table}>
             {positionen.map((p, i) => (
               <View key={i} style={s.tRow}>
-                <Text style={s.tLabel}>{p.posten}</Text>
+                <Text style={s.tLabel}>{ohneDavon(p.posten)}</Text>
                 <Text style={s.tValue}>{fmt(p.betrag)}</Text>
               </View>
             ))}
@@ -100,7 +112,7 @@ export default function SteuerbonusPDF({ result, wohnung, adressen }) {
           <View style={s.anfrageBox}>
             <Text>
               Sehr geehrte Damen und Herren,{"\n\n"}
-              für meine Steuererklärung {wohnung.jahr} bitte ich um eine Aufschlüsselung des reinen Arbeitskostenanteils (ohne Material) für folgende Positionen aus der Betriebskostenabrechnung {wohnung.jahr}: {positionen.map(p => p.posten + " (" + fmt(p.betrag) + ")").join(", ")}.{"\n\n"}
+              für meine Steuererklärung {wohnung.jahr} bitte ich um eine Aufschlüsselung des reinen Arbeitskostenanteils (ohne Material) für folgende Positionen aus der Betriebskostenabrechnung {wohnung.jahr}: {positionen.map(p => ohneDavon(p.posten) + " (" + fmt(p.betrag) + ")").join(", ")}.{"\n\n"}
               Eine Bescheinigung gemäß § 35a EStG bzw. nach dem Muster der Anlage 2 zum BMF-Schreiben vom 09.11.2016 genügt.{"\n\n"}
               Mit freundlichen Grüßen{"\n"}{adressen.mieterName}
             </Text>

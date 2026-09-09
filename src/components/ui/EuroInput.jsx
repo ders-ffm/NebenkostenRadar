@@ -25,6 +25,20 @@ export default function EuroInput({ label, value, onChange, tip, pflicht, warn }
     onChange(e.target.value.replace(/[^0-9.,]/g, ""));
   }
 
+  // Beim Verlassen des Feldes auf volle Cent runden und den bereinigten Wert
+  // zurückschreiben (09.09.2026, siehe CHANGELOG). Vorher konnte der
+  // angezeigte und der gerechnete Wert auseinanderlaufen: Die Eingabe
+  // "0,001" wurde als 0,001 gespeichert, das Feld zeigte aber "0,00" an und
+  // galt zugleich als befüllt (grüner Rahmen). Was im Feld steht, ist jetzt
+  // exakt das, was in die Auswertung und ins PDF geht.
+  function handleBlur() {
+    setFocused(false);
+    if (!value) return;
+    const gerundet = Math.round(toNum(value) * 100) / 100;
+    const neu = gerundet > 0 ? String(gerundet) : "";
+    if (neu !== String(value)) onChange(neu);
+  }
+
   return (
     <div style={{
       display: "flex", alignItems: "flex-start", justifyContent: "space-between",
@@ -46,7 +60,7 @@ export default function EuroInput({ label, value, onChange, tip, pflicht, warn }
         <input
           type="text" inputMode="decimal" placeholder="0,00" value={displayValue}
           onChange={handleChange}
-          onFocus={() => setFocused(true)} onBlur={() => setFocused(false)}
+          onFocus={() => setFocused(true)} onBlur={handleBlur}
           style={{
             width: 108, background: C.surface, border: "1px solid " + (focused ? C.brand : C.border),
             borderRadius: 7, padding: "7px 8px", fontSize: 14, fontFamily: THEME.font.body,
