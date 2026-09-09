@@ -88,3 +88,188 @@ Zur Nachvollziehbarkeit, damit dieselbe Idee nicht wiederholt neu diskutiert wer
 - Meta-Pixel-Einbau: sinnvoll ab regelmäßigem Werbebudget, aktuell nicht dringend
 - Budget/Ausbau für die Hauptsaison Okt–Dez: nach Auswertung von Flight 1 und 2 zu entscheiden
 - Trustpilot: Account existiert (Stand 23.08.2026), aber ungenutzt — keine Bewertungen, kein aktiver Auftritt. Aktivierung (erste Kunden gezielt um Bewertung bitten, Widget einbauen) noch nicht entschieden.
+
+## 8. Datenauswertung 09.09.2026 — GA4 + Search Console, nach der UX-Überarbeitung
+
+Anlass: Weiterhin 0 Käufe, obwohl die Funnel-Überarbeitung vom 30./31.08.2026 (Bug-Fix, Upload-first, Zwischenspeichern, Startseite) live ist. Ziel: Traffic-Problem, Conversion-Problem oder Nachfrage-Problem unterscheiden.
+
+### 8.1 Reichweite — Google Search Console (13.06.–06.09.2026, 3 Monate)
+
+| Kennzahl | Wert |
+|---|---|
+| Impressionen | 974 |
+| Klicks | 34 |
+| CTR | 3,5 % |
+| Ø Position | 39,2 |
+| Seiten überhaupt in Suchergebnissen | 13 |
+
+Suchanfragen (Top 10 nach Klicks):
+
+| Suchanfrage | Klicks | Impressionen |
+|---|---|---|
+| nebenkostenradar | 7 | 20 |
+| betriebskostenspiegel | 0 | 52 |
+| dmb betriebskostenspiegel | 0 | 31 |
+| betriebskostenspiegel dmb | 0 | 27 |
+| widerspruch nebenkostenabrechnung | 0 | 26 |
+| betriebskostenspiegel 2023 | 0 | 24 |
+| nebenkostenspiegel 2024 | 0 | 23 |
+| betriebskostenspiegel hessen 2024 | 0 | 21 |
+| nebenkostenabrechnung prüfen lassen online | 0 | 21 |
+| dmb betriebskostenspiegel 2024 | 0 | 20 |
+
+Seiten:
+
+| Seite | Klicks | Impressionen |
+|---|---|---|
+| / (Startseite) | 31 | 164 |
+| /ratgeber | 2 | 51 |
+| /ratgeber/betriebskostenspiegel-2024 | 1 | 548 |
+| /ratgeber/betriebskostenabrechnung-fristen-und-verjaehrung-2026 | 1 | 63 |
+| /ratgeber/widerspruch-nebenkostenabrechnung | 0 | 113 |
+| übrige 8 Ratgeber-Seiten | 0 | je 29–62 |
+
+**Fakten daraus, ohne Deutung:**
+- Die einzige Suchanfrage mit Klicks ist der Markenname selbst. Alle generischen Suchanfragen haben 0 Klicks.
+- `betriebskostenspiegel-2024` erzeugt mit 548 Impressionen mehr als die Hälfte der Gesamtsichtbarkeit, aber genau 1 Klick (CTR ~0,2 %).
+- Ø Position 39,2 entspricht Seite 4 der Suchergebnisse.
+
+### 8.2 Funnel — GA4 (12.08.–08.09.2026, 28 Tage)
+
+Sitzungen gesamt: 96 · Aktive Nutzer: 45 · Aufrufe: 333 · Schlüsselereignisse: 0 · Umsatz: 0,00 €
+
+Kanäle:
+
+| Kanal | Sitzungen | Engagement-Rate | Ø Dauer |
+|---|---|---|---|
+| Organic Social | 27 (28,1 %) | 77,8 % | 26 Sek. |
+| Organic Shopping | 22 (22,9 %) | 63,6 % | 1 m 18 s |
+| Organic Search | 21 (21,9 %) | 66,7 % | 37 Sek. |
+| Direct | 20 (20,8 %) | 85,0 % | 2 m 15 s |
+| Referral | 6 (6,3 %) | 66,7 % | 3 m 28 s |
+
+Funnel nach aktiven Nutzern:
+
+| Schritt | Nutzer | Übergang vom Vorschritt | Anteil am Start |
+|---|---|---|---|
+| / (Startseite) | 42 | — | 100 % |
+| /pruefen/wohnung | 23 | 55 % | 55 % |
+| /pruefen/posten | 9 | **39 %** | 21 % |
+| /pruefen/ergebnis | 7 | 78 % | 17 % |
+| /pruefen/absender | 3 | 43 % | 7 % |
+| Kauf | 0 | 0 % | 0 % |
+
+**Fakten daraus, ohne Deutung:**
+- Der größte relative Absprung liegt zwischen Wohnung und Posten: 61 % der Nutzer, die den ersten Formularschritt öffnen, erreichen den zweiten nicht.
+- 3 Nutzer haben `/pruefen/absender` erreicht. Dieser Schritt liegt laut `src/App.jsx` (ROUTES) und `src/pages/Result.jsx` **nach** der Preiswahl und nach dem Bestätigen der Widerrufs-Checkbox — diese 3 Nutzer hatten also eine dokumentierte Kaufabsicht.
+- Von diesen 3 hat keiner gekauft.
+- Wichtige Messeinschränkung: GA4 misst wegen des Consent-Gates (`CookieBanner.jsx` lädt gtag.js erst nach aktivem "Akzeptieren") nur eingewilligte Nutzer. Die echten Zahlen liegen über den hier genannten, das Verhältnis der Schritte zueinander bleibt aber aussagekräftig.
+
+### 8.3 Befund am Absender-Schritt (Code-Prüfung, nicht Statistik)
+
+`src/pages/Adressen.jsx` verlangt vor der Zahlung bis zu **10 Pflichtfelder**: E-Mail, E-Mail-Wiederholung, Vor-/Nachname, Straße, PLZ, Ort — und beim 12,99-€-Paket zusätzlich Vermietername, -straße, -PLZ, -Ort. Das Wiederholungsfeld blockiert Einfügen per Zwischenablage aktiv (`onPaste={keinPaste}`).
+
+Einordnung (Inferenz, nicht Messung): Das ist der letzte Schritt vor der Zahlung und gleichzeitig der aufwendigste. Nielsen Norman Group und Baymard Institute führen sowohl die Zahl der Pflichtfelder als auch deaktiviertes Einfügen in Bestätigungsfeldern als bekannte Abbruchtreiber. Ob die drei beobachteten Nutzer genau hier abgesprungen sind, ist mit den vorhandenen Daten **nicht** belegbar — GA4 zeigt nur, dass sie die Seite erreichten und nicht kauften.
+
+### 8.4 Diagnose
+
+Die Zahlen erlauben eine klare Trennung:
+
+1. **Reichweitenproblem, belegt.** 45 aktive Nutzer in 28 Tagen und Ø Position 39,2 in der Suche bedeuten: Es gibt schlicht zu wenig Publikum, um Kaufverhalten überhaupt zu messen. Bei einer für diese Produktklasse plausiblen Conversion von 1–3 % wären aus 42 Startseiten-Nutzern rechnerisch 0,4–1,3 Käufe zu erwarten — 0 Käufe ist damit **statistisch nicht von der Erwartung unterscheidbar**. Aus "0 Käufe" lässt sich bei dieser Stichprobengröße kein Urteil über das Produkt ableiten.
+2. **Conversion-Hinweis, schwach belegt.** Der Absprung Wohnung → Posten (61 %) und die 3 Nutzer mit Kaufabsicht ohne Abschluss sind Auffälligkeiten, aber bei n=23 bzw. n=3 keine belastbaren Befunde.
+3. **Nachfrage-/Produktproblem: unbewiesen in beide Richtungen.** Dafür fehlt die Datengrundlage vollständig.
+
+Die dominierende Größe ist eindeutig die Reichweite, nicht die Conversion.
+
+### 8.5 Nachtrag 09.09.2026 — Supabase-Zahlen ändern die Diagnose erheblich
+
+Die serverseitigen Zahlen (kein Consent-Gate, daher vollständig) widersprechen der reinen "zu wenig Traffic"-Deutung aus 8.4:
+
+| Tabelle | Anzahl | Bedeutung |
+|---|---|---|
+| `nkr_reports` | **26** | Nutzer, die das Absender-Formular **vollständig** ausgefüllt und zu Stripe weitergeleitet wurden |
+| `nkr_drafts` | 1 | ausschließlich mein eigener Testlauf (ID `a49fcc33-…`, 30.08.2026) |
+| `nkr_foto_ratelimit` | 1 | als Nutzungsmaß wertlos — Tabelle löscht Zeilen älter als 24 h selbst (siehe `analyse-foto.js`) |
+
+**Warum `nkr_reports` = 26 aussagekräftig ist:** In `src/pages/Adressen.jsx` (Zeilen 97–112) wird `/api/save-report` aufgerufen und **unmittelbar danach** `window.location.href` auf den Stripe-Link gesetzt. Eine Zeile in `nkr_reports` entsteht also erst, wenn jemand alle bis zu 10 Pflichtfelder ausgefüllt, die Validierung bestanden und auf "Jetzt kaufen → Weiter zu Stripe" geklickt hat. Das ist dokumentierte, vollständige Kaufabsicht — nicht nur ein Seitenaufruf.
+
+26 solche Vorgänge, 0 Zahlungen.
+
+**Stripe-Checkout live geprüft (09.09.2026), beide Links funktionieren:**
+
+| Link | Preis | Status |
+|---|---|---|
+| `STRIPE_LINK_AUSWERTUNG` | 9,99 € | lädt korrekt, Live-Modus (kein `test_`), Produktname korrekt |
+| `STRIPE_LINK_VOLL` | 12,99 € | lädt korrekt, Live-Modus, Produktname korrekt |
+
+Der Checkout ist also **nicht defekt**. Der Fehler von 08/2026 (Testmodus-Link auf main) wiederholt sich nicht.
+
+**Befund: angebotene Zahlungsmethoden.** Die Stripe-Checkout-Seite bietet an: Kreditkarte, Apple Pay, Link (Stripe-eigen), Amazon Pay. **Nicht angeboten: PayPal, Kauf auf Rechnung, SEPA-Lastschrift, Klarna.**
+
+Gegenüberstellung mit den tatsächlichen Marktanteilen im deutschen E-Commerce (EHI-Studie "Online-Payment 2026"):
+
+| Zahlungsmethode | Marktanteil DE | bei NKR verfügbar |
+|---|---|---|
+| PayPal | 28,7 % | **nein** |
+| Kauf auf Rechnung | 26,1 % | **nein** |
+| Lastschrift | 14,4 % | **nein** |
+| Kredit-/Debitkarte | 13,7 % | ja |
+| Apple Pay | 1,3 % | ja |
+
+Rechnerisch decken die angebotenen Methoden rund 15 % der im deutschen Markt bevorzugten Zahlungswege ab; auf etwa 69 % (PayPal + Rechnung + Lastschrift) hat NKR keine Antwort. Für ein 9,99-€-Impulsprodukt an Privatkunden ist das ein struktureller Nachteil, kein Randdetail.
+
+**Wichtige, noch offene Einschränkung:** Unbekannt ist, wie viele der 26 Zeilen aus Stefans eigenen Entwicklungs-/Testläufen stammen. `nkr_reports` hat 365 Tage Aufbewahrung, die Zahl ist also kumulativ seit Bestehen der Tabelle und umfasst zwingend auch die Testkäufe aus der Entwicklungsphase. Ohne diese Aufschlüsselung ist die reale Zahl echter Kaufabbrecher unbekannt. Zu klären mit:
+
+```sql
+select date(created_at) as tag, stufe, count(*) from nkr_reports group by 1,2 order by 1;
+```
+
+**Vorläufige Neubewertung gegenüber 8.4:** Die Aussage "das Problem ist ausschließlich Reichweite" ist so nicht mehr haltbar. Es gibt einen zweiten, unabhängigen und konkret behebbaren Engpass am Zahlungsübergang. Wie schwer er wiegt, hängt an der obigen Aufschlüsselung.
+
+### 8.6 Auflösung 09.09.2026 — die 26 Zeilen sind Eigen-Tests, der echte Abbruch liegt im Absender-Formular
+
+Aufschlüsselung von `nkr_reports` nach Tag:
+
+| Tag | Stufe | Anzahl |
+|---|---|---|
+| 08.08.2026 | voll | 2 |
+| 09.08.2026 | voll | 15 |
+| 10.08.2026 | voll | 3 |
+| 11.08.2026 | voll | 1 |
+| 12.08.2026 | voll | 2 |
+| 13.08.2026 | voll | 1 |
+| 13.08.2026 | auswertung | 1 |
+| 14.08.2026 | voll | 1 |
+| **ab 15.08.2026** | — | **0** |
+
+**Alle 26 Zeilen fallen in das Fenster 08.–14.08.2026.** Dieses Fenster deckt sich exakt mit der dokumentierten Entwicklungs- und Testphase laut `CHANGELOG.md`: End-to-End-Tests der Foto-Erkennung (10.08.), Erneuerung der Stripe-Live-Links nach dem Testmodus-Vorfall (11./12.08.), Realtest mit Stefans eigener Abrechnung (12.08.), Widerruf-Zustimmung (13.08.), Steuer-Bonus (14.08.). 15 Vorgänge an einem einzigen Tag sind kein Kundenverhalten, sondern iteratives Testen.
+
+**Schlussfolgerung: Es hat noch nie ein echter Nutzer die Stripe-Seite erreicht.**
+
+**Damit korrigiere ich meine eigene Gewichtung aus 8.5.** Die fehlenden Zahlungsmethoden (PayPal, Rechnung, Lastschrift) sind ein realer struktureller Nachteil, aber sie sind **nicht** die aktuelle Ursache für 0 Käufe — bis dorthin kommt schlicht niemand. Ich hatte den Befund in der ersten Reaktion zu hoch gehängt. Er bleibt richtig, wird aber erst relevant, wenn wieder jemand die Kasse erreicht.
+
+**Der tatsächliche Abbruchpunkt, jetzt datenbelegt:**
+
+| Schritt (GA4, 12.08.–08.09.) | Nutzer |
+|---|---|
+| /pruefen/ergebnis | 7 |
+| /pruefen/absender (Formular geöffnet) | 3 |
+| Formular abgeschickt (= `nkr_reports`-Zeile) | **0** |
+| Kauf | 0 |
+
+Drei Nutzer haben Preis gewählt, Widerrufs-Checkbox bestätigt, das Absender-Formular geöffnet — und es nicht abgeschickt. Bei n=3 ist das statistisch schwach, die Richtung aber eindeutig und deckungsgleich mit der Struktur des Formulars (`Adressen.jsx`):
+
+- bis zu **10 Pflichtfelder** vor der Zahlung, davon 4 für die Vermieteradresse
+- E-Mail muss **zweimal getippt** werden, Einfügen aus der Zwischenablage ist aktiv blockiert (`onPaste={keinPaste}`, `onDrop={keinPaste}`)
+- die vollständige Vermieteranschrift wird verlangt, bevor der Nutzer irgendetwas bezahlt hat — viele Mieter müssen dafür erst den Mietvertrag oder die Abrechnung heraussuchen
+
+Die Vermieteradresse wird technisch erst **nach** der Zahlung gebraucht: `Download.jsx` erzeugt das PDF aus `daten.adressen`, die es über `api/get-report.js` aus `nkr_reports` lädt. Eine Erhebung nach der Zahlung ist architektonisch möglich.
+
+### 8.7 Korrigierte Gesamtdiagnose (09.09.2026)
+
+Zwei voneinander unabhängige Engpässe, in dieser Reihenfolge:
+
+1. **Reichweite (dominant, belegt).** 42 Startseiten-Nutzer in 28 Tagen, Ø Google-Position 39,2, alle generischen Suchanfragen mit 0 Klicks. Selbst ein perfekter Funnel erzeugt aus dieser Menge rechnerisch unter 1 Kauf.
+2. **Letzte Hürde vor der Kasse (konkret, schwach belegt, aber billig zu beheben).** 3 von 3 Nutzern mit Kaufabsicht sind im Absender-Formular ausgestiegen.
+
+Weiterhin **nicht** beurteilbar: ob das Produkt selbst überzeugt und ob zahlungsbereite Nachfrage besteht. Dafür braucht es zuerst Nutzer, die überhaupt bis zur Kasse kommen.

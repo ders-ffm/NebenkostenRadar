@@ -86,8 +86,11 @@ export default function Result({ navigateTo, result, wohnung, werte, gesamtsumme
   function weiterZumKauf() {
     if (!widerrufOk) return;
     setStufe(gewaehlteStufe);
-    if (gewaehlteStufe === "voll") navigateTo("adressen");
-    else navigateTo("adressen"); // Adressen-Seite wird für beide Stufen genutzt (Absenderdaten fürs PDF), Brief-Empfängerfelder dort optional
+    // Beide Stufen gehen auf dieselbe Seite. Seit dem Umbau vom 09.09.2026
+    // (siehe Adressen.jsx) steht dort nur noch die E-Mail-Abfrage vor der
+    // Zahlung — die eigentlichen Adressdaten werden erst nach dem Kauf in
+    // Download.jsx erhoben. Deshalb ist hier keine Fallunterscheidung mehr nötig.
+    navigateTo("adressen");
   }
 
   return (

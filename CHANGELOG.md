@@ -2,6 +2,25 @@
 
 Alle wesentlichen Änderungen an diesem Projekt, mit Datum und Begründung. Dient der Nachvollziehbarkeit, damit auch ohne KI-Unterstützung verstanden werden kann, warum etwas so ist, wie es ist.
 
+## 09.09.2026 — Kaufabschluss entschlackt: vor der Zahlung nur noch E-Mail, Adressdaten danach
+
+**Anlass, datenbelegt (vollständige Auswertung in `planung/werbeplan-nkr.md` Abschnitt 8.5–8.7):** Die Aufschlüsselung von `nkr_reports` nach Tag zeigt, dass **alle 26 Zeilen** aus dem Zeitraum 08.–14.08.2026 stammen — exakt Stefans dokumentierter Test- und Entwicklungsphase (15 Vorgänge an einem einzigen Tag). Seit dem 14.08.2026 hat **kein einziger echter Nutzer** dieses Formular abgeschickt, obwohl laut GA4 im Zeitraum 12.08.–08.09. drei Nutzer die Seite geöffnet hatten. Drei von drei sind dort ausgestiegen. Kein echter Nutzer hat je die Stripe-Seite gesehen.
+
+**Ursache:** `Adressen.jsx` verlangte bis zu **10 Pflichtfelder vor der Zahlung** — E-Mail, E-Mail-Wiederholung (mit aktiv blockiertem Einfügen), Name, Straße, PLZ, Ort und bei Stufe "voll" zusätzlich die komplette Vermieteranschrift. Für die Vermieteradresse muss man erst den Mietvertrag oder die Abrechnung heraussuchen — verlangt genau im Moment der größten Kaufbereitschaft.
+
+**Umbau:**
+
+- `src/pages/Adressen.jsx` komplett neu: **ein einziges Pflichtfeld** (E-Mail). Wiederholungsfeld und Paste-Sperre ersatzlos gestrichen; an ihre Stelle tritt eine sichtbare Rückmeldung ("Wir schicken es an: … — bitte kurz prüfen"), die denselben Zweck ohne Zusatzarbeit erfüllt. Zusätzliche Absicherung gegen Tippfehler: Das PDF liegt nach der Zahlung ohnehin direkt auf der Download-Seite bereit, eine vertippte Adresse führt nicht zum Totalverlust. Kaufbutton zeigt jetzt den Preis.
+- `src/pages/Download.jsx`: erhebt die Adressdaten **nach** der Zahlung. Neue Hilfsfunktion `adressenVollstaendig()`, Formular erscheint nur solange Daten fehlen (Altbestellungen aus der Zeit davor sind vollständig und sehen es nie). Der automatische E-Mail-Versand ist jetzt gesperrt, bis die Adressen vollständig sind — sonst ginge ein PDF mit leerem Briefkopf raus, und der Doppelversand-Schutz in `api/send-email.js` würde einen späteren, korrekten Versand dauerhaft verhindern.
+- `api/save-report.js`: neuer **PATCH-Zweig**, der ausschließlich das Feld `adressen` derselben Zeile nachträgt. Bewusst als zweiter Zweig in der bestehenden Datei statt als neue `api/`-Datei — Vercel zählt jede Datei dort als eigene Serverless Function, Hobby-Limit 12 (siehe Eintrag 31.08.2026, daran ist schon einmal ein Deploy gescheitert). Keine Zahlungsprüfung nötig: Die `sessionId` ist eine `crypto.randomUUID()` (122 Bit), überschrieben wird nur `adressen`, nichts Zahlungsrelevantes.
+- `src/pages/Result.jsx`: überflüssige Fallunterscheidung in `weiterZumKauf()` entfernt (beide Stufen gingen ohnehin auf dieselbe Seite), Kommentar an den neuen Ablauf angepasst.
+
+**Bewusst in Kauf genommene Einschränkung:** Wer nach der Zahlung den Tab schließt, ohne die Adressen einzutragen, hat bezahlt und bekommt zunächst weder PDF noch E-Mail. Die `nkr_reports`-Zeile existiert dann samt E-Mail-Adresse, ein manueller Nachversand durch Stefan ist also möglich. Bei der aktuellen Bestellmenge ist das vertretbar; ein automatischer Erinnerungsmechanismus wäre der nächste Ausbauschritt, falls es je auftritt.
+
+**Nicht umgesetzt, aber empfohlen (Dashboard-Einstellung ohne Code):** Der Stripe-Checkout bietet aktuell nur Kreditkarte, Apple Pay, Link und Amazon Pay an — **kein PayPal, keine Rechnung, keine Lastschrift**. Laut EHI-Studie "Online-Payment 2026" deckt das rund 15 % der im deutschen E-Commerce bevorzugten Zahlungswege ab; auf PayPal (28,7 %), Rechnungskauf (26,1 %) und Lastschrift (14,4 %) hat NKR keine Antwort. Für ein 9,99-€-Produkt an Privatkunden ist das ein struktureller Nachteil. Relevant wird er, sobald wieder jemand die Kasse erreicht.
+
+**Getestet:** `npx vite build` fehlerfrei (mit testweise gestubbtem `src/artikel.js`, danach entfernt). Ein Live-Test des vollständigen Kaufwegs ist ohne echte Zahlung nicht möglich — der Ablauf nach der Zahlung sollte von Stefan einmal mit einem Stripe-Testkauf oder einem 100-%-Gutscheincode durchgespielt werden.
+
 ## 31.08.2026 — Zweiter Nachtrag: "Später fortsetzen"-Link lud nie den gespeicherten Entwurf (Bug-Fix)
 
 **Fakt (per Live-Test bestätigt):** Nach erfolgreichem Deploy wurde der komplette Funnel live durchgetestet (Startseite, Wohnung.jsx, Posten.jsx-Bugfix, Result.jsx — alle vier bestätigt korrekt live). Der "Später fortsetzen"-Link selbst funktionierte jedoch nicht: Link wurde erzeugt, die URL beim Öffnen korrekt aufgerufen, aber es wurde nachweislich (Netzwerk-Log geprüft) nie eine Anfrage an `api/draft.js` gestellt — die Formularfelder blieben leer statt mit den gespeicherten Werten befüllt zu werden.

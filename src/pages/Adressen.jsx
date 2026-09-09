@@ -1,85 +1,94 @@
 // ─────────────────────────────────────────────────────────────────────────
-// Adressen.jsx — Absender-/Empfänger-Daten fürs PDF. URL: "/pruefen/absender"
-// Bei Stufe "auswertung" werden nur Absenderdaten für den PDF-Kopf gebraucht,
-// die Vermieter-Felder bleiben optional (kein Brief nötig).
+// Adressen.jsx — letzter Schritt vor der Zahlung. URL: "/pruefen/absender"
+//
+// GRUNDLEGEND UMGEBAUT 09.09.2026 (siehe planung/werbeplan-nkr.md Abschnitt
+// 8.6 und CHANGELOG.md). Auslöser: Auswertung der Supabase-Daten hat gezeigt,
+// dass ALLE 26 Zeilen in nkr_reports aus Stefans eigener Testphase
+// (08.–14.08.2026) stammen. Seither: kein einziger echter Nutzer, der dieses
+// Formular abgeschickt hat — obwohl laut GA4 drei Nutzer es geöffnet hatten.
+// Drei von drei sind hier ausgestiegen.
+//
+// VORHER standen hier bis zu 10 Pflichtfelder VOR der Zahlung:
+//   E-Mail, E-Mail-Wiederholung (mit blockiertem Einfügen!), Name, Straße,
+//   PLZ, Ort — und bei Stufe "voll" zusätzlich die komplette Vermieteradresse.
+// Damit wurde dem Nutzer im Moment der größten Kaufbereitschaft Hausaufgaben
+// aufgegeben: Für die Vermieteranschrift muss man erst den Mietvertrag oder
+// die Abrechnung heraussuchen.
+//
+// JETZT: genau EIN Pflichtfeld vor der Zahlung — die E-Mail-Adresse, weil wir
+// ohne sie nichts zustellen können. Alles andere wird NACH der Zahlung in
+// Download.jsx erhoben. Das ist auch fachlich korrekt: Die Adressdaten werden
+// ausschließlich fürs PDF gebraucht (Briefkopf in PruefberichtDocument.jsx,
+// Empfängerblock in BriefPDF.jsx) — und das PDF entsteht ohnehin erst nach
+// der Zahlung.
+//
+// Wiederholungsfeld + Paste-Sperre ersatzlos gestrichen: Die doppelte Eingabe
+// sollte Tippfehler abfangen, kostet aber jeden ehrlichen Nutzer einen
+// zusätzlichen Arbeitsschritt. Ersatz ist die deutlich sichtbare Rückmeldung
+// unten ("Wir schicken es an: …"), die denselben Zweck ohne Zusatzaufwand
+// erfüllt. Zusätzliche Absicherung: Das PDF liegt nach der Zahlung ohnehin
+// direkt auf der Download-Seite zum Herunterladen bereit — eine vertippte
+// E-Mail führt also nicht zum Totalverlust.
 // ─────────────────────────────────────────────────────────────────────────
 import { useState } from "react";
 import { THEME } from "../config/theme.js";
-import { BUSINESS } from "../config/business.js";
 import Field from "../components/ui/Field.jsx";
 import Btn from "../components/ui/Btn.jsx";
 import StepBar from "../components/ui/StepBar.jsx";
+import { BUSINESS } from "../config/business.js";
 
 export default function Adressen({ navigateTo, adressen, setAdressen, stufe, werte, wohnung, marketingOptIn, setMarketingOptIn, widerrufOk }) {
   const C = THEME.color;
   const [errors, setErrors] = useState({});
-  const [emailWiederholen, setEmailWiederholen] = useState("");
+  const [laeuft, setLaeuft] = useState(false);
   const setA = (k, v) => setAdressen(p => ({ ...p, [k]: v }));
-  const brauchtVermieter = stufe === "voll";
-  // Paste bewusst blockiert (Copy&Paste UND Drag&Drop) — sonst würde eine
-  // einmal falsch eingegebene Adresse einfach in beide Felder übertragen,
-  // und die doppelte Eingabe würde ihren Zweck (Tippfehler abfangen) verfehlen.
-  const keinPaste = e => e.preventDefault();
+  const preis = stufe === "voll" ? BUSINESS.PREIS_VOLL : BUSINESS.PREIS_AUSWERTUNG;
 
   function validate() {
     const e = {};
-    if (!adressen.email.trim()) e.email = "Pflichtfeld";
-    else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(adressen.email.trim())) e.email = "Ungültige E-Mail-Adresse";
-    if (!emailWiederholen.trim()) e.emailWiederholen = "Pflichtfeld";
-    else if (adressen.email.trim().toLowerCase() !== emailWiederholen.trim().toLowerCase()) e.emailWiederholen = "E-Mail-Adressen stimmen nicht überein";
-    if (!adressen.mieterName.trim()) e.mieterName = "Pflichtfeld";
-    if (!adressen.mieterStrasse.trim()) e.mieterStrasse = "Pflichtfeld";
-    if (!/^\d{5}$/.test(adressen.mieterPlz)) e.mieterPlz = "5-stellige PLZ";
-    if (!adressen.mieterOrt.trim()) e.mieterOrt = "Pflichtfeld";
-    if (brauchtVermieter) {
-      if (!adressen.vermieterName.trim()) e.vermieterName = "Pflichtfeld";
-      if (!adressen.vermieterStrasse.trim()) e.vermieterStrasse = "Pflichtfeld";
-      if (!/^\d{5}$/.test(adressen.vermieterPlz)) e.vermieterPlz = "5-stellige PLZ";
-      if (!adressen.vermieterOrt.trim()) e.vermieterOrt = "Pflichtfeld";
-    }
+    const mail = (adressen.email || "").trim();
+    if (!mail) e.email = "Pflichtfeld";
+    else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(mail)) e.email = "Ungültige E-Mail-Adresse";
     setErrors(e);
     return Object.keys(e).length === 0;
   }
+
+  const mailOk = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test((adressen.email || "").trim());
 
   return (
     <div style={{ fontFamily: THEME.font.body, background: C.bg, color: C.text, minHeight: "100vh" }}>
       <div style={{ background: C.surface, borderBottom: "1px solid " + C.border }}>
         <div style={{ padding: "20px 20px 0", maxWidth: THEME.layout.formMax, margin: "0 auto", boxSizing: "border-box" }}>
           <button onClick={() => navigateTo("result")} style={{ background: "none", border: "none", color: C.textMuted, cursor: "pointer", fontSize: 13, padding: "0 0 12px", fontFamily: THEME.font.body }}>← Zurück</button>
-          <StepBar current={3} total={3} label="Absender" />
+          <StepBar current={3} total={3} label="Zahlung" />
         </div>
       </div>
+
       <div style={{ padding: "22px 20px 40px", maxWidth: THEME.layout.formMax, margin: "0 auto", boxSizing: "border-box" }}>
-        <h2 style={{ fontFamily: THEME.font.heading, fontSize: 21, fontWeight: 600, margin: "0 0 6px", textAlign: "center" }}>Angaben für dein PDF</h2>
-        <p style={{ fontSize: 13, color: C.textMuted, margin: "0 0 22px", textAlign: "center" }}>Für dein PDF und den Versand per E-Mail. Speicherdauer maximal 12 Monate, siehe Datenschutzerklärung.</p>
+        <h2 style={{ fontFamily: THEME.font.heading, fontSize: 21, fontWeight: 600, margin: "0 0 6px", textAlign: "center" }}>Wohin sollen wir dein PDF schicken?</h2>
+        <p style={{ fontSize: 13, color: C.textMuted, margin: "0 0 22px", textAlign: "center" }}>
+          Nur die E-Mail-Adresse. Deine Anschrift für den Bericht fragen wir direkt nach der Zahlung ab — das dauert keine Minute.
+        </p>
 
         <div style={{ background: C.surface, border: "1px solid " + C.border, borderRadius: THEME.radius.lg, padding: "16px", marginBottom: 14 }}>
-          <div style={{ fontSize: 11, color: C.accent, fontWeight: 700, letterSpacing: "0.1em", textTransform: "uppercase", marginBottom: 14 }}>Kontakt</div>
-          <Field label="E-Mail-Adresse" type="email" value={adressen.email} onChange={v => setA("email", v)} placeholder="max@beispiel.de" required error={errors.email} autoFocus />
-          <Field label="E-Mail-Adresse wiederholen" type="email" value={emailWiederholen} onChange={setEmailWiederholen} placeholder="max@beispiel.de" required error={errors.emailWiederholen} onPaste={keinPaste} onDrop={keinPaste} tip="Zum Abgleich bitte erneut eintippen" />
-        </div>
-
-        <div style={{ background: C.surface, border: "1px solid " + C.border, borderRadius: THEME.radius.lg, padding: "16px", marginBottom: 14 }}>
-          <div style={{ fontSize: 11, color: C.accent, fontWeight: 700, letterSpacing: "0.1em", textTransform: "uppercase", marginBottom: 14 }}>Deine Adresse</div>
-          <Field label="Vor- und Nachname" value={adressen.mieterName} onChange={v => setA("mieterName", v)} placeholder="Max Mustermann" required error={errors.mieterName} />
-          <Field label="Straße und Hausnummer" value={adressen.mieterStrasse} onChange={v => setA("mieterStrasse", v)} placeholder="Musterstraße 12" required error={errors.mieterStrasse} />
-          <div style={{ display: "grid", gridTemplateColumns: "100px 1fr", gap: 10 }}>
-            <Field label="PLZ" value={adressen.mieterPlz} onChange={v => setA("mieterPlz", v)} placeholder="12345" required error={errors.mieterPlz} maxLength={5} />
-            <Field label="Ort" value={adressen.mieterOrt} onChange={v => setA("mieterOrt", v)} placeholder="Musterstadt" required error={errors.mieterOrt} />
-          </div>
-        </div>
-
-        {brauchtVermieter && (
-          <div style={{ background: C.surface, border: "1px solid " + C.border, borderRadius: THEME.radius.lg, padding: "16px", marginBottom: 14 }}>
-            <div style={{ fontSize: 11, color: C.textMuted, fontWeight: 700, letterSpacing: "0.1em", textTransform: "uppercase", marginBottom: 14 }}>Vermieter / Hausverwaltung (für den Brief)</div>
-            <Field label="Name oder Firma" value={adressen.vermieterName} onChange={v => setA("vermieterName", v)} placeholder="Muster Verwaltungs GmbH" required error={errors.vermieterName} />
-            <Field label="Straße und Hausnummer" value={adressen.vermieterStrasse} onChange={v => setA("vermieterStrasse", v)} placeholder="Verwalterstraße 1" required error={errors.vermieterStrasse} />
-            <div style={{ display: "grid", gridTemplateColumns: "100px 1fr", gap: 10 }}>
-              <Field label="PLZ" value={adressen.vermieterPlz} onChange={v => setA("vermieterPlz", v)} placeholder="12345" required error={errors.vermieterPlz} maxLength={5} />
-              <Field label="Ort" value={adressen.vermieterOrt} onChange={v => setA("vermieterOrt", v)} placeholder="Musterstadt" required error={errors.vermieterOrt} />
+          <Field
+            label="E-Mail-Adresse"
+            type="email"
+            value={adressen.email}
+            onChange={v => setA("email", v)}
+            placeholder="max@beispiel.de"
+            required
+            error={errors.email}
+            autoFocus
+          />
+          {/* Ersetzt das frühere Wiederholungsfeld: sichtbare Rückmeldung statt
+              zweitem Tippen. Erscheint erst, wenn die Adresse formal gültig ist. */}
+          {mailOk && !errors.email && (
+            <div style={{ fontSize: 12.5, color: C.textMuted, marginTop: -4, lineHeight: 1.6 }}>
+              Wir schicken es an: <strong style={{ color: C.text }}>{adressen.email.trim()}</strong> — bitte kurz prüfen.
             </div>
-          </div>
-        )}
+          )}
+        </div>
 
         <label style={{ display: "flex", alignItems: "flex-start", gap: 10, marginBottom: 18, cursor: "pointer" }}>
           <input
@@ -94,11 +103,14 @@ export default function Adressen({ navigateTo, adressen, setAdressen, stufe, wer
           </span>
         </label>
 
-        <Btn onClick={async () => {
+        <Btn disabled={laeuft} onClick={async () => {
           if (!validate()) return;
+          setLaeuft(true);
           const sessionId = crypto.randomUUID();
-          // Adress- und Ergebnisdaten vor dem Stripe-Redirect speichern, damit
-          // nach der Zahlung (Download.jsx) das PDF erzeugt werden kann.
+          // Ergebnisdaten vor dem Stripe-Redirect speichern, damit Download.jsx
+          // nach der Zahlung das PDF erzeugen kann. Die Adressfelder sind an
+          // dieser Stelle absichtlich noch leer — sie werden dort nachgetragen
+          // (PATCH auf dieselbe Zeile, siehe api/save-report.js).
           try {
             await fetch("/api/save-report", {
               method: "POST",
@@ -111,8 +123,13 @@ export default function Adressen({ navigateTo, adressen, setAdressen, stufe, wer
           const link = stufe === "voll" ? BUSINESS.STRIPE_LINK_VOLL : BUSINESS.STRIPE_LINK_AUSWERTUNG;
           window.location.href = link + "?client_reference_id=" + sessionId;
         }}>
-          Jetzt kaufen → Weiter zu Stripe
+          {laeuft ? "Einen Moment …" : "Jetzt kaufen · " + preis.toFixed(2).replace(".", ",") + " € →"}
         </Btn>
+
+        <p style={{ fontSize: 11.5, color: C.textDim, textAlign: "center", marginTop: 12, lineHeight: 1.6 }}>
+          Zahlung über Stripe · Einmalig, kein Abo · Speicherdauer der Daten maximal 12 Monate, siehe{" "}
+          <a href="/datenschutz" onClick={e => { e.preventDefault(); navigateTo("datenschutz"); }} style={{ color: C.brand }}>Datenschutzerklärung</a>.
+        </p>
       </div>
     </div>
   );
