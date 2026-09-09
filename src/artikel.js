@@ -13,6 +13,174 @@
 // scripts/rechtsmonitor.mjs umgesetzt (deterministische ID-Vergabe).
 export const ARTIKEL = [
     {
+      id: "grundsteuerreform-2026-auswirkungen-auf-die-nebenkostenabrechnung",
+      titel: "Grundsteuerreform 2026: Auswirkungen auf die Nebenkostenabrechnung für Mieter",
+      teaser: "Die neuen Grundsteuerwerte tauchen 2026 erstmals in vielen Nebenkostenabrechnungen auf – mit teils erheblichen Nachzahlungen. Dieser Ratgeber erklärt, welche Rechtsgrundlage gilt, was Sie prüfen sollten und wann Sie sich gegen eine überhöhte Umlage wehren können.",
+      datum: "September 2026",
+      lesezeit: "9 Min.",
+      bild: "https://images.unsplash.com/photo-1554224155-6726b3ff858f?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w5NzcyMzl8MHwxfHNlYXJjaHwxfHxwcm9wZXJ0eSUyMHRheCUyMGhvdXNlJTIwY2FsY3VsYXRvciUyMGRvY3VtZW50c3xlbnwxfDB8fHwxNzg4MjY3NzcxfDA&ixlib=rb-4.1.0&q=80&w=1080&utm_source=nebenkostenradar&utm_medium=referral",
+      bildAlt: "Grundsteuerreform 2026: Auswirkungen auf die Nebenkostenabrechnung für Mieter",
+      kategorie: "Mietrecht",
+      keywords: [],
+      inhalt: [
+        {
+                "typ": "intro",
+                "text": "Viele Mieter erhalten in diesen Wochen ihre Nebenkostenabrechnung für das Jahr 2025 – und stoßen dort erstmals auf einen deutlich veränderten Posten: die Grundsteuer. Grund dafür ist die Grundsteuerreform, die zum 1. Januar 2025 in Kraft getreten ist und die Bemessungsgrundlage für praktisch jedes Grundstück in Deutschland neu berechnet hat. Wer eine überraschend hohe Nachforderung in seiner Abrechnung findet, sollte wissen, worauf sich diese stützt und wo die Grenzen der Umlage liegen."
+        },
+        {
+                "typ": "h2",
+                "text": "Warum wurde die Grundsteuer überhaupt reformiert?"
+        },
+        {
+                "typ": "text",
+                "text": "Auslöser der Reform war eine höchstrichterliche Entscheidung. Das Bundesverfassungsgericht erklärte die alte Grundsteuerbemessung 2018 für verfassungswidrig, weil sie auf völlig veralteten Einheitswerten aus dem Jahr 1964 in Westdeutschland und 1935 in Ostdeutschland beruhte. Der Gesetzgeber musste daraufhin eine neue Bewertungsgrundlage schaffen, die seit dem 1. Januar 2025 bundesweit gilt. Dabei durfte jedes Bundesland eigene Berechnungsmodelle festlegen: Bayern, Baden-Württemberg und einige weitere Länder wählten eigene Modelle, während in den übrigen Ländern das sogenannte Bundesmodell zur Anwendung kommt."
+        },
+        {
+                "typ": "h2",
+                "text": "Ändert sich die Umlagefähigkeit der Grundsteuer?"
+        },
+        {
+                "typ": "text",
+                "text": "Die Reform betrifft ausschließlich die Berechnung der Grundsteuer, nicht ihre grundsätzliche Umlagefähigkeit. Rechtsgrundlage bleibt § 2 Nr. 1 der Betriebskostenverordnung (BetrKV), der die Grundsteuer als erste von siebzehn Betriebskostenarten ausdrücklich als laufende öffentliche Last des Grundstücks benennt. Damit ein Vermieter diese Kosten tatsächlich auf Sie umlegen darf, muss die Umlage der Betriebskosten im Mietvertrag wirksam vereinbart worden sein, wobei bei Wohnraummietverhältnissen die strengeren Anforderungen des § 556 BGB gelten. Fehlt eine solche Klausel im Mietvertrag vollständig – etwa bei einer reinen Bruttomiete ohne jeden Betriebskostenbezug –, bleibt die Grundsteuer beim Vermieter, unabhängig davon, wie stark sie durch die Reform gestiegen ist."
+        },
+        {
+                "typ": "text",
+                "text": "Praktisch reicht dabei häufig schon ein pauschaler Verweis im Mietvertrag auf § 2 BetrKV. Der Bundesgerichtshof hat bereits mit Urteil vom 7. April 2004 (Az. VIII ZR 167/03) entschieden, dass ein solcher Verweis genügt, damit alle dort aufgeführten Positionen – und damit auch die Grundsteuer – als vereinbart gelten. Eine gesonderte, namentliche Nennung der Grundsteuer im Vertrag ist also nicht zwingend erforderlich."
+        },
+        {
+                "typ": "h2",
+                "text": "Wann taucht die neue Grundsteuer erstmals in Ihrer Abrechnung auf?"
+        },
+        {
+                "typ": "text",
+                "text": "Auch wenn die neuen Grundsteuerwerte bereits ab dem 1. Januar 2025 gelten, erfolgt die Abrechnung der Betriebskosten üblicherweise erst nach Ablauf des Kalenderjahres. Die konkreten finanziellen Veränderungen werden für Mieter deshalb erstmals mit der Nebenkostenabrechnung für das Kalenderjahr 2025 spürbar, die üblicherweise im Laufe des Jahres 2026 zugeht. Da viele Vermieter diese Abrechnung erst gegen Ende des Jahres verschicken, sehen viele Mieter die neue, höhere Grundsteuer zum ersten Mal in einer Abrechnung, die bereits ein ganzes Jahr zurückliegt – häufig verbunden mit einer Nachzahlung, die auf einen Schlag fällig wird."
+        },
+        {
+                "typ": "verweis",
+                "ziel": "betriebskostenabrechnung-fristen-und-verjaehrung-2026",
+                "text": "Welche Frist Ihr Vermieter für die Zusendung der Jahresabrechnung überhaupt einhalten muss und wann Ansprüche verjähren, erfahren Sie im Ratgeber zu Fristen und Verjährung bei der Betriebskostenabrechnung."
+        },
+        {
+                "typ": "h2",
+                "text": "Regionale Unterschiede: Warum die Erhöhung so stark variiert"
+        },
+        {
+                "typ": "text",
+                "text": "Die Auswirkungen der Reform fallen je nach Region und Immobilienlage sehr unterschiedlich aus. In begehrten Metropolregionen und Ballungszentren wie München oder Berlin, wo die Bodenrichtwerte in den letzten Jahren erheblich gestiegen sind, ist tendenziell mit deutlichen Steigerungen der Grundsteuer zu rechnen. In der Praxis werden dabei mitunter Erhöhungen von teils 30 bis 100 Prozent in gefragten Lagen beobachtet, während die Grundsteuer in strukturschwächeren Regionen stagnieren oder sogar sinken kann. Ein pauschaler Vergleich mit dem Vorjahreswert ist deshalb wenig aussagekräftig – entscheidend ist der aktuelle Bescheid für Ihr konkretes Objekt."
+        },
+        {
+                "typ": "h2",
+                "text": "Wie die Grundsteuer auf Sie als Mieter verteilt wird"
+        },
+        {
+                "typ": "text",
+                "text": "Für die Verteilung der Grundsteuer auf einzelne Mietparteien gilt grundsätzlich der Verteilerschlüssel, der im Mietvertrag vereinbart wurde. Fehlt eine ausdrückliche Vereinbarung, wird üblicherweise die Wohnfläche als Maßstab herangezogen, wie es § 556a Abs. 1 Satz 1 BGB vorsieht. Bei gemischt genutzten Objekten mit Gewerbe- und Wohnflächen kann es zudem erforderlich sein, die Grundsteuer zu unterschiedlichen Anteilen umzulegen, da Gewerbeeinheiten häufig andere Bewertungsfaktoren haben als Wohnraum."
+        },
+        {
+                "typ": "liste",
+                "items": [
+                        "Mietvertrag prüfen: Enthält er eine Betriebskostenklausel oder einen Verweis auf § 2 BetrKV?",
+                        "Verteilerschlüssel nachvollziehen: Wurde die Grundsteuer nach Wohnfläche oder einem anderen vereinbarten Maßstab verteilt?",
+                        "Grundsteuerbescheid einsehen: Sie können vom Vermieter Einsicht in den aktuellen Bescheid verlangen, der als Beleg der Abrechnung zugrunde liegt.",
+                        "Abrechnungszeitraum kontrollieren: Wurde der neue, höhere Betrag nur für den Zeitraum angesetzt, in dem er tatsächlich galt?",
+                        "Nachforderungen für mehrere Jahre hinterfragen: Fordert die Gemeinde Grundsteuer für vergangene Jahre nach, muss die periodengerechte Zuordnung zum jeweiligen Abrechnungsjahr stimmen."
+                ]
+        },
+        {
+                "typ": "h2",
+                "text": "Zeitanteilige Berechnung, wenn sich der Hebesatz unterjährig ändert"
+        },
+        {
+                "typ": "text",
+                "text": "Eine Besonderheit ergibt sich, wenn eine Kommune den neuen Hebesatz nicht zum Jahresbeginn, sondern erst im Laufe des Jahres beschlossen hat. In solchen Fällen muss der Vermieter den Abrechnungszeitraum unter Umständen in zwei Teilperioden splitten und die alte sowie die neue Grundsteuer jeweils anteilig berechnen. Diese zeitanteilige Berechnung, auch pro rata temporis genannt, ist in der Betriebskostenabrechnung zulässig und im Streitfall auch geboten. Taucht in Ihrer Abrechnung ein einheitlicher Jahresbetrag auf, obwohl der Hebesatz sich unterjährig geändert hat, ist das ein berechtigter Prüfpunkt."
+        },
+        {
+                "typ": "hinweis",
+                "text": "Eine rückwirkende Umlage der Grundsteuer ist nur für Zeiträume zulässig, in denen bereits eine entsprechende vertragliche Vereinbarung bestand. Wurde die Betriebskostenklausel erst nachträglich in den Mietvertrag aufgenommen, darf der Vermieter die Grundsteuer nicht für Zeiträume davor nachfordern."
+        },
+        {
+                "typ": "h2",
+                "text": "Vorauszahlung anpassen: Was gilt nach § 560 Abs. 4 BGB?"
+        },
+        {
+                "typ": "text",
+                "text": "Liegt die erste Betriebskostenabrechnung mit der neuen, höheren Grundsteuer vor, kann der Vermieter die monatliche Vorauszahlung anpassen. Rechtsgrundlage dafür ist § 560 Abs. 4 BGB: Sind Betriebskostenvorauszahlungen vereinbart worden, kann jede Vertragspartei nach einer Abrechnung durch Erklärung in Textform eine Anpassung auf eine angemessene Höhe vornehmen. Die Erklärung muss also in Textform erfolgen und die neue Höhe nachvollziehbar auf die vorangegangene Abrechnung stützen. Eine Zustimmung Ihrerseits ist dafür nicht erforderlich – die Anpassung wirkt als einseitige Erklärung, sobald sie Ihnen zugeht."
+        },
+        {
+                "typ": "text",
+                "text": "Wichtig ist die Grenze der Angemessenheit. Bei der Berechnung des Erhöhungsbetrags ist die Grenze der angemessenen Höhe im Sinne des § 556 Abs. 2 Satz 2 BGB zu beachten, wonach die Nachforderung aus der Abrechnung durch zwölf Monate geteilt wird. Eine Vorauszahlungserhöhung, die deutlich über diesen rechnerischen Wert hinausgeht, etwa weil zusätzlich ein pauschaler Sicherheitszuschlag eingerechnet wurde, ist rechtlich angreifbar."
+        },
+        {
+                "typ": "h2",
+                "text": "Zusammenspiel mit anderen Betriebskostenarten"
+        },
+        {
+                "typ": "text",
+                "text": "Die Grundsteuer steht in der Abrechnung selten allein. Wer die Gesamtabrechnung prüft, sollte auch die übrigen Kostenpositionen im Blick behalten, da Fehler bei mehreren Posten gleichzeitig auftreten können."
+        },
+        {
+                "typ": "verweis",
+                "ziel": "hausmeisterkosten-in-der-nebenkostenabrechnung-was-ist-umlagefaehig",
+                "text": "Welche Hausmeisterleistungen tatsächlich umlagefähig sind und wo die Grenze zu nicht umlagefähigen Verwaltungstätigkeiten liegt, lesen Sie im separaten Ratgeber dazu."
+        },
+        {
+                "typ": "verweis",
+                "ziel": "muellgebuehren-und-abfallentsorgung-als-betriebskosten-2026",
+                "text": "Auch bei den Müllgebühren lohnt sich ein Blick auf die korrekte Verteilung, da hier ähnliche Prüfmaßstäbe wie bei der Grundsteuer gelten."
+        },
+        {
+                "typ": "verweis",
+                "ziel": "wasserkosten-und-kaltwasserzaehler-in-der-nebenkostenabrechnung",
+                "text": "Wie Wasserkosten korrekt erfasst und verteilt werden müssen, erklärt der Ratgeber zu Kaltwasserzählern und Wasserkosten."
+        },
+        {
+                "typ": "verweis",
+                "ziel": "heizkostenabrechnung-vermieterfehler-2026-leitfaden",
+                "text": "Bei der Heizkostenabrechnung passieren besonders häufig Fehler – ein Überblick zu den typischen Vermieterfehlern hilft, auch diesen Posten kritisch zu prüfen."
+        },
+        {
+                "typ": "verweis",
+                "ziel": "kabelanschluss-nicht-umlagefaehig",
+                "text": "Dass sich der Katalog umlagefähiger Betriebskosten auch in anderer Richtung verändert, zeigt der Wegfall der Kabelanschlussgebühren als umlagefähige Position seit Juli 2024."
+        },
+        {
+                "typ": "h2",
+                "text": "Aktuelle Rechtsprechung im Blick behalten"
+        },
+        {
+                "typ": "text",
+                "text": "Da die Grundsteuerreform noch relativ neu ist, ist mit weiterer Rechtsprechung zu einzelnen Detailfragen zu rechnen – etwa zur zeitanteiligen Berechnung bei unterjährigen Hebesatzänderungen oder zur Angemessenheit von Vorauszahlungsanpassungen."
+        },
+        {
+                "typ": "verweis",
+                "ziel": "bgh-urteile-mietrecht-nebenkosten-2026",
+                "text": "Eine laufend aktualisierte Übersicht aktueller BGH-Entscheidungen zum Nebenkostenrecht finden Sie in der Urteilsübersicht für 2026."
+        },
+        {
+                "typ": "verweis",
+                "ziel": "betriebskostenspiegel-2024",
+                "text": "Ob der Gesamtbetrag Ihrer Nebenkosten trotz der Grundsteuererhöhung noch im üblichen Rahmen liegt, lässt sich anhand des Betriebskostenspiegels des Deutschen Mieterbunds einordnen."
+        },
+        {
+                "typ": "h2",
+                "text": "Was tun, wenn die Abrechnung fehlerhaft erscheint?"
+        },
+        {
+                "typ": "text",
+                "text": "Stellen Sie nach der Prüfung fest, dass die Grundsteuer falsch berechnet, ohne wirksame Vertragsgrundlage umgelegt oder nach dem falschen Schlüssel verteilt wurde, müssen Sie die Nachforderung nicht kommentarlos akzeptieren."
+        },
+        {
+                "typ": "verweis",
+                "ziel": "widerspruch-nebenkostenabrechnung",
+                "text": "Wie Sie formal korrekt Widerspruch gegen eine fehlerhafte Nebenkostenabrechnung einlegen und welche Frist dabei gilt, erklärt die Schritt-für-Schritt-Anleitung mit Musterschreiben."
+        },
+        {
+                "typ": "cta",
+                "text": "Jetzt Abrechnung kostenlos prüfen lassen."
+        }
+],
+    },
+    {
       id: "hausmeisterkosten-in-der-nebenkostenabrechnung-was-ist-umlagefaehig",
       titel: "Hausmeisterkosten in der Nebenkostenabrechnung 2026: Was ist umlagefähig – und was nicht?",
       teaser: "Hausmeisterkosten zählen zu den häufigsten Streitpunkten in der Nebenkostenabrechnung, weil Vermieter oft Verwaltungs- und Reparaturarbeiten mit einrechnen, die Mieter gar nicht zahlen müssen. Dieser Ratgeber zeigt, welche Tätigkeiten wirklich umlagefähig sind und wie Sie typische Fehler in Ihrer Abrechnung erkennen.",

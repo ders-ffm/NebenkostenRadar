@@ -2,6 +2,31 @@
 
 Alle wesentlichen Änderungen an diesem Projekt, mit Datum und Begründung. Dient der Nachvollziehbarkeit, damit auch ohne KI-Unterstützung verstanden werden kann, warum etwas so ist, wie es ist.
 
+## 09.09.2026 — September-Artikel durch meinen Fehler gelöscht und wiederhergestellt + strukturelles Risiko benannt
+
+**Was passiert ist, ungeschönt:** Stefan fiel auf, dass unter `/ratgeber` kein September-Artikel stand, obwohl der Rechtsmonitor monatlich neue Artikel erzeugt. Die Prüfung ergab: Der Bot hatte korrekt gearbeitet — Commit `2c7024a` vom 01.09.2026 („Automatisch: Neue Artikel 2026-09") fügte den Artikel *Grundsteuerreform 2026: Auswirkungen auf die Nebenkostenabrechnung für Mieter* hinzu.
+
+Gelöscht habe ihn **ich**. Beim Übernehmen von `src/artikel.js` in den iCloud-Ordner (siehe Eintrag weiter unten) habe ich die Datei über `raw.githubusercontent.com` abgerufen. Dieser Abruf lieferte eine **zwischengespeicherte Fassung von vor dem 01.09.** — mit 9 statt 10 Artikeln. Meine Rekonstruktion war in sich fehlerfrei (Zeilenzahl und Zeichenzahl stimmten exakt), nur eben auf Basis eines veralteten Stands. Der anschließende Upload überschrieb damit den Bot-Commit.
+
+Dass meine Verifikation das nicht auffing, liegt daran, dass ich gegen genau diese veraltete Quelle geprüft habe. Eine Prüfung, die ihre eigene Fehlerquelle als Referenz nimmt, kann den Fehler nicht finden — der Denkfehler lag bei mir, nicht im Verfahren.
+
+**Wiederhergestellt:** Artikel aus Commit `2c7024a` geholt (`raw.githubusercontent.com/…/2c7024a/src/artikel.js`, Zeilen 19–186) und unverändert als neuesten Eintrag wieder eingesetzt. Verifiziert: 10 Artikel, alle 37+ internen Verweise gültig, `npm run build` inklusive Vorrendern erzeugt alle 10 Artikelseiten, Slug stimmt mit dem Eintrag in `public/sitemap.xml` überein (`grundsteuerreform-2026-auswirkungen-auf-die-nebenkostenabrechnung`).
+
+### Das strukturelle Risiko dahinter — wichtiger als der Einzelfall
+
+`scripts/rechtsmonitor.mjs` schreibt **zwei** Dateien direkt ins Repo:
+
+| Datei | wird vom Bot geschrieben |
+|---|---|
+| `src/artikel.js` | Zeile 332 (`writeFileSync`) |
+| `public/sitemap.xml` | Zeile 379 (`writeFileSync`) |
+
+Stefan lädt Dateien über die GitHub-Weboberfläche aus seinem lokalen Checkout hoch. Dieses Checkout kennt die Bot-Commits nicht. **Jeder manuelle Upload einer dieser beiden Dateien macht die Arbeit des Bots rückgängig** — lautlos, ohne Fehlermeldung, und es fällt erst auf, wenn jemand die Artikelliste anschaut.
+
+Genau das ist hier auch am zweiten Beweisstück sichtbar: `sitemap.xml` enthielt den Grundsteuer-Artikel noch, weil sie nie manuell hochgeladen wurde. `artikel.js` hatte ihn verloren.
+
+**Regel für die Zukunft:** Diese beiden Dateien gehören dem Bot. Sie sollten nur hochgeladen werden, wenn sie bewusst geändert wurden — und dann ausschließlich auf Basis der **aktuellen** Fassung aus dem Repo, nicht aus einem älteren lokalen Stand. Beim Abrufen über `raw.githubusercontent.com` ist zusätzlich ein Cache-Umgehungsparameter nötig (`?nocache=…`), sonst kann eine veraltete Fassung zurückkommen — genau die Falle, in die ich gelaufen bin.
+
 ## 09.09.2026 — Richtwerte-Monitor gehärtet: erkennt jetzt neue DMB-Ausgaben zuverlässig
 
 Anlass: Stefans Frage, ob die DMB-Richtwerte automatisch aktualisiert werden oder ob das durchrutschen kann — für ein Produkt, dessen Kern der Vergleich mit genau diesen Werten ist, eine existenzielle Frage.
