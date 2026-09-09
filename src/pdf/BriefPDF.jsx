@@ -38,6 +38,28 @@ export default function BriefPDF({ result, wohnung, adressen }) {
   const gruendeStatistisch = result.widerspruchsgruende_statistisch || (result.widerspruchsgruende || []).filter(g => g.typ !== "hart");
   const heute = new Date().toLocaleDateString("de-DE", { day: "numeric", month: "long", year: "numeric" });
 
+  // NEU 09.09.2026 (Fund aus Stefans Testkauf-PDF, siehe CHANGELOG):
+  // Positionen mit Status "pruefen" haben keinen offiziellen Vergleichswert
+  // (siehe lib/analyse.js, Fallzweig ohne Richtwert) und erzeugen deshalb
+  // KEINEN Widerspruchsgrund. Waren gleichzeitig keine harten oder
+  // statistischen Gründe vorhanden, entstand daraus ein inhaltlich LEERER
+  // Brief: die Zeile "erhebe ich Einwendungen gegen folgende Positionen:"
+  // gefolgt von einer leeren Tabelle und "Summe der beanstandeten
+  // Positionen 0,00 €". Für 12,99 € ein unbrauchbares Dokument.
+  //
+  // Lösung: Diese Positionen kommen jetzt als eigene, klar als FRAGE
+  // gekennzeichnete Gruppe in den Brief. Das ist inhaltlich korrekt — ob
+  // eine solche Position umlagefähig ist, hängt am Mietvertrag, den wir
+  // nicht kennen. Der Mieter hat auf diese Auskunft einen Anspruch
+  // (§ 259 BGB Belegeinsicht), ohne dass irgendetwas behauptet wird.
+  const offenePositionen = (result.posten_bewertung || []).filter(p => p.status === "pruefen");
+  const hatBeanstandungen = gruendeHart.length > 0 || gruendeStatistisch.length > 0;
+  // Steuert Betreff, Einleitung und Schlussabsatz: Ein Brief ohne einzige
+  // Beanstandung darf sich nicht "Einwendungen" nennen und keine Korrektur
+  // oder Rückerstattung fordern — das wäre gegenüber dem Vermieter sachlich
+  // falsch und würde dem Mieter im Zweifel schaden.
+  const istAuskunftsschreiben = !hatBeanstandungen && offenePositionen.length > 0;
+
   return (
     <Page size="A4" style={s.page}>
       <View style={s.logoRow}>
@@ -62,11 +84,17 @@ export default function BriefPDF({ result, wohnung, adressen }) {
           12. August 2026" — Eingabefehler, nicht im Formular verhindert;
           hier defensiv abgefangen statt nur an der Formularvalidierung. */}
       <Text style={s.datum}>{(adressen.mieterOrt || "").trim()}, {heute}</Text>
-      <Text style={s.betreff}>Betreff: Einwendungen gegen die Betriebskostenabrechnung {wohnung.jahr}</Text>
+      <Text style={s.betreff}>
+        Betreff: {istAuskunftsschreiben
+          ? "Belegeinsicht und Rückfragen zur Betriebskostenabrechnung " + wohnung.jahr
+          : "Einwendungen gegen die Betriebskostenabrechnung " + wohnung.jahr}
+      </Text>
 
       <Text style={s.absatz}>Sehr geehrte Damen und Herren,</Text>
       <Text style={s.absatz}>
-        nach Prüfung der Betriebskostenabrechnung für den Zeitraum 01.01.{wohnung.jahr} bis 31.12.{wohnung.jahr} erhebe ich gemäß § 556 Abs. 3 BGB fristgerecht Einwendungen gegen folgende Positionen:
+        {istAuskunftsschreiben
+          ? "nach Prüfung der Betriebskostenabrechnung für den Zeitraum 01.01." + wohnung.jahr + " bis 31.12." + wohnung.jahr + " bitte ich Sie um Belegeinsicht nach § 259 BGB sowie um Auskunft zu folgenden Positionen, deren vertragliche Grundlage sich aus der Abrechnung nicht ergibt:"
+          : "nach Prüfung der Betriebskostenabrechnung für den Zeitraum 01.01." + wohnung.jahr + " bis 31.12." + wohnung.jahr + " erhebe ich gemäß § 556 Abs. 3 BGB fristgerecht Einwendungen gegen folgende Positionen:"}
       </Text>
 
       <View style={s.table}>
@@ -90,10 +118,30 @@ export default function BriefPDF({ result, wohnung, adressen }) {
             ))}
           </>
         )}
-        <View style={s.tRowSum}>
-          <Text style={s.tLabel}>Summe der beanstandeten Positionen</Text>
-          <Text style={s.tValue}>{fmt(result.moegliche_ersparnis)}</Text>
-        </View>
+        {/* Positionen ohne offiziellen Vergleichswert — siehe Kommentar zu
+            offenePositionen oben. Bewusst als Frage formuliert, nicht als
+            Vorwurf: Wir wissen nicht, was im Mietvertrag steht. */}
+        {offenePositionen.length > 0 && (
+          <>
+            <Text style={s.gruppenTitel}>Bitte um Angabe der vertraglichen Grundlage und um Belegeinsicht</Text>
+            {offenePositionen.map((p, i) => (
+              <View key={"o" + i} style={s.tRow}>
+                <Text style={s.tLabel}>
+                  {gruendeHart.length + gruendeStatistisch.length + i + 1}. {p.posten} ({fmt(p.betrag)}): Auf welcher vertraglichen Grundlage wurde diese Position umgelegt, und ist sie nach § 2 BetrKV umlagefähig?
+                </Text>
+              </View>
+            ))}
+          </>
+        )}
+        {/* Summenzeile nur, wenn es tatsächlich etwas zu beanstanden gibt —
+            "Summe der beanstandeten Positionen 0,00 €" war die auffälligste
+            Stelle des früheren Leer-Briefs. */}
+        {hatBeanstandungen && (
+          <View style={s.tRowSum}>
+            <Text style={s.tLabel}>Summe der beanstandeten Positionen</Text>
+            <Text style={s.tValue}>{fmt(result.moegliche_ersparnis)}</Text>
+          </View>
+        )}
       </View>
 
       {/* 12.08.2026, echter Bug: Hier stand vorher zusätzlich "...bis zum 30.
@@ -106,8 +154,13 @@ export default function BriefPDF({ result, wohnung, adressen }) {
           "innerhalb von 4 Wochen". Ersatzlos gestrichen — die 4-Wochen-Frist
           unten ist die einzige im Brief genannte Frist, wie von Stefan
           bestätigt (siehe CHANGELOG). */}
+      {/* Schlussabsatz angepasst 09.09.2026: Ohne einzige Beanstandung darf
+          hier keine Korrektur und keine Rückerstattung gefordert werden —
+          das wäre sachlich falsch und würde den Mieter angreifbar machen. */}
       <Text style={s.absatz}>
-        Ich bitte um Übersendung der Originalbelege zur Einsichtnahme (§ 259 BGB), um nachvollziehbare Darlegung des Umlageschlüssels sowie um Korrektur der beanstandeten Positionen und Rückerstattung des zu viel gezahlten Betrags, soweit sich die Beanstandungen bestätigen.
+        {istAuskunftsschreiben
+          ? "Ich bitte um Übersendung der Originalbelege zur Einsichtnahme (§ 259 BGB) sowie um nachvollziehbare Darlegung des Umlageschlüssels für die oben genannten Positionen. Sollte sich daraus eine nicht umlagefähige Position ergeben, behalte ich mir vor, hierauf zurückzukommen."
+          : "Ich bitte um Übersendung der Originalbelege zur Einsichtnahme (§ 259 BGB), um nachvollziehbare Darlegung des Umlageschlüssels sowie um Korrektur der beanstandeten Positionen und Rückerstattung des zu viel gezahlten Betrags, soweit sich die Beanstandungen bestätigen."}
       </Text>
       {result.saldo > 0 && (
         <Text style={s.absatz}>Eine eventuelle Nachzahlung leiste ich ausdrücklich unter Vorbehalt.</Text>

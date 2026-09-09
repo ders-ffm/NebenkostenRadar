@@ -2,6 +2,32 @@
 
 Alle wesentlichen Änderungen an diesem Projekt, mit Datum und Begründung. Dient der Nachvollziehbarkeit, damit auch ohne KI-Unterstützung verstanden werden kann, warum etwas so ist, wie es ist.
 
+## 09.09.2026 — Zwei echte Produktfehler im gekauften PDF behoben (Fund aus Stefans Testkauf)
+
+Stefan hat den umgebauten Kaufweg mit einem echten Testkauf durchgespielt. **Der Umbau selbst funktioniert:** Die Adressdaten wurden nach der Zahlung erhoben und sind korrekt im PDF gelandet (alle drei Seiten). Das dabei erzeugte PDF hat aber zwei inhaltliche Fehler offengelegt, die vorher nie aufgefallen waren, weil ein Fall ohne jeden Widerspruchsgrund nie durchgetestet wurde.
+
+**Fehler 1 — Selbstwiderspruch in der Kopfzeile von Seite 1.** Links stand groß "Keine Auffälligkeiten", rechts daneben "3 von 6 Positionen auffällig". Ursache in `src/pdf/AbrechnungPDF.jsx`: Der Zähler war `filter(p => p.status !== "ok")` und zählte damit auch den Status `pruefen` als auffällig. `pruefen` bedeutet aber das Gegenteil eines Befunds — es heißt "für diese Position gibt es keinen offiziellen DMB-Vergleichswert, wir können sie nicht bewerten" (siehe `lib/analyse.js`, Fallzweig ohne Richtwert). Behoben: `auffaelligeAnzahl` und `nichtBewertbarAnzahl` werden getrennt gezählt, die Kopfzeile rechts formuliert jetzt dreistufig ("… auffällig" / "… ohne Vergleichswert" / "alle … unauffällig").
+
+**Fehler 2 — der gekaufte Musterbrief war inhaltlich leer.** Bei einer Abrechnung ohne harte und ohne statistische Widerspruchsgründe enthielt Seite 2 den Satz "… erhebe ich Einwendungen gegen folgende Positionen:", danach eine leere Tabelle und "Summe der beanstandeten Positionen 0,00 €". Für 12,99 € ein unbrauchbares Dokument — und der einzige Grund, warum jemand die teurere Stufe wählt.
+
+Ursache: Positionen mit Status `pruefen` erzeugen bewusst keinen Widerspruchsgrund (wir wissen nicht, was im Mietvertrag steht), tauchten deshalb aber im Brief überhaupt nicht auf.
+
+Behoben in `src/pdf/BriefPDF.jsx` — der Brief wechselt jetzt den Charakter, statt leer zu bleiben:
+
+| | Brief mit Beanstandungen | Brief ohne Beanstandungen (neu) |
+|---|---|---|
+| Betreff | "Einwendungen gegen die Betriebskostenabrechnung …" | "Belegeinsicht und Rückfragen zur Betriebskostenabrechnung …" |
+| Einleitung | "… erhebe ich gemäß § 556 Abs. 3 BGB Einwendungen …" | "… bitte ich um Belegeinsicht nach § 259 BGB sowie um Auskunft …" |
+| Positionsliste | harte + statistische Gründe | Positionen ohne Vergleichswert, als **Frage** formuliert |
+| Summenzeile | sichtbar | ausgeblendet |
+| Schlussabsatz | fordert Korrektur und Rückerstattung | bittet um Belege und Umlageschlüssel, behält sich Rückkehr vor |
+
+Die neue Formulierung ist bewusst eine Frage, keine Behauptung: Ob eine Position umlagefähig ist, hängt am Mietvertrag, den wir nicht kennen. Auf die Auskunft besteht aber ein Anspruch (§ 259 BGB). Wichtig auch rechtlich: Ein Brief ohne einzige Beanstandung darf keine Korrektur und keine Rückerstattung fordern — das wäre sachlich falsch und würde den Mieter angreifbar machen.
+
+**Getestet:** Stefans Fall aus dem Testkauf-PDF (76 m², 2025, 6 Positionen davon 3 ohne Vergleichswert) mit einem Wegwerf-Skript gegen `buildResult()` nachgestellt. Ergebnis: Kopfzeile rechts vorher "3 von 6 auffällig" → jetzt "3 von 6 ohne Vergleichswert", passend zu "Keine Auffälligkeiten" links. Brief-Modus schaltet korrekt auf Auskunftsschreiben, Summenzeile ausgeblendet, alle drei offenen Positionen (SAT-Anlage 78 €, Rauchwarnmelder-Wartung 26,80 €, Sonstige 328,32 €) stehen jetzt im Brief. Skript nach dem Test wieder gelöscht. `npx vite build` fehlerfrei.
+
+**Offen, nicht behoben — Ligaturen in der PDF-Textebene:** Beim Kopieren von Text aus dem PDF entstehen fehlerhafte Wörter ("Unaufällig" statt "Unauffällig", "Betref" statt "Betreff", "ofzieller" statt "offizieller"). Die **visuelle Darstellung ist korrekt** — betroffen ist nur die Textebene (fehlende ToUnicode-Zuordnung für die Ligaturen ff/ffi in der von react-pdf eingebetteten Schrift). Auswirkung: Copy-and-paste aus dem Brief, Suche im PDF und Screenreader. Nicht kritisch, aber für ein Dokument, das der Kunde weiterverwenden soll, unschön. Fix wäre eine Anpassung der Schrift-Einbettung — bewusst nicht zusammen mit den inhaltlichen Fehlern angefasst, um zwei unabhängige Risiken nicht zu vermischen.
+
 ## 09.09.2026 — Kaufabschluss entschlackt: vor der Zahlung nur noch E-Mail, Adressdaten danach
 
 **Anlass, datenbelegt (vollständige Auswertung in `planung/werbeplan-nkr.md` Abschnitt 8.5–8.7):** Die Aufschlüsselung von `nkr_reports` nach Tag zeigt, dass **alle 26 Zeilen** aus dem Zeitraum 08.–14.08.2026 stammen — exakt Stefans dokumentierter Test- und Entwicklungsphase (15 Vorgänge an einem einzigen Tag). Seit dem 14.08.2026 hat **kein einziger echter Nutzer** dieses Formular abgeschickt, obwohl laut GA4 im Zeitraum 12.08.–08.09. drei Nutzer die Seite geöffnet hatten. Drei von drei sind dort ausgestiegen. Kein echter Nutzer hat je die Stripe-Seite gesehen.

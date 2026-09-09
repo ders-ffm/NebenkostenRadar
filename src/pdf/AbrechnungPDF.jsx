@@ -75,7 +75,23 @@ const STATUS_LABEL = { ok: "Unauffällig", hoch: "Erhöht", sehr_hoch: "Stark er
 const STATUS_COLOR = { ok: C.brand, hoch: C.accent, sehr_hoch: C.accent, nicht_umlagefaehig: C.critical, pruefen: C.accent };
 
 export default function AbrechnungPDF({ result, wohnung, seite = 1, seitenGesamt = 1 }) {
-  const auffaelligeAnzahl = result.posten_bewertung.filter(p => p.status !== "ok").length;
+  // KORREKTUR 09.09.2026 (gefunden in Stefans Testkauf-PDF, siehe CHANGELOG):
+  // Vorher zählte `filter(p => p.status !== "ok")` auch den Status "pruefen"
+  // als auffällig. "pruefen" heißt aber gerade NICHT "auffällig", sondern
+  // "für diese Position gibt es keinen offiziellen Vergleichswert, wir können
+  // sie nicht bewerten". Ergebnis war ein direkter Selbstwiderspruch in
+  // derselben Kopfzeile: links groß "Keine Auffälligkeiten", rechts daneben
+  // "3 von 6 Positionen auffällig". Jetzt getrennt gezählt und getrennt
+  // benannt — nicht bewertbar ist eine eigene Aussage, kein Befund.
+  const auffaelligeAnzahl = result.posten_bewertung.filter(p => p.status !== "ok" && p.status !== "pruefen").length;
+  const nichtBewertbarAnzahl = result.posten_bewertung.filter(p => p.status === "pruefen").length;
+  const gesamtAnzahl = result.posten_bewertung.length;
+  const kopfRechts =
+    auffaelligeAnzahl > 0
+      ? auffaelligeAnzahl + " von " + gesamtAnzahl + " Positionen\nauffällig"
+      : nichtBewertbarAnzahl > 0
+        ? nichtBewertbarAnzahl + " von " + gesamtAnzahl + " Positionen\nohne Vergleichswert"
+        : "alle " + gesamtAnzahl + " Positionen\nunauffällig";
   return (
     <Page size="A4" style={s.page}>
       <View style={s.header}>
@@ -112,7 +128,7 @@ export default function AbrechnungPDF({ result, wohnung, seite = 1, seitenGesamt
             <Text style={s.summaryValue}>Keine Auffälligkeiten</Text>
           )}
         </View>
-        <Text style={s.summaryRight}>{auffaelligeAnzahl} von {result.posten_bewertung.length} Positionen{"\n"}auffällig</Text>
+        <Text style={s.summaryRight}>{kopfRechts}</Text>
       </View>
 
       <View style={s.table}>
