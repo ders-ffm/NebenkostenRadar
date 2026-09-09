@@ -53,8 +53,31 @@ function leseAktuelleWerte() {
   };
 }
 
-// ── DMB-Seite abrufen und den aktuell dort genannten Gesamt-Richtwert +
-//    das Abrechnungsjahr per einfachem Text-Muster extrahieren ─────────────
+// ── DMB-Seite abrufen und auswerten ────────────────────────────────────────
+//
+// ERWEITERT 09.09.2026 (siehe CHANGELOG). Vorher wurde ausschließlich der
+// Gesamt-Richtwert (2,67 €) plus das Jahr verglichen. Das hatte eine echte
+// Lücke: Ändert der DMB die EINZELpositionen — Grundsteuer, Müll, Hausmeister
+// usw. —, der Gesamtdurchschnitt bleibt aber zufällig gleich, meldete der
+// Monitor nichts. Genau diese Einzelwerte steuern aber die Posten-Bewertung
+// im Prüfbericht.
+//
+// WARUM DIE EINZELWERTE NICHT DIREKT GEPRÜFT WERDEN KÖNNEN:
+// Sie stehen auf der DMB-Seite NICHT als Text. Im Fließtext finden sich nur
+// drei Zahlen (Gesamt, Heizung/Warmwasser Durchschnitt und Spitze). Alle
+// übrigen Positionen existieren ausschließlich in einer Grafik
+// ("BKS-2024-Deutschland.jpg") und zwei PDFs. Sie automatisch aus einem Bild
+// zu lesen und in business.js zu schreiben, käme nicht in Frage: Ein
+// OCR-Lesefehler (0,18 statt 0,13) würde still in jeden Prüfbericht und
+// damit in Rückforderungen gegenüber Vermietern wandern.
+//
+// DIE LÖSUNG — auf das Erscheinen einer neuen Ausgabe prüfen statt auf Werte:
+// Der DMB legt jede Jahresausgabe als Datei nach dem stabilen Muster
+// "BKS-<Jahr>-Deutschland.jpg" ab (2024er Ausgabe: BKS-2024-Deutschland.jpg,
+// hochgeladen unter /app/uploads/2025/12/). Taucht dort ein höheres Jahr auf
+// als das in business.js hinterlegte, ist eine neue Ausgabe erschienen —
+// unabhängig davon, ob sich der Gesamtwert geändert hat. Das ist das
+// eigentliche Ereignis, auf das es ankommt.
 async function leseDMBWerte() {
   const res = await fetch(DMB_URL, { headers: { "User-Agent": "Mozilla/5.0 (NebenkostenRadar Richtwerte-Monitor)" } });
   if (!res.ok) throw new Error("DMB-Seite nicht erreichbar (HTTP " + res.status + ")");
@@ -67,32 +90,61 @@ async function leseDMBWerte() {
   if (!betragMatch || !jahrMatch) {
     throw new Error("Konnte aktuellen Wert nicht aus der DMB-Seite extrahieren — Seitenstruktur hat sich vermutlich geändert, bitte manuell prüfen: " + DMB_URL);
   }
+
+  // Alle "BKS-<Jahr>-Deutschland"-Dateien einsammeln und das höchste Jahr
+  // nehmen. Bewusst tolerant geschrieben (Bindestrich oder Unterstrich,
+  // Gross-/Kleinschreibung egal), weil ältere Ausgaben abweichend benannt
+  // sind (z.B. "BKS_AJ2022_Deutschland.jpg"). Findet das Muster gar nichts,
+  // ist das KEIN Fehler — dann greift weiterhin die Werteprüfung allein.
+  const dateiJahre = [...html.matchAll(/BKS[-_](?:AJ)?(\d{4})[-_]Deutschland/gi)]
+    .map(m => parseInt(m[1], 10))
+    .filter(j => j >= 2000 && j <= 2100);
+  const neuestesDateiJahr = dateiJahre.length ? Math.max(...dateiJahre) : null;
+
+  // Zeitpunkt der letzten Seitenänderung — nur zur Information im Issue,
+  // NICHT als Auslöser (die Seite ändert sich auch aus anderen Gründen).
+  const geaendertMatch = html.match(/article:modified_time"\s+content="([^"]+)"/);
+
   return {
     gesamt: parseFloat(betragMatch[1].replace(",", ".")),
     jahr: jahrMatch[1],
+    dateiJahr: neuestesDateiJahr,
+    seiteGeaendert: geaendertMatch ? geaendertMatch[1] : null,
   };
 }
 
 // ── GitHub Issue erstellen, um Stefan auf die Abweichung hinzuweisen ────────
-async function meldeAbweichung(alt, neu) {
+async function meldeAbweichung(alt, neu, gruende = []) {
   if (!GITHUB_TOKEN || !GITHUB_REPO) {
     console.log("\nHINWEIS: GITHUB_TOKEN/GITHUB_REPO nicht gesetzt — Meldung nur in der Konsole:");
     console.log("Alter Wert (Code):", alt);
     console.log("Neuer Wert (DMB-Website):", neu);
     return;
   }
-  const titel = "Neue DMB-Richtwerte verfügbar: " + neu.jahr + " (aktuell im Code: " + alt.jahr + ")";
+  const titel = "Neue DMB-Richtwerte verfügbar: " + (neu.dateiJahr ?? neu.jahr) + " (aktuell im Code: " + alt.jahr + ")";
   const body = [
-    "Der Richtwerte-Monitor hat eine Abweichung zwischen dem im Code hinterlegten DMB-Betriebskostenspiegel und der aktuellen DMB-Website festgestellt.",
+    "Der Richtwerte-Monitor hat festgestellt, dass der im Code hinterlegte DMB-Betriebskostenspiegel nicht mehr dem aktuellen Stand entspricht.",
+    "",
+    "**Ausgelöst durch:**",
+    ...gruende.map(g => "- " + g),
     "",
     "**Aktuell im Code (`src/config/business.js`):** " + alt.gesamt + " €/m²/Monat, Jahr " + alt.jahr,
-    "**Auf der DMB-Website gefunden:** " + neu.gesamt + " €/m²/Monat, Jahr " + neu.jahr,
+    "**Auf der DMB-Website gefunden:** " + neu.gesamt + " €/m²/Monat, Abrechnungsjahr laut Text " + neu.jahr +
+      (neu.dateiJahr != null ? ", neueste Jahresgrafik " + neu.dateiJahr : ""),
+    neu.seiteGeaendert ? "**Seite zuletzt geändert:** " + neu.seiteGeaendert : "",
     "",
-    "Bitte manuell prüfen und bei Bedarf ALLE Werte in `RICHTWERTE` aktualisieren (nicht nur den Gesamtwert — auch die Einzelpositionen ändern sich meist mit).",
-    "Quelle: " + DMB_URL,
+    "### Was jetzt zu tun ist",
+    "",
+    "Die Einzelwerte stehen auf der DMB-Seite **nicht als Text**, sondern nur in der Jahresgrafik und den verlinkten PDFs. Sie müssen deshalb von Hand abgelesen und übertragen werden — bewusst so, weil ein Lesefehler direkt in Rückforderungsbeträge gegenüber Vermietern einfließen würde.",
+    "",
+    "1. Grafik bzw. PDF \"Alle Betriebskostenarten im Überblick\" auf " + DMB_URL + " öffnen",
+    "2. **ALLE** Werte in `RICHTWERTE` (`src/config/business.js`) übertragen — nicht nur den Gesamtwert, die Einzelpositionen ändern sich meist mit",
+    "3. `RICHTWERTE_JAHR` auf das neue Abrechnungsjahr setzen",
+    "4. `node scripts/pdf-konsistenz-test.mjs` laufen lassen",
+    "5. Hochladen — die Ratgeber-Tabelle im Betriebskostenspiegel-Artikel zieht automatisch mit (Blocktyp `richtwerte`, speist sich aus derselben Datei)",
     "",
     "Dieses Issue wurde automatisch vom Richtwerte-Monitor erstellt (`scripts/richtwerte-monitor.mjs`). Es wird NICHTS automatisch geändert.",
-  ].join("\n");
+  ].filter(z => z !== "").join("\n");
 
   const res = await fetch("https://api.github.com/repos/" + GITHUB_REPO + "/issues", {
     method: "POST",
@@ -135,13 +187,31 @@ async function main() {
   // vierstellige Jahreszahl aus dem Anzeigetext herausgezogen, bevor
   // verglichen wird.
   const altJahrZahl = (alt.jahr || "").match(/\d{4}/)?.[0] || alt.jahr;
-  if (alt.gesamt === neu.gesamt && altJahrZahl === neu.jahr) {
+
+  // Drei unabhängige Auslöser (09.09.2026) — es genügt EINER:
+  //   1. Gesamtwert weicht ab
+  //   2. Im Fließtext genanntes Abrechnungsjahr weicht ab
+  //   3. Es liegt eine Grafik zu einem NEUEREN Abrechnungsjahr vor als das
+  //      im Code hinterlegte (siehe ausführliche Begründung bei leseDMBWerte)
+  const gesamtAbweichung = alt.gesamt !== neu.gesamt;
+  const jahrAbweichung = altJahrZahl !== neu.jahr;
+  const neuereAusgabe = neu.dateiJahr != null && parseInt(altJahrZahl, 10) < neu.dateiJahr;
+
+  console.log("Neueste Ausgabe laut Dateinamen:", neu.dateiJahr ?? "(Muster nicht gefunden)");
+
+  if (!gesamtAbweichung && !jahrAbweichung && !neuereAusgabe) {
     console.log("\nKeine Abweichung — Richtwerte sind aktuell.");
     return;
   }
 
-  console.log("\nAbweichung gefunden!");
-  await meldeAbweichung(alt, neu);
+  const gruende = [
+    gesamtAbweichung ? "Gesamtwert weicht ab (" + alt.gesamt + " → " + neu.gesamt + ")" : null,
+    jahrAbweichung ? "Abrechnungsjahr im Text weicht ab (" + altJahrZahl + " → " + neu.jahr + ")" : null,
+    neuereAusgabe ? "Neuere Jahresausgabe als Grafik vorhanden (Code: " + altJahrZahl + ", DMB: " + neu.dateiJahr + ")" : null,
+  ].filter(Boolean);
+
+  console.log("\nAbweichung gefunden!\n- " + gruende.join("\n- "));
+  await meldeAbweichung(alt, neu, gruende);
 }
 
 main();

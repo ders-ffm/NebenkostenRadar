@@ -273,3 +273,47 @@ Zwei voneinander unabhängige Engpässe, in dieser Reihenfolge:
 2. **Letzte Hürde vor der Kasse (konkret, schwach belegt, aber billig zu beheben).** 3 von 3 Nutzern mit Kaufabsicht sind im Absender-Formular ausgestiegen.
 
 Weiterhin **nicht** beurteilbar: ob das Produkt selbst überzeugt und ob zahlungsbereite Nachfrage besteht. Dafür braucht es zuerst Nutzer, die überhaupt bis zur Kasse kommen.
+
+## 9. SEO-Wettbewerbsanalyse "Betriebskostenspiegel" (09.09.2026)
+
+Anlass: Die eigene Seite `/ratgeber/betriebskostenspiegel-2024` erzeugt 548 von 974 Impressionen, steht aber auf Ø-Position 39. Nach dem Beheben des Rendering-Fehlers (siehe CHANGELOG) hat sie erstmals überhaupt Inhalt. Frage: Was fehlt noch gegenüber den Seiten, die dort ranken?
+
+### Wer dort rankt
+
+DMB selbst und Haufe (beide mit Domain-Autorität, gegen die realistisch nicht anzukommen ist), NebenkostenPro sowie `mein-nebenkostenrechner.de` mit gleich drei Seiten. Letzterer war in der bisherigen Konkurrenzdokumentation (Mineko, NebenkostenPro, nebify) **nicht erfasst** — ist aber auf diesem Suchbegriff der direkteste Gegner.
+
+### Größenvergleich
+
+| | NKR (nach dem Fix) | mein-nebenkostenrechner.de |
+|---|---|---|
+| Zeichen | ~11.000 | **62.800** |
+| Überschriften | 3 | **44** |
+| Kostenarten in Tabelle | 14 + Summe | alle 17 nach BetrKV |
+| Bundesland-Abschnitte | keine | Bayern, Sachsen/Dresden, Berlin, Hessen, NRW |
+| Jahresvergleiche | keine | 2018, 2021, 2022, 2023, 2024, Prognose 2025 |
+| FAQ | nein | ja |
+| Einbett-Widget für Fremdseiten | nein | ja |
+
+### Einordnung — was davon nachahmenswert ist und was nicht
+
+**Nicht nachahmen:** Ein erheblicher Teil der 44 Überschriften sind inhaltliche Dubletten mit variierten Suchbegriffen ("Durchschnittliche Betriebskosten 2024", "Betriebskosten Durchschnitt 2024 in Deutschland", "Durchschnittswert Nebenkosten 2024", "Nebenkosten Durchschnitt", "Durchschnittliche Nebenkosten pro qm 2023"). Das ist klassische Keyword-Variation, die Google mit den Helpful-Content-Updates gezielt abwertet. Es rankt derzeit, ist aber kein tragfähiges Fundament — und passt nicht zur zurückhaltenden Positionierung von NKR (siehe Abschnitt 1).
+
+**Nachahmenswert, weil echter Nutzen:**
+
+1. **Alle 17 Kostenarten** statt 14, jeweils mit kurzer Erklärung, was die Position umfasst. Die Daten liegen bereits in `business.js`.
+2. **Jahresvergleich 2023 → 2024.** Der DMB weist beide aus, die Steigerung von über 6 % ist ein starker Aufhänger. Realer Informationswert, keine Dublette.
+3. **FAQ-Abschnitt.** Entspricht dem, wie Menschen tatsächlich suchen, und ist strukturiert auszeichnbar.
+4. **Bundesland-Abschnitte.** Dazu unten mehr.
+5. **Einbett-Widget.** Legitimer Weg zu Rückverlinkungen: Fremdseiten binden die Tabelle ein und verlinken auf die Quelle. Die Daten sind bereits strukturiert vorhanden, der Aufwand wäre gering.
+
+### Zur Datenlage bei Bundesland-Seiten
+
+Laut CHANGELOG-Eintrag zur regionalen Richtwerte-Recherche gilt: Auf **Stadt-/Kreis-Ebene** existieren keine Betriebskosten-Daten (nur Mietspiegel zur Kaltmiete). Auf **Bundesland-Ebene** dagegen existieren real 13 landesweite DMB-Betriebskostenspiegel — bisher aber nicht primärquellen-verifiziert und nirgends im Code hinterlegt.
+
+Die Suchanfrage "betriebskostenspiegel hessen 2024" erzeugt bereits 21 Impressionen ohne passende Seite. Das Feld ist also real, erfordert aber zuerst die Beschaffung und Verifikation der Landesdaten — keine erfundenen Werte (Grundsatz siehe CHANGELOG).
+
+### Ehrliche Einordnung zum Zeithorizont
+
+**Für die Saison Okt–Dez 2026 wird SEO nichts mehr bewegen.** Von Position 39 auf Seite 1 zu kommen dauert bei einer jungen Domain Monate, nicht Wochen — und der Rendering-Fehler wurde erst heute behoben, Google muss die Seiten überhaupt erst neu bewerten. Wer etwas anderes verspricht, verkauft Hoffnung.
+
+Was das bedeutet: Die diesjährige Saison wird von der bestehenden, sehr kleinen Reichweite bestimmt. Der Aufbau lohnt sich trotzdem — er zahlt auf die Saison 2027 und auf den ganzjährigen Grundverkehr ein. Aber er ist keine Rettung für die kommenden drei Wochen.

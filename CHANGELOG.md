@@ -2,6 +2,51 @@
 
 Alle wesentlichen Änderungen an diesem Projekt, mit Datum und Begründung. Dient der Nachvollziehbarkeit, damit auch ohne KI-Unterstützung verstanden werden kann, warum etwas so ist, wie es ist.
 
+## 09.09.2026 — Richtwerte-Monitor gehärtet: erkennt jetzt neue DMB-Ausgaben zuverlässig
+
+Anlass: Stefans Frage, ob die DMB-Richtwerte automatisch aktualisiert werden oder ob das durchrutschen kann — für ein Produkt, dessen Kern der Vergleich mit genau diesen Werten ist, eine existenzielle Frage.
+
+### Befund: eine echte Lücke
+
+Der Monitor verglich ausschließlich den **Gesamtwert** (2,67 €) und das Abrechnungsjahr. Ändert der DMB die Einzelpositionen — Grundsteuer, Müll, Hausmeister usw. —, während der Gesamtdurchschnitt zufällig gleich bleibt, meldete er **nichts**. Genau diese Einzelwerte steuern aber die Posten-Bewertung im Prüfbericht.
+
+### Warum keine vollautomatische Aktualisierung
+
+Geprüft und bewusst verworfen. Die Einzelwerte stehen auf der DMB-Seite **nicht als Text**. Im Fließtext finden sich nur drei Zahlen (Gesamt 2,67 €, Heizung/Warmwasser 1,32 € und Spitze 2,18 €). Alle übrigen Positionen existieren ausschließlich in einer Grafik (`BKS-2024-Deutschland.jpg`) und zwei verlinkten PDFs.
+
+Zahlen per OCR aus einem Bild zu lesen und direkt in `business.js` zu schreiben, käme nicht in Frage: Ein Lesefehler (0,18 statt 0,13) würde still in jeden Prüfbericht und damit in Rückforderungen gegenüber Vermietern wandern. Der Werte-Eintrag bleibt Handarbeit — das ist keine Bequemlichkeitslücke, sondern die richtige Entscheidung.
+
+### Was stattdessen umgesetzt wurde
+
+Der Monitor prüft jetzt **drei unabhängige Auslöser**, einer genügt:
+
+1. Gesamtwert weicht ab (wie bisher)
+2. Abrechnungsjahr im Fließtext weicht ab (wie bisher)
+3. **Neu:** Es liegt eine Jahresgrafik zu einem neueren Abrechnungsjahr vor als im Code hinterlegt
+
+Punkt 3 nutzt das stabile Dateinamensmuster des DMB (`BKS-<Jahr>-Deutschland.jpg`, ältere Ausgaben auch `BKS_AJ<Jahr>_Deutschland.jpg` — beide Schreibweisen werden erkannt). Damit wird das eigentliche Ereignis erkannt, das zählt: *eine neue Ausgabe ist erschienen* — unabhängig davon, ob sich zufällig eine bestimmte Zahl geändert hat.
+
+Das erzeugte GitHub-Issue enthält jetzt zusätzlich den Auslöser im Klartext, den Zeitpunkt der letzten Seitenänderung und eine 5-Schritte-Anleitung zum Übertragen der Werte.
+
+**Getestet** (Wegwerf-Skript gegen echte Seitenbausteine, danach gelöscht):
+
+| Fall | erwartet | Ergebnis |
+|---|---|---|
+| Heutiger Stand (2024/2024) | kein Alarm | ✓ |
+| Neue Ausgabe 2025, Gesamtwert zufällig gleich | Alarm | ✓ (die alte Lücke) |
+| Gesamtwert auf 2,81 geändert | Alarm | ✓ |
+| Neues Jahr im Fließtext | Alarm | ✓ |
+| Alte Dateinamens-Schreibweise `BKS_AJ2025_` | Alarm | ✓ |
+| Seitenstruktur kaputt | sichtbarer Fehler | ✓ (Exit 1, Workflow schlägt fehl) |
+
+### Bewusst NICHT umgesetzt: Keepalive-Commits
+
+GitHub deaktiviert geplante Workflows nach 60 Tagen ohne Repo-Aktivität, und **nur neue Commits** setzen diese Frist zurück (Issues oder Tags nicht). Der übliche Gegenmittel — ein automatischer Dummy-Commit — hätte hier aber einen realen Preis: Jeder Commit auf `main` löst ein Vercel-Production-Deployment aus und bläht die Historie auf.
+
+Dagegen steht ein kleineres Risiko als zunächst angenommen: Der DMB veröffentlicht konstant Mitte Dezember (2024er Ausgabe am 18.12.2025, 2023er im Dezember 2024) — also mitten in der Hauptsaison Okt–Dez, in der ohnehin regelmäßig committet wird. Der Workflow ist zu diesem Zeitpunkt mit hoher Wahrscheinlichkeit aktiv.
+
+**Zweite Absicherung stattdessen:** Ein wiederkehrender Kontrolltermin jeden 12. Dezember, der die DMB-Seite gegen den Stand in `business.js` prüft und zusätzlich meldet, falls der automatische Monitor offenbar nicht gelaufen ist. Liegt außerhalb des Repos und kann deshalb nicht von GitHubs Inaktivitäts-Regel getroffen werden.
+
 ## 09.09.2026 — SEO: Die beiden sichtbarsten Ratgeber-Seiten zeigten ihren Hauptinhalt gar nicht an
 
 Anlass: Entscheidung, vor der Okt–Dez-Hauptsaison die Reichweite anzugehen (Meta-Ads eingestellt, Begründung in `planung/werbeplan-nkr.md`). Beim Gegenlesen der sichtbarsten Google-Seite fiel auf, dass sie ihr eigenes Versprechen nicht einlöst.
