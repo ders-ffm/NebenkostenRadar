@@ -33,6 +33,7 @@ import Datenschutz from "./pages/Datenschutz.jsx";
 import Ratgeber from "./pages/Ratgeber.jsx";
 import Artikel from "./pages/Artikel.jsx";
 import UeberUns from "./pages/UeberUns.jsx";
+import FAQ from "./pages/FAQ.jsx";
 
 // URL <-> Seiten-Name. Jeder Eintrag hier bekommt eine echte, eigene URL.
 const ROUTES = {
@@ -50,6 +51,7 @@ const ROUTES = {
   "/datenschutz": "datenschutz",
   "/ratgeber": "ratgeber",
   "/ueber-uns": "ueberuns",
+  "/faq": "faq",
 };
 const STEP_ZU_PFAD = Object.fromEntries(Object.entries(ROUTES).map(([pfad, step]) => [step, pfad]));
 
@@ -259,6 +261,7 @@ export default function App() {
     if (step === "impressum") return <Impressum {...pageProps} />;
     if (step === "agb") return <AGB {...pageProps} />;
     if (step === "datenschutz") return <Datenschutz {...pageProps} />;
+    if (step === "faq") return <FAQ {...pageProps} />;
     if (step === "ratgeber") return <Ratgeber {...pageProps} />;
     if (step === "artikel") return <Artikel {...pageProps} />;
     if (step === "ueberuns") return <UeberUns {...pageProps} />;

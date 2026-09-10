@@ -1,4 +1,22 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ACHTUNG: Diese Datei ist seit dem 10.09.2026 nur noch die RÜCKFALLEBENE.
+
+  Die tatsächlich ausgelieferte sitemap.xml wird bei jedem Build von
+  scripts/prerender.mjs aus src/artikel.js erzeugt und überschreibt diese
+  Datei in dist/. Neue Ratgeberartikel landen damit automatisch in der
+  Sitemap.
+
+  Grund für die Umstellung: Diese Datei wurde von Hand gepflegt und enthielt
+  nur 9 der damals 10 Artikel — der vom Rechtsmonitor im September ergänzte
+  Grundsteuer-Artikel fehlte und war für Google über die Sitemap nie
+  angemeldet. Da der Rechtsmonitor automatisch Artikel hinzufügt, wäre der
+  manuelle Zweitschritt immer wieder vergessen worden.
+
+  Diese Datei bitte NICHT mehr von Hand erweitern. Sie greift nur, falls das
+  Vorrendern einmal fehlschlägt. Eine neue statische Seite gehört stattdessen
+  in die Liste STATISCHE_SEITEN in scripts/prerender.mjs.
+-->
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
     <loc>https://nebenkostenradar.com/</loc>
@@ -14,42 +32,6 @@
     <loc>https://nebenkostenradar.com/ueber-uns</loc>
     <changefreq>yearly</changefreq>
     <priority>0.5</priority>
-  </url>
-  <url>
-    <loc>https://nebenkostenradar.com/ratgeber/hausmeisterkosten-in-der-nebenkostenabrechnung-was-ist-umlagefaehig</loc>
-    <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
-    <lastmod>2026-08-01</lastmod>
-  </url>
-  <url>
-    <loc>https://nebenkostenradar.com/ratgeber/muellgebuehren-und-abfallentsorgung-als-betriebskosten-2026</loc>
-    <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
-    <lastmod>2026-08-01</lastmod>
-  </url>
-  <url>
-    <loc>https://nebenkostenradar.com/ratgeber/wasserkosten-und-kaltwasserzaehler-in-der-nebenkostenabrechnung</loc>
-    <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
-    <lastmod>2026-07-01</lastmod>
-  </url>
-  <url>
-    <loc>https://nebenkostenradar.com/ratgeber/betriebskostenabrechnung-fristen-und-verjaehrung-2026</loc>
-    <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
-    <lastmod>2026-07-01</lastmod>
-  </url>
-  <url>
-    <loc>https://nebenkostenradar.com/ratgeber/heizkostenabrechnung-vermieterfehler-2026-leitfaden</loc>
-    <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
-    <lastmod>2026-07-01</lastmod>
-  </url>
-  <url>
-    <loc>https://nebenkostenradar.com/ratgeber/bgh-urteile-mietrecht-nebenkosten-2026</loc>
-    <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
-    <lastmod>2026-07-01</lastmod>
   </url>
   <url>
     <loc>https://nebenkostenradar.com/ratgeber/widerspruch-nebenkostenabrechnung</loc>
@@ -70,9 +52,39 @@
     <lastmod>2026-06-01</lastmod>
   </url>
   <url>
-    <loc>https://nebenkostenradar.com/ratgeber/grundsteuerreform-2026-auswirkungen-auf-die-nebenkostenabrechnung</loc>
+    <loc>https://nebenkostenradar.com/ratgeber/bgh-urteile-mietrecht-nebenkosten-2026</loc>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
-    <lastmod>2026-09-01</lastmod>
+    <lastmod>2026-07-01</lastmod>
+  </url>
+  <url>
+    <loc>https://nebenkostenradar.com/ratgeber/heizkostenabrechnung-vermieterfehler-2026-leitfaden</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+    <lastmod>2026-07-01</lastmod>
+  </url>
+  <url>
+    <loc>https://nebenkostenradar.com/ratgeber/betriebskostenabrechnung-fristen-und-verjaehrung-2026</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+    <lastmod>2026-07-01</lastmod>
+  </url>
+  <url>
+    <loc>https://nebenkostenradar.com/ratgeber/wasserkosten-und-kaltwasserzaehler-in-der-nebenkostenabrechnung</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+    <lastmod>2026-07-01</lastmod>
+  </url>
+  <url>
+    <loc>https://nebenkostenradar.com/ratgeber/muellgebuehren-und-abfallentsorgung-als-betriebskosten-2026</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+    <lastmod>2026-08-01</lastmod>
+  </url>
+  <url>
+    <loc>https://nebenkostenradar.com/ratgeber/hausmeisterkosten-in-der-nebenkostenabrechnung-was-ist-umlagefaehig</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+    <lastmod>2026-08-01</lastmod>
   </url>
 </urlset>

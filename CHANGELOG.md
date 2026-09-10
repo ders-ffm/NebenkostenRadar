@@ -2,6 +2,105 @@
 
 Alle wesentlichen Änderungen an diesem Projekt, mit Datum und Begründung. Dient der Nachvollziehbarkeit, damit auch ohne KI-Unterstützung verstanden werden kann, warum etwas so ist, wie es ist.
 
+## 10.09.2026 — V2, V3, V7 umgesetzt · FAQ als eigene Menüseite · Sitemap-Fehler behoben
+
+Stefan hat aus der Maßnahmenliste V1–V8 ausgewählt: V2, V3 und V7 umsetzen, V1 (kostenlose Vorprüfung) vorerst nicht anfassen, V4/V5 zurückstellen.
+
+### FAQ ist jetzt eine eigene Seite unter /faq
+
+Auf Stefans Hinweis („FAQ bitte ins Menü und nicht auf der Startseite") verschoben. Neu: `src/pages/FAQ.jsx`, Route `/faq` in `App.jsx`, Menüeintrag in `Nav.jsx`, Rewrite in `vercel.json`. Der Block wurde aus `Welcome.jsx` entfernt.
+
+Warum das die bessere Lösung ist: Die Seite bekommt einen eigenen `<title>`, eine eigene Beschreibung und ein eigenes Canonical — sie kann damit selbst ranken, statt nur Abschnitt einer Seite zu sein, die auf ein anderes Keyword optimiert ist. Sie ist aus dem Menü jederzeit erreichbar, auch mitten im Formular. Und die Startseite bleibt kurz.
+
+Das FAQPage-Markup ist mitgewandert: Es steht jetzt in `dist/faq/index.html`, nicht mehr in `dist/index.html`. Das ist auch die Vorgabe von Google — strukturierte Daten gehören auf die Seite, auf der die Fragen sichtbar stehen. `/faq` wird dafür wie die Ratgeberseiten vorgerendert, mit sichtbarem Text für Suchmaschinen und für Nutzer ohne JavaScript (3.934 Zeichen).
+
+Der Inhalt liegt unverändert in `src/config/faq.js` — eine Datei speist React-Seite, vorgerenderten Text und Markup.
+
+### V2: Beispielergebnis auf der Startseite
+
+Ein vollständiger Musterfall (75 m², Abrechnungsjahr 2024) steht jetzt VOR dem Preisblock: fünf bewertete Positionen mit Richtwert, Abweichung, Begründung und Rechtsgrundlage, dazu ein Ausschnitt aus dem Musterbrief. Bisher sah man nichts, bevor man das ganze Formular ausgefüllt hatte.
+
+**Die Zahlen sind berechnet, nicht eingetippt** (`src/config/beispiel.js`): Die Richtwerte kommen aus `BUSINESS.RICHTWERTE` und werden auf 75 m² und ein Jahr hochgerechnet. Beim nächsten DMB-Update wandert das Beispiel automatisch mit — fest eingetippte Beträge wären still veraltet, und ein veraltetes Beispiel auf der Startseite wäre schlimmer als gar keines.
+
+Rechenprobe aus dem Build:
+
+| Position | Betrag | Richtwert | Abweichung | Status |
+|---|---|---|---|---|
+| Kabelanschluss | 138 € | — | — | nicht umlagefähig |
+| Verwaltungskosten | 96 € | — | — | nicht umlagefähig |
+| Hausmeister | 420 € | 189 € | +122 % | auffällig |
+| Heizung und Warmwasser | 1.210 € | 1.188 € | +2 % | unauffällig |
+| Grundsteuer | 168 € | 162 € | +4 % | unauffällig |
+
+Bewusst **keine** Testimonials, keine Bewertungen, kein „schon X Abrechnungen geprüft"-Zähler: Es gibt noch keinen einzigen Käufer, solche Elemente wären erfunden. Der Beispielfall ist an drei Stellen als fiktiv gekennzeichnet.
+
+### V3: Preiseinordnung statt Preisbehauptung
+
+Vier Spalten unter dem Preisblock — Selbst prüfen (0 €), NebenkostenRadar, Mieterverein, Anwalt. Die eigene Leistung wird nicht als „günstig" behauptet, sondern neben die echten Alternativen gestellt, einschließlich der kostenlosen.
+
+Alle Zahlen sind belegt, nichts geschätzt:
+
+- **Mieterverein:** 60 € (Gelsenkirchen) bis 132 € (Kiel) Jahresbeitrag nach den Beitragsordnungen 2026, teils zzgl. einmaliger Aufnahmegebühr.
+- **Anwalt:** § 34 Abs. 1 S. 3 RVG deckelt die Erstberatung für Verbraucher auf 190 € netto — 226,10 € brutto —, sofern keine Vergütungsvereinbarung getroffen wurde. Das KostBRÄG 2025 hat diese Grenze nicht angehoben.
+
+Die „Selbst prüfen"-Spalte ist ehrlich formuliert: Sie ist gratis und wird auch so ausgewiesen; genannt wird, was sie stattdessen kostet (Zeit, Unsicherheit, kein fertiger Brief).
+
+### V7: Ratgeber von 10 auf 22 Artikel
+
+Zwölf neue Seiten, je eine pro konkreter Suchanfrage — nach dem Muster von pruefenlassen.ch, das rund 17 Unterseiten allein zum Thema Nebenkosten betreibt. Breite Artikel ranken schlechter als Seiten, die genau eine Frage beantworten.
+
+| Neue Seite | Kernthema |
+|---|---|
+| Umlageschlüssel prüfen | § 556a BGB, Flächenmaßstab als Auffangregel |
+| Belegeinsicht verlangen | § 259 BGB + Zurückbehaltungsrecht § 273 BGB |
+| Nachzahlung nicht zahlen | Zahlung unter Vorbehalt statt Verweigerung |
+| Keine Abrechnung erhalten | § 556 Abs. 3 S. 2/3 BGB, Nachforderung ausgeschlossen |
+| Nicht umlagefähige Kosten | § 1 Abs. 2 BetrKV, vollständige Übersicht |
+| Sonstige Betriebskosten Nr. 17 | müssen einzeln im Vertrag benannt sein |
+| Aufzugskosten | auch für Erdgeschoss, mit Ausnahme |
+| Gartenpflege | § 2 Nr. 10 BetrKV, Pflege vs. Neuanlage |
+| Versicherungen | § 2 Nr. 13 BetrKV, Rechtsschutz nicht umlagefähig |
+| Leerstand | Vermieter trägt die Anteile selbst |
+| Abrechnung nach Auszug | Frist knüpft an Abrechnungszeitraum, nicht an Auszug |
+| Formell unwirksame Abrechnung | die vier Mindestangaben |
+
+**Alle zitierten Urteile wurden vor dem Schreiben verifiziert**, keines stammt aus dem Gedächtnis: BGH VIII ZR 103/06 (Aufzug Erdgeschoss), VIII ZR 128/08 (Aufzug anderer Gebäudeteil), VIII ZR 78/05 (Belegeinsicht + Zurückbehaltungsrecht), VIII ZR 159/05 (Leerstand), VIII ZR 9/14 (Warmwasser bei Leerstand), VIII ZR 167/03 (pauschaler BetrKV-Verweis genügt, „sonstige" nicht). Wo es keine belastbare Fundstelle gab — etwa bei den formellen Mindestanforderungen —, steht „ständige Rechtsprechung" ohne erfundenes Aktenzeichen.
+
+### Nebenbefund: die Sitemap war seit September kaputt
+
+Beim Zählen fiel auf, dass `public/sitemap.xml` nur 9 der damals 10 Artikel enthielt. Der vom Rechtsmonitor im September ergänzte Grundsteuer-Artikel fehlte — er war für Google über die Sitemap **nie angemeldet**.
+
+Das ist strukturell und nicht durch Sorgfalt lösbar: Der Rechtsmonitor fügt automatisch Artikel hinzu, kennt die Sitemap aber nicht. Jeder neue Artikel hätte einen zweiten, manuellen Handgriff gebraucht.
+
+`scripts/prerender.mjs` erzeugt `dist/sitemap.xml` jetzt bei jedem Build aus `ARTIKEL` und überschreibt die kopierte Datei. Neue Artikel landen automatisch drin. `public/sitemap.xml` bleibt als Rückfallebene mit einem Hinweis-Kommentar liegen, falls das Vorrendern einmal fehlschlägt. Statische Seiten stehen in der Liste `STATISCHE_SEITEN`.
+
+Ergebnis: von 12 auf **26 URLs** (4 feste inkl. `/faq` + 22 Artikel).
+
+### Verifikation
+
+| Prüfung | Ergebnis |
+|---|---|
+| `npm run build` | fehlerfrei |
+| Artikel gesamt | 22, keine doppelten IDs |
+| Interne Verweise (`typ: "verweis"`) | 0 tote Ziele |
+| Unbekannte Block-Typen | 0 |
+| Pflichtfelder je Artikel | vollständig |
+| FAQPage-Markup | 1× in `/faq`, 0× in `/`, 0× in `/ratgeber/**` |
+| Kürzester vorgerenderter Artikeltext | 1.517 Zeichen (kein leeres Gerüst) |
+| `schritte`-Blöcke im statischen HTML | rendern als `<ol>`/`<li>` |
+| Zweiter Prerender-Lauf ohne Neubau | keine Dubletten, Zählstände identisch |
+| Regressionstests | 950 Prüfungen und 31 Eingaben, 0 Abweichungen |
+
+### Offen
+
+- **V1** (kostenlose Vorprüfung) — auf Stefans Entscheidung zurückgestellt. Bleibt aus der Wettbewerbsanalyse der größte Hebel gegen 0 Käufe.
+- **V4/V5** (Datenschutz-Badges am Upload, Presseverweise mit Disclaimer) — zurückgestellt.
+- **V6** (Prüfung gegen die Umlagevereinbarung im Mietvertrag) — braucht eine eigene Vorprüfung.
+- **V8** (zweite Vertikale) — erst sinnvoll, wenn NKR selbst konvertiert; vorher RDG-Prüfung nötig.
+- **Search Console:** Die 12 neuen Ratgeberseiten und `/faq` sollten zur Indexierung angemeldet werden, sobald sie live sind.
+
+---
+
 ## 10.09.2026 — Nachtrag: USA, China, Australien, Frankreich geprüft
 
 Stefans Einwand zur Europa-Recherche: Erweiterung lohne nur in Länder mit einem Mietmarkt, der größer oder ähnlich groß wie der deutsche ist — genannt USA, China, Australien, Frankreich. Der Filter ist schärfer als mein ursprünglicher, greift aber **eine Stufe zu spät**. Vor „wie groß ist der Mietmarkt?" steht: **„Gibt es dort überhaupt eine Nebenkostenabrechnung für Mieter?"**

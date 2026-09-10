@@ -23,6 +23,7 @@ export default function Nav({ activeStep, navigateTo }) {
   const items = [
     { label: "Prüfen", target: "wohnung" },
     { label: "Ratgeber", target: "ratgeber" },
+    { label: "FAQ", target: "faq" },
     { label: "Über uns", target: "ueberuns" },
   ];
 

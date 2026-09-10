@@ -3,7 +3,7 @@
 // ─────────────────────────────────────────────────────────────────────────
 import { THEME } from "../config/theme.js";
 import { BUSINESS } from "../config/business.js";
-import { FAQ_STARTSEITE } from "../config/faq.js";
+import { BEISPIEL_QM, BEISPIEL_POSTEN, BEISPIEL_ANZAHL, BEISPIEL_UNZULAESSIG_SUMME, BEISPIEL_BRIEF } from "../config/beispiel.js";
 import Nav from "../components/layout/Nav.jsx";
 import LegalFooter from "../components/layout/LegalFooter.jsx";
 
@@ -109,6 +109,73 @@ export default function Welcome({ navigateTo, IS_DEMO }) {
         ))}
       </div>
 
+      {/* ───────────────────────────────────────────────────────────────────
+          V2: Beispielergebnis VOR jeder Eingabe.
+          Bisher sah man nichts, bevor man das ganze Formular ausgefüllt
+          hatte — ein Vertrauensvorschuss, den viele nicht aufbringen.
+          servicechargeaudit.uk und pruefenlassen.ch zeigen beide einen
+          vollständigen Musterfall auf der Startseite.
+          Die Zahlen werden in src/config/beispiel.js aus BUSINESS.RICHTWERTE
+          BERECHNET, nicht eingetippt — beim nächsten DMB-Update wandert das
+          Beispiel automatisch mit. Alles daran ist erfunden und als solches
+          gekennzeichnet; bewusst keine Testimonials und kein Zähler, solange
+          es keine echten Kunden gibt.
+          ─────────────────────────────────────────────────────────────────── */}
+      <div style={{ padding: "36px 24px", borderBottom: "1px solid " + C.border, maxWidth: PAGE_MAX, margin: "0 auto", boxSizing: "border-box" }}>
+        <div style={{ fontSize: 13, fontWeight: 700, color: C.text, marginBottom: 8, textTransform: "uppercase", letterSpacing: "0.06em", textAlign: "center" }}>So sieht dein Ergebnis aus</div>
+        <p style={{ fontSize: 13, color: C.textMuted, margin: "0 auto 20px", lineHeight: 1.65, maxWidth: 520, textAlign: "center" }}>
+          Ein erfundener Beispielfall: {BEISPIEL_QM} m², Abrechnungsjahr 2024. Damit du weißt, was am Ende herauskommt — bevor du irgendetwas eingibst.
+        </p>
+
+        <div style={{ maxWidth: 620, margin: "0 auto", border: "1px solid " + C.border, borderRadius: THEME.radius.lg, overflow: "hidden" }}>
+          <div style={{ background: C.text, padding: "14px 18px" }}>
+            <div style={{ fontSize: 12, color: "#D8D2C4", marginBottom: 3 }}>Prüfergebnis · Beispiel</div>
+            <div style={{ fontFamily: THEME.font.heading, fontSize: 15, fontWeight: 600, color: "#fff" }}>
+              {BEISPIEL_ANZAHL.unzulaessig} Position{BEISPIEL_ANZAHL.unzulaessig === 1 ? "" : "en"} rechtlich unzulässig · {BEISPIEL_ANZAHL.auffaellig} auffällig · {BEISPIEL_ANZAHL.ok} unauffällig
+            </div>
+          </div>
+
+          {BEISPIEL_POSTEN.map(p => {
+            const farbe = p.status === "unzulaessig" ? C.warn : p.status === "auffaellig" ? C.textDim : C.ok;
+            const etikett = p.status === "unzulaessig" ? "nicht umlagefähig" : p.status === "auffaellig" ? "auffällig" : "unauffällig";
+            return (
+              <div key={p.name} style={{ padding: "14px 18px", borderTop: "1px solid " + C.border, background: C.surface }}>
+                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", gap: 12, marginBottom: 4 }}>
+                  <div style={{ fontSize: 13, fontWeight: 600, color: C.text, fontFamily: THEME.font.heading }}>{p.name}</div>
+                  <div style={{ fontSize: 13, fontWeight: 600, color: C.text, whiteSpace: "nowrap" }}>{p.betrag.toFixed(2).replace(".", ",")} €</div>
+                </div>
+                <div style={{ display: "flex", gap: 8, alignItems: "center", flexWrap: "wrap", marginBottom: 6 }}>
+                  <span style={{ fontSize: 10, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.05em", color: farbe, border: "1px solid " + farbe, borderRadius: 3, padding: "2px 6px" }}>{etikett}</span>
+                  {p.vergleich != null && (
+                    <span style={{ fontSize: 11, color: C.textDim }}>
+                      Richtwert {p.vergleich.toLocaleString("de-DE")} € · {p.abweichung > 0 ? "+" : ""}{p.abweichung} %
+                    </span>
+                  )}
+                </div>
+                <div style={{ fontSize: 12, color: C.textMuted, lineHeight: 1.6 }}>{p.begruendung}</div>
+                <div style={{ fontSize: 11, color: C.textDim, marginTop: 4 }}>Rechtsgrundlage: {p.grundlage}</div>
+              </div>
+            );
+          })}
+
+          <div style={{ padding: "14px 18px", borderTop: "1px solid " + C.border, background: C.brandBg }}>
+            <div style={{ fontSize: 12, color: C.text, lineHeight: 1.6 }}>
+              <strong>Summe der nicht umlagefähigen Positionen: {BEISPIEL_UNZULAESSIG_SUMME.toFixed(2).replace(".", ",")} €</strong> — dieser Betrag ist im Beispiel zu Unrecht abgerechnet worden. Die auffällige Position kommt möglicherweise dazu, das lässt sich erst nach Belegeinsicht sagen.
+            </div>
+          </div>
+
+          <div style={{ padding: "16px 18px", borderTop: "1px solid " + C.border, background: C.surface }}>
+            <div style={{ fontSize: 11, color: C.textDim, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.05em", marginBottom: 8 }}>Ausschnitt aus dem Musterbrief</div>
+            <div style={{ fontSize: 12, color: C.textMuted, lineHeight: 1.7, whiteSpace: "pre-line", fontFamily: THEME.font.body }}>{BEISPIEL_BRIEF}</div>
+            <div style={{ fontSize: 11, color: C.textDim, marginTop: 10 }}>Der vollständige Brief ist im Paket „Auswertung + Brief" enthalten.</div>
+          </div>
+        </div>
+
+        <p style={{ fontSize: 11, color: C.textDim, lineHeight: 1.6, margin: "14px auto 0", maxWidth: 620, textAlign: "left" }}>
+          Erfundener Beispielfall zur Veranschaulichung — keine echten Kundendaten. Die Richtwerte stammen aus dem DMB-Betriebskostenspiegel {BUSINESS.RICHTWERTE_JAHR} und sind auf {BEISPIEL_QM} m² und ein volles Jahr hochgerechnet. Dein Ergebnis hängt von deinen eigenen Zahlen ab und kann auch lauten: alles in Ordnung.
+        </p>
+      </div>
+
       <div style={{ padding: "36px 24px", borderBottom: "1px solid " + C.border, maxWidth: PAGE_MAX, margin: "0 auto", boxSizing: "border-box", textAlign: "center" }}>
         <div style={{ fontSize: 13, fontWeight: 700, color: C.text, marginBottom: 8, textTransform: "uppercase", letterSpacing: "0.06em" }}>Was du erhältst</div>
         <p style={{ fontSize: 14, color: C.textMuted, margin: "0 0 24px", lineHeight: 1.6 }}>
@@ -130,6 +197,89 @@ export default function Welcome({ navigateTo, IS_DEMO }) {
           style={{ marginTop: 20, background: C.accent, border: "none", borderRadius: THEME.radius.md, padding: "14px 32px", fontSize: 14, fontFamily: THEME.font.heading, fontWeight: 600, color: C.accentText, cursor: "pointer" }}>
           Kostenlos prüfen — Preisstufe später wählen
         </button>
+
+        {/* ─────────────────────────────────────────────────────────────────
+            V3: Preiseinordnung statt Preisbehauptung.
+            Vorbild pruefenlassen.ch: die eigene Leistung wird nicht als
+            "günstig" behauptet, sondern neben die echten Alternativen
+            gestellt — inklusive der kostenlosen. Die Spalte "Selbst prüfen"
+            ist bewusst ehrlich: sie ist gratis, kostet aber Zeit und lässt
+            Unsicherheit zurück.
+            ALLE ZAHLEN SIND BELEGT, nichts geschätzt:
+            - Mieterverein: Jahresbeiträge 2026 zwischen 60 € (Gelsenkirchen)
+              und 132 € (Kiel), teils zzgl. einmaliger Aufnahmegebühr.
+              Quellen in planung/europa-potenzial-nkr.md.
+            - Anwalt: § 34 Abs. 1 S. 3 RVG deckelt die Erstberatung für
+              Verbraucher auf 190 € netto (226,10 € brutto), sofern keine
+              Vergütungsvereinbarung getroffen wurde. Ein Widerspruchsschreiben
+              wird darüber hinaus nach Streitwert abgerechnet.
+            Bei Preisänderungen: die NKR-Spalte zieht aus BUSINESS, die
+            anderen drei müssen von Hand geprüft werden.
+            ───────────────────────────────────────────────────────────────── */}
+        <div style={{ marginTop: 34, textAlign: "left", maxWidth: 620, marginLeft: "auto", marginRight: "auto" }}>
+          <div style={{ fontSize: 13, fontWeight: 700, color: C.text, marginBottom: 14, textTransform: "uppercase", letterSpacing: "0.06em", textAlign: "center" }}>Was die Alternativen kosten</div>
+          <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+            {[
+              {
+                titel: "Selbst prüfen",
+                preis: "0 €",
+                hervor: false,
+                punkte: [
+                  "Betriebskostenspiegel und BetrKV sind öffentlich zugänglich",
+                  "Richtwerte je Position selbst heraussuchen und umrechnen",
+                  "Umlageschlüssel, 50/70-Regel und CO₂-Aufteilung selbst nachrechnen",
+                  "Widerspruchsschreiben selbst formulieren, mit den richtigen Vorschriften",
+                ],
+              },
+              {
+                titel: "NebenkostenRadar",
+                preis: BUSINESS.PREIS_AUSWERTUNG.toFixed(2).replace(".", ",") + " – " + BUSINESS.PREIS_VOLL.toFixed(2).replace(".", ",") + " €",
+                hervor: true,
+                punkte: [
+                  "Einmalig, kein Abo, kein Kundenkonto nötig",
+                  "Jede Position gegen Richtwert und Rechtsgrundlage geprüft",
+                  "Versandfertiger Brief an den Vermieter (im 12,99-€-Paket)",
+                  "Ergebnis in wenigen Minuten, keine Terminvereinbarung",
+                ],
+              },
+              {
+                titel: "Mieterverein",
+                preis: "ca. 60 – 132 € / Jahr",
+                hervor: false,
+                punkte: [
+                  "Beitrag je nach Ortsverein, teils zzgl. einmaliger Aufnahmegebühr",
+                  "Persönliche Beratung durch Menschen — inhaltlich das Gründlichste",
+                  "Deckt weit mehr ab als die Nebenkostenabrechnung",
+                  "Meist Terminvereinbarung nötig; teils Wartezeit für Neumitglieder",
+                ],
+              },
+              {
+                titel: "Anwalt",
+                preis: "bis 226,10 € nur für die Erstberatung",
+                hervor: false,
+                punkte: [
+                  "Höchstbetrag nach § 34 Abs. 1 S. 3 RVG, wenn keine Vergütungsvereinbarung getroffen wurde",
+                  "Ein Widerspruchsschreiben wird darüber hinaus nach Streitwert abgerechnet",
+                  "Verbindliche Einschätzung des Einzelfalls — das kann keine Software",
+                  "Bei kleineren Beträgen übersteigen die Kosten oft die Ersparnis",
+                ],
+              },
+            ].map(({ titel, preis, hervor, punkte }) => (
+              <div key={titel} style={{ padding: "16px 18px", background: hervor ? C.brandBg : C.surface, border: "1px solid " + (hervor ? C.brand : C.border), borderRadius: THEME.radius.md }}>
+                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", gap: 12, marginBottom: 8 }}>
+                  <div style={{ fontSize: 14, fontWeight: 600, color: C.text, fontFamily: THEME.font.heading }}>{titel}</div>
+                  <div style={{ fontSize: 13, fontWeight: 600, color: hervor ? C.brand : C.textMuted, whiteSpace: "nowrap" }}>{preis}</div>
+                </div>
+                <ul style={{ margin: 0, paddingLeft: 18, fontSize: 12, color: C.textMuted, lineHeight: 1.7 }}>
+                  {punkte.map(punkt => <li key={punkt}>{punkt}</li>)}
+                </ul>
+              </div>
+            ))}
+          </div>
+          <p style={{ fontSize: 11, color: C.textDim, lineHeight: 1.6, marginTop: 12 }}>
+            Beiträge der Mietervereine nach den Beitragsordnungen 2026 einzelner Ortsvereine (Spanne von Gelsenkirchen bis Kiel); die Höhe unterscheidet sich je nach Verein. Anwaltsgebühr nach § 34 Abs. 1 S. 3 RVG, brutto inkl. 19 % Umsatzsteuer. Stand 09/2026.
+          </p>
+        </div>
 
         {/* Maßnahme 3 aus planung/internationale-recherche-nkr.md (UK-Vorbild
             "Always Pay First, Fight Second"): Der Hinweis "Zahlung unter
@@ -204,41 +354,12 @@ export default function Welcome({ navigateTo, IS_DEMO }) {
         </p>
       </div>
 
-      {/* ───────────────────────────────────────────────────────────────────
-          Maßnahme 2: FAQ mit den unbequemen Fragen.
-          Bewusst native <details>/<summary> statt React-State:
-          - funktioniert ohne JavaScript und ohne zusätzlichen State,
-          - ist von Haus aus tastaturbedienbar und screenreader-tauglich,
-          - lässt sich später ohne KI um einen Eintrag erweitern (einfach eine
-            Zeile im Array unten ergänzen).
-          Die Fragen sind absichtlich die skeptischen: Unabhängigkeit,
-          Genauigkeit, Geld zurück, Datenschutz. Wer sie selbst stellt, wirkt
-          glaubwürdiger als wer sie vermeidet (Befund aus der internationalen
-          Recherche, unabhängig bestätigt bei servicechargeaudit.uk und
-          pruefenlassen.ch).
-          Achtung bei Änderungen: Die gleichen Fragen stehen als FAQPage-
-          JSON-LD in index.html. Beides muss übereinstimmen, sonst wertet
-          Google das strukturierte Markup als abweichend vom Seiteninhalt.
-          ─────────────────────────────────────────────────────────────────── */}
-      <div style={{ padding: "36px 24px", borderBottom: "1px solid " + C.border, maxWidth: PAGE_MAX, margin: "0 auto", boxSizing: "border-box" }}>
-        <div style={{ fontSize: 13, fontWeight: 700, color: C.text, marginBottom: 18, textTransform: "uppercase", letterSpacing: "0.06em", textAlign: "center" }}>Häufige Fragen</div>
-        <div style={{ display: "flex", flexDirection: "column", gap: 8, maxWidth: 620, margin: "0 auto" }}>
-          {FAQ_STARTSEITE.map(({ frage, antwort }) => (
-            <details key={frage} style={{ background: C.surface, border: "1px solid " + C.border, borderRadius: THEME.radius.md, padding: "14px 16px", textAlign: "left" }}>
-              <summary style={{ fontSize: 13, fontWeight: 600, color: C.text, fontFamily: THEME.font.heading, cursor: "pointer", listStyle: "revert" }}>
-                {frage}
-              </summary>
-              <div style={{ fontSize: 12, color: C.textMuted, lineHeight: 1.7, marginTop: 10 }}>{antwort}</div>
-            </details>
-          ))}
-        </div>
-        <div style={{ textAlign: "center", marginTop: 22 }}>
-          <button onClick={() => navigateTo("wohnung")}
-            style={{ background: C.accent, border: "none", borderRadius: THEME.radius.md, padding: "14px 32px", fontSize: 14, fontFamily: THEME.font.heading, fontWeight: 600, color: C.accentText, cursor: "pointer" }}>
-            Jetzt kostenlos prüfen
-          </button>
-        </div>
-      </div>
+      {/* HINWEIS 10.09.2026 (Stefan): Die FAQ stand hier zunächst als Block.
+          Sie ist jetzt eine eigene Seite unter /faq mit eigenem Menüeintrag
+          (src/pages/FAQ.jsx). Gründe: eigene URL und eigener <title>, damit
+          sie selbst ranken kann; aus dem Menü jederzeit erreichbar, auch
+          mitten im Formular; und die Startseite bleibt kurz. Der Inhalt liegt
+          unverändert in src/config/faq.js. */}
 
       <LegalFooter navigateTo={navigateTo} />
     </div>

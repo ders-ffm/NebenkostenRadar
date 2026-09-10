@@ -291,26 +291,29 @@ function buildRatgeberIndexHtml(template, artikelListe) {
 }
 
 // ───────────────────────────────────────────────────────────────────────────
-// FAQPage-JSON-LD für die Startseite.
+// Vorgerenderte FAQ-Seite unter /faq.
 //
-// WARUM: Die Startseite ist eine React-SPA — im ausgelieferten dist/index.html
-// steht nur <div id="root"></div>. Der FAQ-Block aus Welcome.jsx entsteht erst
-// im Browser. Google rendert JavaScript inzwischen zwar, tut es aber verzögert
-// und nicht garantiert. Strukturierte Daten im HTML-Quelltext werden dagegen
-// sofort gelesen und können als FAQ-Rich-Result in den Suchergebnissen
-// erscheinen.
+// WARUM ÜBERHAUPT VORRENDERN: Die App ist eine React-SPA — im ausgelieferten
+// HTML steht nur <div id="root"></div>. Der Seiteninhalt entsteht erst im
+// Browser. Google rendert JavaScript inzwischen zwar, tut es aber verzögert
+// und nicht garantiert. Deshalb bekommt /faq — wie schon die Ratgeberseiten —
+// eine statische HTML-Fassung mit sichtbarem Text, eigenem <title>, eigener
+// Beschreibung und eigenem Canonical.
+//
+// ZUSÄTZLICH FAQPage-MARKUP: Strukturierte Daten im Quelltext können als
+// FAQ-Rich-Result in den Suchergebnissen erscheinen. Bedingung von Google:
+// Das Markup muss dem sichtbaren Seiteninhalt entsprechen — deshalb wird
+// beides hier aus derselben Quelle erzeugt.
 //
 // EINZIGE QUELLE: src/config/faq.js. Wer dort eine Frage ändert, ändert
-// automatisch beides — sichtbaren Block und Markup. Genau das verlangt Google
-// auch: Das Markup muss dem sichtbaren Seiteninhalt entsprechen.
+// automatisch alle drei Ausgaben — die React-Seite (src/pages/FAQ.jsx), den
+// vorgerenderten Text und das Markup.
 //
-// Das Skript schreibt den Block direkt vor </head> in dist/index.html.
-// Es überschreibt einen eventuell schon vorhandenen Block (Marker-Kommentar),
-// damit ein zweiter Lauf keine Dubletten erzeugt.
+// GESCHICHTE (10.09.2026): Der FAQ-Block stand zunächst auf der Startseite,
+// das Markup entsprechend in dist/index.html. Auf Stefans Wunsch ist die FAQ
+// jetzt eine eigene Menüseite. Das Markup wandert mit — es gehört auf die
+// Seite, auf der die Fragen auch sichtbar stehen.
 // ───────────────────────────────────────────────────────────────────────────
-const FAQ_MARKER_START = "<!-- faq-jsonld:start -->";
-const FAQ_MARKER_ENDE = "<!-- faq-jsonld:end -->";
-
 function baueFaqJsonLd(faqListe) {
   const daten = {
     "@context": "https://schema.org",
@@ -324,40 +327,114 @@ function baueFaqJsonLd(faqListe) {
   // </script> im Antworttext würde den Script-Block vorzeitig schließen.
   // JSON.stringify escaped das nicht, deshalb hier von Hand.
   const json = JSON.stringify(daten, null, 2).replace(/<\//g, "<\\/");
-  return `${FAQ_MARKER_START}\n<script type="application/ld+json">\n${json}\n</script>\n${FAQ_MARKER_ENDE}`;
+  return `<script type="application/ld+json">\n${json}\n</script>`;
 }
 
-function schreibeStartseitenFaq(faqListe) {
-  const pfad = join(DIST, "index.html");
-  let html = readFileSync(pfad, "utf8");
+function buildFaqHtml(template, faqListe) {
+  const url = `${BASE}/faq`;
+  const title = "Häufige Fragen zur Nebenkostenprüfung | NebenkostenRadar";
+  const description =
+    "Antworten auf die häufigsten Fragen zur Prüfung der Nebenkostenabrechnung: Unabhängigkeit, Genauigkeit der Vergleichswerte, Fristen, Datenschutz und Kosten.";
 
-  const alterBlock = new RegExp(
-    FAQ_MARKER_START.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, "\\$&") +
-      "[\\s\\S]*?" +
-      FAQ_MARKER_ENDE.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, "\\$&") +
-      "\\n?",
-    "g"
+  let html = template
+    .replace(/<title>.*?<\/title>/s, `<title>${escapeHtml(title)}</title>`)
+    .replace(/(<meta name="description" content=")[^"]*(")/, `$1${escapeHtml(description)}$2`)
+    .replace(/(<meta property="og:title" content=")[^"]*(")/, `$1${escapeHtml(title)}$2`)
+    .replace(/(<meta property="og:description" content=")[^"]*(")/, `$1${escapeHtml(description)}$2`)
+    .replace(/(<meta property="og:url" content=")[^"]*(")/, `$1${url}$2`)
+    .replace(/(<link rel="canonical" href=")[^"]*(")/, `$1${url}$2`);
+
+  html = html.replace("</head>", baueFaqJsonLd(faqListe) + "\n</head>");
+
+  // Sichtbarer Text für Suchmaschinen und für Nutzer ohne JavaScript.
+  // React ersetzt den Inhalt beim Start vollständig, deshalb reicht hier
+  // einfaches, semantisches HTML ohne Styling.
+  const eintraege = faqListe
+    .map(({ frage, antwort }) => `<h2>${escapeHtml(frage)}</h2>\n<p>${escapeHtml(antwort)}</p>`)
+    .join("\n");
+  html = html.replace(
+    '<div id="root"></div>',
+    `<div id="root"><h1>Häufige Fragen</h1>\n${eintraege}</div>`
   );
-  html = html.replace(alterBlock, "");
+  return html;
+}
 
-  const block = baueFaqJsonLd(faqListe);
-  if (!html.includes("</head>")) {
-    console.error("  ! FAQ-JSON-LD übersprungen: kein </head> in dist/index.html gefunden.");
-    return;
+// ───────────────────────────────────────────────────────────────────────────
+// sitemap.xml aus den echten Artikeln erzeugen.
+//
+// WARUM (Befund vom 10.09.2026): public/sitemap.xml wurde bisher VON HAND
+// gepflegt. Beim Zählen fiel auf, dass sie nur 9 der 10 Artikel enthielt —
+// der im September vom Rechtsmonitor ergänzte Grundsteuer-Artikel fehlte,
+// war für Google über die Sitemap also nie angemeldet.
+//
+// Das ist strukturell und nicht durch Sorgfalt lösbar: Der Rechtsmonitor
+// (scripts/rechtsmonitor.mjs) fügt automatisch Artikel hinzu, kennt die
+// Sitemap aber nicht. Jeder neue Artikel hätte einen zweiten, manuellen
+// Handgriff gebraucht — der irgendwann vergessen wird.
+//
+// Ab jetzt wird dist/sitemap.xml bei jedem Build aus ARTIKEL erzeugt und
+// überschreibt die aus public/ kopierte Datei. Neue Artikel landen damit
+// automatisch drin. public/sitemap.xml bleibt als Rückfallebene liegen,
+// falls das Vorrendern einmal fehlschlägt.
+//
+// EINE STATISCHE SEITE ERGÄNZEN: unten in STATISCHE_SEITEN eine Zeile
+// hinzufügen. Formular- und Rechtsseiten gehören bewusst NICHT hinein —
+// Zwischenschritte des Formulars sollen nicht einzeln indexiert werden.
+// ───────────────────────────────────────────────────────────────────────────
+const STATISCHE_SEITEN = [
+  { pfad: "/", changefreq: "weekly", priority: "1.0" },
+  { pfad: "/ratgeber", changefreq: "monthly", priority: "0.8" },
+  { pfad: "/faq", changefreq: "monthly", priority: "0.7" },
+  { pfad: "/ueber-uns", changefreq: "yearly", priority: "0.5" },
+];
+
+const MONATE = {
+  januar: "01", februar: "02", "märz": "03", maerz: "03", april: "04",
+  mai: "05", juni: "06", juli: "07", august: "08", september: "09",
+  oktober: "10", november: "11", dezember: "12",
+};
+
+// Artikel tragen ihr Datum als Text ("September 2026"). Für <lastmod> braucht
+// die Sitemap ein ISO-Datum. Lässt sich das Datum nicht lesen, wird lastmod
+// weggelassen — ein fehlendes lastmod ist zulässig, ein falsches nicht.
+function lastmodAus(datumText) {
+  const treffer = String(datumText || "").trim().match(/^([A-Za-zäÄöÖüÜ]+)\s+(\d{4})$/);
+  if (!treffer) return null;
+  const monat = MONATE[treffer[1].toLowerCase()];
+  if (!monat) return null;
+  return `${treffer[2]}-${monat}-01`;
+}
+
+function schreibeSitemap(artikelListe) {
+  const eintraege = [];
+
+  for (const seite of STATISCHE_SEITEN) {
+    eintraege.push(
+      `  <url>\n    <loc>${BASE}${seite.pfad}</loc>\n    <changefreq>${seite.changefreq}</changefreq>\n    <priority>${seite.priority}</priority>\n  </url>`
+    );
   }
-  html = html.replace("</head>", block + "\n</head>");
-  writeFileSync(pfad, html);
-  console.log(`  ✓ FAQ-JSON-LD in / eingebettet (${faqListe.length} Fragen)`);
+
+  for (const artikel of artikelListe) {
+    const lastmod = lastmodAus(artikel.datum);
+    eintraege.push(
+      `  <url>\n    <loc>${BASE}/ratgeber/${artikel.id}</loc>\n    <changefreq>monthly</changefreq>\n    <priority>0.8</priority>` +
+        (lastmod ? `\n    <lastmod>${lastmod}</lastmod>` : "") +
+        `\n  </url>`
+    );
+  }
+
+  const xml =
+    `<?xml version="1.0" encoding="UTF-8"?>\n` +
+    `<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n` +
+    eintraege.join("\n") +
+    `\n</urlset>\n`;
+
+  writeFileSync(join(DIST, "sitemap.xml"), xml);
+  console.log(`  ✓ /sitemap.xml (${eintraege.length} URLs: ${STATISCHE_SEITEN.length} feste + ${artikelListe.length} Artikel)`);
 }
 
 async function main() {
-  // Den FAQ-Block aus der Vorlage entfernen, falls dist/ nicht frisch gebaut
-  // wurde. Sonst erbten die Ratgeberseiten das FAQPage-Markup der Startseite —
-  // strukturierte Daten ohne passenden sichtbaren Inhalt, was Google abwertet.
-  const rohesIndexHtml = readFileSync(join(DIST, "index.html"), "utf8");
-  const template =
-    rohesIndexHtml.split(FAQ_MARKER_START)[0] +
-    (rohesIndexHtml.split(FAQ_MARKER_ENDE)[1] ?? "");
+  const template = readFileSync(join(DIST, "index.html"), "utf8");
   const artikelModul = await import(join(ROOT, "src/artikel.js") + "?t=" + Date.now());
   const ARTIKEL = artikelModul.ARTIKEL;
   const artikelById = new Map(ARTIKEL.map(a => [a.id, a]));
@@ -378,8 +455,12 @@ async function main() {
   console.log(`  ✓ /ratgeber (Übersicht)`);
 
   const { FAQ_STARTSEITE } = await import(join(ROOT, "src/config/faq.js") + "?t=" + Date.now());
-  schreibeStartseitenFaq(FAQ_STARTSEITE);
+  const faqDir = join(DIST, "faq");
+  mkdirSync(faqDir, { recursive: true });
+  writeFileSync(join(faqDir, "index.html"), buildFaqHtml(template, FAQ_STARTSEITE));
+  console.log(`  ✓ /faq (${FAQ_STARTSEITE.length} Fragen, inkl. FAQPage-Markup)`);
 
+  schreibeSitemap(ARTIKEL);
   schreibeWidget();
   console.log("Vorrendern abgeschlossen.");
 }
