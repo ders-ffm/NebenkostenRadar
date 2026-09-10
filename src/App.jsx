@@ -189,6 +189,13 @@ export default function App() {
   // dort mit an /api/save-report gesendet werden kann (Nachweispflicht liegt
   // im Streitfall bei uns als Anbieter, siehe CHANGELOG 13.08.2026).
   const [widerrufOk, setWiderrufOk] = useState(false);
+  // Anzahl der per Foto/PDF erkannten Posten (09.09.2026, siehe CHANGELOG).
+  // Wird in Wohnung.jsx nach erfolgreicher Erkennung gesetzt und in Posten.jsx
+  // gelesen: Wer ein Foto hochgeladen hat, bekommt dort nur noch die erkannten
+  // Positionen zur Bestätigung statt aller 19 sichtbaren Felder. Bewusst hier
+  // oben statt lokal in Wohnung.jsx, weil beide Schritte den Wert brauchen.
+  // 0 = kein Foto genutzt (rein manueller Weg, unveränderte Darstellung).
+  const [fotoErkannt, setFotoErkannt] = useState(0);
   const [result, setResult] = useState(null);
   const [gekauft, setGekauft] = useState(() => window.location.pathname === "/danke" || window.location.pathname === "/pruefen/download");
   const [stufe, setStufe] = useState(null); // "auswertung" | "voll"
@@ -235,6 +242,7 @@ export default function App() {
     widerrufOk, setWiderrufOk,
     ratgeberArtikel, IS_DEMO,
     entwurfLadeFehler,
+    fotoErkannt, setFotoErkannt,
   };
 
   function renderPage() {

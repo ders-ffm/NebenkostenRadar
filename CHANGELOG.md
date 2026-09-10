@@ -2,6 +2,91 @@
 
 Alle wesentlichen Änderungen an diesem Projekt, mit Datum und Begründung. Dient der Nachvollziehbarkeit, damit auch ohne KI-Unterstützung verstanden werden kann, warum etwas so ist, wie es ist.
 
+## 09.09.2026 — P3 + P5 + internationale Recherche: Betriebskostenspiegel-Seite ausgebaut, Einbett-Widget, Erkenntnisse aus UK/Korea/Japan
+
+Auftrag von Stefan: international recherchieren, auch bewusst artfremde Angebote, und daraus echten Mehrwert ableiten. Vollständige Recherche in `planung/internationale-recherche-nkr.md`.
+
+### Der wichtigste Befund
+
+Drei Länder, drei unabhängige Systeme — und alle drei vergleichen gegen eine **Vergleichsgruppe**, nicht gegen einen Landesdurchschnitt:
+
+| Land | Vergleichsbasis |
+|---|---|
+| UK (`servicechargeaudit.uk`) | Region + Objekttyp, Ausgabe als Perzentil |
+| Südkorea (K-apt, staatlich) | ähnlich große Wohnanlagen, Position für Position |
+| Japan (MLIT-Erhebung) | Einheitenzahl, Geschosszahl, Objekttyp |
+| **NKR heute** | **ein bundesweiter Durchschnitt, ohne Segmentierung** |
+
+Das ist NKRs analytische Kernschwäche, und sie ist am eigenen Testkauf belegbar: Die Grundsteuer wurde mit **648 % über dem Richtwert** ausgewiesen — versehen mit dem Hinweis, dass genau das in Großstädten oft ortsüblich ist. Eine Kennzahl, die man im selben Atemzug relativieren muss, taugt nicht als Kennzahl.
+
+Der langfristige Ausweg (dokumentiert, bewusst noch nicht gebaut): eine eigene, anonymisierte Vergleichsdatenbasis aus den eigenen Prüfungen aufbauen, wie es `servicechargeaudit.uk` bereits tut („Regional benchmarks built from user-contributed anonymous data where sample size exceeds 100 properties"). NKR erzeugt diese Daten bei jeder Prüfung ohnehin. Bei aktuell 42 Nutzern im Monat dauert es lange bis zu belastbaren Fallzahlen — aber Daten, die man heute nicht erhebt, fehlen später unwiederbringlich.
+
+### P3 — Betriebskostenspiegel-Artikel ausgebaut
+
+Von ~11.000 auf **16.676 Zeichen**, von 3 auf **5 H2-Abschnitte**. Neu:
+
+- **„Was sich gegenüber dem Vorjahr verändert hat"** — Steigerung von über 6 %, 3.532,80 € für 80 m² bei allen Kostenarten (508,80 € mehr als im Vorjahr), Höchstwert 3,68 €/m², und der gegenläufige Rückgang bei Antenne/Kabel um rund 42 % durch den Wegfall des Nebenkostenprivilegs. Alle Zahlen direkt von der DMB-Seite, nichts abgeleitet oder geschätzt.
+- **„Die Grenzen des Betriebskostenspiegels — ehrlich betrachtet"** — nach japanischem Vorbild: erklärt, *warum* eine Position legitim abweichen darf (Region, Gebäudegröße, Ausstattung, energetischer Zustand, Witterung). Mit dem internationalen Vergleich als Beleg, dass anderswo gegen Vergleichsgruppen gerechnet wird.
+- **FAQ mit sechs Fragen**, darunter bewusst die unbequemen: Warum gibt es keine Werte für meine Stadt? Ist eine Abweichung ein Beweis? Ist NebenkostenRadar unabhängig? (Vorbild UK, wo die FAQ ausdrücklich fragt „Are you affiliated with managing agents or landlords?")
+- **„Zahlung unter Vorbehalt"** als Hinweiskasten direkt auf dieser Seite statt nur vergraben im Widerspruchs-Artikel — nach dem UK-Vorbild „Always Pay First, Fight Second".
+
+**Bewusst NICHT übernommen:** Die Keyword-Dubletten des Wettbewerbers (`mein-nebenkostenrechner.de` hat 44 Überschriften auf 62.800 Zeichen, davon etliche inhaltsgleich mit variiertem Suchbegriff). Ebenso wenig Live-Zähler und Testimonials — NKR hat bislang keinen einzigen echten Käufer, solche Elemente wären schlicht erfunden.
+
+### P5 — Einbett-Widget
+
+Neu: `dist/widget.js`, erzeugt beim Build aus `business.js` (siehe `scripts/prerender.mjs`, `schreibeWidget()`). Fremde Websites — Mietervereine, Blogs, Verbraucherseiten — binden die Richtwerte-Tabelle mit zwei Zeilen ein:
+
+```html
+<div id="nkr-betriebskostenspiegel"></div>
+<script src="https://nebenkostenradar.com/widget.js" async></script>
+```
+
+Unter der Tabelle steht eine Quellenangabe mit Rückverweis auf nebenkostenradar.com. Das ist der eigentliche Zweck: ein legitimer, in der Branche üblicher Weg zu Rückverlinkungen — im Gegensatz zu gekauften Links.
+
+**Bewusst statische Datei, keine Serverless Function:** Vercel zählt jede Datei unter `api/` als eigene Function, der Hobby-Plan erlaubt 12 — daran ist schon ein Deploy gescheitert (siehe 31.08.2026). Eine statische Datei kostet keinen dieser Plätze und wird zusätzlich vom CDN ausgeliefert. Sie setzt keine Cookies und erhebt keine Besucherdaten.
+
+Da sie beim Build aus `business.js` entsteht, kann sie nicht veralten: Werden die Richtwerte aktualisiert, aktualisiert sich jede Einbindung auf jeder fremden Website beim nächsten Deploy automatisch mit.
+
+Eine Anleitung zum Einbinden steht als eigener Abschnitt im Betriebskostenspiegel-Artikel — sonst würde das Widget nie gefunden.
+
+### Getestet
+
+| Prüfung | Ergebnis |
+|---|---|
+| `scripts/eingaben-test.mjs` | 31 Eingaben, 0 Abweichungen |
+| `scripts/pdf-konsistenz-test.mjs` | 68 Konstellationen, 950 Prüfungen, 0 Verletzungen |
+| Artikel-Integrität | 10 Artikel, 0 tote Verweise unter 49 Querverweisen |
+| `npm run build` inkl. Vorrendern | fehlerfrei, 10 Artikelseiten + widget.js |
+| Widget gegen simuliertes DOM | rendert 11 Zeilen, Quellenangabe und Rückverweis vorhanden |
+| `node --check dist/widget.js` | gültiges JavaScript |
+
+## 09.09.2026 — P2: Nach dem Foto-Upload nur noch die erkannten Posten bestätigen
+
+Priorität 2 aus `planung/werbeplan-nkr.md` Abschnitt 10. Größter Hebel im Funnel.
+
+**Das Problem, in einem Satz:** Der Foto-/PDF-Upload liest Wohnfläche, Jahr, Vorauszahlung, Gesamtsumme *und* die Einzelposten aus — und danach landete der Nutzer trotzdem auf einer Seite mit **19 sofort sichtbaren Feldern in 16 Kategorien**, bei genau zwei echten Pflichtfeldern. Laut GA4 verliert der Funnel zwischen Wohnungs- und Posten-Schritt **61 %** der Nutzer. Wer ein Foto hochlädt, erwartet ein Ergebnis und bekam ein Formular.
+
+**Die Lösung:** Kam der Nutzer über den Foto-Weg, zeigt `Posten.jsx` zunächst nur die Kategorien, in denen tatsächlich etwas erkannt wurde — plus die Kategorien mit Pflichtfeldern (Heizung/Warmwasser), ohne die keine Analyse möglich ist. Darüber ein Banner („✓ N Posten aus deinem Foto übernommen") mit einem Klick zu allen weiteren Posten, und von dort wieder zurück in die kompakte Ansicht.
+
+**Bewusst NICHT umgesetzt: den Schritt ganz überspringen.** Die erkannten Werte müssen von einem Menschen bestätigt werden, bevor daraus ein Prüfbericht wird — das ist die Grundregel der Foto-Erkennung (siehe Kopfkommentar in `api/analyse-foto.js`, Punkt 1). Eine automatische Analyse ohne Zwischenprüfung würde dem Wertversprechen widersprechen. Das Ziel war nie „weniger Kontrolle", sondern „weniger Formular".
+
+**Der rein manuelle Weg bleibt vollständig unverändert.** Ohne Foto (`fotoErkannt === 0`) greift der Kompaktmodus nicht. Auch die Suche hat Vorrang: Wer aktiv nach einem Posten sucht, findet ihn, auch wenn er nicht erkannt wurde.
+
+**Technisch:** Neuer State `fotoErkannt` in `App.jsx` (Anzahl erkannter Posten), gesetzt von `Wohnung.jsx` nach erfolgreicher Analyse, gelesen von `Posten.jsx`. Bewusst in `App.jsx` statt lokal, weil beide Schritte den Wert brauchen.
+
+**Gemessene Wirkung** (Wegwerf-Skript gegen die echte Gruppenstruktur, danach gelöscht):
+
+| Fall | ohne Foto | mit Foto | Ersparnis |
+|---|---|---|---|
+| Stefans echte Abrechnung (16 Posten erkannt) | 21 Felder / 16 Kat. | 16 Felder / 12 Kat. | −24 % |
+| Typische kleine Abrechnung (6 Posten) | 19 Felder / 16 Kat. | **6 Felder / 6 Kat.** | −68 % |
+| Erkennung fand nur die Pflichtfelder | 19 Felder / 16 Kat. | **2 Felder / 2 Kat.** | −89 % |
+| Erkennung fand nichts | 19 Felder / 16 Kat. | 2 Felder / 2 Kat. | −89 % |
+
+Auch im letzten Fall (Erkennung schlägt fehl) bleiben die beiden Pflichtfelder sichtbar — die Analyse bleibt also immer möglich. Verifiziert.
+
+`npm run build` inklusive Vorrendern fehlerfrei.
+
 ## 09.09.2026 — September-Artikel durch meinen Fehler gelöscht und wiederhergestellt + strukturelles Risiko benannt
 
 **Was passiert ist, ungeschönt:** Stefan fiel auf, dass unter `/ratgeber` kein September-Artikel stand, obwohl der Rechtsmonitor monatlich neue Artikel erzeugt. Die Prüfung ergab: Der Bot hatte korrekt gearbeitet — Commit `2c7024a` vom 01.09.2026 („Automatisch: Neue Artikel 2026-09") fügte den Artikel *Grundsteuerreform 2026: Auswirkungen auf die Nebenkostenabrechnung für Mieter* hinzu.

@@ -317,3 +317,77 @@ Die Suchanfrage "betriebskostenspiegel hessen 2024" erzeugt bereits 21 Impressio
 **Für die Saison Okt–Dez 2026 wird SEO nichts mehr bewegen.** Von Position 39 auf Seite 1 zu kommen dauert bei einer jungen Domain Monate, nicht Wochen — und der Rendering-Fehler wurde erst heute behoben, Google muss die Seiten überhaupt erst neu bewerten. Wer etwas anderes verspricht, verkauft Hoffnung.
 
 Was das bedeutet: Die diesjährige Saison wird von der bestehenden, sehr kleinen Reichweite bestimmt. Der Aufbau lohnt sich trotzdem — er zahlt auf die Saison 2027 und auf den ganzjährigen Grundverkehr ein. Aber er ist keine Rettung für die kommenden drei Wochen.
+
+## 10. Priorisierung (09.09.2026)
+
+Ausgangslage, nüchtern: 42 Startseiten-Nutzer in 28 Tagen, Google-Position 39,2, kein einziger echter Nutzer hat je die Stripe-Seite erreicht. Die Hauptsaison beginnt in drei Wochen. SEO braucht Monate. Daraus folgt die Reihenfolge unten — sortiert nach **Wirkung × Eintrittswahrscheinlichkeit ÷ Aufwand**, nicht nach Wunschdenken.
+
+### P1 — Zahlungsmethoden in Stripe erweitern
+
+**Aufwand: ~10 Minuten, kein Code.** Reine Dashboard-Einstellung.
+
+Aktuell werden Kreditkarte, Apple Pay, Link und Amazon Pay angeboten. Nicht angeboten: PayPal (28,7 % Marktanteil), Kauf auf Rechnung (26,1 %), Lastschrift (14,4 %). Rund 69 % der im deutschen E-Commerce bevorzugten Zahlungswege sind damit nicht bedienbar.
+
+Warum ganz oben trotz „wirkt nur, wenn jemand die Kasse erreicht": Es ist die einzige Maßnahme, die **ab dem nächsten Kaufversuch** wirkt, sie kostet praktisch nichts, und sie ist nicht umkehrbar schädlich. Alles andere braucht Wochen bis Monate.
+
+### P2 — Foto-Upload direkt zum Ergebnis führen
+
+**Aufwand: mittel.** Größter Hebel im Funnel und zugleich das Alleinstellungsmerkmal.
+
+Der Upload liest Wohnfläche, Jahr, Vorauszahlung, Gesamtsumme und die Einzelposten aus — danach landet der Nutzer trotzdem auf einer Seite mit 19 sofort sichtbaren Feldern in 16 Kategorien, bei zwei echten Pflichtfeldern. Genau dort verliert der Funnel 61 %. Wer ein Foto hochlädt, erwartet Magie und bekommt ein Formular.
+
+Zielbild: Foto → kompakte Bestätigung nur der erkannten Positionen → Ergebnis.
+
+### P3 — Betriebskostenspiegel-Seite ausbauen
+
+**Aufwand: mittel. Muss jetzt starten, wirkt ab Q1 2027.**
+
+Details in Abschnitt 9. Konkret: alle 17 Kostenarten statt 14 mit kurzer Erklärung, Jahresvergleich 2023→2024 (über 6 % Steigerung als Aufhänger), FAQ-Abschnitt. Bewusst **ohne** die Keyword-Dubletten des Wettbewerbers.
+
+### P4 — Bundesland-Cluster
+
+**Aufwand: hoch, weil Datenbeschaffung vorausgeht.**
+
+13 landesweite DMB-Betriebskostenspiegel existieren real, sind aber nicht primärquellen-verifiziert und nirgends im Code. „betriebskostenspiegel hessen 2024" hat bereits 21 Impressionen ohne passende Seite. Erst Daten beschaffen und verifizieren, dann Seiten — keine erfundenen Werte.
+
+### P5 — Einbett-Widget für die Richtwerte-Tabelle
+
+**Aufwand: gering, Wirkung langfristig.**
+
+Fremdseiten binden die Tabelle ein und verlinken auf die Quelle. Die Daten liegen strukturiert vor, der Blocktyp `richtwerte` existiert bereits. Legitimer Weg zu Rückverlinkungen.
+
+### Was bewusst NICHT auf der Liste steht
+
+- **Weitere Meta-Ads.** Falscher Kanal für ein Suchanlass-Produkt (Begründung in Abschnitt 8.7). Budget eingestellt.
+- **Google Ads.** Richtige Suchabsicht, aber bei ~9 € Marge und Klickpreisen in dieser Nische rechnet es sich nicht. Wäre erst bei höherem Preis oder Wiederkaufrate zu prüfen.
+- **Bundle-Größe/Ladezeit (1,6 MB JS).** Real, aber bei 42 Nutzern nicht die bindende Beschränkung.
+
+### Die unbequeme Gesamtaussage
+
+Von P1 abgesehen wirkt **keine** dieser Maßnahmen noch in dieser Saison. Okt–Dez 2026 wird von der bestehenden, sehr kleinen Reichweite bestimmt. Der Aufbau lohnt sich trotzdem — er zahlt auf 2027 und den ganzjährigen Grundverkehr ein. Aber er ist keine Rettung für die kommenden drei Wochen, und es wäre unredlich, das anders darzustellen.
+
+### Nachtrag 09.09.2026 — Stand der Priorisierung nach Umsetzung
+
+| Prio | Maßnahme | Stand |
+|---|---|---|
+| P1 | Zahlungsmethoden in Stripe (PayPal, Klarna, Lastschrift) | **offen — nur von Stefan zu erledigen**, PayPal-Konfiguration nötig |
+| P2 | Foto-Upload: kompakte Bestätigung statt 19 Feldern | erledigt, siehe CHANGELOG |
+| P3 | Betriebskostenspiegel-Seite ausgebaut | erledigt, 11.000 → 16.676 Zeichen |
+| P4 | Bundesland-Cluster | **bewusst zurückgestellt**, Begründung unten |
+| P5 | Einbett-Widget | erledigt, `widget.js` beim Build erzeugt |
+
+**Warum P4 zurückgestellt wurde:** Die 13 landesweiten DMB-Betriebskostenspiegel existieren, sind aber weder beschafft noch primärquellen-verifiziert. Seiten mit ungeprüften Regionalwerten zu veröffentlichen würde gegen den Grundsatz verstoßen, der dieses Projekt trägt — keine Zahl ohne Quelle. Die Beschaffung ist ein eigener Arbeitsschritt und sollte nicht nebenbei erledigt werden, nur um schneller Seiten zu haben. Der Suchbedarf ist mit 21 Impressionen für „betriebskostenspiegel hessen 2024" real, läuft aber nicht weg.
+
+**Neu hinzugekommen aus der internationalen Recherche** (vollständig in `planung/internationale-recherche-nkr.md`):
+
+| # | Maßnahme | Vorbild | Stand |
+|---|---|---|---|
+| R1 | FAQ mit den unbequemen Fragen | UK | erledigt (im Artikel) |
+| R2 | „Zahlung unter Vorbehalt" dort, wo die Entscheidung fällt | UK | erledigt (im Artikel) |
+| R3 | Strukturelle Erklärungen, warum Abweichungen legitim sein können | Japan | erledigt (im Artikel) |
+| R4 | Datenquellen-Abschnitt prominent auf der **Startseite** | UK | offen |
+| R5 | Beispielergebnis auf der Startseite, bevor etwas eingegeben wird | UK | offen |
+| R6 | Einordnung als Perzentil statt reiner Prozentabweichung | UK | offen, braucht Datenbasis |
+| R7 | Anonymisierte eigene Vergleichsdatenbasis aufbauen | UK / Korea | offen, langfristig — **strategisch der wichtigste Punkt** |
+
+R7 ist der einzige Punkt auf dieser Liste, der einen dauerhaften Vorsprung erzeugen kann. Alles andere ist kopierbar; eine über Jahre gewachsene eigene Vergleichsdatenbasis nicht.

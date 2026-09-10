@@ -118,6 +118,74 @@ function renderBlock(block, artikelById) {
   }
 }
 
+// ───────────────────────────────────────────────────────────────────────────
+// EINBETT-WIDGET (NEU 09.09.2026, siehe planung/internationale-recherche-nkr.md)
+//
+// Erzeugt dist/widget.js — eine eigenständige Datei, die fremde Websites per
+// <script>-Tag einbinden können, um die DMB-Richtwerte-Tabelle anzuzeigen.
+// Zweck ist nicht die Tabelle selbst, sondern die sichtbare Quellenangabe mit
+// Rückverlinkung darunter: Wer die Tabelle einbindet, verlinkt automatisch auf
+// nebenkostenradar.com. Das ist ein legitimer, in der Branche üblicher Weg zu
+// Rückverlinkungen — im Gegensatz zu gekauften Links.
+//
+// BEWUSST STATISCHE DATEI, KEINE SERVERLESS FUNCTION: Vercel zählt jede Datei
+// unter api/ als eigene Function, der Hobby-Plan erlaubt 12 (daran ist schon
+// ein Deploy gescheitert, siehe CHANGELOG 31.08.2026). Eine statische Datei
+// kostet keinen dieser Plätze und wird zusätzlich vom CDN ausgeliefert.
+//
+// Die Werte kommen aus business.js und werden beim Build fest eingebacken —
+// aktualisiert jemand die Richtwerte, aktualisiert sich das Widget beim
+// nächsten Deploy von selbst mit. Es kann nicht veralten.
+function schreibeWidget() {
+  const R = BUSINESS.RICHTWERTE;
+  const zeilen = [
+    ["Heizung + Warmwasser", "heizung_warmwasser"],
+    ["Wasser + Abwasser", "wasser_abwasser"],
+    ["Grundsteuer", "grundsteuer"],
+    ["Müllbeseitigung", "muell"],
+    ["Hausmeister", "hausmeister"],
+    ["Versicherungen", "versicherungen"],
+    ["Gebäudereinigung", "gebaeudereinigung"],
+    ["Aufzug", "aufzug"],
+    ["Gartenpflege", "gartenpflege"],
+    ["Allgemeinstrom", "allgemeinstrom"],
+  ].filter(([, k]) => R[k] != null).map(([label, k]) => ({ label, wert: R[k] }));
+
+  const daten = JSON.stringify({ zeilen, gesamt: R.gesamt, jahr: BUSINESS.RICHTWERTE_JAHR });
+
+  const js = `/* NebenkostenRadar — Richtwerte-Widget
+ * Einbinden mit:  <div id="nkr-betriebskostenspiegel"></div>
+ *                 <script src="${BASE}/widget.js" async></script>
+ * Quelle: Deutscher Mieterbund, Betriebskostenspiegel. Automatisch erzeugt,
+ * nicht von Hand bearbeiten (siehe scripts/prerender.mjs).
+ */
+(function () {
+  var D = ${daten};
+  function eur(n) { return n.toLocaleString("de-DE", { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + " \\u20AC"; }
+  function render(ziel) {
+    var t = '<table style="width:100%;border-collapse:collapse;font:14px/1.5 system-ui,-apple-system,Segoe UI,sans-serif;color:#2E2A22">';
+    t += '<caption style="caption-side:top;text-align:left;font-weight:600;padding:0 0 8px">Betriebskostenspiegel ' + D.jahr + ' \\u2014 Durchschnitt je m\\u00B2 und Monat</caption>';
+    t += '<thead><tr style="border-bottom:2px solid #E3D9C6"><th scope="col" style="text-align:left;padding:6px 8px 6px 0;font-weight:600">Kostenart</th><th scope="col" style="text-align:right;padding:6px 0 6px 8px;font-weight:600">\\u20AC/m\\u00B2/Monat</th></tr></thead><tbody>';
+    D.zeilen.forEach(function (z) {
+      t += '<tr style="border-bottom:1px solid #E3D9C6"><th scope="row" style="text-align:left;padding:6px 8px 6px 0;font-weight:400">' + z.label + '</th><td style="text-align:right;padding:6px 0 6px 8px;white-space:nowrap">' + eur(z.wert) + '</td></tr>';
+    });
+    t += '<tr style="border-top:2px solid #E3D9C6"><th scope="row" style="text-align:left;padding:8px 8px 8px 0;font-weight:700">Gesamt</th><td style="text-align:right;padding:8px 0 8px 8px;font-weight:700;white-space:nowrap">' + eur(D.gesamt) + '</td></tr>';
+    t += '</tbody></table>';
+    t += '<p style="font:12px/1.5 system-ui,-apple-system,Segoe UI,sans-serif;color:#6B6355;margin:8px 0 0">Quelle: Deutscher Mieterbund, Betriebskostenspiegel ' + D.jahr + '. Tabelle bereitgestellt von <a href="${BASE}/ratgeber/betriebskostenspiegel-2024" style="color:#3d7a5c">NebenkostenRadar</a>.</p>';
+    ziel.innerHTML = t;
+  }
+  function start() {
+    var ziel = document.getElementById("nkr-betriebskostenspiegel");
+    if (ziel) render(ziel);
+  }
+  if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", start);
+  else start();
+})();
+`;
+  writeFileSync(join(DIST, "widget.js"), js);
+  console.log("  ✓ /widget.js (Einbett-Widget, " + zeilen.length + " Kostenarten)");
+}
+
 // Richtwerte-Tabelle aus business.js — gleiche Datenquelle und gleiche
 // Zeilenreihenfolge wie in src/pages/Artikel.jsx, damit vorgerendertes HTML
 // und die spätere React-Darstellung identisch sind. Bewusst NICHT aus dem
@@ -243,6 +311,7 @@ async function main() {
   writeFileSync(join(ratgeberIndexDir, "index.html"), buildRatgeberIndexHtml(template, ARTIKEL));
   console.log(`  ✓ /ratgeber (Übersicht)`);
 
+  schreibeWidget();
   console.log("Vorrendern abgeschlossen.");
 }
 

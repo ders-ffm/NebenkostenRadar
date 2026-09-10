@@ -114,7 +114,7 @@ function pdfAufBase64(file) {
   });
 }
 
-export default function Wohnung({ navigateTo, wohnung, setWohnung, werte, setWerte, gesamtsummeAbrechnung, setGesamtsummeAbrechnung, entwurfLadeFehler }) {
+export default function Wohnung({ navigateTo, wohnung, setWohnung, werte, setWerte, gesamtsummeAbrechnung, setGesamtsummeAbrechnung, entwurfLadeFehler, setFotoErkannt }) {
   const C = THEME.color;
   const [errors, setErrors] = useState({});
 
@@ -272,6 +272,11 @@ export default function Wohnung({ navigateTo, wohnung, setWohnung, werte, setWer
         setGesamtsummeAbrechnung(data.wohnung.gesamtsummeLautAbrechnung);
       }
       setFotoAnzahl(data.anzahlErkannt || 0);
+      // Zusätzlich nach oben melden (09.09.2026, siehe CHANGELOG): Posten.jsx
+      // zeigt danach nur noch die erkannten Positionen zur Bestätigung statt
+      // aller 19 sichtbaren Felder. Ohne diese Meldung wüsste der nächste
+      // Schritt nicht, dass überhaupt ein Foto im Spiel war.
+      if (setFotoErkannt) setFotoErkannt(data.anzahlErkannt || 0);
       setHinweise(data.hinweise || []);
       setFotoStatus("fertig");
     } catch (err) {

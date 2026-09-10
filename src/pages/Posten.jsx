@@ -20,11 +20,35 @@ function normalisiere(s) {
   return (s || "").toLowerCase();
 }
 
-export default function Posten({ navigateTo, werte, setWerte, runAnalyse, gesamtsummeAbrechnung, setGesamtsummeAbrechnung }) {
+export default function Posten({ navigateTo, werte, setWerte, runAnalyse, gesamtsummeAbrechnung, setGesamtsummeAbrechnung, fotoErkannt = 0 }) {
   const C = THEME.color;
   const [errors, setErrors] = useState({});
   const [suche, setSuche] = useState("");
   const [expandedGruppen, setExpandedGruppen] = useState(() => new Set());
+
+  // KOMPAKTE BESTÄTIGUNG NACH FOTO-UPLOAD (09.09.2026, siehe CHANGELOG).
+  //
+  // Problem: Der Foto-/PDF-Upload liest Wohnfläche, Jahr, Vorauszahlung,
+  // Gesamtsumme UND die Einzelposten aus — und danach landete der Nutzer
+  // trotzdem auf dieser Seite mit 19 sofort sichtbaren Feldern in 16
+  // Kategorien, bei genau zwei echten Pflichtfeldern. Laut GA4 verliert der
+  // Funnel zwischen Wohnungs- und Posten-Schritt 61 % der Nutzer. Wer ein
+  // Foto hochlädt, erwartet ein Ergebnis und bekam ein Formular.
+  //
+  // Lösung: Kam der Nutzer über den Foto-Weg (fotoErkannt > 0), zeigen wir
+  // zunächst NUR die Kategorien, in denen tatsächlich etwas erkannt wurde,
+  // plus die Kategorien mit Pflichtfeldern (Heizung/Warmwasser — ohne sie
+  // ist keine Analyse möglich, sie müssen also sichtbar bleiben, auch wenn
+  // die Erkennung dort nichts gefunden hat).
+  //
+  // Bewusst KEIN Überspringen des Schritts: Die erkannten Werte müssen vom
+  // Menschen bestätigt werden, bevor daraus ein Prüfbericht wird — das ist
+  // die Grundregel der Foto-Erkennung (siehe Kopfkommentar in
+  // api/analyse-foto.js). Aus 19 Feldern werden aber typischerweise 4–8.
+  //
+  // Der rein manuelle Weg (fotoErkannt === 0) bleibt vollständig unverändert.
+  const [alleAnzeigen, setAlleAnzeigen] = useState(false);
+  const kompaktModus = fotoErkannt > 0 && !alleAnzeigen;
   // Gesamtsumme laut Abrechnung — rein informativer Abgleich (siehe Kommentar
   // weiter unten bei der Hinweis-Anzeige). Bewusst eigener State in App.jsx,
   // NICHT Teil von `werte`/`errors` — darf niemals in validate() einfließen.
@@ -44,17 +68,35 @@ export default function Posten({ navigateTo, werte, setWerte, runAnalyse, gesamt
   const sucheNorm = normalisiere(suche.trim());
   const sucheAktiv = !!sucheNorm;
   const gefilterteGruppen = useMemo(() => {
-    if (!sucheNorm) return POSTEN_GRUPPEN;
-    return POSTEN_GRUPPEN
-      .map(gruppe => ({
-        ...gruppe,
-        posten: gruppe.posten.filter(p => {
-          const haystack = [p.label, p.tip, ...(p.aliases || [])].map(normalisiere).join(" · ");
-          return haystack.includes(sucheNorm);
-        }),
-      }))
-      .filter(gruppe => gruppe.posten.length > 0);
-  }, [sucheNorm]);
+    // Die Suche hat Vorrang vor dem Kompaktmodus: Wer aktiv nach einem Posten
+    // sucht, will ihn finden — auch wenn er nicht erkannt wurde.
+    if (sucheNorm) {
+      return POSTEN_GRUPPEN
+        .map(gruppe => ({
+          ...gruppe,
+          posten: gruppe.posten.filter(p => {
+            const haystack = [p.label, p.tip, ...(p.aliases || [])].map(normalisiere).join(" · ");
+            return haystack.includes(sucheNorm);
+          }),
+        }))
+        .filter(gruppe => gruppe.posten.length > 0);
+    }
+    if (kompaktModus) {
+      return POSTEN_GRUPPEN
+        .map(gruppe => ({
+          ...gruppe,
+          // Innerhalb einer Kategorie nur befüllte und Pflicht-Posten zeigen
+          posten: gruppe.posten.filter(p => p.pflicht || toNum(werte[p.key]) > 0),
+        }))
+        .filter(gruppe => gruppe.posten.length > 0);
+    }
+    return POSTEN_GRUPPEN;
+  }, [sucheNorm, kompaktModus, werte]);
+
+  // Wie viele Posten blendet der Kompaktmodus gerade aus? (für den Umschalter)
+  const ausgeblendeteAnzahl = kompaktModus
+    ? ALLE_POSTEN.filter(p => !p.pflicht && toNum(werte[p.key]) <= 0).length
+    : 0;
 
   // Abgleich mit der auf der Abrechnung aufgedruckten Gesamtsumme. Bewusst NUR
   // ein Hinweis, KEIN Blocker: Eine Abrechnung kann selbst fehlerhaft/unplausibel
@@ -145,6 +187,31 @@ export default function Posten({ navigateTo, werte, setWerte, runAnalyse, gesamt
         </div>
       </div>
       <div style={{ padding: "10px 20px 120px", maxWidth: THEME.layout.formMax, margin: "0 auto", boxSizing: "border-box" }}>
+        {/* Kompaktmodus-Banner — erklärt, warum hier nur wenige Felder stehen,
+            und macht den Weg zu allen Posten in einem Klick zugänglich. */}
+        {kompaktModus && !sucheAktiv && (
+          <div style={{ background: C.brandBg, border: "1px solid " + C.brand, borderRadius: THEME.radius.md, padding: "12px 14px", marginBottom: 16 }}>
+            <div style={{ fontSize: 13.5, fontWeight: 600, color: C.text, marginBottom: 4 }}>
+              ✓ {fotoErkannt} {fotoErkannt === 1 ? "Posten" : "Posten"} aus deinem Foto übernommen
+            </div>
+            <div style={{ fontSize: 12.5, color: C.textMuted, lineHeight: 1.6, marginBottom: 8 }}>
+              Bitte kurz prüfen, ob die Beträge stimmen. Fehlt etwas von deiner Abrechnung, kannst du alle weiteren Posten einblenden.
+            </div>
+            <button onClick={() => setAlleAnzeigen(true)}
+              style={{ background: "none", border: "none", color: C.brand, fontSize: 12.5, fontWeight: 600, cursor: "pointer", padding: 0, fontFamily: THEME.font.body, textDecoration: "underline" }}>
+              Alle {ausgeblendeteAnzahl} weiteren Posten einblenden
+            </button>
+          </div>
+        )}
+        {/* Zurück in den Kompaktmodus, falls jemand aufgeklappt hat und die
+            Übersicht wiederhaben möchte. Nur anbieten, wenn ein Foto im Spiel
+            war — sonst gab es nie einen Kompaktmodus. */}
+        {fotoErkannt > 0 && alleAnzeigen && !sucheAktiv && (
+          <button onClick={() => setAlleAnzeigen(false)}
+            style={{ background: "none", border: "none", color: C.brand, fontSize: 12.5, fontWeight: 600, cursor: "pointer", padding: "0 0 12px", fontFamily: THEME.font.body, textDecoration: "underline" }}>
+            ← Nur die erkannten Posten anzeigen
+          </button>
+        )}
         {gefilterteGruppen.length === 0 && (
           <div style={{ textAlign: "center", padding: "24px 12px", fontSize: 13, color: C.textMuted }}>
             Kein Posten gefunden für "{suche}". Falls du den Begriff auf deiner Abrechnung nicht wiederfindest, trage ihn unter "Sonstige vereinbarte Betriebskosten" ein.
