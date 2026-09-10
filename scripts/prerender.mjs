@@ -290,8 +290,74 @@ function buildRatgeberIndexHtml(template, artikelListe) {
   return html;
 }
 
+// ───────────────────────────────────────────────────────────────────────────
+// FAQPage-JSON-LD für die Startseite.
+//
+// WARUM: Die Startseite ist eine React-SPA — im ausgelieferten dist/index.html
+// steht nur <div id="root"></div>. Der FAQ-Block aus Welcome.jsx entsteht erst
+// im Browser. Google rendert JavaScript inzwischen zwar, tut es aber verzögert
+// und nicht garantiert. Strukturierte Daten im HTML-Quelltext werden dagegen
+// sofort gelesen und können als FAQ-Rich-Result in den Suchergebnissen
+// erscheinen.
+//
+// EINZIGE QUELLE: src/config/faq.js. Wer dort eine Frage ändert, ändert
+// automatisch beides — sichtbaren Block und Markup. Genau das verlangt Google
+// auch: Das Markup muss dem sichtbaren Seiteninhalt entsprechen.
+//
+// Das Skript schreibt den Block direkt vor </head> in dist/index.html.
+// Es überschreibt einen eventuell schon vorhandenen Block (Marker-Kommentar),
+// damit ein zweiter Lauf keine Dubletten erzeugt.
+// ───────────────────────────────────────────────────────────────────────────
+const FAQ_MARKER_START = "<!-- faq-jsonld:start -->";
+const FAQ_MARKER_ENDE = "<!-- faq-jsonld:end -->";
+
+function baueFaqJsonLd(faqListe) {
+  const daten = {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    mainEntity: faqListe.map(({ frage, antwort }) => ({
+      "@type": "Question",
+      name: frage,
+      acceptedAnswer: { "@type": "Answer", text: antwort },
+    })),
+  };
+  // </script> im Antworttext würde den Script-Block vorzeitig schließen.
+  // JSON.stringify escaped das nicht, deshalb hier von Hand.
+  const json = JSON.stringify(daten, null, 2).replace(/<\//g, "<\\/");
+  return `${FAQ_MARKER_START}\n<script type="application/ld+json">\n${json}\n</script>\n${FAQ_MARKER_ENDE}`;
+}
+
+function schreibeStartseitenFaq(faqListe) {
+  const pfad = join(DIST, "index.html");
+  let html = readFileSync(pfad, "utf8");
+
+  const alterBlock = new RegExp(
+    FAQ_MARKER_START.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, "\\$&") +
+      "[\\s\\S]*?" +
+      FAQ_MARKER_ENDE.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, "\\$&") +
+      "\\n?",
+    "g"
+  );
+  html = html.replace(alterBlock, "");
+
+  const block = baueFaqJsonLd(faqListe);
+  if (!html.includes("</head>")) {
+    console.error("  ! FAQ-JSON-LD übersprungen: kein </head> in dist/index.html gefunden.");
+    return;
+  }
+  html = html.replace("</head>", block + "\n</head>");
+  writeFileSync(pfad, html);
+  console.log(`  ✓ FAQ-JSON-LD in / eingebettet (${faqListe.length} Fragen)`);
+}
+
 async function main() {
-  const template = readFileSync(join(DIST, "index.html"), "utf8");
+  // Den FAQ-Block aus der Vorlage entfernen, falls dist/ nicht frisch gebaut
+  // wurde. Sonst erbten die Ratgeberseiten das FAQPage-Markup der Startseite —
+  // strukturierte Daten ohne passenden sichtbaren Inhalt, was Google abwertet.
+  const rohesIndexHtml = readFileSync(join(DIST, "index.html"), "utf8");
+  const template =
+    rohesIndexHtml.split(FAQ_MARKER_START)[0] +
+    (rohesIndexHtml.split(FAQ_MARKER_ENDE)[1] ?? "");
   const artikelModul = await import(join(ROOT, "src/artikel.js") + "?t=" + Date.now());
   const ARTIKEL = artikelModul.ARTIKEL;
   const artikelById = new Map(ARTIKEL.map(a => [a.id, a]));
@@ -310,6 +376,9 @@ async function main() {
   mkdirSync(ratgeberIndexDir, { recursive: true });
   writeFileSync(join(ratgeberIndexDir, "index.html"), buildRatgeberIndexHtml(template, ARTIKEL));
   console.log(`  ✓ /ratgeber (Übersicht)`);
+
+  const { FAQ_STARTSEITE } = await import(join(ROOT, "src/config/faq.js") + "?t=" + Date.now());
+  schreibeStartseitenFaq(FAQ_STARTSEITE);
 
   schreibeWidget();
   console.log("Vorrendern abgeschlossen.");

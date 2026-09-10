@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <!--
+    Globale Absicherung gegen horizontales Scrollen auf Mobil (08/2026).
+    Einzelne Elemente sollten ohnehin nie breiter als der Viewport werden,
+    aber diese Regel fängt Restfälle ab (z.B. sehr lange unbrechbare Wörter,
+    Rundungsfehler bei Prozent-/Padding-Kombinationen) und verhindert, dass
+    daraus eine seitlich wegziehbare Seite wird — wirkt sonst unfertig.
+  -->
+  <style>
+    /*
+      #root zusätzlich zu html/body abgesichert: bekannte iOS-Safari-Lücke,
+      bei der der Body trotz overflow-x:hidden durch elastisches
+      "Rubber-Band"-Scrollen seitlich wegziehbar bleiben kann, wenn nicht
+      auch der eigentliche App-Container begrenzt ist (08/2026).
+    */
+    html, body, #root { max-width: 100%; overflow-x: hidden; }
+    /*
+      Kein echter Überlauf vorhanden (per Konsolen-Check bestätigt) — das
+      seitliche "Hin- und Herschubsen" war iOS Safaris eingebautes
+      elastisches Rubber-Band-Verhalten, das standardmäßig auch ohne
+      überlaufenden Inhalt aktiv ist. overscroll-behavior-x schaltet gezielt
+      nur die horizontale Achse ab, vertikales Scrollen/Bouncen bleibt normal
+      erhalten (wie bei Taxfix u.ä.). touch-action ergänzt das auf
+      Touch-Geräten zusätzlich auf Gesten-Ebene (08/2026).
+    */
+    /*
+      overscroll-behavior-x (siehe unten) und touch-action greifen für das
+      elastische Rubber-Band NICHT auf iOS Safari — WebKit implementiert
+      overscroll-behavior für diesen Fall nicht (offener WebKit-Bug 176454,
+      Stand 08/2026, ungelöst seit Jahren). Bleiben trotzdem stehen, schaden
+      nicht und helfen in anderen Browsern (Chrome/Firefox Android). Die
+      eigentliche Lösung für iOS ist unten das touchmove-Skript.
+    */
+    html, body { overscroll-behavior-x: none; touch-action: pan-y; }
+    /*
+      Reines Sicherheitsnetz für sehr lange, unbrechbare Wörter (z.B. in
+      Ratgeber-Artikeln) — bricht im Extremfall mitten im Wort um, statt
+      über den Container hinauszulaufen. `hyphens:auto` wurde bewusst NICHT
+      global gesetzt: hat auf der Startseite "Transparent" unerwünscht zu
+      "Transpa-rent" getrennt, obwohl gar keine Not dazu bestand (Browser
+      trennen bei knappem Platz teils schon vorsorglich, nicht nur im
+      Notfall). Die ursprüngliche Ursache (langes Wort "Nebenkostenab-
+      rechnung" in der Hero-Überschrift) ist ohnehin durch die kürzere
+      Formulierung "Deine Abrechnung" behoben (08/2026).
+    */
+    * { overflow-wrap: break-word; }
+  </style>
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+  <link rel="canonical" href="https://nebenkostenradar.com/ratgeber/widerspruch-nebenkostenabrechnung" />
+
+  <title>Widerspruch Nebenkostenabrechnung 2026: Frist, Muster &amp; Anleitung | NebenkostenRadar Ratgeber</title>
+  <meta name="description" content="12 Monate Zeit, aber nur 30 Tage für die Nachzahlung — viele Mieter verwechseln diese Fristen. Was Sie jetzt wissen müssen." />
+
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="Widerspruch Nebenkostenabrechnung 2026: Frist, Muster &amp; Anleitung | NebenkostenRadar Ratgeber" />
+  <meta property="og:description" content="12 Monate Zeit, aber nur 30 Tage für die Nachzahlung — viele Mieter verwechseln diese Fristen. Was Sie jetzt wissen müssen." />
+  <meta property="og:url" content="https://nebenkostenradar.com/ratgeber/widerspruch-nebenkostenabrechnung" />
+  <meta property="og:locale" content="de_DE" />
+
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="Widerspruch Nebenkostenabrechnung 2026: Frist, Muster &amp; Anleitung | NebenkostenRadar Ratgeber" />
+  <meta name="twitter:description" content="12 Monate Zeit, aber nur 30 Tage für die Nachzahlung — viele Mieter verwechseln diese Fristen. Was Sie jetzt wissen müssen." />
+
+  <!--
+    Verhindert das elastische horizontale "Rubber-Band"-Wischen auf iOS
+    Safari (08/2026) — reines CSS (overscroll-behavior-x) wirkt dafür nicht,
+    siehe Kommentar im <style>-Block oben (WebKit-Bug 176454). Ermittelt bei
+    jeder Berührung, ob die Bewegung überwiegend horizontal ist, und
+    unterdrückt nur dann das Standardverhalten. Vertikales Scrollen bleibt
+    unangetastet (dy >= dx greift nicht ein). Berührungen, die nahe am
+    linken/rechten Bildschirmrand beginnen (< 24px), werden ausgenommen,
+    damit Safaris native "Zurück/Vor"-Wischgeste weiterhin funktioniert.
+  -->
+  <script>
+    (function () {
+      var startX = 0, startY = 0, blockHorizontal = false;
+      document.addEventListener('touchstart', function (e) {
+        if (e.touches.length !== 1) return;
+        startX = e.touches[0].clientX;
+        startY = e.touches[0].clientY;
+        blockHorizontal = startX > 24 && startX < window.innerWidth - 24;
+      }, { passive: true });
+      document.addEventListener('touchmove', function (e) {
+        if (!blockHorizontal || e.touches.length !== 1) return;
+        var dx = e.touches[0].clientX - startX;
+        var dy = e.touches[0].clientY - startY;
+        if (Math.abs(dx) > Math.abs(dy)) e.preventDefault();
+      }, { passive: false });
+    })();
+  </script>
+
+  <!-- Poppins (Überschriften) + Work Sans (Fließtext) — siehe docs/CI-Referenz.md -->
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@500;600;700&family=Work+Sans:wght@400;500&display=swap" rel="stylesheet" />
+
+  <!--
+    GA4-Consent-Stub: setzt NUR den Default-Zustand (analytics_storage: denied)
+    und lädt NICHTS. Das eigentliche gtag.js-Skript wird erst in
+    components/layout/CookieBanner.jsx (ladeGA4()) nach Einwilligung geladen.
+    NIEMALS hier ein <script src="googletagmanager.com/gtag/js..."> ergänzen —
+    das war der ursprüngliche Abmahn-/Bußgeld-Risikopunkt (Cookieless Ping mit
+    IP-Adresse vor Einwilligung), siehe CHANGELOG.md.
+  -->
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    window.gtag = window.gtag || function () { dataLayer.push(arguments); };
+    gtag('consent', 'default', { analytics_storage: 'denied' });
+  </script>
+
+  <!--
+    ACHTUNG bei Preisänderungen: Diese Datei ist reines statisches HTML, kein
+    JSX — kann NICHT wie Datenschutz.jsx/AGB.jsx aus BUSINESS.PREIS_* in
+    src/config/business.js gerendert werden. Preise unten müssen bei jeder
+    Änderung von Hand nachgezogen werden. Am 13.08.2026 hier veraltete Preise
+    (7,99 €/9,99 €) gefunden und auf die aktuellen 9,99 €/12,99 € korrigiert —
+    derselbe Fehler wie zuvor in Datenschutz.jsx, siehe CHANGELOG.md.
+  -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebApplication",
+    "name": "NebenkostenRadar",
+    "url": "https://nebenkostenradar.com",
+    "applicationCategory": "FinanceApplication",
+    "offers": [
+      { "@type": "Offer", "price": "9.99", "priceCurrency": "EUR", "name": "Auswertung" },
+      { "@type": "Offer", "price": "12.99", "priceCurrency": "EUR", "name": "Auswertung + Brief" }
+    ]
+  }
+  </script>
+  <script type="module" crossorigin src="/assets/index-DmdBShKX.js"></script>
+
+</head>
+<body>
+  <div id="root">
+    <article>
+      <p><a href="/ratgeber">← Ratgeber</a></p>
+      <p>Mietrecht · Juni 2026 · 6 Min.</p>
+      <h1>Widerspruch Nebenkostenabrechnung 2026: Frist, Muster &amp; Anleitung</h1>
+      <p>Sie haben Ihre Nebenkostenabrechnung erhalten und vermuten Fehler? Dann haben Sie als Mieter das Recht, innerhalb von 12 Monaten Widerspruch einzulegen. Doch Vorsicht: Die Zahlungsfrist für eine Nachzahlung beträgt nur 30 Tage — unabhängig vom Widerspruch. Wer das verwechselt, riskiert Verzugszinsen oder schlimmstenfalls die Kündigung.</p>
+<h2>Die zwei entscheidenden Fristen — und warum viele Mieter sie verwechseln</h2>
+<p>Das Mietrecht kennt zwei völlig unterschiedliche Fristen nach Erhalt der Nebenkostenabrechnung:</p>
+<ul><li>30 Tage: Zahlungsfrist für eine Nachzahlung (§ 286 BGB). Diese Frist gilt unabhängig davon, ob Sie Widerspruch einlegen. Lösung: Zahlen Sie unter Vorbehalt — schreiben Sie auf die Überweisung: 'Zahlung unter Vorbehalt der Überprüfung'.</li><li>12 Monate: Widerspruchsfrist gegen fehlerhafte Positionen (§ 556 Abs. 3 BGB). Die Frist beginnt mit dem Tag des Erhalts der Abrechnung.</li></ul>
+<p><strong>Hinweis:</strong> Wichtig: Zahlung unter Vorbehalt schützt Sie. Auch wenn Sie die Nachzahlung leisten, können Sie innerhalb von 12 Monaten noch Widerspruch einlegen und zu viel gezahltes Geld zurückfordern.</p>
+<h2>Wann lohnt sich ein Widerspruch?</h2>
+<p>Ein Widerspruch ist sinnvoll wenn Ihre Abrechnung formelle oder inhaltliche Fehler enthält:</p>
+<ul><li>Formelle Fehler (gravierend): Abrechnung fehlt ganz, wurde zu spät zugestellt (nach dem 31.12. des Folgejahres), oder enthält keinen nachvollziehbaren Verteilerschlüssel. Folge: Die gesamte Abrechnung ist unwirksam — Sie müssen keine Nachzahlung leisten.</li><li>Inhaltliche Fehler: Nicht umlagefähige Posten (z.B. Kabelanschluss seit Juli 2024, Verwaltungskosten, Reparaturen), überhöhte Beträge über dem DMB-Richtwert, Verstoß gegen die Heizkostenverordnung.</li></ul>
+<p><a href="/ratgeber/kabelanschluss-nicht-umlagefaehig">Kabelanschluss in Ihrer Abrechnung? Seit Juli 2024 ist dieser Posten grundsätzlich nicht mehr umlagefähig — Details im Artikel zur Rechtsänderung.</a></p>
+<p><a href="/ratgeber/betriebskostenspiegel-2024">Nicht sicher, ob Ihre Beträge zu hoch sind? Der DMB-Betriebskostenspiegel 2024 zeigt die aktuellen Durchschnittswerte je Kostenart.</a></p>
+<h2>Schritt-für-Schritt: So legen Sie wirksam Widerspruch ein</h2>
+<ol><li>Abrechnung systematisch prüfen: Jeden Posten auf Umlagefähigkeit (§ 2 BetrKV) und Plausibilität (DMB-Betriebskostenspiegel) prüfen.</li><li>Fehler konkret benennen: Pauschal 'die Abrechnung ist falsch' reicht nicht — benennen Sie jeden strittigen Posten mit Betrag und Begründung.</li><li>Widerspruch schriftlich formulieren: Per Einschreiben mit Rückschein — nur so ist der Zugang beim Vermieter beweisbar.</li><li>Belegeinsicht anfordern: Sie haben das Recht, alle Originalrechnungen einzusehen (§ 259 BGB). Verlangen Sie die Belege immer — auch wenn Sie zahlen.</li><li>Frist im Blick behalten: Spätestens 12 Monate nach Erhalt der Abrechnung muss der Widerspruch beim Vermieter eingegangen sein.</li></ol>
+<h2>Was gehört in den Widerspruchsbrief?</h2>
+<p>Ein wirksamer Widerspruch muss folgende Elemente enthalten:</p>
+<ul><li>Ihre vollständige Adresse und die des Vermieters</li><li>Klarer Betreff: 'Widerspruch zur Betriebskostenabrechnung [Jahr]'</li><li>Konkrete Benennung der beanstandeten Positionen mit Betrag</li><li>Rechtsgrundlage (z.B. '§ 2 BetrKV — nicht umlagefähig')</li><li>Aufforderung zur Belegeinsicht (§ 259 BGB)</li><li>Vorbehalt für weitere Einwände nach Belegeinsicht</li><li>Bitte um schriftliche Stellungnahme</li></ul>
+<p>NebenkostenRadar erstellt den Widerspruchsbrief automatisch — mit allen Rechtsgrundlagen, auf Basis Ihrer konkreten Abrechnung. <a href="/pruefen/wohnung">Kostenlos prüfen →</a></p>
+<h2>Häufige Fehler beim Widerspruch — und wie Sie sie vermeiden</h2>
+<ul><li>Nur mündlich widersprechen: Gilt rechtlich nicht — immer schriftlich.</li><li>Zu pauschal formulieren: 'Die Abrechnung stimmt nicht' reicht nicht — konkrete Positionen nennen.</li><li>Frist verpassen: Ab dem 13. Monat nach Erhalt sind Einwände in der Regel ausgeschlossen.</li><li>Nicht unter Vorbehalt zahlen: Wer die Nachzahlung ohne Vorbehalt zahlt, erschwert eine spätere Rückforderung.</li></ul>
+    </article>
+    <script type="application/ld+json">{"@context":"https://schema.org","@type":"Article","headline":"Widerspruch Nebenkostenabrechnung 2026: Frist, Muster & Anleitung","description":"12 Monate Zeit, aber nur 30 Tage für die Nachzahlung — viele Mieter verwechseln diese Fristen. Was Sie jetzt wissen müssen.","url":"https://nebenkostenradar.com/ratgeber/widerspruch-nebenkostenabrechnung","image":"https://images.unsplash.com/photo-1450101499163-c8848c66ca85?w=800&q=80"}</script>
+  </div>
+</body>
+</html>

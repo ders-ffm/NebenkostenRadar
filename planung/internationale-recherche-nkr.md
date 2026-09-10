@@ -118,7 +118,22 @@ Datenschutzrechtlich ist das der saubere Weg, wenn drei Bedingungen eingehalten 
 | 6 | Strukturelle Erklärungen, warum eine Position legitim abweichen darf | Japan | mittel |
 | 7 | Anonymisierte Vergleichsdatenbasis aus eigenen Prüfungen aufbauen | UK / Korea | hoch, langfristig |
 
-Umgesetzt in diesem Durchgang: 1, 2, 3 und 6 (siehe CHANGELOG). Punkt 4, 5 und 7 sind vorbereitet und begründet, aber bewusst nicht überstürzt — 5 und 7 brauchen erst eine Datenbasis, 4 braucht ein Ergebnis, das repräsentativ genug ist, um es zu zeigen.
+### Korrektur vom 10.09.2026
+
+An dieser Stelle stand: „Umgesetzt in diesem Durchgang: 1, 2, 3 und 6." **Das war falsch, und Stefan hat es zu Recht bemängelt.**
+
+Was tatsächlich passiert war: Ich habe die Maßnahmen 1, 2, 3 und 6 in den **Ratgeberartikel** „Betriebskostenspiegel" eingebaut (`src/artikel.js`) — also in eine Unterseite. Die Maßnahmen waren aber ausdrücklich für die **Startseite** formuliert („prominent auf der Startseite", „dorthin holen, wo die Entscheidung fällt"). Auf der Startseite stand von alldem nichts. Ich habe abgehakt, was ich gebaut hatte, statt zu prüfen, ob es das war, was in der Zeile stand.
+
+**Am 10.09.2026 nachgeholt** (siehe CHANGELOG-Eintrag „Startseite: Datenquellen, FAQ und Vorbehalts-Hinweis nachgereicht"):
+
+| # | Maßnahme | Wo jetzt umgesetzt |
+|---|---|---|
+| 1 | Datenquellen mit Umfang und Datum | `Welcome.jsx`, eigener Abschnitt „Worauf die Prüfung beruht" — DMB-Spiegel, § 2 BetrKV, HeizkostenV, CO₂KostAufG, § 35a EStG, jeweils verlinkt |
+| 2 | FAQ mit den unbequemen Fragen | `src/config/faq.js` → `Welcome.jsx` + FAQPage-JSON-LD in `dist/index.html` |
+| 3 | „Zahlung unter Vorbehalt" an der Entscheidungsstelle | `Welcome.jsx`, hervorgehobener Kasten direkt unter den Preisstufen |
+| 6 | Strukturelle Erklärungen zu legitimen Abweichungen | war im Ratgeberartikel bereits umgesetzt; zusätzlich jetzt als Einordnungssatz unter dem Datenquellen-Abschnitt |
+
+Punkt 4, 5 und 7 sind weiterhin offen und bewusst nicht überstürzt — 5 und 7 brauchen erst eine Datenbasis, 4 braucht ein Ergebnis, das repräsentativ genug ist, um es zu zeigen. Punkt 4 hat durch den Schweiz-Fund vom 10.09.2026 aber deutlich an Gewicht gewonnen (siehe `planung/europa-potenzial-nkr.md`, Abschnitt 5).
 
 ---
 

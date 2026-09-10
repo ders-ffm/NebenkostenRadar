@@ -3,6 +3,7 @@
 // ─────────────────────────────────────────────────────────────────────────
 import { THEME } from "../config/theme.js";
 import { BUSINESS } from "../config/business.js";
+import { FAQ_STARTSEITE } from "../config/faq.js";
 import Nav from "../components/layout/Nav.jsx";
 import LegalFooter from "../components/layout/LegalFooter.jsx";
 
@@ -129,6 +130,114 @@ export default function Welcome({ navigateTo, IS_DEMO }) {
           style={{ marginTop: 20, background: C.accent, border: "none", borderRadius: THEME.radius.md, padding: "14px 32px", fontSize: 14, fontFamily: THEME.font.heading, fontWeight: 600, color: C.accentText, cursor: "pointer" }}>
           Kostenlos prüfen — Preisstufe später wählen
         </button>
+
+        {/* Maßnahme 3 aus planung/internationale-recherche-nkr.md (UK-Vorbild
+            "Always Pay First, Fight Second"): Der Hinweis "Zahlung unter
+            Vorbehalt" stand bisher NUR in zwei Ratgeberartikeln. Er gehört
+            aber dorthin, wo der Nutzer die Entscheidung trifft — direkt unter
+            die Preisstufen. Nachgeholt am 10.09.2026, nachdem aufgefallen war,
+            dass die Maßnahmen 1-3 im Recherchedokument als "umgesetzt"
+            markiert waren, obwohl sie nur im Ratgeber, nicht auf der
+            Startseite gelandet sind. */}
+        <div style={{ marginTop: 26, background: C.warnBg, border: "1px solid " + C.border, borderRadius: THEME.radius.md, padding: "16px 18px", textAlign: "left", maxWidth: 560, marginLeft: "auto", marginRight: "auto" }}>
+          <div style={{ fontSize: 13, fontWeight: 700, color: C.text, marginBottom: 6, fontFamily: THEME.font.heading }}>
+            Wichtig: erst zahlen, dann widersprechen
+          </div>
+          <div style={{ fontSize: 12, color: C.textMuted, lineHeight: 1.65 }}>
+            Eine Nachzahlung wird auch dann fällig, wenn du die Abrechnung für falsch hältst — sonst drohen Verzugszinsen. Überweise deshalb fristgerecht und schreibe in den Verwendungszweck: <strong style={{ color: C.text }}>„Zahlung unter Vorbehalt der Überprüfung"</strong>. Damit bleibst du aus dem Zahlungsverzug und behältst deinen Rückforderungsanspruch. Widerspruch ist danach noch bis zu 12 Monate nach Zugang der Abrechnung möglich (§ 556 Abs. 3 BGB).
+          </div>
+        </div>
+      </div>
+
+      {/* ───────────────────────────────────────────────────────────────────
+          Maßnahme 1: Datenquellen als eigener Vertrauensbaustein.
+          Vorbild servicechargeaudit.uk und pruefenlassen.ch: beide nennen
+          ihre Quellen mit Umfang und Datum als eigenen Abschnitt, nicht als
+          Fußnote. "Deutscher Mieterbund" ist für die Zielgruppe ein starker
+          Name — bisher wurde er nur beiläufig in einer Kachel erwähnt.
+          Das Jahr kommt aus BUSINESS.RICHTWERTE_JAHR, damit es beim nächsten
+          DMB-Update automatisch mitwandert und nicht doppelt gepflegt
+          werden muss.
+          ─────────────────────────────────────────────────────────────────── */}
+      <div style={{ padding: "36px 24px", borderBottom: "1px solid " + C.border, maxWidth: PAGE_MAX, margin: "0 auto", boxSizing: "border-box" }}>
+        <div style={{ fontSize: 13, fontWeight: 700, color: C.text, marginBottom: 8, textTransform: "uppercase", letterSpacing: "0.06em", textAlign: "center" }}>Worauf die Prüfung beruht</div>
+        <p style={{ fontSize: 13, color: C.textMuted, margin: "0 auto 22px", lineHeight: 1.65, maxWidth: 520, textAlign: "center" }}>
+          Wir erfinden keine eigenen Maßstäbe. Jede Bewertung stützt sich auf eine benannte, öffentlich nachprüfbare Quelle.
+        </p>
+        <div style={{ display: "flex", flexDirection: "column", gap: 10, maxWidth: 620, margin: "0 auto" }}>
+          {[
+            [
+              "Deutscher Mieterbund — Betriebskostenspiegel",
+              "Abrechnungsjahr " + BUSINESS.RICHTWERTE_JAHR + ". Bundesweite Durchschnittswerte in €/m² und Monat, je Betriebskostenart. Grundlage für jeden Richtwertvergleich in deiner Auswertung.",
+              BUSINESS.RICHTWERTE_QUELLE,
+            ],
+            [
+              "§ 2 Betriebskostenverordnung (BetrKV)",
+              "Der abschließende Katalog der 17 umlagefähigen Betriebskostenarten. Was hier nicht steht, darf dein Vermieter grundsätzlich nicht auf dich umlegen.",
+              "https://www.gesetze-im-internet.de/betrkv/__2.html",
+            ],
+            [
+              "Heizkostenverordnung (HeizkostenV)",
+              "Regelt die Aufteilung zwischen Verbrauch und Wohnfläche (50/70-Regel). Grundlage der Prüfung deiner Heiz- und Warmwasserkosten.",
+              "https://www.gesetze-im-internet.de/heizkostenv/",
+            ],
+            [
+              "CO₂-Kostenaufteilungsgesetz (CO₂KostAufG)",
+              "Seit 2023: Das Zehn-Stufen-Modell bestimmt, welchen Anteil der CO₂-Abgabe der Vermieter selbst tragen muss.",
+              "https://www.gesetze-im-internet.de/co2kostaufg/",
+            ],
+            [
+              "§ 35a EStG",
+              "Grundlage für den Steuer-Bonus: welche Anteile deiner Nebenkosten als haushaltsnahe Dienstleistungen absetzbar sind.",
+              "https://www.gesetze-im-internet.de/estg/__35a.html",
+            ],
+          ].map(([titel, beschreibung, url]) => (
+            <div key={titel} style={{ padding: "14px 16px", background: C.surface, border: "1px solid " + C.border, borderRadius: THEME.radius.md, textAlign: "left" }}>
+              <div style={{ fontSize: 13, fontWeight: 600, color: C.text, marginBottom: 4, fontFamily: THEME.font.heading }}>{titel}</div>
+              <div style={{ fontSize: 12, color: C.textMuted, lineHeight: 1.6, marginBottom: 6 }}>{beschreibung}</div>
+              <a href={url} target="_blank" rel="noopener noreferrer" style={{ fontSize: 11, color: C.brand, fontWeight: 600 }}>Quelle ansehen →</a>
+            </div>
+          ))}
+        </div>
+        <p style={{ fontSize: 11, color: C.textDim, lineHeight: 1.6, margin: "16px auto 0", maxWidth: 620, textAlign: "left" }}>
+          Der Betriebskostenspiegel ist ein bundesweiter Durchschnitt ohne regionale Aufschlüsselung. Eine Abweichung nach oben ist deshalb ein <strong style={{ color: C.textMuted }}>Anlass zur Nachfrage</strong> — kein Nachweis eines Fehlers. Genau so weisen wir sie in der Auswertung auch aus.
+        </p>
+      </div>
+
+      {/* ───────────────────────────────────────────────────────────────────
+          Maßnahme 2: FAQ mit den unbequemen Fragen.
+          Bewusst native <details>/<summary> statt React-State:
+          - funktioniert ohne JavaScript und ohne zusätzlichen State,
+          - ist von Haus aus tastaturbedienbar und screenreader-tauglich,
+          - lässt sich später ohne KI um einen Eintrag erweitern (einfach eine
+            Zeile im Array unten ergänzen).
+          Die Fragen sind absichtlich die skeptischen: Unabhängigkeit,
+          Genauigkeit, Geld zurück, Datenschutz. Wer sie selbst stellt, wirkt
+          glaubwürdiger als wer sie vermeidet (Befund aus der internationalen
+          Recherche, unabhängig bestätigt bei servicechargeaudit.uk und
+          pruefenlassen.ch).
+          Achtung bei Änderungen: Die gleichen Fragen stehen als FAQPage-
+          JSON-LD in index.html. Beides muss übereinstimmen, sonst wertet
+          Google das strukturierte Markup als abweichend vom Seiteninhalt.
+          ─────────────────────────────────────────────────────────────────── */}
+      <div style={{ padding: "36px 24px", borderBottom: "1px solid " + C.border, maxWidth: PAGE_MAX, margin: "0 auto", boxSizing: "border-box" }}>
+        <div style={{ fontSize: 13, fontWeight: 700, color: C.text, marginBottom: 18, textTransform: "uppercase", letterSpacing: "0.06em", textAlign: "center" }}>Häufige Fragen</div>
+        <div style={{ display: "flex", flexDirection: "column", gap: 8, maxWidth: 620, margin: "0 auto" }}>
+          {FAQ_STARTSEITE.map(({ frage, antwort }) => (
+            <details key={frage} style={{ background: C.surface, border: "1px solid " + C.border, borderRadius: THEME.radius.md, padding: "14px 16px", textAlign: "left" }}>
+              <summary style={{ fontSize: 13, fontWeight: 600, color: C.text, fontFamily: THEME.font.heading, cursor: "pointer", listStyle: "revert" }}>
+                {frage}
+              </summary>
+              <div style={{ fontSize: 12, color: C.textMuted, lineHeight: 1.7, marginTop: 10 }}>{antwort}</div>
+            </details>
+          ))}
+        </div>
+        <div style={{ textAlign: "center", marginTop: 22 }}>
+          <button onClick={() => navigateTo("wohnung")}
+            style={{ background: C.accent, border: "none", borderRadius: THEME.radius.md, padding: "14px 32px", fontSize: 14, fontFamily: THEME.font.heading, fontWeight: 600, color: C.accentText, cursor: "pointer" }}>
+            Jetzt kostenlos prüfen
+          </button>
+        </div>
       </div>
 
       <LegalFooter navigateTo={navigateTo} />

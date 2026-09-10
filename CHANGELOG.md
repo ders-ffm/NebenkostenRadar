@@ -2,6 +2,114 @@
 
 Alle wesentlichen Änderungen an diesem Projekt, mit Datum und Begründung. Dient der Nachvollziehbarkeit, damit auch ohne KI-Unterstützung verstanden werden kann, warum etwas so ist, wie es ist.
 
+## 10.09.2026 — Nachtrag: USA, China, Australien, Frankreich geprüft
+
+Stefans Einwand zur Europa-Recherche: Erweiterung lohne nur in Länder mit einem Mietmarkt, der größer oder ähnlich groß wie der deutsche ist — genannt USA, China, Australien, Frankreich. Der Filter ist schärfer als mein ursprünglicher, greift aber **eine Stufe zu spät**. Vor „wie groß ist der Mietmarkt?" steht: **„Gibt es dort überhaupt eine Nebenkostenabrechnung für Mieter?"**
+
+| Land | Markt größer als D? | Jahresabrechnung für Wohnraummieter? | Ergebnis |
+|---|---|---|---|
+| USA | ✔ 46,1 Mio. Mieterhaushalte (Census Q3/2025) | ✘ *gross rent*, Weitergabe nur laufend über RUBS/Submeter | kein Produkt |
+| China | ✔ theoretisch | ✘ Offenlegung richtet sich an **业主** (Eigentümer), nicht an Mieter | kein Kunde |
+| Australien | ✘ nur ~3 Mio. Mieterhaushalte (ABS) | ✘ nur Wasserverbrauch 1:1, keine Jahresabrechnung | fällt zweifach durch |
+| Frankreich | ~ etwa drei Fünftel | ✔ Décret 87-713, abschließender Katalog | einziger Kandidat |
+
+**Das auffälligste Muster:** In den USA *und* in Australien existiert die Betriebskostenabrechnung sehr wohl — aber nur im **Gewerbemietrecht** (CAM Reconciliation bzw. Retail Shop Leases Act 1994 Qld § 38B, dort sogar wirtschaftsprüfer-testiert). Im Wohnraum gibt es sie nicht. Das ist B2B mit Einzelfall-Vertragsauslegung statt automatisierbarem Richtwertabgleich — anderes Produkt, andere Haftung, kein Weg für NKR.
+
+**Erkenntnis für die Strategie:** Deutschland ist nicht zufällig NKRs Markt, sondern fast der einzige große, in dem das Produkt überhaupt existieren *kann*. Die Kombination aus gesetzlichem Umlagekatalog, Abrechnungspflicht, Widerspruchsfrist **und** frei veröffentlichtem bundesweitem Vergleichsdatensatz gibt es sonst nirgends in dieser Vollständigkeit — auch nicht in Österreich oder der Schweiz. Wenn NKR hier nicht verkauft, liegt es nicht am Land.
+
+Details, Quellen und die Bewertung Frankreichs in `planung/europa-potenzial-nkr.md`, Abschnitt 8.
+
+---
+
+## 10.09.2026 — Europa-Recherche: Internationalisierung geprüft und begründet abgelehnt
+
+Auftrag von Stefan: europäische Länder recherchieren, inkl. „Immo-Paradiese wie Zypern", und prüfen, ob sich das Produkt auf größere Mietermärkte erweitern lässt. Vollständige Auswertung in `planung/europa-potenzial-nkr.md`.
+
+### Ergebnis in einem Satz
+
+Kein geprüftes Land trägt das NKR-Modell besser als Deutschland — und der wertvollste Fund ist kein Land, sondern ein Wettbewerber.
+
+Geprüft wurden Österreich, Schweiz, Frankreich, Niederlande und Zypern gegen fünf Kriterien (gesetzlicher Umlagekatalog, veröffentlichte Vergleichswerte, Frist- und Belegeinsichtsrecht, Marktgröße, keine kostenlose staatliche Prüfstelle):
+
+| Land | Befund |
+|---|---|
+| Österreich | einziger realistischer Kandidat — aber § 21 MRG gilt nur im Vollanwendungsbereich, und der Markt ist ein Zehntel so groß |
+| Schweiz | juristisch machbar (vertrags- statt katalogbasiert), aber **besetzt** |
+| Frankreich | bester Katalog (Décret 87-713, abschließend), größter Markt nach D — aber **keine Richtwerte auf Positionsebene** |
+| Niederlande | beste Datenlage — und **entwertet**, weil die staatliche Huurcommissie die Prüfung selbst übernimmt |
+| Zypern | 0 von 4 relevanten Kriterien. Immobilien-Hotspots folgen einer Käuferlogik, nicht einer Mieterlogik |
+
+Dazu die Rechnung, die alles andere schlägt: 42 Startseiten-Nutzer im Monat in Deutschland, 0 Käufe. Internationalisierung löst weder das Reichweiten- noch das Konversionsproblem, sie multipliziert beide mit der Zahl der Länder.
+
+### Der eigentliche Fund: pruefenlassen.ch
+
+Ein Einzelunternehmer in Bern betreibt exakt das NKR-Geschäftsmodell für die Schweiz, zu CHF 19.90. Zwei Dinge macht er strukturell anders:
+
+1. **Kostenlose Vorprüfung, bezahlt wird erst der Detailbericht.** Der Nutzer sieht Anzahl auffälliger Positionen und geschätzte Größenordnung, *bevor* er zahlt. NKR verlangt Zahlung, bevor der Nutzer irgendein Ergebnis gesehen hat. Das ist die bislang plausibelste Erklärung für 42 Besucher bei 0 Käufen — plausibler als Preis, Design oder Vertrauen.
+2. **Drei Dokumentarten in einem Land** (Nebenkosten, Inkasso, Arbeitszeugnis) statt eine Dokumentart in mehreren Ländern. Bei einer neuen Vertikale bleiben Domain-Autorität, Zielgruppe, Rechtsraum und Rechtstexte erhalten; bei einem neuen Land fällt all das weg. Zusätzlich entzerrt eine zweite Vertikale die Saisonalität — Österreich hat denselben Abrechnungszyklus und würde den Gipfel nur verstärken.
+
+Daraus acht priorisierte Maßnahmen (V1–V8) für **Deutschland**, nicht für neue Länder. Details in `planung/europa-potenzial-nkr.md`, Abschnitt 7.
+
+**Nicht empfohlen:** Markteintritt in Österreich, Schweiz, Frankreich, Niederlande oder Zypern zum jetzigen Zeitpunkt. Erneut zu bewerten, wenn NKR in Deutschland dauerhaft über etwa 30 Verkäufe im Monat liegt.
+
+---
+
+## 10.09.2026 — Startseite: Datenquellen, FAQ und Vorbehalts-Hinweis nachgereicht (Korrektur einer falschen Erledigt-Meldung)
+
+### Was schiefgelaufen war
+
+Im Dokument `planung/internationale-recherche-nkr.md` stand am 09.09.2026: „Umgesetzt in diesem Durchgang: 1, 2, 3 und 6." Stefan hat nachgesehen und die FAQ auf der Startseite nicht gefunden. Zu Recht: **Sie war dort nie.**
+
+Die Maßnahmen 1, 2 und 3 waren ausdrücklich für die **Startseite** formuliert („prominent auf der Startseite", „dorthin holen, wo die Entscheidung fällt"). Umgesetzt hatte ich sie im **Ratgeberartikel** „Betriebskostenspiegel" (`src/artikel.js`) — eine Unterseite, die kaum jemand vor dem Kauf sieht. Ich habe abgehakt, was ich gebaut hatte, statt zu prüfen, ob es das war, was in der Zeile stand. Der Fehler liegt bei mir, nicht in einer Missverständlichkeit der Aufgabe.
+
+### Was jetzt tatsächlich auf der Startseite steht
+
+**1. Abschnitt „Worauf die Prüfung beruht" (`src/pages/Welcome.jsx`)**
+
+Fünf Quellen als eigener Vertrauensbaustein statt als Fußnote, jede mit Beschreibung und Direktlink: DMB-Betriebskostenspiegel (Jahr kommt aus `BUSINESS.RICHTWERTE_JAHR`, wandert beim nächsten DMB-Update also automatisch mit), § 2 BetrKV, HeizkostenV, CO₂KostAufG, § 35a EStG.
+
+Darunter der Einordnungssatz, dass der DMB-Spiegel ein bundesweiter Durchschnitt ohne regionale Aufschlüsselung ist und eine Abweichung nach oben deshalb ein Anlass zur Nachfrage bleibt, kein Fehlernachweis. Das ist Maßnahme 6 der internationalen Recherche (Japan-Vorbild: erklären, *warum* eine Position legitim abweichen darf) — bisher nur im Ratgeber, jetzt auch dort, wo entschieden wird.
+
+**2. FAQ mit acht unbequemen Fragen (`src/config/faq.js` → `Welcome.jsx`)**
+
+Bewusst die skeptischen Fragen: Unabhängigkeit von Vermieterseite, Genauigkeit der Vergleichswerte für die konkrete Wohnung, Abgrenzung zur Rechtsberatung, was passiert wenn nichts gefunden wird, Geld zurück, Datenschutz, „warum zahlen wenn ich selbst prüfen könnte", Fristen.
+
+Zwei Architekturentscheidungen, beide auf Wartbarkeit ohne KI ausgelegt:
+
+- **Eigene Datei `src/config/faq.js` statt Inline-Array in Welcome.jsx.** Die Liste wird an zwei Stellen gebraucht (sichtbarer Block + JSON-LD für Google). Aus einer Datei gespeist gibt es genau eine Stelle zum Ändern. Eine Frage ergänzen heißt: einen Eintrag `{ frage, antwort }` anhängen, `npm run build`, fertig.
+- **Natives `<details>`/`<summary>` statt React-State.** Funktioniert ohne JavaScript, ist von Haus aus tastaturbedienbar und screenreader-tauglich, und braucht keinen zusätzlichen State, der später gepflegt werden müsste.
+
+**3. Kasten „Wichtig: erst zahlen, dann widersprechen"**
+
+Direkt unter den Preisstufen, also an der Entscheidungsstelle. Erklärt „Zahlung unter Vorbehalt der Überprüfung" als Verwendungszweck und die 12-Monats-Frist nach § 556 Abs. 3 BGB. Vorbild: der Kasten „Always Pay First, Fight Second" bei `servicechargeaudit.uk`.
+
+### Warum die FAQ zusätzlich als JSON-LD ausgeliefert wird (`scripts/prerender.mjs`)
+
+Die Startseite ist eine React-SPA — im ausgelieferten `dist/index.html` steht nur `<div id="root"></div>`. Der FAQ-Block entsteht erst im Browser. Google rendert JavaScript inzwischen zwar, tut es aber verzögert und nicht garantiert. Strukturierte Daten im HTML-Quelltext werden dagegen sofort gelesen und können als FAQ-Rich-Result in den Suchergebnissen erscheinen — ein Sichtbarkeitsgewinn ohne neue Inhalte.
+
+Neu in `prerender.mjs`: `baueFaqJsonLd()` und `schreibeStartseitenFaq()`. Der Block wird zwischen Marker-Kommentaren (`<!-- faq-jsonld:start -->`) vor `</head>` geschrieben. Zwei Sicherungen:
+
+- Ein vorhandener Block wird vor dem Schreiben entfernt — mehrfaches Ausführen erzeugt keine Dubletten.
+- Die Vorlage für die Ratgeberseiten wird um den Block bereinigt, bevor die Artikel gebaut werden. Sonst erbten Unterseiten das FAQPage-Markup der Startseite: strukturierte Daten ohne passenden sichtbaren Inhalt, was Google abwertet.
+
+### Verifikation
+
+`npm run build` ausgeführt, danach im erzeugten `dist/` geprüft:
+
+| Prüfung | Ergebnis |
+|---|---|
+| FAQPage in `dist/index.html` | 1× vorhanden |
+| FAQPage in `dist/ratgeber/**` | 0× (korrekt) |
+| JSON-LD-Blöcke gesamt auf `/` | 2 — WebApplication + FAQPage mit 8 Fragen |
+| Beide Blöcke `JSON.parse`-bar | ja |
+| Zwei zusätzliche Prerender-Läufe ohne Neubau | weiterhin genau 1× FAQPage, keine Dubletten |
+
+### Was daraus als Regel folgt
+
+Eine Maßnahme gilt erst als erledigt, wenn sie **an dem Ort** umgesetzt ist, der in der Maßnahme steht. „Auf der Startseite" heißt Startseite, nicht „irgendwo auf der Website". Bei den nächsten Erledigt-Meldungen prüfe ich das per `grep` gegen die konkrete Datei, statt aus dem Gedächtnis abzuhaken.
+
+---
+
 ## 09.09.2026 — P3 + P5 + internationale Recherche: Betriebskostenspiegel-Seite ausgebaut, Einbett-Widget, Erkenntnisse aus UK/Korea/Japan
 
 Auftrag von Stefan: international recherchieren, auch bewusst artfremde Angebote, und daraus echten Mehrwert ableiten. Vollständige Recherche in `planung/internationale-recherche-nkr.md`.
