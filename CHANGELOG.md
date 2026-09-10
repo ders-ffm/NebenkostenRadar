@@ -68,6 +68,8 @@ Zwölf neue Seiten, je eine pro konkreter Suchanfrage — nach dem Muster von pr
 
 ### Nebenbefund: die Sitemap war seit September kaputt
 
+> **KORRIGIERT am 10.09.2026 im Eintrag „Live-Check der veröffentlichten Seite" weiter oben.** Dieser Abschnitt war falsch. Ich habe eine veraltete Kopie von `public/sitemap.xml` im iCloud-Ordner gesehen und daraus auf einen Konstruktionsfehler geschlossen, ohne gegen das Repository zu prüfen. Tatsächlich baut `scripts/rechtsmonitor.mjs` die Sitemap seit dem 13.08.2026 bei jedem Lauf komplett neu auf, und der Grundsteuer-Artikel stand dort drin. Der folgende Absatz bleibt zur Nachvollziehbarkeit stehen, ist aber inhaltlich unzutreffend.
+
 Beim Zählen fiel auf, dass `public/sitemap.xml` nur 9 der damals 10 Artikel enthielt. Der vom Rechtsmonitor im September ergänzte Grundsteuer-Artikel fehlte — er war für Google über die Sitemap **nie angemeldet**.
 
 Das ist strukturell und nicht durch Sorgfalt lösbar: Der Rechtsmonitor fügt automatisch Artikel hinzu, kennt die Sitemap aber nicht. Jeder neue Artikel hätte einen zweiten, manuellen Handgriff gebraucht.
@@ -117,6 +119,166 @@ Stefans Einwand zur Europa-Recherche: Erweiterung lohne nur in Länder mit einem
 **Erkenntnis für die Strategie:** Deutschland ist nicht zufällig NKRs Markt, sondern fast der einzige große, in dem das Produkt überhaupt existieren *kann*. Die Kombination aus gesetzlichem Umlagekatalog, Abrechnungspflicht, Widerspruchsfrist **und** frei veröffentlichtem bundesweitem Vergleichsdatensatz gibt es sonst nirgends in dieser Vollständigkeit — auch nicht in Österreich oder der Schweiz. Wenn NKR hier nicht verkauft, liegt es nicht am Land.
 
 Details, Quellen und die Bewertung Frankreichs in `planung/europa-potenzial-nkr.md`, Abschnitt 8.
+
+---
+
+## 10.09.2026 — Startseite entschlackt, Zielgruppe Mieter benannt, 22 eigene Artikelbilder
+
+Drei Rückmeldungen von Stefan nach dem Durchsehen: wiederholte Bilder gehen nicht, die Startseite ist zu voll gepackt, und nirgends steht, dass es um die Nebenkostenabrechnung **für Mieter** geht.
+
+### 1. Jeder Artikel hat jetzt ein eigenes Bild
+
+Vorher teilten sich 22 Artikel acht Fotos — auf der Ratgeber-Übersicht standen dieselben Bilder zwei- bis dreimal direkt untereinander.
+
+Über die Unsplash-Suche wurden 22 thematisch passende Bilder ermittelt, je eines pro Artikel: Wasserzähler an der Wand für den Wasserkosten-Artikel, Eimer und Besen im Hausflur für Hausmeisterkosten, Briefkästen an einer Hauswand für „keine Abrechnung erhalten", Umzugskartons für die Abrechnung nach Auszug, und so weiter.
+
+**Lizenzrechtlich wichtig:** Ein großer Teil der Suchtreffer waren `plus.unsplash.com/premium_photo-*` — das sind **Unsplash+ Bilder, die ein kostenpflichtiges Abo voraussetzen**. Diese wurden gezielt herausgefiltert; verwendet werden ausschließlich `images.unsplash.com/photo-*` unter der kostenlosen Unsplash-Lizenz. Jede der 22 URLs wurde einzeln geladen und als funktionierend bestätigt. Alle Bilder haben einen beschreibenden Alt-Text.
+
+Geprüft: 22 Artikel, 22 Bilder, 22 eindeutig, 0 Premium-Bilder, 0 ohne Alt-Text.
+
+### 2. Startseite von acht auf fünf Blöcke
+
+Die Startseite hatte rund 7.900 Zeichen und acht Abschnitte. Sie ist jetzt so aufgebaut, dass jeder Block genau eine Frage beantwortet:
+
+| | Block | Beantwortet |
+|---|---|---|
+| 1 | Hero | Für wen ist das, und was bekomme ich? |
+| 2 | Drei Schritte | Wie läuft das ab? |
+| 3 | Beispielergebnis | Wie sieht das Ergebnis aus? |
+| 4 | Preise | Was kostet es? |
+| 5 | Weiterlesen | Wo erfahre ich mehr? |
+
+**Nichts wurde gelöscht, alles verschoben** — und zwar dorthin, wo es inhaltlich hingehört:
+
+| Block | Neuer Ort | Warum dort |
+|---|---|---|
+| „Was genau geprüft wird" | `/ueber-uns` | Wer wissen will, was geprüft wird, ist auf „Über uns" richtig |
+| „Worauf die Prüfung beruht" | `/ueber-uns` | Quellen und Grundlagen gehören zur Vorstellung des Anbieters |
+| „Was die Alternativen kosten" | `/faq` | Steht dort direkt unter der Frage „Warum sollte ich zahlen …?" |
+| „Zahlung unter Vorbehalt" | `/faq` | Als eigene Frage: „Muss ich die Nachzahlung bezahlen, wenn ich widerspreche?" |
+
+Der Beispielblock zeigt außerdem nur noch die drei beanstandeten Positionen statt aller fünf; die unauffälligen stehen als Zahl daneben. Das kürzt den Block, ohne das Ergebnis zu beschönigen. Der Briefausschnitt ist von der Startseite verschwunden — er bleibt in `src/config/beispiel.js` erhalten und ist dort als derzeit ungenutzt gekennzeichnet.
+
+Nebeneffekt: `/ueber-uns` und `/faq` bekommen dadurch eigenständigen, substanziellen Inhalt statt dünner Seiten.
+
+### 3. „Für Mieter" steht jetzt überall
+
+Bisher stand nirgends, an wen sich das Angebot richtet — obwohl genau danach gesucht wird („nebenkostenabrechnung prüfen mieter"). Ergänzt an sieben Stellen:
+
+- **Hero-Badge:** „Für Mieter · Unabhängig · Ohne Registrierung"
+- **H1:** „Nebenkostenabrechnung prüfen — für Mieter, in wenigen Minuten"
+- **Erster Satz:** „Du hast die Betriebskostenabrechnung für deine Mietwohnung bekommen …"
+- **Seitentitel:** „Nebenkostenabrechnung für Mieter prüfen | NebenkostenRadar"
+- **Meta-Beschreibung:** beginnt mit „Als Mieter …"
+- **Untertitel im Kopfbereich:** „Nebenkosten prüfen — für Mieter"
+- **Vorgerenderter Text** der Startseite
+
+Dazu eine Abgrenzung, die vorher fehlte und rechtlich wichtig ist: „Für Wohnraummiete in Deutschland. Für Gewerbemietverträge und für Eigentümer gelten andere Regeln." Die geprüften Vorschriften — § 556 BGB, BetrKV, HeizkostenV — gelten so nur im Wohnraummietrecht; im Gewerbemietrecht ist vieles frei verhandelbar. Ohne diesen Hinweis hätte ein Gewerbemieter eine Auswertung bekommen können, die für seinen Vertrag nicht passt.
+
+### Verifikation
+
+| Prüfung | Ergebnis |
+|---|---|
+| `npm run check` | fehlerfrei |
+| SEO-Check über 29 Seiten | 0 Verstöße |
+| Artikelbilder | 22 eindeutig, 0 Premium, alle ladbar |
+| Regressionstests | 950 Prüfungen und 31 Eingaben, 0 Abweichungen |
+| Startseite Quelltext | 1.911 Zeichen (vorher 0), „Mieter" fünfmal enthalten |
+| Ungenutzte Importe in Welcome.jsx | keine |
+
+### Weiterhin offen
+
+Die Ratgeber-Übersicht zeigt alle 22 Artikel ohne Filter oder Seitenaufteilung. Ab etwa 30 Artikeln wird das unübersichtlich — dann braucht es eine Aufteilung nach Kategorie.
+
+---
+
+## 10.09.2026 — Live-Check der veröffentlichten Seite: sieben Fehler gefunden und behoben
+
+Auftrag von Stefan nach dem Deploy: „Seite bitte mal technisch und aus Anwendersicht komplett mit Plausibilitätsprüfungen durchchecken." Geprüft wurden alle 26 Sitemap-URLs plus die drei Rechtstexte, jeweils Quelltext und gerenderte Seite.
+
+### Zuerst eine Korrektur an mir selbst
+
+Im Eintrag weiter unten steht, die Sitemap sei „von Hand gepflegt" worden und habe den September-Artikel „nie bekommen". **Das war falsch.** `scripts/rechtsmonitor.mjs` baut die Sitemap seit dem 13.08.2026 bei jedem Lauf komplett neu auf; der Grundsteuer-Artikel stand dort sehr wohl drin. Was ich gesehen hatte, war eine veraltete Kopie von `public/sitemap.xml` im iCloud-Ordner, nicht der Stand im Repository. Ich habe aus einer lokalen Abweichung auf einen Konstruktionsfehler geschlossen, ohne das gegen die echte Quelle zu prüfen.
+
+Die Umstellung auf Erzeugung beim Build bleibt trotzdem richtig — aber aus einem anderen Grund als angegeben: Der Rechtsmonitor läuft nur monatlich und kennt nur seine eigenen Artikel. Die zwölf am 10.09. von Hand ergänzten Artikel hätte er nicht erfasst. Um die Doppelpflege zu beenden, schreibt der Rechtsmonitor die Sitemap jetzt nicht mehr; die Funktion bleibt mit Begründung stillgelegt stehen.
+
+### Fehler 1: JavaScript hat die vorgerenderten Titel wieder überschrieben
+
+Der schwerwiegendste Befund. Ein `useEffect` in `App.jsx` setzte Titel und Beschreibung im Browser neu — kannte dabei aber nur zwei Fälle: Artikelseiten und „alles andere". „Alles andere" bekam den Startseitentitel.
+
+Folge: Die am Vortag mühsam vorgerenderte FAQ-Seite hatte im Quelltext den richtigen Titel — und sobald React startete, stand dort wieder „Nebenkostenabrechnung prüfen — kostenlos". Da Google JavaScript ausführt, hat Google den falschen Titel gesehen. Die Vorrender-Arbeit für `/faq` und `/ratgeber` war damit wirkungslos.
+
+**Behoben** durch `src/config/seo.js`: eine Datei mit Titel und Beschreibung je Seite, aus der sowohl `App.jsx` als auch `scripts/prerender.mjs` lesen. Ein Auseinanderlaufen ist strukturell nicht mehr möglich.
+
+### Fehler 2: Alle Preise im englischen Zahlenformat
+
+Auf der Startseite stand „9.99 €" und „12.99 €" — mit Punkt statt Komma. Dasselbe auf der Ergebnisseite (also an der Kaufentscheidung), in den AGB, in der Datenschutzerklärung und unter „Über uns".
+
+Ursache: An jeder Stelle wurde einzeln `BUSINESS.PREIS_X.toFixed(2)` geschrieben. `toFixed` liefert immer englische Schreibweise.
+
+Schlimmer: `fmt()` in `src/lib/format.js` hatte denselben Fehler — und `fmt()` formatiert die Beträge **im verkauften Prüfbericht und im Musterbrief**. Dort stand „€ 1234.56" statt „€ 1.234,56". Der Kommentar über der Funktion versprach seit jeher „€ 142,00"; der Code lieferte etwas anderes. Aufgefallen ist es nie, weil der Rückfallwert `"€ 0,00"` korrekt geschrieben war.
+
+**Behoben:** `fmt()` nutzt jetzt den bereits vorhandenen deutschen Formatierer, neu dazu `euro()` für Preise („9,99 €"). Alle 18 Fundstellen umgestellt.
+
+### Fehler 3: /ueber-uns hat sich selbst wegkanonisiert
+
+`/ueber-uns` steht in der Sitemap, trug im Quelltext aber `<link rel="canonical" href="https://nebenkostenradar.com/">` — also die Aussage „ich bin eine Kopie der Startseite". So wird die Seite nie indexiert. Dasselbe galt für `/impressum`, `/agb` und `/datenschutz`.
+
+Ursache: Diese Seiten wurden nicht vorgerendert und bekamen deshalb die Meta-Angaben der Vorlage.
+
+**Behoben:** `/ueber-uns` wird jetzt mit eigenem Text vorgerendert, die drei Rechtstexte mit eigenem Titel und Canonical.
+
+### Fehler 4: Kein Vorschaubild für geteilte Links
+
+In `index.html` gab es **gar kein `og:image`**. Jeder auf WhatsApp, Facebook, LinkedIn oder Slack geteilte Link zeigte eine leere graue Vorschau — für ein Projekt, das über Social Media Reichweite aufbauen soll, ein direkter Verlust.
+
+**Behoben:** `public/og-bild.png` (1200×630) aus dem vorhandenen Facebook-Titelbild erzeugt — zugeschnitten und mittig auf das Standardformat gesetzt, damit es in allen Netzwerken vollständig sichtbar ist. Dazu `og:image:width/height/alt`, `twitter:image` und `twitter:card` auf `summary_large_image`.
+
+### Fehler 5: Startseite lieferte null Zeichen Text
+
+`dist/index.html` enthielt nur `<div id="root"></div>`. Die wichtigste Seite der Domain hatte im Quelltext keinen einzigen Satz. **Behoben:** Die Startseite wird jetzt mit einer sachlichen Textfassung vorgerendert (Leistung, Preise, Grundlagen), die inhaltlich dem entspricht, was React anzeigt.
+
+### Fehler 6: twitter:title zeigte den Startseitentitel
+
+Auf `/faq` und `/ratgeber` stand im Twitter-Tag der Titel der Startseite: Beide Builder setzten `og:title`, aber nicht `twitter:title`. **Behoben** durch eine gemeinsame Funktion `setzeMeta()` — ein Tag kann jetzt nicht mehr an einer Stelle vergessen werden.
+
+### Fehler 7: Alle 22 Artikeltitel zu lang
+
+Zwischen 75 und 127 Zeichen, Google zeigt rund 60. Jeder Titel wurde mitten im Wort abgeschnitten. Der Zusatz „ | NebenkostenRadar Ratgeber" allein fraß 28 Zeichen.
+
+**Behoben:** Zusatz auf „ | NebenkostenRadar" gekürzt, und jeder Artikel hat ein optionales Feld `titelKurz` für die Suchergebnisse bekommen. Die Überschrift auf der Seite bleibt unverändert lang — sie darf das, sie muss nur lesbar sein. Ergebnis: alle Titel zwischen 41 und 59 Zeichen.
+
+### Nebenbefund: falscher Preis im Admin-Dashboard
+
+`src/Admin.jsx` hatte als Standardwert `preis: 7.99` — ein Preis, den es seit der Umstellung auf zwei Stufen nicht mehr gibt. Solange keine Konfiguration gespeichert war, rechnete das Dashboard mit einem falschen Preis (Umsatz, Stripe-Gebühr, Netto pro Verkauf). Der Wert kommt jetzt aus `business.js`.
+
+### Neu: scripts/seo-check.mjs
+
+Alle sieben Fehler waren im Browser unsichtbar — man sieht sie der Seite nicht an, nur im Quelltext. Deshalb gibt es jetzt einen dritten Regressionstest nach dem Muster der beiden vorhandenen. Er prüft für alle 29 Seiten: Canonical, og:url, Titel- und Beschreibungslängen, Übereinstimmung von `og:title`/`twitter:title` mit dem `<title>`, Vorhandensein des Vorschaubilds, Mindestmenge an Text im Quelltext, doppelte Titel oder Beschreibungen, und dass das FAQPage-Markup genau auf `/faq` liegt.
+
+Der Test hat bei seinem ersten Lauf sofort einen Fehler in meiner eigenen frischen Änderung gefunden: Zwei Artikel bekamen 30 bzw. 47 Zeichen kurze Beschreibungen, weil ihr Teaser mit einem sehr kurzen Satz beginnt („Nicht die verbliebenen Mieter."). Die Regel wurde daraufhin nachgebessert.
+
+Ausführen mit `npm run check` — baut und lässt alle drei Tests laufen.
+
+### Verifikation
+
+| Prüfung | Ergebnis |
+|---|---|
+| `npm run check` | fehlerfrei |
+| SEO-Check über 29 Seiten | 0 Verstöße |
+| PDF-Konsistenztest | 950 Prüfungen, 0 Verletzungen |
+| Eingabentest | 31 Eingaben, 0 Abweichungen |
+| Titel-Längen | 41–59 Zeichen (vorher 75–127) |
+| Beschreibungs-Längen | 123–216 Zeichen, keine unter 90 |
+| Canonical korrekt | 29 von 29 |
+| og:image ausgeliefert | ja, 1200×630 |
+| Sitemap | 26 URLs |
+
+### Was ich NICHT geändert habe
+
+- **Bilder der Ratgeberseiten:** Acht Fotos werden je zwei- bis dreimal verwendet, auf der Übersichtsseite direkt untereinander sichtbar. Das ist kosmetisch, aber sichtbar. Es zu lösen hieße entweder neue Fotos zu suchen oder auf gestaltete Platzhalter umzustellen — eine Gestaltungsfrage, die Stefan entscheiden sollte.
+- **Ratgeber-Übersicht:** 22 Artikel ohne Filter oder Seitenaufteilung auf einer Seite. Ab etwa 30 Artikeln wird das unübersichtlich.
+- **Rechtstexte im Quelltext:** `/impressum`, `/agb` und `/datenschutz` liefern statisch nur einen Hinweis mit Link; der eigentliche Text entsteht erst im Browser. Bewusst so, um die Rechtstexte nicht in zwei Fassungen pflegen zu müssen. Sie stehen nicht in der Sitemap.
 
 ---
 

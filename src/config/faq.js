@@ -24,6 +24,7 @@
 // Nichts versprechen, was dort nicht steht.
 // ─────────────────────────────────────────────────────────────────────────
 import { BUSINESS } from "./business.js";
+import { euro } from "../lib/format.js";
 
 export const FAQ_STARTSEITE = [
   {
@@ -60,10 +61,18 @@ export const FAQ_STARTSEITE = [
     frage: "Warum sollte ich zahlen, wenn ich auch selbst prüfen könnte?",
     antwort:
       "Könntest du. Der Betriebskostenspiegel ist öffentlich, die BetrKV ebenfalls. Was du dafür brauchst: den Richtwert je Position finden und umrechnen, den Umlageschlüssel und die 50/70-Regel nachvollziehen, die CO₂-Aufteilung nachrechnen und daraus einen Brief formulieren, der die richtigen Vorschriften nennt. Genau diese Arbeit nimmt dir die Auswertung ab — für " +
-      BUSINESS.PREIS_AUSWERTUNG.toFixed(2).replace(".", ",") +
-      " € bzw. " +
-      BUSINESS.PREIS_VOLL.toFixed(2).replace(".", ",") +
-      " € mit Brief. Ein Mieterverein kostet Jahresbeitrag, eine anwaltliche Prüfung meist ein Vielfaches des Streitwerts bei kleineren Beträgen.",
+      euro(BUSINESS.PREIS_AUSWERTUNG) +
+      " bzw. " +
+      euro(BUSINESS.PREIS_VOLL) +
+      " mit Brief. Ein Mieterverein kostet Jahresbeitrag, eine anwaltliche Prüfung meist ein Vielfaches des Streitwerts bei kleineren Beträgen.",
+  },
+  {
+    // Verschoben von der Startseite am 10.09.2026 (Stefans Rückmeldung: die
+    // Startseite war zu voll). Inhaltlich gehört der Hinweis hierher — er
+    // beantwortet die Frage, die sich beim Blick auf die Nachzahlung stellt.
+    frage: "Muss ich die Nachzahlung bezahlen, wenn ich der Abrechnung widerspreche?",
+    antwort:
+      "Ja — und zwar fristgerecht, sonst drohen Verzugszinsen und im Extremfall eine Kündigung wegen Zahlungsverzugs. Der richtige Weg: Überweise den Betrag und schreibe in den Verwendungszweck „Zahlung unter Vorbehalt der Überprüfung“. Damit ist die Zahlung ausdrücklich kein Anerkenntnis der Forderung. Du kommst nicht in Verzug und kannst zu viel gezahlte Beträge trotzdem zurückfordern. Wer dagegen vorbehaltlos zahlt, erschwert eine spätere Rückforderung erheblich. Ein echtes Zurückbehaltungsrecht besteht nur, solange der Vermieter dir die Belegeinsicht verweigert (§ 273 Abs. 1 BGB, BGH VIII ZR 78/05).",
   },
   {
     frage: "Welche Frist habe ich, um zu widersprechen?",

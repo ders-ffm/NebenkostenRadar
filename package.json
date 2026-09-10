@@ -6,7 +6,8 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build && node scripts/prerender.mjs",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "check": "npm run build && node scripts/seo-check.mjs && node scripts/pdf-konsistenz-test.mjs && node scripts/eingaben-test.mjs"
   },
   "dependencies": {
     "@react-pdf/renderer": "^4.0.0",

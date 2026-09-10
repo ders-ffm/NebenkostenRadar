@@ -52,18 +52,33 @@
   <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
   <link rel="canonical" href="https://nebenkostenradar.com/" />
 
-  <title>Nebenkostenabrechnung prüfen — kostenlos | NebenkostenRadar</title>
-  <meta name="description" content="Nebenkostenabrechnung kostenlos prüfen: NebenkostenRadar vergleicht jeden Posten mit dem DMB-Betriebskostenspiegel, erkennt Fehler und erstellt ein PDF mit Mustertext. Sofort, ohne Registrierung." />
+  <title>Nebenkostenabrechnung für Mieter prüfen | NebenkostenRadar</title>
+  <meta name="description" content="Als Mieter die Nebenkostenabrechnung kostenlos prüfen: Jeder Posten wird mit dem Betriebskostenspiegel des Deutschen Mieterbundes verglichen. Ohne Registrierung." />
 
   <meta property="og:type" content="website" />
-  <meta property="og:title" content="Nebenkostenabrechnung prüfen — kostenlos | NebenkostenRadar" />
-  <meta property="og:description" content="NebenkostenRadar vergleicht jeden Posten mit dem DMB-Betriebskostenspiegel und erstellt bei Auffälligkeiten ein versandfertiges PDF." />
+  <meta property="og:title" content="Nebenkostenabrechnung für Mieter prüfen | NebenkostenRadar" />
+  <meta property="og:description" content="Als Mieter die Nebenkostenabrechnung kostenlos prüfen: Jeder Posten wird mit dem Betriebskostenspiegel des Deutschen Mieterbundes verglichen. Ohne Registrierung." />
   <meta property="og:url" content="https://nebenkostenradar.com/" />
   <meta property="og:locale" content="de_DE" />
+  <!-- Vorschaubild für geteilte Links. ERGÄNZT 10.09.2026: Bis dahin gab es
+       gar kein og:image — jeder auf WhatsApp, Facebook oder LinkedIn geteilte
+       Link zeigte eine leere graue Vorschau. Das Bild liegt in public/ und
+       wird unverändert nach dist/ kopiert. Die URL muss absolut sein, relative
+       Pfade werden von den meisten Netzwerken nicht aufgelöst.
+       Beim Austauschen: 1200x630 Pixel beibehalten und den Dateinamen ändern
+       (z.B. og-bild-2.png), sonst zeigen die Netzwerke tagelang das alte Bild
+       aus ihrem Cache. Der Pfad steht auch in src/config/seo.js. -->
+  <meta property="og:image" content="https://nebenkostenradar.com/og-bild.png" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta property="og:image:alt" content="NebenkostenRadar — jede zweite Abrechnung enthält Fehler" />
+  <meta name="twitter:image" content="https://nebenkostenradar.com/og-bild.png" />
 
-  <meta name="twitter:card" content="summary" />
-  <meta name="twitter:title" content="Nebenkostenabrechnung prüfen — kostenlos | NebenkostenRadar" />
-  <meta name="twitter:description" content="NebenkostenRadar vergleicht jeden Posten mit dem DMB-Betriebskostenspiegel und erstellt bei Auffälligkeiten ein versandfertiges PDF." />
+  <!-- summary_large_image statt summary (10.09.2026): Mit einem 1200x630-Bild
+       zeigt X/Twitter die große Vorschaukarte statt einer kleinen Kachel. -->
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Nebenkostenabrechnung für Mieter prüfen | NebenkostenRadar" />
+  <meta name="twitter:description" content="Als Mieter die Nebenkostenabrechnung kostenlos prüfen: Jeder Posten wird mit dem Betriebskostenspiegel des Deutschen Mieterbundes verglichen. Ohne Registrierung." />
 
   <!--
     Verhindert das elastische horizontale "Rubber-Band"-Wischen auf iOS
@@ -132,9 +147,31 @@
     ]
   }
   </script>
-  <script type="module" crossorigin src="/assets/index-C6lS8yYj.js"></script>
+  <script type="module" crossorigin src="/assets/index-BuhoYUmK.js"></script>
 </head>
 <body>
-  <div id="root"></div>
+  <div id="root">
+    <h1>Nebenkostenabrechnung prüfen — für Mieter, in wenigen Minuten</h1>
+    <p>Du hast die Betriebskostenabrechnung für deine Mietwohnung bekommen und weißt nicht, ob sie stimmt? NebenkostenRadar vergleicht jeden Posten mit den Richtwerten des Deutschen Mieterbundes und prüft, was dein Vermieter überhaupt umlegen darf. Das Angebot richtet sich an Mieter von Wohnraum in Deutschland; für Gewerbemietverträge und für Eigentümer gelten andere Regeln.</p>
+    <h2>So läuft es ab</h2>
+    <ol>
+      <li>Abrechnung als Foto oder PDF hochladen — die Posten werden automatisch ausgelesen.</li>
+      <li>Kostenlose Basisanalyse: Jeder Posten wird gegen Richtwerte und Rechtsgrundlagen geprüft, ohne Konto und ohne Zahlung.</li>
+      <li>Auswertung als PDF, auf Wunsch mit versandfertigem Brief an den Vermieter.</li>
+    </ol>
+    <h2>Was geprüft wird</h2>
+    <ul>
+      <li>Jede Position wird mit dem Betriebskostenspiegel des Deutschen Mieterbundes verglichen und auf Zulässigkeit nach § 2 BetrKV geprüft.</li>
+      <li>Nicht umlagefähige Posten werden erkannt — etwa Verwaltungskosten oder, seit Juli 2024, der Kabelanschluss.</li>
+      <li>Prüfung der 50/70-Regel nach Heizkostenverordnung sowie der Aufteilung der CO₂-Abgabe.</li>
+      <li>Fristen nach § 556 Abs. 3 BGB: rechtzeitige Zustellung und Einwendungsfrist.</li>
+      <li>Im Paket „Auswertung + Brief“ zusätzlich ein Hinweis auf steuerlich absetzbare Positionen nach § 35a EStG.</li>
+    </ul>
+    <h2>Was es kostet</h2>
+    <p>Die Basisanalyse ist kostenlos und ohne Registrierung. Die Auswertung als PDF kostet einmalig 9,99 €, mit Musterbrief und Steuer-Bonus 12,99 €. Kein Abo.</p>
+    <h2>Worauf die Prüfung beruht</h2>
+    <p>Grundlage sind der Betriebskostenspiegel des Deutschen Mieterbundes für das Abrechnungsjahr 2024 (veröffentlicht 12/2025), § 2 der Betriebskostenverordnung, die Heizkostenverordnung, das CO₂-Kostenaufteilungsgesetz und § 35a EStG. Der Betriebskostenspiegel ist ein bundesweiter Durchschnitt ohne regionale Aufschlüsselung: Eine Abweichung nach oben ist ein Anlass zur Nachfrage, kein Nachweis eines Fehlers.</p>
+    <p><a href="/pruefen/wohnung">Kostenlos prüfen</a> · <a href="/ratgeber">Ratgeber</a> · <a href="/faq">Häufige Fragen</a> · <a href="/ueber-uns">Über uns</a></p>
+  </div>
 </body>
 </html>

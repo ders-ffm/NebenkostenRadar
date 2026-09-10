@@ -19,6 +19,8 @@
 // ─────────────────────────────────────────────────────────────────────────
 import { THEME } from "../config/theme.js";
 import { FAQ_STARTSEITE } from "../config/faq.js";
+import { BUSINESS } from "../config/business.js";
+import { euro } from "../lib/format.js";
 import Nav from "../components/layout/Nav.jsx";
 import LegalFooter from "../components/layout/LegalFooter.jsx";
 
@@ -51,6 +53,81 @@ export default function FAQ({ navigateTo }) {
               <div style={{ fontSize: 14, color: C.textMuted, lineHeight: 1.75, marginTop: 12 }}>{antwort}</div>
             </details>
           ))}
+        </div>
+
+        {/* ─────────────────────────────────────────────────────────────
+            Preiseinordnung. Stand bis zum 10.09.2026 auf der Startseite und
+            wurde hierher verschoben, weil die Startseite zu voll war. Passt
+            hier auch besser: Die Frage „warum zahlen, wenn ich auch selbst
+            prüfen könnte" steht als FAQ-Eintrag direkt darüber.
+            ALLE ZAHLEN SIND BELEGT, nichts geschätzt:
+            - Mieterverein: Jahresbeiträge 2026 zwischen 60 € (Gelsenkirchen)
+              und 132 € (Kiel), teils zzgl. einmaliger Aufnahmegebühr.
+            - Anwalt: § 34 Abs. 1 S. 3 RVG deckelt die Erstberatung für
+              Verbraucher auf 190 € netto (226,10 € brutto), sofern keine
+              Vergütungsvereinbarung getroffen wurde.
+            Bei Preisänderungen: Die NKR-Zeile zieht aus BUSINESS, die
+            anderen drei müssen von Hand geprüft werden.
+            ───────────────────────────────────────────────────────────── */}
+        <div style={{ marginTop: 40 }}>
+          <h2 style={{ fontFamily: THEME.font.heading, fontSize: 20, fontWeight: 600, color: C.text, margin: "0 0 8px" }}>Was die Alternativen kosten</h2>
+          <p style={{ fontSize: 14, color: C.textMuted, lineHeight: 1.7, margin: "0 0 18px" }}>
+            Damit du den Preis einordnen kannst — einschließlich der kostenlosen Alternative.
+          </p>
+          <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+            {[
+              {
+                titel: "Selbst prüfen", preis: "0 €", hervor: false,
+                punkte: [
+                  "Betriebskostenspiegel und BetrKV sind öffentlich zugänglich",
+                  "Richtwert je Position selbst heraussuchen und umrechnen",
+                  "Umlageschlüssel, 50/70-Regel und CO₂-Aufteilung selbst nachrechnen",
+                  "Widerspruchsschreiben selbst formulieren, mit den richtigen Vorschriften",
+                ],
+              },
+              {
+                titel: "NebenkostenRadar", hervor: true,
+                preis: euro(BUSINESS.PREIS_AUSWERTUNG) + " – " + euro(BUSINESS.PREIS_VOLL),
+                punkte: [
+                  "Einmalig, kein Abo, kein Kundenkonto nötig",
+                  "Jede Position gegen Richtwert und Rechtsgrundlage geprüft",
+                  "Versandfertiger Brief an den Vermieter (im größeren Paket)",
+                  "Ergebnis in wenigen Minuten, keine Terminvereinbarung",
+                ],
+              },
+              {
+                titel: "Mieterverein", preis: "ca. 60 – 132 € / Jahr", hervor: false,
+                punkte: [
+                  "Beitrag je nach Ortsverein, teils zzgl. einmaliger Aufnahmegebühr",
+                  "Persönliche Beratung durch Menschen — inhaltlich das Gründlichste",
+                  "Deckt weit mehr ab als die Nebenkostenabrechnung",
+                  "Meist Terminvereinbarung nötig, teils Wartezeit für Neumitglieder",
+                ],
+              },
+              {
+                titel: "Anwalt", preis: "bis 226,10 € nur für die Erstberatung", hervor: false,
+                punkte: [
+                  "Höchstbetrag nach § 34 Abs. 1 S. 3 RVG, wenn keine Vergütungsvereinbarung getroffen wurde",
+                  "Ein Widerspruchsschreiben wird darüber hinaus nach Streitwert abgerechnet",
+                  "Verbindliche Einschätzung des Einzelfalls — das kann keine Software",
+                  "Bei kleineren Beträgen übersteigen die Kosten oft die Ersparnis",
+                ],
+              },
+            ].map(({ titel, preis, hervor, punkte }) => (
+              <div key={titel} style={{ padding: "16px 18px", background: hervor ? C.brandBg : C.surface, border: "1px solid " + (hervor ? C.brand : C.border), borderRadius: THEME.radius.md }}>
+                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", gap: 12, marginBottom: 8 }}>
+                  <div style={{ fontSize: 15, fontWeight: 600, color: C.text, fontFamily: THEME.font.heading }}>{titel}</div>
+                  <div style={{ fontSize: 13, fontWeight: 600, color: hervor ? C.brand : C.textMuted, textAlign: "right" }}>{preis}</div>
+                </div>
+                <ul style={{ margin: 0, paddingLeft: 18, fontSize: 13, color: C.textMuted, lineHeight: 1.7 }}>
+                  {punkte.map(punkt => <li key={punkt}>{punkt}</li>)}
+                </ul>
+              </div>
+            ))}
+          </div>
+          <p style={{ fontSize: 11, color: C.textDim, lineHeight: 1.6, marginTop: 12 }}>
+            Beiträge der Mietervereine nach den Beitragsordnungen 2026 einzelner Ortsvereine (Spanne von Gelsenkirchen bis Kiel); die Höhe unterscheidet sich je nach Verein. Anwaltsgebühr nach § 34 Abs. 1 S. 3 RVG, brutto inkl. 19 % Umsatzsteuer. Stand 09/2026.
+          </p>
         </div>
 
         <div style={{ marginTop: 32, padding: "20px 20px", background: C.brandBg, border: "1px solid " + C.border, borderRadius: THEME.radius.lg, textAlign: "center" }}>

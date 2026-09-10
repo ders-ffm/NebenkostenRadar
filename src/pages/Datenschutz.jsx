@@ -18,6 +18,7 @@
 // etwas ändert — siehe CHANGELOG.md für die Historie.
 // ─────────────────────────────────────────────────────────────────────────
 import { THEME } from "../config/theme.js";
+import { euro } from "../lib/format.js";
 import { BUSINESS } from "../config/business.js";
 import BrandAnschrift from "../components/layout/BrandAnschrift.jsx";
 
@@ -59,7 +60,7 @@ const ABSCHNITTE = [
     "Unser Hosting-Anbieter Vercel (Vercel Inc., USA) erhebt automatisch Server-Log-Dateien (IP-Adresse, Browser, Zeitstempel). Rechtsgrundlage: Art. 6 Abs. 1 lit. f DSGVO. Datenübermittlung in die USA auf Basis von Standardvertragsklauseln der EU-Kommission (Art. 46 Abs. 2 lit. c DSGVO). Datenschutzerklärung: vercel.com/legal/privacy-policy",
   ]},
   { t: "6. Zahlungsabwicklung (Stripe)", lines: [
-    "Beim Kauf einer Auswertung (" + BUSINESS.PREIS_AUSWERTUNG.toFixed(2) + " €) oder Auswertung mit Brief (" + BUSINESS.PREIS_VOLL.toFixed(2) + " €) leiten wir dich zur Zahlungsseite von Stripe Payments Europe, Ltd. (Dublin, Irland) weiter. Dabei werden Name, E-Mail-Adresse und Zahlungsdaten an Stripe übermittelt.",
+    "Beim Kauf einer Auswertung (" + euro(BUSINESS.PREIS_AUSWERTUNG) + ") oder Auswertung mit Brief (" + euro(BUSINESS.PREIS_VOLL) + ") leiten wir dich zur Zahlungsseite von Stripe Payments Europe, Ltd. (Dublin, Irland) weiter. Dabei werden Name, E-Mail-Adresse und Zahlungsdaten an Stripe übermittelt.",
     "Rechtsgrundlage: Art. 6 Abs. 1 lit. b DSGVO. Datenübermittlung in die USA auf Basis von Standardvertragsklauseln (Art. 46 Abs. 2 lit. c DSGVO). Datenschutzerklärung: stripe.com/de/privacy",
   ]},
   { t: "7. Bildmaterial (Unsplash)", lines: [

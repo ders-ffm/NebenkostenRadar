@@ -119,6 +119,12 @@ export const BEISPIEL_ANZAHL = {
 // vollständige Brief ist Teil der kostenpflichtigen Stufe. Formulierung und
 // Rechtsgrundlagen entsprechen dem, was BriefPDF.jsx tatsächlich erzeugt;
 // wer den Brief dort ändert, sollte diesen Ausschnitt mit anpassen.
+//
+// STAND 10.09.2026: Derzeit nirgends eingebunden. Der Ausschnitt stand bis
+// zur Entschlackung der Startseite (Stefans Rückmeldung, die Seite sei zu
+// voll) im Beispielblock. Er bleibt hier stehen, weil er fertig und
+// geprüft ist und beim nächsten Bedarf sofort verwendbar wäre — etwa auf
+// einer eigenen Beispielseite oder in einer Werbeanzeige.
 export const BEISPIEL_BRIEF =
   "Sehr geehrte Damen und Herren,\n\n" +
   "gegen Ihre Betriebskostenabrechnung für das Jahr 2024, zugegangen am 14.03.2025, erhebe ich fristgerecht Einwendungen.\n\n" +

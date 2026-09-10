@@ -1,4 +1,6 @@
 import { useState, useEffect } from "react";
+import { BUSINESS } from "./config/business.js";
+import { euro } from "./lib/format.js";
 // ─────────────────────────────────────────────────────────────────────────────
 // NebenkostenRadar · Admin Panel
 // Erreichbar unter: nebenkostenradar.com/admin
@@ -19,7 +21,12 @@ const C = {
   blue: "#5ba4e0", blueBg: "#0a1520",
 };
 const DEFAULT_CONFIG = {
-  preis: 7.99,
+  // KORRIGIERT 10.09.2026: Hier stand fest 7.99 — ein Preis, den es seit der
+  // Umstellung auf zwei Stufen (9,99 € / 12,99 €) nicht mehr gibt. Solange
+  // noch keine Konfiguration gespeichert war, hat das Dashboard damit mit
+  // einem falschen Preis gerechnet (Umsatz, Stripe-Gebühr, Netto pro Verkauf).
+  // Der Wert kommt jetzt aus derselben Datei wie überall sonst.
+  preis: BUSINESS.PREIS_AUSWERTUNG,
   stripeLink: "",
   texte: {
     headline: "Nebenkostenabrechnung prüfen lassen",
@@ -239,7 +246,7 @@ export default function Admin() {
             <div style={{ display: "flex", gap: 10, marginBottom: 16, flexWrap: "wrap" }}>
               <StatBox label="Analysen gesamt" value={config.stats.analysen_gesamt.toLocaleString("de")} sub="seit Start" />
               <StatBox label="Käufe gesamt" value={config.stats.kaeufe_gesamt.toLocaleString("de")} sub="Vollberichte" color={C.green} />
-              <StatBox label="Umsatz gesamt" value={`€${config.stats.umsatz_gesamt.toFixed(2)}`} sub="brutto" color={C.blue} />
+              <StatBox label="Umsatz gesamt" value={euro(config.stats.umsatz_gesamt)} sub="brutto" color={C.blue} />
             </div>
             <Card title="Conversion Rate" icon="📈">
               <div style={{ display: "flex", gap: 20, alignItems: "center" }}>
@@ -302,7 +309,7 @@ export default function Admin() {
           <>
             <Card title="Preis & Stripe" icon="💶">
               <Field label="Preis Vollbericht (€)" type="number" value={config.preis}
-                onChange={v => updateConfig("preis", parseFloat(v) || 7.99)}
+                onChange={v => updateConfig("preis", parseFloat(v) || BUSINESS.PREIS_AUSWERTUNG)}
                 hint="Muss mit dem Preis in deinem Stripe Payment Link übereinstimmen!" />
               <Field label="Stripe Payment Link" value={config.stripeLink}
                 onChange={v => updateConfig("stripeLink", v)}
@@ -315,10 +322,10 @@ export default function Admin() {
             </Card>
             <Card title="Preisrechner" icon="🧮">
               <div style={{ fontSize: 13, color: C.muted, lineHeight: 2 }}>
-                <div>Bruttopreis: <span style={{ color: C.text, fontWeight: 700 }}>€{config.preis.toFixed(2)}</span></div>
-                <div>Stripe-Gebühr (1,4% + 0,25€): <span style={{ color: C.red }}>−€{(config.preis * 0.014 + 0.25).toFixed(2)}</span></div>
+                <div>Bruttopreis: <span style={{ color: C.text, fontWeight: 700 }}>{euro(config.preis)}</span></div>
+                <div>Stripe-Gebühr (1,4% + 0,25€): <span style={{ color: C.red }}>−{euro(config.preis * 0.014 + 0.25)}</span></div>
                 <div style={{ borderTop: `1px solid ${C.border}`, paddingTop: 8, marginTop: 4 }}>
-                  Netto pro Verkauf: <span style={{ color: C.green, fontWeight: 700 }}>€{(config.preis - config.preis * 0.014 - 0.25).toFixed(2)}</span>
+                  Netto pro Verkauf: <span style={{ color: C.green, fontWeight: 700 }}>{euro(config.preis - config.preis * 0.014 - 0.25)}</span>
                 </div>
                 <div>Break-even: <span style={{ color: C.text }}>3 Verkäufe (Domainkosten)</span></div>
               </div>

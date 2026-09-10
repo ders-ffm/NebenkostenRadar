@@ -34,6 +34,7 @@ import Ratgeber from "./pages/Ratgeber.jsx";
 import Artikel from "./pages/Artikel.jsx";
 import UeberUns from "./pages/UeberUns.jsx";
 import FAQ from "./pages/FAQ.jsx";
+import { BASIS_URL, OG_BILD, NICHT_INDEXIEREN, seoFuer, artikelTitel, artikelBeschreibung } from "./config/seo.js";
 
 // URL <-> Seiten-Name. Jeder Eintrag hier bekommt eine echte, eigene URL.
 const ROUTES = {
@@ -101,22 +102,47 @@ export default function App() {
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   // SEO: Titel/Meta pro Route aktualisieren (Vite baut nur eine index.html)
+  //
+  // KORRIGIERT 10.09.2026 nach dem Live-Check. Der Fehler vorher: Dieser
+  // Effekt kannte nur zwei Fälle — Artikelseiten und "alles andere". "Alles
+  // andere" bekam den Startseitentitel. Damit hat er die korrekt
+  // vorgerenderten Titel von /faq und /ratgeber im Browser wieder
+  // überschrieben, und weil Google JavaScript ausführt, hat Google den
+  // falschen Titel gesehen. Auch das Canonical von /ueber-uns zeigte
+  // dadurch auf "/" — die Seite hätte sich selbst wegkanonisiert.
+  //
+  // Jetzt kommen die Texte aus src/config/seo.js, aus der auch
+  // scripts/prerender.mjs liest. Beide Wege können nicht mehr auseinander
+  // laufen.
   useEffect(() => {
-    const BASE = "https://nebenkostenradar.com";
-    let title = "Nebenkostenabrechnung prüfen — kostenlos | NebenkostenRadar";
-    let description = "Nebenkostenabrechnung kostenlos prüfen: NebenkostenRadar vergleicht jeden Posten mit dem DMB-Betriebskostenspiegel, erkennt Fehler und erstellt ein PDF mit Mustertext.";
+    let { titel, beschreibung } = seoFuer(step);
     let pfad = STEP_ZU_PFAD[step] || "/";
     if (step === "artikel") {
       const a = ARTIKEL.find(a => a.id === ratgeberArtikel);
-      if (a) { title = a.titel + " | NebenkostenRadar Ratgeber"; description = a.teaser; pfad = "/ratgeber/" + a.id; }
+      if (a) { titel = artikelTitel(a); beschreibung = artikelBeschreibung(a); pfad = "/ratgeber/" + a.id; }
     }
-    document.title = title;
+    document.title = titel;
     const setMeta = (sel, attr, value) => { const el = document.querySelector(sel); if (el) el.setAttribute(attr, value); };
-    setMeta('meta[name="description"]', "content", description);
-    setMeta('meta[property="og:title"]', "content", title);
-    setMeta('meta[property="og:description"]', "content", description);
-    setMeta('meta[property="og:url"]', "content", BASE + pfad);
-    setMeta('link[rel="canonical"]', "href", BASE + pfad);
+    setMeta('meta[name="description"]', "content", beschreibung);
+    setMeta('meta[property="og:title"]', "content", titel);
+    setMeta('meta[property="og:description"]', "content", beschreibung);
+    setMeta('meta[property="og:url"]', "content", BASIS_URL + pfad);
+    setMeta('meta[property="og:image"]', "content", OG_BILD);
+    setMeta('meta[name="twitter:title"]', "content", titel);
+    setMeta('meta[name="twitter:description"]', "content", beschreibung);
+    setMeta('link[rel="canonical"]', "href", BASIS_URL + pfad);
+
+    // Zwischenschritte des Formulars und interne Seiten sollen nicht einzeln
+    // in der Suche landen. Das robots-Meta wird dafür bei Bedarf angelegt
+    // und sonst wieder entfernt — sonst bliebe ein einmal gesetztes noindex
+    // beim Weiterklicken auf einer indexierbaren Seite stehen.
+    const vorhanden = document.querySelector('meta[name="robots"]');
+    if (NICHT_INDEXIEREN.includes(step)) {
+      const el = vorhanden || document.head.appendChild(Object.assign(document.createElement("meta"), { name: "robots" }));
+      el.setAttribute("content", "noindex, follow");
+    } else if (vorhanden) {
+      vorhanden.remove();
+    }
   }, [step, ratgeberArtikel]);
 
   // Zwischenspeichern 30.08.2026 (siehe projektdokumentation-nkr.md Abschnitt 9,

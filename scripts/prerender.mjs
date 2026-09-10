@@ -51,6 +51,11 @@ import { dirname, join } from "path";
 // Richtwerte kommen direkt aus derselben Datei wie die Analyse und die
 // React-Ansicht (09.09.2026) — siehe renderRichtwerteTabelle() weiter unten.
 import { BUSINESS } from "../src/config/business.js";
+// Titel, Beschreibungen und die Artikel-Helfer kommen aus derselben Datei,
+// aus der auch App.jsx liest (src/config/seo.js). Damit können statisches
+// HTML und die im Browser gesetzten Meta-Tags nicht mehr auseinanderlaufen —
+// genau das war der Fehler, der /faq und /ratgeber ihre Titel gekostet hat.
+import { seoFuer, artikelTitel, artikelBeschreibung } from "../src/config/seo.js";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const ROOT = join(__dirname, "..");
@@ -222,24 +227,41 @@ function renderRichtwerteTabelle() {
     `<tbody>${body}${summe}</tbody></table>`;
 }
 
-function buildArticleHtml(template, artikel, artikelById) {
-  const url = `${BASE}/ratgeber/${artikel.id}`;
-  const title = `${artikel.titel} | NebenkostenRadar Ratgeber`;
-  const description = artikel.teaser;
-
+// ───────────────────────────────────────────────────────────────────────────
+// Meta-Angaben einer Seite setzen — EINE Funktion für alle Seitentypen.
+//
+// GRUND FÜR DIE ZUSAMMENFASSUNG (Live-Check 10.09.2026): Vorher hatte jeder
+// Seitentyp seine eigene Kette von .replace()-Aufrufen. Dabei sind Tags
+// vergessen worden: buildRatgeberIndexHtml und buildFaqHtml haben zwar
+// og:title gesetzt, aber nicht twitter:title — auf /faq und /ratgeber stand
+// deshalb im Twitter-Tag der Startseitentitel. Mit einer gemeinsamen
+// Funktion kann so ein Tag nicht mehr an einer Stelle fehlen.
+//
+// Fehlt eines der Tags in index.html, wird der jeweilige Ersetzungsversuch
+// still übersprungen — Vorrendern darf den Build nie zum Absturz bringen,
+// nur bestmöglich verbessern.
+// ───────────────────────────────────────────────────────────────────────────
+function setzeMeta(template, { url, title, description, ogTyp = "website", noindex = false }) {
   let html = template
     .replace(/<title>.*?<\/title>/s, `<title>${escapeHtml(title)}</title>`)
     .replace(/(<meta name="description" content=")[^"]*(")/, `$1${escapeHtml(description)}$2`)
     .replace(/(<meta property="og:title" content=")[^"]*(")/, `$1${escapeHtml(title)}$2`)
     .replace(/(<meta property="og:description" content=")[^"]*(")/, `$1${escapeHtml(description)}$2`)
     .replace(/(<meta property="og:url" content=")[^"]*(")/, `$1${url}$2`)
+    .replace(/(<meta property="og:type" content=")[^"]*(")/, `$1${ogTyp}$2`)
     .replace(/(<meta name="twitter:title" content=")[^"]*(")/, `$1${escapeHtml(title)}$2`)
     .replace(/(<meta name="twitter:description" content=")[^"]*(")/, `$1${escapeHtml(description)}$2`)
     .replace(/(<link rel="canonical" href=")[^"]*(")/, `$1${url}$2`);
+  if (noindex) html = html.replace("</head>", `<meta name="robots" content="noindex, follow" />\n</head>`);
+  return html;
+}
 
-  // Falls eines der obigen Meta-Tags in index.html (noch) nicht existiert,
-  // still überspringen statt Fehler zu werfen — Prerendering darf den
-  // Build nie zum Absturz bringen, nur bestmöglich verbessern.
+function buildArticleHtml(template, artikel, artikelById) {
+  const url = `${BASE}/ratgeber/${artikel.id}`;
+  const title = artikelTitel(artikel);
+  const description = artikelBeschreibung(artikel);
+
+  let html = setzeMeta(template, { url, title, description, ogTyp: "article" });
 
   const artikelJsonLd = {
     "@context": "https://schema.org",
@@ -273,21 +295,79 @@ function buildArticleHtml(template, artikel, artikelById) {
 
 function buildRatgeberIndexHtml(template, artikelListe) {
   const url = `${BASE}/ratgeber`;
-  const title = "Ratgeber | NebenkostenRadar";
-  const description = "Verständliche Artikel rund um Nebenkostenabrechnung, Betriebskosten und Mieterrechte.";
-  let html = template
-    .replace(/<title>.*?<\/title>/s, `<title>${escapeHtml(title)}</title>`)
-    .replace(/(<meta name="description" content=")[^"]*(")/, `$1${escapeHtml(description)}$2`)
-    .replace(/(<meta property="og:title" content=")[^"]*(")/, `$1${escapeHtml(title)}$2`)
-    .replace(/(<meta property="og:description" content=")[^"]*(")/, `$1${escapeHtml(description)}$2`)
-    .replace(/(<meta property="og:url" content=")[^"]*(")/, `$1${url}$2`)
-    .replace(/(<link rel="canonical" href=")[^"]*(")/, `$1${url}$2`);
+  const { titel, beschreibung } = seoFuer("ratgeber");
+  let html = setzeMeta(template, { url, title: titel, description: beschreibung });
 
+  // Mit Teaser statt nur Titel: Die Übersicht hatte vorher rund 1.700 Zeichen
+  // Text für 10 Artikel — bei 22 Artikeln wäre sie eine reine Linkliste
+  // geblieben. Der Teaser gibt jedem Eintrag Kontext, für Suchmaschinen wie
+  // für Nutzer ohne JavaScript.
   const liste = artikelListe
-    .map(a => `<li><a href="/ratgeber/${a.id}">${escapeHtml(a.titel)}</a></li>`)
+    .map(a => `<li><a href="/ratgeber/${a.id}">${escapeHtml(a.titel)}</a><br>${escapeHtml(a.teaser)}</li>`)
     .join("\n");
-  html = html.replace('<div id="root"></div>', `<div id="root"><h1>Ratgeber</h1><ul>${liste}</ul></div>`);
+  html = html.replace('<div id="root"></div>', `<div id="root"><h1>Ratgeber Mietrecht</h1><ul>${liste}</ul></div>`);
   return html;
+}
+
+// ───────────────────────────────────────────────────────────────────────────
+// Einfache Seiten vorrendern (Startseite, Über uns).
+//
+// BEFUND 10.09.2026: Beide Seiten lieferten 0 Zeichen Text im Quelltext —
+// nur die leere React-Hülle. Schlimmer noch: Da sie nicht vorgerendert
+// wurden, trugen sie das Canonical der Vorlage, also "/". Für /ueber-uns
+// hieß das: Die Seite steht in der Sitemap, sagt Google aber "ich bin eine
+// Kopie der Startseite" — sie wäre nie indexiert worden.
+//
+// Der Text hier ist bewusst knapp und muss nicht jedes Detail der React-
+// Seite wiederholen. Er muss aber inhaltlich dasselbe sagen; ein Quelltext,
+// der etwas anderes behauptet als die sichtbare Seite, wäre ein Problem.
+// Wenn sich die Startseite inhaltlich stark ändert, bitte hier nachziehen.
+// ───────────────────────────────────────────────────────────────────────────
+function buildEinfacheSeiteHtml(template, { pfad, step, inhalt }) {
+  const url = `${BASE}${pfad}`;
+  const { titel, beschreibung } = seoFuer(step);
+  const html = setzeMeta(template, { url, title: titel, description: beschreibung });
+  return html.replace('<div id="root"></div>', `<div id="root">${inhalt}</div>`);
+}
+
+function startseiteInhalt() {
+  const preisA = BUSINESS.PREIS_AUSWERTUNG.toLocaleString("de-DE", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+  const preisV = BUSINESS.PREIS_VOLL.toLocaleString("de-DE", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+  return `
+    <h1>Nebenkostenabrechnung prüfen — für Mieter, in wenigen Minuten</h1>
+    <p>Du hast die Betriebskostenabrechnung für deine Mietwohnung bekommen und weißt nicht, ob sie stimmt? NebenkostenRadar vergleicht jeden Posten mit den Richtwerten des Deutschen Mieterbundes und prüft, was dein Vermieter überhaupt umlegen darf. Das Angebot richtet sich an Mieter von Wohnraum in Deutschland; für Gewerbemietverträge und für Eigentümer gelten andere Regeln.</p>
+    <h2>So läuft es ab</h2>
+    <ol>
+      <li>Abrechnung als Foto oder PDF hochladen — die Posten werden automatisch ausgelesen.</li>
+      <li>Kostenlose Basisanalyse: Jeder Posten wird gegen Richtwerte und Rechtsgrundlagen geprüft, ohne Konto und ohne Zahlung.</li>
+      <li>Auswertung als PDF, auf Wunsch mit versandfertigem Brief an den Vermieter.</li>
+    </ol>
+    <h2>Was geprüft wird</h2>
+    <ul>
+      <li>Jede Position wird mit dem Betriebskostenspiegel des Deutschen Mieterbundes verglichen und auf Zulässigkeit nach § 2 BetrKV geprüft.</li>
+      <li>Nicht umlagefähige Posten werden erkannt — etwa Verwaltungskosten oder, seit Juli 2024, der Kabelanschluss.</li>
+      <li>Prüfung der 50/70-Regel nach Heizkostenverordnung sowie der Aufteilung der CO₂-Abgabe.</li>
+      <li>Fristen nach § 556 Abs. 3 BGB: rechtzeitige Zustellung und Einwendungsfrist.</li>
+      <li>Im Paket „Auswertung + Brief“ zusätzlich ein Hinweis auf steuerlich absetzbare Positionen nach § 35a EStG.</li>
+    </ul>
+    <h2>Was es kostet</h2>
+    <p>Die Basisanalyse ist kostenlos und ohne Registrierung. Die Auswertung als PDF kostet einmalig ${preisA} €, mit Musterbrief und Steuer-Bonus ${preisV} €. Kein Abo.</p>
+    <h2>Worauf die Prüfung beruht</h2>
+    <p>Grundlage sind der Betriebskostenspiegel des Deutschen Mieterbundes für das Abrechnungsjahr ${escapeHtml(BUSINESS.RICHTWERTE_JAHR)}, § 2 der Betriebskostenverordnung, die Heizkostenverordnung, das CO₂-Kostenaufteilungsgesetz und § 35a EStG. Der Betriebskostenspiegel ist ein bundesweiter Durchschnitt ohne regionale Aufschlüsselung: Eine Abweichung nach oben ist ein Anlass zur Nachfrage, kein Nachweis eines Fehlers.</p>
+    <p><a href="/pruefen/wohnung">Kostenlos prüfen</a> · <a href="/ratgeber">Ratgeber</a> · <a href="/faq">Häufige Fragen</a> · <a href="/ueber-uns">Über uns</a></p>
+  `;
+}
+
+function ueberUnsInhalt() {
+  return `
+    <h1>Über NebenkostenRadar</h1>
+    <p>NebenkostenRadar ist ein automatisiertes Prüfwerkzeug für Nebenkostenabrechnungen. Es gleicht jede Position mit veröffentlichten Richtwerten und den einschlägigen Vorschriften ab und erstellt daraus einen Bericht sowie einen Musterbrief an den Vermieter.</p>
+    <h2>Unabhängigkeit</h2>
+    <p>NebenkostenRadar gehört keinem Vermieterverband, keiner Hausverwaltung, keinem Messdienstleister und keinem Abrechnungsunternehmen an und erhält von keiner dieser Seiten Geld. Es gibt keine Provisionen und keine Vermittlungsvereinbarungen.</p>
+    <h2>Keine Rechtsberatung</h2>
+    <p>Eine Bewertung des Einzelfalls, wie sie ein Anwalt oder ein Mieterverein vornimmt, ersetzt das Werkzeug nicht. Bei hohen Streitwerten oder einer Auseinandersetzung vor Gericht ist anwaltlicher Rat der richtige Weg.</p>
+    <p><a href="/faq">Häufige Fragen</a> · <a href="/impressum">Impressum</a> · <a href="/datenschutz">Datenschutz</a></p>
+  `;
 }
 
 // ───────────────────────────────────────────────────────────────────────────
@@ -332,17 +412,8 @@ function baueFaqJsonLd(faqListe) {
 
 function buildFaqHtml(template, faqListe) {
   const url = `${BASE}/faq`;
-  const title = "Häufige Fragen zur Nebenkostenprüfung | NebenkostenRadar";
-  const description =
-    "Antworten auf die häufigsten Fragen zur Prüfung der Nebenkostenabrechnung: Unabhängigkeit, Genauigkeit der Vergleichswerte, Fristen, Datenschutz und Kosten.";
-
-  let html = template
-    .replace(/<title>.*?<\/title>/s, `<title>${escapeHtml(title)}</title>`)
-    .replace(/(<meta name="description" content=")[^"]*(")/, `$1${escapeHtml(description)}$2`)
-    .replace(/(<meta property="og:title" content=")[^"]*(")/, `$1${escapeHtml(title)}$2`)
-    .replace(/(<meta property="og:description" content=")[^"]*(")/, `$1${escapeHtml(description)}$2`)
-    .replace(/(<meta property="og:url" content=")[^"]*(")/, `$1${url}$2`)
-    .replace(/(<link rel="canonical" href=")[^"]*(")/, `$1${url}$2`);
+  const { titel, beschreibung } = seoFuer("faq");
+  let html = setzeMeta(template, { url, title: titel, description: beschreibung });
 
   html = html.replace("</head>", baueFaqJsonLd(faqListe) + "\n</head>");
 
@@ -459,6 +530,38 @@ async function main() {
   mkdirSync(faqDir, { recursive: true });
   writeFileSync(join(faqDir, "index.html"), buildFaqHtml(template, FAQ_STARTSEITE));
   console.log(`  ✓ /faq (${FAQ_STARTSEITE.length} Fragen, inkl. FAQPage-Markup)`);
+
+  // Startseite und Über uns: eigener Text und eigenes Canonical.
+  // Die Startseite überschreibt dist/index.html — das ist Absicht und muss
+  // NACH dem Erzeugen aller anderen Seiten passieren, weil template weiter
+  // oben aus genau dieser Datei gelesen wurde.
+  writeFileSync(join(DIST, "index.html"),
+    buildEinfacheSeiteHtml(template, { pfad: "/", step: "welcome", inhalt: startseiteInhalt() }));
+  console.log("  ✓ / (Startseite mit statischem Text)");
+
+  const ueberUnsDir = join(DIST, "ueber-uns");
+  mkdirSync(ueberUnsDir, { recursive: true });
+  writeFileSync(join(ueberUnsDir, "index.html"),
+    buildEinfacheSeiteHtml(template, { pfad: "/ueber-uns", step: "ueberuns", inhalt: ueberUnsInhalt() }));
+  console.log("  ✓ /ueber-uns");
+
+  // Rechtstexte: eigenes Canonical und eigener Titel, damit sie nicht das
+  // Canonical der Startseite tragen. Vorgerendert wird nur ein Hinweis mit
+  // Link — der eigentliche Text steht in der React-Seite und soll nicht in
+  // zwei Fassungen gepflegt werden müssen.
+  for (const [pfad, step, ueberschrift] of [
+    ["/impressum", "impressum", "Impressum"],
+    ["/agb", "agb", "AGB und Widerrufsbelehrung"],
+    ["/datenschutz", "datenschutz", "Datenschutzerklärung"],
+  ]) {
+    const dir = join(DIST, pfad.slice(1));
+    mkdirSync(dir, { recursive: true });
+    writeFileSync(join(dir, "index.html"), buildEinfacheSeiteHtml(template, {
+      pfad, step,
+      inhalt: `<h1>${ueberschrift}</h1><p>Der vollständige Text wird beim Laden der Seite angezeigt.</p><p><a href="/">Zur Startseite</a></p>`,
+    }));
+    console.log(`  ✓ ${pfad}`);
+  }
 
   schreibeSitemap(ARTIKEL);
   schreibeWidget();

@@ -52,9 +52,31 @@ export function toNum(v) {
   return !isNaN(n) && n > 0 ? n : 0;
 }
 
-// Formatiert eine Zahl als Euro-Betrag, z.B. "€ 142,00"
+// Formatiert eine Zahl als Euro-Betrag, z.B. "€ 1.234,56"
+//
+// KORRIGIERT 10.09.2026 (Live-Check). Der Kommentar über dieser Funktion
+// versprach seit jeher "€ 142,00" — der Code lieferte aber "€ 142.00" mit
+// englischem Dezimalpunkt und ohne Tausenderpunkt. Betroffen war nicht nur
+// die Website, sondern auch der verkaufte Prüfbericht und der Musterbrief:
+// Dort stand "€ 1234.56" statt "€ 1.234,56". Auf einer deutschsprachigen
+// Seite, die Zahlen prüft, ist das doppelt unglücklich.
+// Der Fehler fiel auch deshalb lange nicht auf, weil der Rückfallwert
+// ("€ 0,00") schon immer richtig geschrieben war.
 export function fmt(n) {
-  return n != null && !isNaN(n) ? "€ " + parseFloat(n || 0).toFixed(2) : "€ 0,00";
+  return n != null && !isNaN(n) ? "€ " + fmtInput(parseFloat(n || 0)) : "€ 0,00";
+}
+
+// Formatiert einen Preis in der bei uns üblichen Schreibweise, z.B. "9,99 €".
+// Bewusst mit nachgestelltem Euro-Zeichen (so schreibt man Preise im
+// Deutschen) im Unterschied zu fmt(), das für Tabellenspalten in den PDFs
+// gedacht ist und das Zeichen voranstellt, damit die Spalte bündig bleibt.
+//
+// Vor dem 10.09.2026 wurde an jeder Stelle einzeln BUSINESS.PREIS_X.toFixed(2)
+// geschrieben — was "9.99 €" ergab. Das stand so auf der Startseite, auf der
+// Ergebnisseite, in den AGB, in der Datenschutzerklärung und unter "Über uns".
+// Wer Preise ändert oder neu anzeigt, nimmt bitte diese Funktion.
+export function euro(n) {
+  return fmtInput(Number(n)) + " €";
 }
 
 // Prozentanteil a von b, gerundet

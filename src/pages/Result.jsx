@@ -9,7 +9,7 @@
 import { useState } from "react";
 import { THEME } from "../config/theme.js";
 import { BUSINESS } from "../config/business.js";
-import { fmt } from "../lib/format.js";
+import { euro, fmt } from "../lib/format.js";
 import { BEWERTUNG } from "../lib/analyse.js";
 import Btn from "../components/ui/Btn.jsx";
 import LegalFooter from "../components/layout/LegalFooter.jsx";
@@ -190,7 +190,7 @@ export default function Result({ navigateTo, result, wohnung, werte, gesamtsumme
             <button onClick={() => setGewaehlteStufe("auswertung")}
               style={{ textAlign: "left", background: gewaehlteStufe === "auswertung" ? C.brandBg : C.bg, border: "2px solid " + (gewaehlteStufe === "auswertung" ? C.brand : C.border), borderRadius: THEME.radius.md, padding: "14px", cursor: "pointer", position: "relative" }}>
               <div style={{ fontSize: 11, color: C.textMuted, marginBottom: 4 }}>Nur Auswertung</div>
-              <div style={{ fontFamily: THEME.font.heading, fontSize: 19, fontWeight: 600, color: C.text }}>{BUSINESS.PREIS_AUSWERTUNG.toFixed(2)} €</div>
+              <div style={{ fontFamily: THEME.font.heading, fontSize: 19, fontWeight: 600, color: C.text }}>{euro(BUSINESS.PREIS_AUSWERTUNG)}</div>
               <div style={{ fontSize: 10, color: C.textDim, marginTop: 4 }}>1-seitiges PDF</div>
             </button>
             <button onClick={() => setGewaehlteStufe("voll")}
@@ -200,7 +200,7 @@ export default function Result({ navigateTo, result, wohnung, werte, gesamtsumme
                   bei gewaehlteStufe). */}
               <div style={{ position: "absolute", top: -9, right: 10, background: C.accent, color: C.accentText, fontSize: 9, fontWeight: 700, padding: "2px 8px", borderRadius: 10 }}>Empfohlen</div>
               <div style={{ fontSize: 11, color: C.textMuted, marginBottom: 4 }}>Auswertung + Brief</div>
-              <div style={{ fontFamily: THEME.font.heading, fontSize: 19, fontWeight: 600, color: C.text }}>{BUSINESS.PREIS_VOLL.toFixed(2)} €</div>
+              <div style={{ fontFamily: THEME.font.heading, fontSize: 19, fontWeight: 600, color: C.text }}>{euro(BUSINESS.PREIS_VOLL)}</div>
               <div style={{ fontSize: 10, color: C.textDim, marginTop: 4 }}>3-seitiges PDF inkl. Musterbrief und Steuer-Bonus (§ 35a EStG)</div>
               {/* 14.08.2026, siehe planung/steuerbonus-35a-rollout.md: kleiner
                   eigener Badge für den Kaufanreiz, zusätzlich zum Beschreibungstext
@@ -256,7 +256,7 @@ export default function Result({ navigateTo, result, wohnung, werte, gesamtsumme
           </div>
 
           <Btn onClick={weiterZumKauf} disabled={!widerrufOk}>
-            Weiter · {gewaehlteStufe === "voll" ? BUSINESS.PREIS_VOLL.toFixed(2) : BUSINESS.PREIS_AUSWERTUNG.toFixed(2)} €
+            Weiter · {gewaehlteStufe === "voll" ? euro(BUSINESS.PREIS_VOLL) : euro(BUSINESS.PREIS_AUSWERTUNG)} €
           </Btn>
           {!widerrufOk && <div style={{ textAlign: "center", fontSize: 11, color: C.warn, marginTop: 6 }}>⚠ Bitte zuerst die Checkbox oben bestätigen</div>}
 

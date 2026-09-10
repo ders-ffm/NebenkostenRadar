@@ -2,6 +2,7 @@
 // AGB.jsx — URL: "/agb". Angepasst an 2-Stufen-Preismodell und PDF-Auslieferung.
 // ─────────────────────────────────────────────────────────────────────────
 import { THEME } from "../config/theme.js";
+import { euro } from "../lib/format.js";
 import { BUSINESS } from "../config/business.js";
 
 export default function AGB({ navigateTo }) {
@@ -13,8 +14,8 @@ export default function AGB({ navigateTo }) {
     ]},
     { t: "§ 2 Vertragsgegenstand", lines: [
       "Gegenstand ist die einmalige Erstellung und Zusendung eines digitalen PDF-Prüfberichts zur Nebenkostenabrechnung, in zwei Ausführungen:",
-      "Auswertung (" + BUSINESS.PREIS_AUSWERTUNG.toFixed(2) + " €): 1-seitiges PDF mit vollständiger Positionsübersicht, Richtwerten und Begründungen.",
-      "Auswertung + Brief (" + BUSINESS.PREIS_VOLL.toFixed(2) + " €): zusätzlich eine 2. PDF-Seite mit versandfertigem Musterbrief an den Vermieter sowie eine 3. PDF-Seite mit einem unverbindlichen Hinweis zu möglicherweise steuerlich absetzbaren Positionen nach § 35a EStG inkl. Anfrage-Vorlage an den Vermieter (reine Rechenhilfe, keine Steuerberatung).",
+      "Auswertung (" + euro(BUSINESS.PREIS_AUSWERTUNG) + "): 1-seitiges PDF mit vollständiger Positionsübersicht, Richtwerten und Begründungen.",
+      "Auswertung + Brief (" + euro(BUSINESS.PREIS_VOLL) + "): zusätzlich eine 2. PDF-Seite mit versandfertigem Musterbrief an den Vermieter sowie eine 3. PDF-Seite mit einem unverbindlichen Hinweis zu möglicherweise steuerlich absetzbaren Positionen nach § 35a EStG inkl. Anfrage-Vorlage an den Vermieter (reine Rechenhilfe, keine Steuerberatung).",
       "Zur Erleichterung der Eingabe kann optional ein Foto- oder PDF-Upload genutzt werden, der Kostenpositionen automatisiert vorausfüllt. Die vollständige manuelle Eingabe steht davon unabhängig immer zur Verfügung und ist nicht Voraussetzung für den Kauf.",
     ]},
     { t: "§ 3 Vertragsschluss und Vertragsspeicherung", lines: [
@@ -23,7 +24,7 @@ export default function AGB({ navigateTo }) {
       "Vertragssprache: Deutsch.",
     ]},
     { t: "§ 4 Preise und Zahlung", lines: [
-      "Die Preise betragen " + BUSINESS.PREIS_AUSWERTUNG.toFixed(2) + " € bzw. " + BUSINESS.PREIS_VOLL.toFixed(2) + " €. Stefan Hennig ist Kleinunternehmer gemäß § 19 UStG; es wird keine Umsatzsteuer ausgewiesen.",
+      "Die Preise betragen " + euro(BUSINESS.PREIS_AUSWERTUNG) + " bzw. " + euro(BUSINESS.PREIS_VOLL) + ". Stefan Hennig ist Kleinunternehmer gemäß § 19 UStG; es wird keine Umsatzsteuer ausgewiesen.",
       "Zahlung über Stripe Payments Europe, Ltd. Einmalzahlung — kein Abo, keine Folgekosten.",
       "Nach jeder Zahlung erhältst du automatisch einen Zahlungsbeleg per E-Mail. Auf Anfrage stellen wir gerne eine Rechnung aus: support@nebenkostenradar.com",
     ]},

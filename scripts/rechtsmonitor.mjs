@@ -353,6 +353,27 @@ function parseDatumZuISO(datum) {
   if (!monat || !jahr) return new Date().toISOString().split('T')[0];
   return `${jahr}-${String(monat).padStart(2, '0')}-01`;
 }
+// STILLGELEGT 10.09.2026 — die Funktion bleibt als Dokumentation stehen,
+// wird aber nicht mehr aufgerufen.
+//
+// Grund: Seit dem 10.09.2026 erzeugt scripts/prerender.mjs die sitemap.xml
+// bei JEDEM Build direkt in dist/ und überschreibt dabei die aus public/
+// kopierte Datei. Damit gab es zwei Stellen, die dieselbe Datei schreiben.
+// Gewonnen hat immer der Build — die Arbeit hier war also wirkungslos, aber
+// verwirrend.
+//
+// Warum der Build die richtige Stelle ist: Der Rechtsmonitor läuft nur
+// monatlich und kennt nur die Artikel, die er selbst anlegt. Werden Artikel
+// von Hand ergänzt (am 10.09.2026 kamen zwölf auf einmal dazu), stünden sie
+// bis zum nächsten Monitorlauf nicht in der Sitemap. Beim Build ist die
+// Sitemap dagegen immer auf dem Stand von artikel.js, egal wer den Artikel
+// hinzugefügt hat.
+//
+// Die Schutzlogik von hier ist übernommen: Auch prerender.mjs baut die
+// Sitemap bei jedem Lauf komplett aus der echten Artikelliste neu auf, ein
+// verwaister Eintrag kann also weiterhin nicht entstehen.
+//
+// eslint-disable-next-line no-unused-vars
 function baueSitemap(alleArtikel) {
   const pfad = join(__dirname, '../public/sitemap.xml');
   const statischeSeiten = [
@@ -420,12 +441,11 @@ async function main() {
       console.error(`  Fehler: ${e.message}`);
     }
   }
-  // Sitemap bei JEDEM Lauf komplett neu aufbauen, nicht nur bei neuen Artikeln
-  // — heilt dadurch auch verwaiste Alt-Einträge automatisch aus, falls doch
-  // mal von Hand ein Artikel entfernt wird (siehe Kommentar bei baueSitemap()).
-  baueSitemap(bestehendeArtikel);
+  // Die Sitemap wird hier NICHT mehr geschrieben (siehe Kommentar bei
+  // baueSitemap()). Sie entsteht bei jedem Build in scripts/prerender.mjs
+  // und enthält damit auch von Hand ergänzte Artikel.
   console.log(`\n${'='.repeat(40)}`);
-  console.log(`${neuArtikel} neue Artikel erstellt. Sitemap neu aufgebaut (${bestehendeArtikel.length} Artikel-URLs).`);
+  console.log(`${neuArtikel} neue Artikel erstellt. Die Sitemap wird beim nächsten Build automatisch neu erzeugt.`);
   if (neuArtikel > 0) console.log('Bitte: git add . && git commit -m "Neue Artikel" && git push');
 }
 main();
