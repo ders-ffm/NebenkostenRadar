@@ -76,7 +76,7 @@ function sichtbarerText(html) {
     .trim();
 }
 
-function main() {
+async function main() {
   if (!existsSync(join(DIST, "sitemap.xml"))) {
     console.error("dist/sitemap.xml fehlt — bitte zuerst 'npm run build' ausführen.");
     process.exit(1);
@@ -126,6 +126,34 @@ function main() {
 
   // Das Vorschaubild muss auch tatsächlich ausgeliefert werden.
   if (!existsSync(join(DIST, "og-bild.png"))) verstoesse.push("dist/og-bild.png fehlt — og:image zeigt ins Leere");
+
+  // ── Größe des Startbundles ──────────────────────────────────────────────
+  // BEFUND 11.09.2026: Beim Aufruf der Seite blitzte kurz der ungestaltete
+  // Text auf. Ursache war ein 1,72 MB großes Startbundle — React brauchte zu
+  // lange zum Starten, und solange war der vorgerenderte Rohtext sichtbar.
+  // Der Grund für die Größe: @react-pdf/renderer lag im Startbundle, obwohl
+  // es nur nach dem Kauf gebraucht wird. Nach dem Auslagern: 428 kB.
+  //
+  // Diese Prüfung verhindert, dass so etwas unbemerkt zurückkommt. Ein
+  // einziger falsch platzierter Import einer schweren Bibliothek genügt,
+  // und niemand merkt es — außer an einem Aufblitzen, das man leicht für
+  // eine Eigenheit des Browsers hält.
+  //
+  // GRENZE ANHEBEN ist erlaubt, aber bitte bewusst: Erst prüfen, welche
+  // Bibliothek dazugekommen ist und ob sie wirklich beim ersten Aufruf
+  // gebraucht wird. `npm run build` listet die Dateigrößen auf.
+  const START_BUNDLE_MAX_KB = 600;
+  const assetsPfad = join(DIST, "assets");
+  if (existsSync(assetsPfad)) {
+    const { readdirSync, statSync } = await import("node:fs");
+    const startDateien = readdirSync(assetsPfad).filter(n => /^index-.*\.js$/.test(n));
+    for (const datei of startDateien) {
+      const kb = statSync(join(assetsPfad, datei)).size / 1024;
+      if (kb > START_BUNDLE_MAX_KB)
+        verstoesse.push(`Startbundle ${datei} ist ${Math.round(kb)} kB groß (Grenze ${START_BUNDLE_MAX_KB} kB) — vermutlich wurde eine schwere Bibliothek versehentlich fest eingebunden`);
+    }
+    if (startDateien.length === 0) verstoesse.push("Kein Startbundle in dist/assets gefunden");
+  }
 
   // ── Artikelbilder ───────────────────────────────────────────────────────
   // Vorgabe von Stefan am 10.09.2026: „Bitte dafür sorgen, dass die Bilder
@@ -188,4 +216,4 @@ function main() {
   process.exit(1);
 }
 
-main();
+await main();

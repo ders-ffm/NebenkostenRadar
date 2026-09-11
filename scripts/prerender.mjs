@@ -256,6 +256,23 @@ function setzeMeta(template, { url, title, description, ogTyp = "website", noind
   return html;
 }
 
+// ───────────────────────────────────────────────────────────────────────────
+// Vorgerenderten Inhalt in die Seite setzen.
+//
+// Der Inhalt bekommt die Klasse "vorab". Dazu gibt es in index.html ein
+// kleines, mitgeliefertes Stylesheet — der Grund steht dort ausführlich:
+// Der vorgerenderte Text ist einen Moment lang sichtbar, bevor React startet,
+// und sah bis zum 11.09.2026 ungestaltet aus (schwarz auf weiß).
+//
+// Die Klasse sorgt dafür, dass die Regeln NUR diesen Zwischenzustand
+// betreffen. React ersetzt den Inhalt von #root beim Start vollständig, die
+// Klasse verschwindet dabei — die Regeln können also nicht in die fertige
+// Seite hineinwirken.
+// ───────────────────────────────────────────────────────────────────────────
+function setzeInhalt(html, inhalt) {
+  return html.replace('<div id="root"></div>', `<div id="root"><div class="vorab">${inhalt}</div></div>`);
+}
+
 function buildArticleHtml(template, artikel, artikelById) {
   const url = `${BASE}/ratgeber/${artikel.id}`;
   const title = artikelTitel(artikel);
@@ -288,7 +305,7 @@ function buildArticleHtml(template, artikel, artikelById) {
   // ersetzt das beim Laden im Browser vollständig durch die interaktive
   // Version. Kein Hydration-Mismatch möglich, da createRoot (nicht
   // hydrateRoot) verwendet wird und den Inhalt komplett neu aufbaut.
-  html = html.replace('<div id="root"></div>', `<div id="root">${sichtbarerInhalt}</div>`);
+  html = setzeInhalt(html, sichtbarerInhalt);
 
   return html;
 }
@@ -305,7 +322,7 @@ function buildRatgeberIndexHtml(template, artikelListe) {
   const liste = artikelListe
     .map(a => `<li><a href="/ratgeber/${a.id}">${escapeHtml(a.titel)}</a><br>${escapeHtml(a.teaser)}</li>`)
     .join("\n");
-  html = html.replace('<div id="root"></div>', `<div id="root"><h1>Ratgeber Mietrecht</h1><ul>${liste}</ul></div>`);
+  html = setzeInhalt(html, `<h1>Ratgeber Mietrecht</h1><ul>${liste}</ul>`);
   return html;
 }
 
@@ -327,7 +344,7 @@ function buildEinfacheSeiteHtml(template, { pfad, step, inhalt }) {
   const url = `${BASE}${pfad}`;
   const { titel, beschreibung } = seoFuer(step);
   const html = setzeMeta(template, { url, title: titel, description: beschreibung });
-  return html.replace('<div id="root"></div>', `<div id="root">${inhalt}</div>`);
+  return setzeInhalt(html, inhalt);
 }
 
 function startseiteInhalt() {
@@ -423,10 +440,7 @@ function buildFaqHtml(template, faqListe) {
   const eintraege = faqListe
     .map(({ frage, antwort }) => `<h2>${escapeHtml(frage)}</h2>\n<p>${escapeHtml(antwort)}</p>`)
     .join("\n");
-  html = html.replace(
-    '<div id="root"></div>',
-    `<div id="root"><h1>Häufige Fragen</h1>\n${eintraege}</div>`
-  );
+  html = setzeInhalt(html, `<h1>Häufige Fragen</h1>\n${eintraege}`);
   return html;
 }
 

@@ -74,6 +74,75 @@
   <meta property="og:image:alt" content="NebenkostenRadar — jede zweite Abrechnung enthält Fehler" />
   <meta name="twitter:image" content="https://nebenkostenradar.com/og-bild.png" />
 
+  <!--
+    Gestaltung des vorgerenderten Zwischenzustands (11.09.2026).
+
+    WOFÜR: Stefan ist aufgefallen, dass beim Aufruf der Seite für den
+    Bruchteil einer Sekunde reiner Text ohne Gestaltung aufblitzt — schwarz
+    auf weiß. Das ist eine Nebenwirkung des Vorrenderns: Seit dem 10.09.2026
+    steht im ausgelieferten HTML echter Text, den der Browser sofort anzeigt.
+    Die Gestaltung der Seite steckt dagegen komplett als JavaScript-Objekte
+    im Bundle (theme.js) und entsteht erst, wenn React gestartet ist.
+
+    ZWEI MASSNAHMEN, die zusammenwirken:
+    1. Das Startbundle wurde von 1,72 MB auf 428 kB verkleinert, indem die
+       PDF-Bibliothek herausgelöst wurde (siehe Kommentar in src/App.jsx).
+       React startet dadurch deutlich früher, der Moment wird sehr kurz.
+    2. Diese Regeln hier sorgen dafür, dass dieser kurze Moment nach der
+       Seite aussieht und nicht nach einem Rohdokument.
+
+    WARUM INLINE UND NICHT ALS DATEI: Ein externes Stylesheet wäre ein
+    zusätzlicher Netzwerkabruf — und genau während dieses Abrufs wäre der
+    ungestaltete Zustand wieder sichtbar. Inline gilt es ab der ersten
+    Bildschirmausgabe.
+
+    WARUM DIE KLASSE .vorab: Die Regeln dürfen ausschließlich den
+    Zwischenzustand betreffen. scripts/prerender.mjs verpackt den
+    vorgerenderten Inhalt in <div class="vorab">. React ersetzt den Inhalt
+    von #root beim Start vollständig, die Klasse verschwindet dabei — die
+    Regeln können also nicht in die fertige Seite hineinwirken.
+
+    Bewusst KEIN display:none auf dem Inhalt: Text vor Nutzern zu verstecken,
+    den Suchmaschinen sehen sollen, ist genau das Muster, das Google als
+    Verschleierung wertet. Der Zwischenzustand zeigt denselben Inhalt wie die
+    fertige Seite, nur schlichter.
+  -->
+  <style>
+    .vorab {
+      max-width: 720px;
+      margin: 0 auto;
+      padding: 32px 24px 64px;
+      font-family: "Work Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      font-size: 15px;
+      line-height: 1.75;
+      color: #6B6152;
+      background: #FFFFFF;
+    }
+    .vorab h1 {
+      font-family: Poppins, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      font-size: 28px;
+      font-weight: 600;
+      line-height: 1.3;
+      color: #2E2A22;
+      margin: 0 0 16px;
+    }
+    .vorab h2 {
+      font-family: Poppins, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      font-size: 19px;
+      font-weight: 600;
+      color: #2E2A22;
+      margin: 32px 0 12px;
+    }
+    .vorab p { margin: 0 0 16px; }
+    .vorab a { color: #3d7a5c; font-weight: 600; }
+    .vorab ul, .vorab ol { margin: 0 0 16px; padding-left: 22px; }
+    .vorab li { margin-bottom: 6px; }
+    .vorab table { border-collapse: collapse; width: 100%; margin: 0 0 16px; font-size: 14px; }
+    .vorab th, .vorab td { border: 1px solid #E3D9C6; padding: 8px 10px; text-align: left; }
+    .vorab th { background: #F7F3EC; color: #2E2A22; }
+    .vorab caption { caption-side: bottom; font-size: 12px; color: #8A7A5C; padding-top: 8px; text-align: left; }
+  </style>
+
   <!-- summary_large_image statt summary (10.09.2026): Mit einem 1200x630-Bild
        zeigt X/Twitter die große Vorschaukarte statt einer kleinen Kachel. -->
   <meta name="twitter:card" content="summary_large_image" />
@@ -147,10 +216,10 @@
     ]
   }
   </script>
-  <script type="module" crossorigin src="/assets/index-BuhoYUmK.js"></script>
+  <script type="module" crossorigin src="/assets/index-D10jUKK8.js"></script>
 </head>
 <body>
-  <div id="root">
+  <div id="root"><div class="vorab">
     <article>
       <p><a href="/ratgeber">← Ratgeber</a></p>
       <p>Mietrecht · September 2026 · 5 Min.</p>
@@ -169,6 +238,6 @@
 <p>NebenkostenRadar prüft neben den Beträgen auch, ob Zeitraum und Fristen stimmen — und weist fehlende Angaben aus. <a href="/pruefen/wohnung">Kostenlos prüfen →</a></p>
     </article>
     <script type="application/ld+json">{"@context":"https://schema.org","@type":"Article","headline":"Nebenkostenabrechnung formell unwirksam: Diese vier Angaben müssen drinstehen","description":"Bevor Sie einzelne Beträge prüfen, lohnt der Blick auf die Form. Fehlt eine der vier Mindestangaben, ist die Abrechnung insgesamt angreifbar — unabhängig davon, ob die Zahlen stimmen.","url":"https://nebenkostenradar.com/ratgeber/nebenkostenabrechnung-formell-unwirksam","image":"https://images.unsplash.com/photo-1583521214690-73421a1829a9?w=800&q=80"}</script>
-  </div>
+  </div></div>
 </body>
 </html>

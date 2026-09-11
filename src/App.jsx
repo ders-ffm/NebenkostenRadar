@@ -10,22 +10,54 @@
 // kennt nur noch die Zuordnung URL <-> Seite und hält den gemeinsam
 // genutzten Zustand (Formulardaten, Ergebnis, Kaufstatus).
 // ─────────────────────────────────────────────────────────────────────────
-import { useState, useCallback, useEffect } from "react";
+import { useState, useCallback, useEffect, lazy, Suspense } from "react";
 import { ARTIKEL } from "./artikel.js";
 import { IS_DEMO } from "./config/business.js";
 import { buildResult, ALLE_POSTEN } from "./lib/analyse.js";
 import { toNum } from "./lib/format.js";
 
 import CookieBanner from "./components/layout/CookieBanner.jsx";
+import NachladeFehler from "./components/layout/NachladeFehler.jsx";
 import Welcome from "./pages/Welcome.jsx";
 import Wohnung from "./pages/Wohnung.jsx";
 import Posten from "./pages/Posten.jsx";
 import Loading from "./pages/Loading.jsx";
 import Result from "./pages/Result.jsx";
 import Adressen from "./pages/Adressen.jsx";
-import Download from "./pages/Download.jsx";
 import Login from "./pages/Login.jsx";
-import Konto from "./pages/Konto.jsx";
+
+// ───────────────────────────────────────────────────────────────────────────
+// NACHGELADENE SEITEN (11.09.2026)
+//
+// PROBLEM, das Stefan bemerkt hat: Beim Aufruf der Seite blitzte für den
+// Bruchteil einer Sekunde der reine Text ohne Gestaltung auf — schwarz auf
+// weiß. Ursache war eine Nebenwirkung des Vorrenderns vom Vortag: Seit dem
+// 10.09. steht im ausgelieferten HTML echter Text (vorher war die Seite
+// leer). Den zeigt der Browser sofort an; die Gestaltung entsteht aber erst,
+// wenn React geladen und gestartet ist, weil sämtliche Stile als
+// JavaScript-Objekte im Bundle stecken.
+//
+// Je länger React zum Starten braucht, desto länger ist der ungestaltete
+// Moment sichtbar. Und React brauchte lange: Das Bundle war 1,72 MB groß.
+//
+// Der mit Abstand größte Brocken darin war @react-pdf/renderer (inklusive
+// pdfkit und fontkit) — eine PDF-Maschine, die AUSSCHLIESSLICH nach dem Kauf
+// gebraucht wird, auf den Seiten Download und Konto. Jeder Besucher der
+// Startseite hat sie mitgeladen, ohne sie je zu benutzen.
+//
+// Download und Konto werden deshalb per lazy() nachgeladen. Vite legt sie
+// dadurch in eigene Dateien, die erst beim Aufruf dieser Seiten geholt
+// werden. Für den Nutzer ändert sich nichts außer einer kurzen Ladeanzeige
+// beim ersten Öffnen — und die fällt dort nicht auf, weil das PDF ohnehin
+// erst erzeugt werden muss.
+//
+// WICHTIG bei künftigen Änderungen: Keine weiteren Imports aus
+// @react-pdf/renderer in Dateien, die App.jsx direkt lädt — sonst landet die
+// Bibliothek wieder im Startbundle. scripts/seo-check.mjs prüft die
+// Bundle-Größe und schlägt Alarm, wenn sie wieder über die Grenze wächst.
+// ───────────────────────────────────────────────────────────────────────────
+const Download = lazy(() => import("./pages/Download.jsx"));
+const Konto = lazy(() => import("./pages/Konto.jsx"));
 import Danke from "./pages/Danke.jsx";
 import Impressum from "./pages/Impressum.jsx";
 import AGB from "./pages/AGB.jsx";
@@ -305,7 +337,16 @@ export default function App() {
   return (
     <>
       <CookieBanner />
-      {renderPage()}
+      {/* Suspense wird nur für die nachgeladenen Seiten (Download, Konto)
+          gebraucht. Alle anderen Seiten sind fest eingebunden und lösen es
+          nie aus. Der Rückfalltext ist bewusst schlicht und kurz: Er ist
+          höchstens einen Wimpernschlag zu sehen, während die PDF-Bibliothek
+          nachgeladen wird. */}
+      <NachladeFehler>
+        <Suspense fallback={<div style={{ padding: 40, textAlign: "center", fontFamily: "system-ui, sans-serif", color: "#6B6152" }}>Wird geladen …</div>}>
+          {renderPage()}
+        </Suspense>
+      </NachladeFehler>
     </>
   );
 }

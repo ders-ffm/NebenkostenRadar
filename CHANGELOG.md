@@ -122,6 +122,72 @@ Details, Quellen und die Bewertung Frankreichs in `planung/europa-potenzial-nkr.
 
 ---
 
+## 11.09.2026 — Aufblitzen beim Laden behoben: Startbundle von 1,72 MB auf 423 kB
+
+Stefans Beobachtung: „Während die Seite lädt sieht man kurz für den Bruchteil einer Sekunde die Homepage ohne Gestaltung (praktisch der reine Text in schwarz auf weißem Hintergrund). Sehr kurz aber man registriert es als Anwender."
+
+### Das war eine Nebenwirkung meiner eigenen Änderung vom Vortag
+
+Bis zum 10.09.2026 lieferte die Startseite ein leeres `<div id="root"></div>` aus — es gab schlicht nichts, was hätte aufblitzen können. Mit dem Vorrendern steht dort jetzt echter Text. Den zeigt der Browser sofort an; die Gestaltung entsteht aber erst, wenn React gestartet ist, weil sämtliche Stile als JavaScript-Objekte in `theme.js` liegen und es gar kein Stylesheet gibt.
+
+Je länger React zum Starten braucht, desto länger ist der ungestaltete Zustand sichtbar.
+
+### Warum React so lange brauchte
+
+Das Startbundle war **1,72 MB** groß. Der mit Abstand größte Brocken: `@react-pdf/renderer` samt pdfkit und fontkit — eine vollständige PDF-Maschine. Gebraucht wird sie ausschließlich **nach dem Kauf**, auf den Seiten Download und Konto. Jeder Besucher der Startseite hat sie mitgeladen, ohne sie je zu benutzen.
+
+Beide Seiten werden jetzt per `lazy()` nachgeladen. Vite legt sie dadurch in eigene Dateien.
+
+| Datei | Größe | wird geladen |
+|---|---|---|
+| `index-*.js` (Start) | **423 kB** (vorher 1.749 kB) | immer |
+| `PruefberichtDocument-*.js` | 1.331 kB | erst auf Download/Konto |
+| `Download-*.js` | 8 kB | erst auf Download |
+| `Konto-*.js` | 3 kB | erst auf Konto |
+
+Was jeder Besucher beim ersten Aufruf lädt, ist damit um **76 %** kleiner (gzip: 601 kB → 127 kB). Das verkürzt nicht nur das Aufblitzen, sondern verbessert auch die Ladezeit insgesamt — besonders auf dem Handy im Mobilfunknetz, wo ein großer Teil der Zielgruppe unterwegs ist.
+
+### Zusätzlich: der Zwischenzustand ist jetzt gestaltet
+
+Ein kurzer Moment bleibt technisch unvermeidbar. Damit er nicht nach einem Rohdokument aussieht, liegt in `index.html` jetzt ein kleines Stylesheet für die Klasse `.vorab`, mit der `scripts/prerender.mjs` den vorgerenderten Inhalt umschließt: Markenschrift, Markenfarben, Satzbreite, Tabellenrahmen.
+
+Zwei bewusste Entscheidungen dabei:
+
+- **Inline statt als Datei.** Ein externes Stylesheet wäre ein zusätzlicher Netzwerkabruf — und genau währenddessen wäre der ungestaltete Zustand wieder sichtbar.
+- **Kein `display:none`.** Den vorgerenderten Text vor Nutzern zu verstecken und ihn Suchmaschinen zu zeigen, ist genau das Muster, das Google als Verschleierung wertet. Der Zwischenzustand zeigt denselben Inhalt wie die fertige Seite, nur schlichter.
+
+Die Klasse `.vorab` verschwindet, sobald React den Inhalt von `#root` ersetzt — die Regeln können nicht in die fertige Seite hineinwirken.
+
+### Neuer Fehlerfall, den das Nachladen mitbringt
+
+Nachladen kann fehlschlagen: Netzaussetzer, Tunnel, oder ein Deploy, der die Datei ersetzt, während die Seite noch offen ist. React wirft dann einen Fehler und die Anwendung bleibt **weiß** — ausgerechnet auf der Download-Seite, also unmittelbar nach der Bezahlung.
+
+Deshalb neu: `src/components/layout/NachladeFehler.jsx`, eine Fehlergrenze um die nachgeladenen Seiten. Sie zeigt einen ruhigen Hinweis mit Knopf zum Neuladen — und den entscheidenden Satz: *„Falls du bereits bezahlt hast: Deine Auswertung ist erstellt und wurde dir per E-Mail geschickt. Es ist nichts verloren gegangen."* Ohne diesen Satz müsste ein Kunde an dieser Stelle annehmen, sein Geld sei weg.
+
+### Absicherung im Test
+
+`scripts/seo-check.mjs` prüft jetzt zusätzlich die Größe des Startbundles (Grenze 600 kB). Ein einziger falsch platzierter Import einer schweren Bibliothek genügt, damit die PDF-Maschine wieder im Startbundle landet — und niemand merkt es, außer an einem Aufblitzen, das man leicht für eine Eigenheit des Browsers hält.
+
+Gegenprobe: Grenze testweise auf 100 kB gesetzt → „Startbundle index-*.js ist 422 kB groß (Grenze 100 kB)". Zurückgesetzt → wieder fehlerfrei.
+
+### Verifikation
+
+| Prüfung | Ergebnis |
+|---|---|
+| `npm run check` | fehlerfrei |
+| SEO-Check über 29 Seiten | 0 Verstöße |
+| Startbundle | 423 kB (Grenze 600 kB) |
+| `.vorab`-Klasse in `/`, `/faq`, `/ratgeber`, Artikelseiten | vorhanden |
+| Regressionstests | 950 Prüfungen und 31 Eingaben, 0 Abweichungen |
+
+### Indexierung: Kontingent noch nicht zurückgesetzt
+
+Der zweite Anlauf für die restlichen Artikel scheiterte erneut an „Kontingent überschritten" — Googles Grenze läuft über 24 Stunden ab Verbrauch, nicht bis Mitternacht.
+
+Gute Nachricht dabei: Die Sitemap-Neueinreichung wirkt bereits. Der Aufzugskosten-Artikel stand vorher auf „URL ist Google nicht bekannt", jetzt auf **„Gefunden – zurzeit nicht indexiert"**, und Google nennt `sitemap.xml` als Fundquelle. Die Seiten sind also im System; die Einzelanmeldung beschleunigt nur noch.
+
+---
+
 ## 10.09.2026 — Bild-Duplikate strukturell verhindert · Indexierung angestoßen
 
 Stefans Vorgabe nach dem Deploy: „Bitte dafür sorgen, dass die Bilder immer einzigartig sind und sich nie wiederholen." Also nicht nur einmal aufräumen, sondern dauerhaft absichern.
