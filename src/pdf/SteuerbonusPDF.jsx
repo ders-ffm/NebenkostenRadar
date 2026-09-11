@@ -117,73 +117,70 @@ export default function SteuerbonusPDF({ result, wohnung, adressen }) {
           const handw  = positionen.filter(p => p.steuerArt === "handwerker");
           const sumD = dienst.reduce((a, p) => a + p.betrag, 0);
           const sumH = handw.reduce((a, p) => a + p.betrag, 0);
-          const Block = ({ titel, paragraf, hoechst, liste, summeTopf }) => liste.length === 0 ? null : (
-            <>
-              <Text style={s.anfrageTitel}>{titel}</Text>
-              <Text style={{ fontSize: 8.5, color: C.textDim, marginBottom: 4 }}>
-                {paragraf} · 20 % der Arbeitskosten, höchstens {hoechst} Ermäßigung im Jahr
-              </Text>
-              <View style={s.table}>
-                {liste.map((p, i) => (
-                  <View key={i} style={s.tRow}>
-                    <Text style={s.tLabel}>{ohneDavon(p.posten)}</Text>
-                    <Text style={s.tValue}>{fmt(p.betrag)}</Text>
-                  </View>
-                ))}
-                <View style={s.tRowSum}>
-                  <Text style={s.tLabel}>In die Steuererklärung eintragen</Text>
-                  <Text style={s.tValue}>{fmt(summeTopf)}</Text>
-                </View>
-              </View>
-            </>
-          );
           return (
             <>
+              {/* EINE TABELLE STATT DREI, korrigiert 11.09.2026 nach dem ersten
+                  Probedruck. Zwischenstand war: zwei Töpfe-Tabellen, darunter
+                  nochmal eine Tabelle mit allen Posten. Im gedruckten PDF stand
+                  dadurch jeder begünstigte Posten dreimal (Hauswart 3x,
+                  Rauchwarnmelder sogar 4x), und die Seite lief auf zwei Seiten
+                  über. Für den Kunden war nicht erkennbar, welche der Tabellen
+                  er benutzen soll.
+
+                  Jetzt: EINE Tabelle mit allen Posten und ihrer Einordnung,
+                  darunter die beiden Summen. Das erfüllt beide Anforderungen
+                  ohne Dopplung, die Einzelabfrage der Steuerprogramme und den
+                  Überblick über die zwei Töpfe. */}
               <Text style={s.absatz}>
-                Diese Positionen aus deiner Abrechnung fallen unter § 35a EStG. Das Gesetz kennt zwei
-                getrennte Töpfe mit unterschiedlichen Höchstbeträgen, deshalb stehen sie hier einzeln.
+                Steuerprogramme wie Taxfix, WISO, Check24 oder Elster fragen die Posten einzeln ab.
+                Hier steht zu jedem, ob er zählt und zu welchem der beiden Töpfe des § 35a EStG er
+                gehört.
               </Text>
 
-              <Block titel="Haushaltsnahe Dienstleistungen" paragraf="§ 35a Abs. 2 EStG"
-                hoechst="4.000 €" liste={dienst} summeTopf={sumD} />
-              <Block titel="Handwerkerleistungen" paragraf="§ 35a Abs. 3 EStG"
-                hoechst="1.200 €" liste={handw} summeTopf={sumH} />
-
-              {/* TABELLE ALLER POSTEN, ergänzt 11.09.2026 auf Stefans Hinweis:
-                  "Posten wie Winterdienst, Rauchmelder etc. werden einzeln
-                  abgefragt, zumindest bei den Apps und Steuerhelfern."
-
-                  Genau deshalb reicht es nicht, nur zwei Summen auszuweisen.
-                  Wenn das Programm nach den Müllgebühren fragt und im Bericht
-                  steht nichts dazu, weiß der Kunde nicht, ob er sie vergessen
-                  hat oder ob sie nicht zählen. Diese Tabelle beantwortet jede
-                  Einzelfrage, auch die nach nicht begünstigten Posten. */}
-              <Text style={s.anfrageTitel}>Jeder Posten einzeln, für die Abfrage im Steuerprogramm</Text>
-              <Text style={{ fontSize: 8.5, color: C.textDim, marginBottom: 4 }}>
-                Programme wie Taxfix, WISO, Check24 oder Elster fragen Posten einzeln ab.
-                Hier steht zu jedem, ob und wohin er gehört.
-              </Text>
               <View style={s.table}>
                 {positionenAlle.map((p, i) => (
                   <View key={i} style={s.tRow}>
-                    <Text style={[s.tLabel, { flex: 2 }]}>{ohneDavon(p.posten)}</Text>
-                    <Text style={[s.tValue, { flex: 0.8 }]}>{fmt(p.betrag)}</Text>
-                    <Text style={[s.tValue, { flex: 1.6, textAlign: "right",
-                      color: p.steuerArt === "nicht" ? C.textDim : C.text }]}>
-                      {p.steuerArt === "dienstleistung" ? "haushaltsnahe Dienstleistung"
-                        : p.steuerArt === "handwerker" ? "Handwerkerleistung"
-                        : p.steuerArt === "unklar" ? "kommt darauf an" : "zählt nicht"}
+                    <Text style={[s.tLabel, { flex: 2.1 }]}>{ohneDavon(p.posten)}</Text>
+                    <Text style={[s.tValue, { flex: 0.9 }]}>{fmt(p.betrag)}</Text>
+                    <Text style={[s.tValue, { flex: 1.5,
+                      color: (p.steuerArt === "nicht" || p.steuerArt === "unklar") ? C.textDim : C.text }]}>
+                      {p.steuerArt === "dienstleistung" ? "haushaltsnah"
+                        : p.steuerArt === "handwerker" ? "Handwerker"
+                        : p.steuerArt === "unklar" ? "kommt darauf an"
+                        : "zählt nicht"}
                     </Text>
                   </View>
                 ))}
               </View>
 
+              {/* wrap={false} haelt Ueberschrift, Tabelle und den Satz zu den
+                  20 % zusammen auf einer Seite. Im ersten Probedruck stand der
+                  Satz allein oben auf der Folgeseite, abgerissen von den
+                  Zahlen, auf die er sich bezieht. */}
+              <View wrap={false}>
+              <Text style={s.anfrageTitel}>Die beiden Summen für deine Steuererklärung</Text>
+              <View style={s.table}>
+                <View style={s.tRow}>
+                  <Text style={s.tLabel}>Haushaltsnahe Dienstleistungen (§ 35a Abs. 2 EStG)</Text>
+                  <Text style={s.tValue}>{fmt(sumD)}</Text>
+                </View>
+                <View style={s.tRow}>
+                  <Text style={s.tLabel}>Handwerkerleistungen (§ 35a Abs. 3 EStG)</Text>
+                  <Text style={s.tValue}>{fmt(sumH)}</Text>
+                </View>
+              </View>
+              <Text style={{ fontSize: 8.5, color: C.textDim, marginBottom: 12 }}>
+                Jeweils 20 % davon werden als Ermäßigung angerechnet, höchstens 4.000 € im Jahr bei
+                den Dienstleistungen und 1.200 € bei den Handwerkerleistungen.
+              </Text>
+              </View>
+
               {positionenAlle.some(p => (p.steuerArt === "nicht" || p.steuerArt === "unklar") && p.steuerGrund) && (
-                <View style={{ marginTop: 2, marginBottom: 8 }}>
+                <View style={{ marginBottom: 12 }}>
                   {positionenAlle.filter(p => (p.steuerArt === "nicht" || p.steuerArt === "unklar") && p.steuerGrund)
                     .filter((p, i, arr) => arr.findIndex(q => q.steuerGrund === p.steuerGrund) === i)
                     .map((p, i) => (
-                      <Text key={i} style={{ fontSize: 7.5, color: C.textDim, lineHeight: 1.4 }}>
+                      <Text key={i} style={{ fontSize: 7.5, color: C.textDim, lineHeight: 1.45, marginBottom: 1 }}>
                         {ohneDavon(p.posten)}: {p.steuerGrund}
                       </Text>
                     ))}
@@ -194,15 +191,15 @@ export default function SteuerbonusPDF({ result, wohnung, adressen }) {
               <View style={s.hinweisBox}>
                 <Text>
                   Die begünstigten Posten gehören in die <Text style={{ fontFamily: "Poppins", fontWeight: 600 }}>Anlage
-                  Haushaltsnahe Aufwendungen</Text>, getrennt nach den beiden Töpfen oben. Die Ermäßigung
-                  zieht das Finanzamt direkt von deiner Steuerschuld ab, nicht nur vom zu versteuernden
-                  Einkommen. Sie wirkt also voll.
+                  Haushaltsnahe Aufwendungen</Text>. Die Ermäßigung zieht das Finanzamt direkt von deiner
+                  Steuerschuld ab, nicht nur vom zu versteuernden Einkommen. Sie wirkt also voll.
                   {"\n\n"}
                   Benutzt du ein Steuerprogramm, trägst du die Posten einzeln ein, so wie das Programm
-                  sie abfragt. Die Einordnung in die richtige Kategorie, die Berechnung der 20 Prozent
-                  und die Prüfung der Höchstbeträge übernimmt es selbst. Selbst rechnen musst du nichts.
+                  sie abfragt. Die Einordnung, die Berechnung der 20 Prozent und die Prüfung der
+                  Höchstbeträge übernimmt es selbst. Selbst rechnen musst du nichts.
                 </Text>
               </View>
+
 
               <Text style={s.anfrageTitel}>Ein Punkt, den du vorher prüfen solltest</Text>
               <View style={s.hinweisBox}>

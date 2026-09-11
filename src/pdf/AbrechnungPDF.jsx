@@ -30,18 +30,56 @@ import { fmt } from "../lib/format.js";
 // PDF-Erzeugen im Browser — die von react-pdf genutzte fontkit-Bibliothek
 // entpackt Brotli client-seitig offenbar nicht zuverlässig. Das ältere,
 // unkomprimierte .woff-Format (zlib/deflate, breiter unterstützt) behebt das.
+// WORTTRENNUNG ABGESCHALTET, 11.09.2026, gefunden beim ersten echten
+// Probedruck des PDFs. react-pdf trennt lange Wörter automatisch, kennt aber
+// keine deutschen Trennregeln. Im Testdruck stand wörtlich
+// "Versicherungspoli-cen" und "Arbeit-skostenanteil". In einem Dokument, das
+// der Kunde unverändert an seinen Vermieter schickt, sieht das nach
+// Schlamperei aus und beschädigt genau die Sorgfalt, die das Produkt
+// verkauft. Der Callback gibt jedes Wort ungetrennt zurück.
+// Folge: Sehr lange Wörter können eine Zeile etwas luftiger machen. Das ist
+// deutlich besser als eine falsche Trennung.
+// SCHRIFTPFAD, umgestellt 11.09.2026, damit das PDF auch außerhalb des
+// Browsers erzeugt werden kann (scripts/pdf-probedruck.mjs).
+//
+// WARUM: Bis dahin standen hier feste Pfade wie "/fonts/WorkSans-Regular.woff".
+// Im Browser löst das gegen die Website auf und funktioniert. Auf der
+// Kommandozeile gibt es dieses Wurzelverzeichnis nicht, das Erzeugen brach mit
+// "ENOENT: /fonts/WorkSans-Regular.woff" ab. Folge: Das fertige PDF ließ sich
+// nur durch einen echten Testkauf prüfen, und Satzfehler blieben deshalb lange
+// unentdeckt (siehe CHANGELOG 11.09.2026, vier Funde im ersten Probedruck).
+//
+// Die Weiche prüft, ob ein Browser-Dokument existiert. Das ist zuverlässiger
+// als eine Umgebungsvariable, weil sie niemand setzen muss und weil sie in
+// beiden Richtungen automatisch richtig liegt.
+//
+// WARUM process.cwd() UND NICHT import.meta.url: Für den Probedruck wird diese
+// Datei mit esbuild gebündelt. import.meta.url zeigt dann auf das Bündel, nicht
+// auf diese Quelldatei, und ein relativer Pfad wie "../../public/fonts/" landet
+// im Nichts. process.cwd() ist dagegen das Projektverzeichnis, weil npm jedes
+// Skript von dort startet.
+//
+// BEIM ÄNDERN BEACHTEN: Der Ordner public/fonts muss beide Wege bedienen, im
+// Browser unter /fonts/ ausgeliefert (macht Vite von selbst) und lokal unter
+// public/fonts vorhanden.
+const FONT_BASIS = typeof document === "undefined"
+  ? process.cwd() + "/public/fonts/"
+  : "/fonts/";
+
+Font.registerHyphenationCallback(wort => [wort]);
+
 Font.register({
   family: "Work Sans",
   fonts: [
-    { src: "/fonts/WorkSans-Regular.woff", fontWeight: 400 },
-    { src: "/fonts/WorkSans-Medium.woff", fontWeight: 500 },
+    { src: FONT_BASIS + "WorkSans-Regular.woff", fontWeight: 400 },
+    { src: FONT_BASIS + "WorkSans-Medium.woff", fontWeight: 500 },
   ],
 });
 Font.register({
   family: "Poppins",
   fonts: [
-    { src: "/fonts/Poppins-Medium.woff", fontWeight: 500 },
-    { src: "/fonts/Poppins-SemiBold.woff", fontWeight: 600 },
+    { src: FONT_BASIS + "Poppins-Medium.woff", fontWeight: 500 },
+    { src: FONT_BASIS + "Poppins-SemiBold.woff", fontWeight: 600 },
   ],
 });
 

@@ -108,7 +108,7 @@ const STEUER_NICHT = new Map([
   ["entwasserung", "Kommunale Gebühr, keine Leistung im Haushalt."],
   ["kaltwasser", "Lieferung eines Stoffs, keine Dienstleistung."],
   ["heizkosten_gesamt", "Brennstoff- und Lieferkosten. Nur die Wartung der Anlage zählt, siehe eigene Zeile."],
-  ["warmwasser_gesamt", "Wie Heizkosten: Lieferung, keine Dienstleistung."],
+  ["warmwasser_gesamt", "Lieferung von Warmwasser, keine Dienstleistung."],
   ["allgemeinstrom", "Stromlieferung, keine Dienstleistung."],
   ["feuerversicherung", "Versicherungsprämie, keine Dienstleistung."],
   ["sturm_hagel_versicherung", "Versicherungsprämie, keine Dienstleistung."],
@@ -554,7 +554,7 @@ export function analysierePosten(w, wohn) {
   if (vg > 0) {
     const rw = rj(R.versicherungen), a = abw(vg, rw);
     let st = "ok", hi = "Richtwert für alle Gebäude-Sachversicherungen zusammen, " + flaeche + "m²: " + fmt(rw) + "/Jahr.";
-    if (vg > rw * 1.8) { st = "sehr_hoch"; widerspruch.push({ typ: "statistisch", betrag: Math.max(0, vg - rw), text: listeText(vEinzelpositionen) + (vAnzahlBefuellt > 1 ? " (zusammen " + fmt(vg) + ")" : "") + " liegen " + a + "% über dem DMB-Richtwert für Gebäude-Sachversicherungen insgesamt. Versicherungspolicen/Prämiensteigerung anfordern." }); hi = a + "% über DMB-Richtwert (alle Versicherungen zusammen)! Nachweis anfordern."; }
+    if (vg > rw * 1.8) { st = "sehr_hoch"; widerspruch.push({ typ: "statistisch", betrag: Math.max(0, vg - rw), text: listeText(vEinzelpositionen) + (vAnzahlBefuellt > 1 ? " (zusammen " + fmt(vg) + ")" : "") + " liegen " + a + "% über dem DMB-Richtwert für Gebäude-Sachversicherungen insgesamt. Um Vorlage der Versicherungspolicen und um Erläuterung der Prämienentwicklung wird gebeten." }); hi = a + "% über DMB-Richtwert (alle Versicherungen zusammen)! Nachweis anfordern."; }
     else if (vg > rw * 1.4) { st = "hoch"; hi = a + "% über DMB-Richtwert (alle Versicherungen zusammen)."; }
     if (vAnzahlBefuellt > 1) {
       posten_bewertung.push({ posten: "Versicherungen (kombiniert)", betrag: vg, richtwert: rw, abweichung_prozent: a, status: st, hinweis: hi, paragraf: "§ 2 Nr. 13 BetrKV" });
