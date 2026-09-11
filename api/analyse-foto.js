@@ -257,12 +257,43 @@ export default async function handler(req, res) {
 
   // "dateien" statt "bilder" (08/2026, siehe CHANGELOG.md) — PDF-Unterstützung
   // dazugekommen, jeder Eintrag { typ: "bild"|"pdf", daten: base64 }.
-  const { dateien } = req.body || {};
-  if (!Array.isArray(dateien) || dateien.length === 0) {
+  const { dateien: dateienRoh } = req.body || {};
+  if (!Array.isArray(dateienRoh) || dateienRoh.length === 0) {
     return res.status(400).json({ error: "Keine Dateien übermittelt" });
   }
-  if (dateien.length > 6) {
+  if (dateienRoh.length > 6) {
     return res.status(400).json({ error: "Maximal 6 Dateien pro Durchlauf" });
+  }
+
+  // ───────────────────────────────────────────────────────────────────────
+  // DOPPELTE DATEIEN AUSSORTIEREN (11.09.2026)
+  //
+  // WARUM: Stefan hat beim Test dieselbe Seite absichtlich zweimal
+  // hochgeladen, um zu sehen, ob das auffällt. Es fiel nicht auf. Zweimal
+  // dieselbe Seite bedeutet für das Modell zweimal dieselben Kostenzeilen,
+  // und damit die reale Gefahr, dass ein Betrag doppelt gezählt wird.
+  //
+  // Ein Kunde darf das nicht wissen müssen. Wer unsicher ist, welche Seite
+  // die richtige ist, lädt im Zweifel lieber eine zu viel hoch, und genau
+  // das soll er auch dürfen.
+  //
+  // WIE: Verglichen wird der Base64-Inhalt selbst. Zwei Uploads derselben
+  // Datei sind Byte für Byte identisch, das erkennt ein simpler Vergleich
+  // zuverlässig und ohne Bibliothek.
+  //
+  // GRENZE, DIE MAN KENNEN MUSS: Zwei FOTOS derselben Papierseite sind nie
+  // byte-identisch (anderer Winkel, anderes Licht). Die fängt diese Prüfung
+  // nicht ab. Dafür ist der Betragsabgleich weiter unten zuständig, der
+  // unabhängig davon arbeitet.
+  // ───────────────────────────────────────────────────────────────────────
+  const gesehen = new Set();
+  const dateien = [];
+  let doppelteEntfernt = 0;
+  for (const d of dateienRoh) {
+    const schluessel = String(d?.typ) + ":" + String(d?.daten || "").length + ":" + String(d?.daten || "").slice(0, 2000);
+    if (gesehen.has(schluessel)) { doppelteEntfernt++; continue; }
+    gesehen.add(schluessel);
+    dateien.push(d);
   }
   // Serverseitige Wiederholung der clientseitigen PDF-Größenprüfung (Wohnung.jsx,
   // MAX_PDF_MB) — der Client-Check lässt sich umgehen (z.B. direkter API-Aufruf),
@@ -417,10 +448,115 @@ Wenn dadurch einzelne Beträge unsicher sind, nimm sie NICHT in "werte" auf. Wen
 
     // Serverseitige Absicherung: nur bekannte Keys, nur gültige Zahlen > 0 übernehmen.
     const werte = {};
+    // ───────────────────────────────────────────────────────────────────────
+    // BETRAGSABGLEICH GEGEN DIE ZEILEN-ABSCHRIFT (11.09.2026)
+    //
+    // DER FEHLER, DER DAZU GEFÜHRT HAT: Bei Stefans echter Abrechnung (ABG
+    // Frankfurt, 80,55 m², 2025) hat das Modell drei Positionen gemeldet, die
+    // auf keiner hochgeladenen Seite stehen: CO2-Abgabe 12,00 €, Entwässerung
+    // 25,00 € und Gemeinschaftsantenne 78,00 €. Zusammen exakt 115,00 €, und
+    // genau um diesen Betrag lag die Summe aller erfassten Posten über der
+    // aufgedruckten Endsumme (3.279,84 € statt 3.164,84 €). Ohne die drei
+    // stimmte die Summe auf den Cent. Alle übrigen Werte waren korrekt.
+    //
+    // Aus dem Bericht wurde dadurch ein Schreiben an den Vermieter, das
+    // Positionen beanstandet, die es nicht gibt.
+    //
+    // WARUM EINE BESSERE ANWEISUNG NICHT REICHT: Im Prompt steht bereits
+    // "Erfinde keine Werte". Sprachmodelle halten sich daran meistens, aber
+    // eben nicht immer. Eine Anweisung ist eine Bitte, keine Garantie. Was
+    // hier gebraucht wird, ist eine Prüfung, die unabhängig vom Modell
+    // rechnet und nicht darauf angewiesen ist, dass es sich benimmt.
+    //
+    // WAS DIESE PRÜFUNG TUT: Das Modell liefert in "zeilenErfasst" eine reine
+    // Abschrift jeder gedruckten Kostenzeile. Bisher wurde dieses Feld
+    // angefordert und danach nie benutzt. Jetzt gilt: Ein Betrag in "werte"
+    // wird nur übernommen, wenn er sich aus diesen abgeschriebenen Zeilen
+    // zusammensetzen lässt.
+    //
+    // Warum nicht einfach "Betrag muss als Zeile vorkommen"? Weil legitime
+    // Werte oft Summen mehrerer Zeilen sind: Heizung besteht aus Grund- und
+    // Verbrauchsanteil, die Kaltwasserkosten in Stefans Fall aus fünf Zeilen
+    // (Kaltwasser, Legionellenprüfung, Gerätemiete, Kanal, Servicegebühren).
+    // Deshalb wird geprüft, ob sich der Betrag aus bis zu MAX_TEILE Zeilen
+    // addieren lässt.
+    //
+    // WAS BEI EINEM TREFFER OHNE BELEG PASSIERT: Der Wert wird weggelassen,
+    // das Feld bleibt leer. Das ist die richtige Richtung: Ein leeres Feld
+    // sieht der Kunde und kann es ausfüllen. Ein falsch gefülltes Feld sieht
+    // er nicht und verschickt es.
+    //
+    // WENN ES GAR KEINE ABSCHRIFT GIBT: Dann greift die Prüfung nicht und
+    // alle Werte werden durchgelassen. Lieber die bisherige Qualität als gar
+    // keine Erkennung, falls das Modell das Feld einmal nicht befüllt.
+    //
+    // WARUM NUR ZUSAMMENHÄNGENDE ZEILENBLÖCKE, das ist der entscheidende
+    // Punkt: Ein erster Entwurf dieser Prüfung erlaubte BELIEBIGE
+    // Zeilenkombinationen (Teilsummen-Suche über bis zu sechs frei gewählte
+    // Zeilen). Der Test mit Stefans echten Zahlen hat sie sofort widerlegt:
+    // Die erfundenen 78,00 € galten als belegt, weil sich aus 26 Zeilen bei
+    // sechs freien Teilen über 200.000 Kombinationen bilden lassen und
+    // darunter zufällig eine mit Summe 78,00 war. Eine Prüfung, die fast
+    // jeden mittleren Betrag durchwinkt, ist keine Prüfung.
+    //
+    // Zusammenhängende Blöcke lösen das, weil echte Sammelposten auf einer
+    // Abrechnung IMMER untereinander gedruckt stehen und "zeilenErfasst" die
+    // gedruckte Reihenfolge bewahrt:
+    //   Heizung        = Grundanteil + Verbrauchsanteil        (2 Zeilen)
+    //   Warmwasser     = Grundanteil + Verbrauchsanteil        (2 Zeilen)
+    //   Versicherungen = Feuer + Haftpflicht + Sturm + Wasser  (4 Zeilen)
+    //   Kaltwasser     = Wasser + Legionellen + Miete + Kanal + Service (5)
+    // Alle vier sind Blöcke. Eine erfundene Zahl ist es praktisch nie.
+    //
+    // Statt 2^n Kombinationen prüft das nur n²/2 Blöcke, also bei 26 Zeilen
+    // rund 340 statt 200.000. Schneller UND strenger.
+    //
+    // GEGENGEPRÜFT an Stefans Fall: alle sieben echten Posten behalten, alle
+    // drei erfundenen verworfen, keine Fehlentscheidung.
+    //
+    // SCHRAUBE ZUM NACHJUSTIEREN:
+    //   TOLERANZ  Rundungsspielraum in Euro. 0,02 fängt Cent-Rundungen ab.
+    //             Größer setzen macht die Prüfung lascher, nicht strenger.
+    // ───────────────────────────────────────────────────────────────────────
+    const TOLERANZ = 0.02;
+
+    const zeilen = Array.isArray(parsed.zeilenErfasst) ? parsed.zeilenErfasst : [];
+    const zeilenBetraege = zeilen
+      .map(z => toNum(z?.betrag))
+      .filter(n => n > 0)
+      .slice(0, 120);
+
+    // Lässt sich "ziel" als Summe direkt aufeinanderfolgender Zeilen bilden?
+    function istBelegbar(ziel, betraege) {
+      if (ziel <= 0) return false;
+      for (let start = 0; start < betraege.length; start++) {
+        let summe = 0;
+        for (let ende = start; ende < betraege.length; ende++) {
+          summe += betraege[ende];
+          if (Math.abs(summe - ziel) <= TOLERANZ) return true;
+          if (summe - ziel > TOLERANZ) break; // weiter addieren wird nur größer
+        }
+      }
+      return false;
+    }
+
+    const pruefungAktiv = zeilenBetraege.length > 0;
+    const verworfen = [];
+
     for (const [key, val] of Object.entries(parsed.werte || {})) {
       if (!GUELTIGE_KEYS.has(key)) continue;
       const n = toNum(val);
-      if (n > 0) werte[key] = String(n);
+      if (n <= 0) continue;
+      if (pruefungAktiv && !istBelegbar(n, zeilenBetraege)) {
+        verworfen.push({ key, betrag: n });
+        continue;
+      }
+      werte[key] = String(n);
+    }
+
+    if (verworfen.length) {
+      console.warn("analyse-foto: nicht belegbare Werte verworfen:",
+        verworfen.map(v => v.key + "=" + v.betrag).join(", "));
     }
 
     const w = parsed.wohnung || {};

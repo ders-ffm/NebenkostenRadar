@@ -198,11 +198,11 @@ export default function Download({ navigateTo }) {
 
         {status === "fehler" && (
           <div style={{ background: "#fdf0ee", borderRadius: THEME.radius.md, padding: "16px 20px", fontSize: 13, color: C.text, lineHeight: 1.6 }}>
-            Dein PDF konnte nicht automatisch geladen werden. Bitte schreib uns kurz: support@nebenkostenradar.com — wir schicken es dir umgehend nach.
+            Dein PDF konnte nicht automatisch geladen werden. Bitte schreib uns kurz: support@nebenkostenradar.com, wir schicken es dir umgehend nach.
           </div>
         )}
 
-        {/* Adressabfrage nach der Zahlung — siehe Kommentar bei adressEntwurf oben. */}
+        {/* Adressabfrage nach der Zahlung, siehe Kommentar bei adressEntwurf oben. */}
         {brauchtAdressen && adressEntwurf && (
           <div style={{ textAlign: "left", marginTop: 8 }}>
             <p style={{ fontSize: 14, color: C.textMuted, marginBottom: 18, textAlign: "center", lineHeight: 1.6 }}>
@@ -221,8 +221,8 @@ export default function Download({ navigateTo }) {
 
             {daten.stufe === "voll" && (
               <div style={{ background: C.surface, border: "1px solid " + C.border, borderRadius: THEME.radius.lg, padding: "16px", marginBottom: 14 }}>
-                <div style={{ fontSize: 11, color: C.textMuted, fontWeight: 700, letterSpacing: "0.1em", textTransform: "uppercase", marginBottom: 6 }}>Vermieter / Hausverwaltung</div>
-                <p style={{ fontSize: 12, color: C.textDim, margin: "0 0 14px", lineHeight: 1.6 }}>Steht auf deiner Abrechnung oder im Mietvertrag — kommt als Empfänger auf den Musterbrief.</p>
+                <div style={{ fontSize: 11, color: C.textMuted, fontWeight: 700, letterSpacing: "0.1em", textTransform: "uppercase", marginBottom: 6 }}>Vermieter oder Hausverwaltung</div>
+                <p style={{ fontSize: 12, color: C.textDim, margin: "0 0 14px", lineHeight: 1.6 }}>Steht auf deiner Abrechnung oder im Mietvertrag, kommt als Empfänger auf den Musterbrief.</p>
                 <Field label="Name oder Firma" value={adressEntwurf.vermieterName} onChange={v => setAdressEntwurf(p => ({ ...p, vermieterName: v }))} placeholder="Muster Verwaltungs GmbH" required error={adressFehler.vermieterName} />
                 <Field label="Straße und Hausnummer" value={adressEntwurf.vermieterStrasse} onChange={v => setAdressEntwurf(p => ({ ...p, vermieterStrasse: v }))} placeholder="Verwalterstraße 1" required error={adressFehler.vermieterStrasse} />
                 <div style={{ display: "grid", gridTemplateColumns: "100px 1fr", gap: 10 }}>
@@ -249,7 +249,7 @@ export default function Download({ navigateTo }) {
 
             {daten.email && (
               <p style={{ fontSize: 12, color: C.textDim, lineHeight: 1.6, marginTop: 16 }}>
-                Tipp: Mit einem kostenlosen Kundenkonto kannst du diesen Bericht jederzeit erneut herunterladen — einfach mit deiner E-Mail-Adresse{" "}
+                Tipp: Mit einem kostenlosen Kundenkonto kannst du diesen Bericht jederzeit erneut herunterladen, einfach mit deiner E-Mail-Adresse{" "}
                 <button onClick={() => navigateTo("login")} style={{ background: "none", border: "none", padding: 0, color: C.brand, fontSize: 12, textDecoration: "underline", cursor: "pointer", fontFamily: THEME.font.body }}>anmelden</button>.
               </p>
             )}

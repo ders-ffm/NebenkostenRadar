@@ -279,15 +279,45 @@ export function analysierePosten(w, wohn) {
     const kombi = heiz + ww;
     const rwK = rj(R.heizung_warmwasser), rwMax = rj(R.heizung_max);
     const aK = abw(kombi, rwK);
-    let st = "ok", hi = "Richtwert Heizung+WW für " + flaeche + "m²: " + fmt(rwK) + "/Jahr. Verbrauchsanteil muss 50-70% betragen (§ 7 HeizkostenV).";
+    // ─────────────────────────────────────────────────────────────────────
+    // VERBRAUCHSPOSTEN WERDEN NICHT BEANSTANDET (11.09.2026, Vorgabe Stefan:
+    // "Verbrauchszahlen können nicht beanstandet werden, da sie vom Verbrauch
+    // abhängig sind. Jeder verbraucht anders.")
+    //
+    // Das ist der fachlich saubere Punkt, und er gilt für Heizung, Warmwasser
+    // und Wasser gleichermaßen. Der DMB-Richtwert ist ein Durchschnitt pro
+    // Quadratmeter. Wie viel geheizt und verbraucht wird, hängt aber an der
+    // Personenzahl, am Verhalten, an der Lage der Wohnung im Haus und am
+    // energetischen Zustand des Gebäudes. Eine Abweichung nach oben ist
+    // deshalb KEIN Indiz für einen Abrechnungsfehler.
+    //
+    // Wer einen hohen Verbrauch beanstandet, bekommt vom Vermieter zu Recht
+    // die Antwort, dass die Zähler eben das anzeigen. Das kostet den Nutzer
+    // Glaubwürdigkeit für die Positionen, bei denen er tatsächlich recht hat.
+    //
+    // WAS STATTDESSEN PASSIERT: Die Zahl wird weiterhin angezeigt und
+    // eingeordnet, aber sie erzeugt keinen Punkt im Schreiben an den
+    // Vermieter mehr. Der Status bleibt "ok", weil "hoch" in der Anzeige wie
+    // ein Vorwurf wirkt.
+    //
+    // WO DER FLÄCHENVERGLEICH WEITER GILT: Bei FIXEN Kosten, die nicht vom
+    // Verbrauch abhängen. Grundsteuer, Versicherungen, Müllgebühren,
+    // Hausreinigung, Gartenpflege, Hausmeister. Dort ist eine deutliche
+    // Abweichung tatsächlich ein Hinweis, dem man nachgehen kann, und dort
+    // bleiben die Beanstandungen deshalb unverändert bestehen.
+    //
+    // WAS BEI HEIZUNG TROTZDEM PRÜFBAR IST und nichts mit der Höhe zu tun
+    // hat: das Verhältnis von Grund- zu Verbrauchsanteil. § 7 Abs. 1
+    // HeizkostenV schreibt zwingend 50 bis 70 Prozent Verbrauchsanteil vor.
+    // Das ist eine harte Rechtsvorgabe und unabhängig davon, wie viel jemand
+    // verbraucht. Steht unten als eigener Hinweis.
+    // ─────────────────────────────────────────────────────────────────────
+    let st = "ok";
+    let hi = "Richtwert Heizung und Warmwasser für " + flaeche + "m²: " + fmt(rwK) + "/Jahr (bundesweiter DMB-Durchschnitt). Heizkosten hängen vom Verbrauch ab, deshalb ist eine Abweichung nach oben oder unten normal und für sich genommen kein Fehler. Prüfbar ist dagegen das Verhältnis: Der Verbrauchsanteil muss zwischen 50 und 70 Prozent der Heizkosten liegen (§ 7 Abs. 1 HeizkostenV).";
     if (kombi > rwMax) {
-      st = "sehr_hoch";
-      widerspruch.push({ typ: "statistisch", text: "Heizkosten+Warmwasser " + fmt(kombi) + " übersteigen DMB-Höchstwert " + fmt(rwMax) + " für " + flaeche + "m². Belegeinsicht anfordern." });
-      hi = aK + "% über DMB-Richtwert! Max. " + fmt(rwMax) + "/Jahr.";
+      hi = "Liegt " + aK + "% über dem DMB-Durchschnitt und über dem Höchstwert von " + fmt(rwMax) + "/Jahr. Das kann an hohem Verbrauch, an einem schlecht gedämmten Gebäude oder an der Lage der Wohnung liegen und ist kein Abrechnungsfehler. Sinnvoll ist ein Blick auf die Zählerstände im Vergleich zum Vorjahr und darauf, ob der Verbrauchsanteil die vorgeschriebenen 50 bis 70 Prozent einhält (§ 7 Abs. 1 HeizkostenV).";
     } else if (kombi > rwK * 1.3) {
-      st = "hoch";
-      widerspruch.push({ typ: "statistisch", text: "Heizkosten+Warmwasser " + fmt(kombi) + " liegen " + aK + "% über DMB-Durchschnitt für " + flaeche + "m². Belege anfordern." });
-      hi = aK + "% über DMB-Richtwert.";
+      hi = "Liegt " + aK + "% über dem DMB-Durchschnitt. Bei verbrauchsabhängigen Kosten ist das ohne Weiteres möglich. Zählerstände mit dem Vorjahr vergleichen und prüfen, ob der Verbrauchsanteil zwischen 50 und 70 Prozent liegt (§ 7 Abs. 1 HeizkostenV).";
     }
     posten_bewertung.push({ posten: "Heizkosten & Warmwasser (kombiniert)", betrag: kombi, richtwert: rwK, abweichung_prozent: aK, status: st, hinweis: hi, paragraf: "§ 2 Nr. 4+5 BetrKV, § 7 HeizkostenV" });
     if (ww > 0) posten_bewertung.push({ posten: "davon Warmwasserversorgung", betrag: ww, richtwert: 0, abweichung_prozent: 0, status: "ok", hinweis: "Bereits in der Vergleichsrechnung oben enthalten. Muss laut Gesetz separat ausgewiesen sein (§ 8 HeizkostenV).", paragraf: "§ 2 Nr. 5 BetrKV" });
@@ -320,9 +350,44 @@ export function analysierePosten(w, wohn) {
   const wg = kw + ew + nw;
   if (wg > 0) {
     const rw = rj(R.wasser_abwasser), a = abw(wg, rw);
-    let st = "ok", hi = "Richtwert Wasser+Abwasser für " + flaeche + "m²: " + fmt(rw) + "/Jahr.";
-    if (wg > rw * 1.6) { st = "sehr_hoch"; widerspruch.push({ typ: "statistisch", text: "Wasser+Abwasser " + fmt(wg) + " (" + a + "% über Richtwert). Auf Doppelberechnung prüfen." }); hi = a + "% über Richtwert, mögliche Doppelberechnung!"; }
-    else if (wg > rw * 1.3) { st = "hoch"; hi = a + "% über Richtwert. Belege anfordern."; }
+    // WORTWAHL KORRIGIERT 11.09.2026 nach Stefans Echttest mit seiner eigenen
+    // Abrechnung (ABG Frankfurt, 80,55 m², 2025).
+    //
+    // Vorher stand hier bei mehr als 60 % Abweichung: "mögliche
+    // Doppelberechnung!" und im Brief "Auf Doppelberechnung prüfen."
+    // Das ist ein Vorwurf, den die Datenlage nicht trägt. Begründung:
+    //
+    // Wasser ist eine VERBRAUCHSABHÄNGIGE Position. Der DMB-Wert von
+    // 0,29 €/m²/Monat (Primärquelle geprüft: "Alle Betriebskostenarten im
+    // Überblick", DMB, 18.12.2025, Abrechnungsjahr 2024) ist ein
+    // bundesweiter Durchschnitt pro Quadratmeter. Wie viel Wasser ein
+    // Haushalt verbraucht, hängt aber an der Personenzahl, nicht an der
+    // Wohnfläche. Ein Vierpersonenhaushalt auf 70 m² liegt zwangsläufig
+    // weit über diesem Wert, ohne dass die Abrechnung einen Fehler hätte.
+    //
+    // In Stefans Fall: 514,76 € bei 80,55 m² sind 84 % über dem Richtwert.
+    // Der Kaltwasserverbrauch laut Abrechnung beträgt 113,64 m³ im Jahr,
+    // was bei etwa 45 m³ pro Person und Jahr auf zwei bis drei Personen
+    // deutet. Die Abweichung ist damit vollständig durch den Verbrauch
+    // erklärbar. Ein Hinweis auf "Doppelberechnung" wäre schlicht falsch
+    // gewesen und hätte den Nutzer mit einem unhaltbaren Vorwurf zum
+    // Vermieter geschickt.
+    //
+    // Dasselbe gilt sinngemäß für Heizung und Warmwasser. Bei FIXEN
+    // Positionen (Grundsteuer, Versicherungen, Müll, Hausreinigung) ist der
+    // Flächenvergleich dagegen aussagekräftig, weil dort kein individueller
+    // Verbrauch hineinspielt. Diese Unterscheidung ist der Kern einer
+    // ehrlichen Prüfung und darf nicht wieder eingeebnet werden.
+    // Keine Beanstandung, siehe ausführliche Begründung beim Heizungsblock
+    // weiter oben. Wasser ist verbrauchsabhängig, und der Verbrauch hängt an
+    // der Personenzahl, nicht an der Wohnfläche. Ein Vierpersonenhaushalt auf
+    // 70 m² liegt zwangsläufig weit über dem Durchschnitt pro Quadratmeter,
+    // ohne dass die Abrechnung einen Fehler hätte.
+    const st = "ok";
+    let hi = "Richtwert Wasser und Abwasser für " + flaeche + "m²: " + fmt(rw) + "/Jahr (bundesweiter DMB-Durchschnitt). Wasser wird nach Verbrauch abgerechnet, deshalb sagt ein Vergleich pro Quadratmeter wenig aus.";
+    if (wg > rw * 1.3) {
+      hi = "Liegt " + a + "% über dem DMB-Durchschnitt. Das ist bei mehreren Personen im Haushalt normal, denn der Wasserverbrauch hängt an der Personenzahl und nicht an der Wohnfläche. Als Orientierung: etwa 45 m³ pro Person und Jahr. Sinnvoll ist ein Vergleich der Zählerstände mit dem Vorjahr, und ein Blick darauf, ob die Kanalgebühren nur einmal auftauchen.";
+    }
     // Richtwert-Anzeige proportional zum tatsächlichen Anteil an der Gesamtsumme wg aufteilen
     // (nicht pauschal 50/50) — bei pauschaler Aufteilung zeigte die Zeile "Wasserversorgung" einen
     // Richtwert, der zur oben berechneten Abweichung "a" nicht mehr passte, sobald nur eine der beiden

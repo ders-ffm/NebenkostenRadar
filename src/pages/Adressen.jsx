@@ -67,7 +67,7 @@ export default function Adressen({ navigateTo, adressen, setAdressen, stufe, wer
       <div style={{ padding: "22px 20px 40px", maxWidth: THEME.layout.formMax, margin: "0 auto", boxSizing: "border-box" }}>
         <h2 style={{ fontFamily: THEME.font.heading, fontSize: 21, fontWeight: 600, margin: "0 0 6px", textAlign: "center" }}>Wohin sollen wir dein PDF schicken?</h2>
         <p style={{ fontSize: 13, color: C.textMuted, margin: "0 0 22px", textAlign: "center" }}>
-          Nur die E-Mail-Adresse. Deine Anschrift für den Bericht fragen wir direkt nach der Zahlung ab — das dauert keine Minute.
+          Nur die E-Mail-Adresse. Deine Anschrift für den Bericht fragen wir direkt nach der Zahlung ab: das dauert keine Minute.
         </p>
 
         <div style={{ background: C.surface, border: "1px solid " + C.border, borderRadius: THEME.radius.lg, padding: "16px", marginBottom: 14 }}>
@@ -85,7 +85,7 @@ export default function Adressen({ navigateTo, adressen, setAdressen, stufe, wer
               zweitem Tippen. Erscheint erst, wenn die Adresse formal gültig ist. */}
           {mailOk && !errors.email && (
             <div style={{ fontSize: 12.5, color: C.textMuted, marginTop: -4, lineHeight: 1.6 }}>
-              Wir schicken es an: <strong style={{ color: C.text }}>{adressen.email.trim()}</strong> — bitte kurz prüfen.
+              Wir schicken es an: <strong style={{ color: C.text }}>{adressen.email.trim()}</strong>, bitte kurz prüfen.
             </div>
           )}
         </div>

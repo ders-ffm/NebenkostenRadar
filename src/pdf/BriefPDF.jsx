@@ -176,9 +176,22 @@ export default function BriefPDF({ result, wohnung, adressen }) {
             vorher stand sie ganz unten unter einer gemischten Liste aus
             Beanstandungen und bloßen Rückfragen, dort las sie sich, als
             summiere sie auch die Fragen mit, was sachlich falsch wäre. */}
+        {/* BESCHRIFTUNG KORRIGIERT 11.09.2026 nach Stefans Echttest.
+            Vorher stand hier "Summe der beanstandeten Positionen". Das war
+            sachlich falsch und im Brief an den Vermieter besonders heikel.
+
+            In Stefans Fall zeigte die Zeile 684,43 €. Die beanstandeten
+            Positionen selbst summieren sich aber auf 1.584,79 €. Die 684,43 €
+            sind der Betrag, um den diese Positionen ÜBER den DMB-Richtwerten
+            liegen, nicht ihre Summe.
+
+            Wer den Brief so abschickt, behauptet gegenüber dem Vermieter eine
+            Zahl, die er auf Nachfrage nicht herleiten kann, weil sie weder
+            der Summe der Positionen noch einer Forderung entspricht. Genau
+            solche Angriffsflächen soll das Schreiben vermeiden. */}
         {hatBeanstandungen && (
           <View style={s.tRowSum}>
-            <Text style={s.tLabel}>Summe der beanstandeten Positionen</Text>
+            <Text style={s.tLabel}>Betrag oberhalb der DMB-Vergleichswerte</Text>
             <Text style={s.tValue}>{fmt(result.moegliche_ersparnis)}</Text>
           </View>
         )}

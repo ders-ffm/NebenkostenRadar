@@ -155,6 +155,51 @@ export default function AbrechnungPDF({ result, wohnung, seite = 1, seitenGesamt
         </Text>
       ))}
 
+      {/* ERKLÄRUNG ZU VERBRAUCHSPOSTEN, ergänzt 11.09.2026 auf Stefans Vorgabe.
+
+          WARUM DIESER BLOCK IM BERICHT STEHEN MUSS: Seit die Prüfung Heizung,
+          Warmwasser und Wasser nicht mehr beanstandet, sieht der Kunde bei
+          diesen Posten den Status "unauffällig", obwohl der Betrag sichtbar
+          über dem Richtwert liegt. Ohne Erklärung wirkt das wie ein Fehler im
+          Bericht, und der Kunde verliert genau dort Vertrauen, wo wir
+          besonders sorgfältig waren.
+
+          Der Text erscheint nur, wenn tatsächlich Verbrauchsposten erfasst
+          sind. Sonst steht hier eine Erklärung für etwas, das gar nicht
+          auftaucht.
+
+          Der gleiche Inhalt steht in der FAQ (src/config/faq.js, zwei
+          Einträge). Bei Änderungen bitte beide Stellen angleichen, sonst
+          widerspricht sich die Seite ihrem eigenen Bericht. */}
+      {result.posten_bewertung.some(p => /Heizkosten|Warmwasser|Wasserversorgung/i.test(p.posten)) && (
+        <View style={{ marginTop: 14, padding: "10 12", backgroundColor: "#F7F3EC", borderRadius: 4 }}>
+          <Text style={{ fontFamily: "Poppins", fontWeight: 600, fontSize: 9, marginBottom: 4 }}>
+            Warum Heizung, Warmwasser und Wasser hier nicht beanstandet werden
+          </Text>
+          <Text style={{ fontSize: 8, lineHeight: 1.5 }}>
+            Diese Kosten werden nach deinem tatsächlichen Verbrauch abgerechnet. Die Vergleichswerte
+            des Deutschen Mieterbundes sind dagegen Durchschnitte pro Quadratmeter. Wie viel verbraucht
+            wird, hängt aber an der Personenzahl, am Verhalten und am Zustand des Gebäudes, nicht an der
+            Wohnfläche. Eine Abweichung nach oben ist deshalb kein Nachweis für einen Abrechnungsfehler,
+            und eine Beanstandung allein wegen der Höhe würde deine übrigen Einwände schwächen.
+          </Text>
+          <Text style={{ fontSize: 8, lineHeight: 1.5, marginTop: 5 }}>
+            Prüfbar ist dagegen die Art der Abrechnung, und das sind starke Rechte: Der Vermieter muss
+            mindestens 50 und höchstens 70 Prozent der Heizkosten nach erfasstem Verbrauch verteilen
+            (§ 7 Abs. 1 HeizkostenV). Wird gar nicht verbrauchsabhängig abgerechnet, darfst du deinen
+            Anteil um 15 Prozent kürzen (§ 12 Abs. 1 Satz 1 HeizkostenV). Fehlen fernablesbare Zähler
+            oder die vorgeschriebenen Verbrauchsinformationen, sind es 3 Prozent
+            (§ 12 Abs. 1 Sätze 2 und 3 HeizkostenV).
+          </Text>
+          <Text style={{ fontSize: 8, lineHeight: 1.5, marginTop: 5 }}>
+            Was du selbst tun kannst: Vergleiche die Zählerstände mit dem Vorjahr. Als grobe
+            Orientierung gelten etwa 45 Kubikmeter Wasser pro Person und Jahr. Erscheint dir der
+            Verbrauch unerklärlich hoch, fordere die Ablesewerte an und lass prüfen, ob ein Defekt
+            oder ein Leck vorliegt.
+          </Text>
+        </View>
+      )}
+
       <View style={s.footer} fixed>
         <Text>Unverbindliche Auswertung, keine Rechtsberatung (§ 2 RDG) · nebenkostenradar.com</Text>
         <Text render={({ pageNumber, totalPages }) => `Seite ${pageNumber}`} />

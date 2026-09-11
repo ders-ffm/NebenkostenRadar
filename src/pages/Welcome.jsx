@@ -103,10 +103,22 @@ export default function Welcome({ navigateTo, IS_DEMO }) {
             Schritte zeigt. Wer die Anzahl dort ändert, muss diese Zeile
             mitändern, sonst widerspricht sich die Seite selbst.
 
-            GEMESSENE BREITEN (Poppins 600, im Browser nachgemessen):
-            "Nebenkostenabrechnung" ist die längste Zeile, 391 px bei 30 px
-            Schrift und 300 px bei 23 px. Beide Zeilen passen damit von
-            320 px Displaybreite aufwärts ohne jeden Umbruch.
+            GEMESSENE BREITEN (Poppins 600, auf der Live-Seite nachgemessen).
+            "Nebenkostenabrechnung" ist die längste Zeile und bestimmt alles:
+            391 px bei 30 px Schrift. Verfügbar sind Displaybreite minus
+            48 px Seitenpolster. Verbleibende Luft je Gerät:
+
+              320 px Gerät → Schrift 20,0 px → 11 px Luft
+              360 px Gerät → Schrift 22,3 px → 21 px Luft
+              390 px Gerät → Schrift 24,2 px → 27 px Luft
+              430 px Gerät → Schrift 26,7 px → 34 px Luft
+
+            Der Faktor ist bewusst 6.2vw und nicht 6.4vw: Bei 6.4 blieben auf
+            einem 360-px-Gerät nur 12 px Luft. Das reicht rechnerisch, ist
+            aber zu knapp, weil Poppins je nach Betriebssystem und
+            Schriftglättung minimal breiter rendern kann. Ein einziges
+            Pixel zu viel, und das Wort bricht wieder um. 6.2vw kostet
+            optisch fast nichts und verdoppelt die Reserve.
 
             WER HIER ETWAS ÄNDERT: Faustregel für Poppins 600, Breite in
             Pixeln ist ungefähr Zeichenzahl mal Schriftgröße mal 0,62.
@@ -116,8 +128,8 @@ export default function Welcome({ navigateTo, IS_DEMO }) {
           <div style={{ fontSize: 13, fontWeight: 600, letterSpacing: "0.08em", textTransform: "uppercase", color: C.brand, marginBottom: 8 }}>
             Für Mieter
           </div>
-          <div style={{ fontSize: "clamp(20px, 6.4vw, 30px)" }}>Nebenkostenabrechnung</div>
-          <div style={{ fontSize: "clamp(20px, 6.4vw, 30px)", color: C.brand }}>in 3 Schritten prüfen</div>
+          <div style={{ fontSize: "clamp(20px, 6.2vw, 30px)" }}>Nebenkostenabrechnung</div>
+          <div style={{ fontSize: "clamp(20px, 6.2vw, 30px)", color: C.brand }}>in 3 Schritten prüfen</div>
         </h1>
 
         <p style={{ fontSize: 16, color: C.textMuted, margin: "0 0 8px", lineHeight: 1.7, maxWidth: 520, marginLeft: "auto", marginRight: "auto" }}>

@@ -103,9 +103,35 @@ export default function Posten({ navigateTo, werte, setWerte, runAnalyse, gesamt
   // sein — genau das ist oft der Grund, weshalb jemand prüfen lässt. Ein Kunde
   // darf deshalb nie am Abschließen gehindert werden, nur weil seine Eingabe
   // nicht zur (möglicherweise falschen) Summe des Vermieters passt.
+  // RICHTUNG DER ABWEICHUNG, ergänzt 11.09.2026 nach Stefans Echttest.
+  //
+  // WAS PASSIERT IST: Die Foto-Erkennung hat bei einer echten Abrechnung drei
+  // Positionen erzeugt, die auf keiner hochgeladenen Seite stehen: CO2-Abgabe
+  // 12,00 €, Entwässerung 25,00 € und Gemeinschaftsantenne 78,00 €. Zusammen
+  // exakt 115,00 €. Genau um diesen Betrag lag die Summe der erfassten Posten
+  // über der aufgedruckten Endsumme (3.279,84 € statt 3.164,84 €). Ohne die
+  // drei stimmte die Summe auf den Cent.
+  //
+  // Diese Prüfung hier hätte das erkennen MÜSSEN und tat es der Sache nach
+  // auch. Der Hinweistext sprach aber ausschließlich von "möglicherweise fehlt
+  // ein Posten", also vom umgekehrten Fall. Wer 115 € ZU VIEL erfasst hat,
+  // liest einen Satz über fehlende Posten und hakt ihn als unpassend ab.
+  //
+  // Die beiden Richtungen sind fachlich völlig verschieden:
+  //   Summe zu NIEDRIG  → ein Posten wurde übersehen, meist harmlos.
+  //   Summe zu HOCH     → es ist etwas erfasst, das nicht auf der Abrechnung
+  //                       steht. Das ist der gefährliche Fall, weil daraus
+  //                       eine Beanstandung gegenüber dem Vermieter werden
+  //                       kann, die sich auf eine nicht existierende Position
+  //                       stützt.
+  //
+  // Deshalb wird ab hier nach Richtung unterschieden und im Fall "zu hoch"
+  // deutlich dringlicher formuliert.
   const gesamtsummeNum = toNum(gesamtsummeAbrechnung);
-  const summenDiff = gesamtsummeNum > 0 && total > 0 ? Math.abs(gesamtsummeNum - total) : 0;
+  const summenDelta = gesamtsummeNum > 0 && total > 0 ? total - gesamtsummeNum : 0;
+  const summenDiff = Math.abs(summenDelta);
   const summenAbweichung = summenDiff > 1;
+  const zuVielErfasst = summenDelta > 1;
 
   function toggleGruppe(id) {
     setExpandedGruppen(prev => {
@@ -166,7 +192,15 @@ export default function Posten({ navigateTo, werte, setWerte, runAnalyse, gesamt
             onChange={setGesamtsummeAbrechnung} />
           {summenAbweichung && (
             <div style={{ background: C.warnBg, borderLeft: "3px solid " + C.warn, borderRadius: THEME.radius.md, padding: "10px 14px", marginTop: -4, fontSize: 12, color: C.warn, lineHeight: 1.6 }}>
-              Hinweis: Deine eingetragenen Posten ({fmt(total)}) weichen von der Gesamtsumme laut Abrechnung ({fmt(gesamtsummeNum)}) ab, möglicherweise fehlt ein Posten. Reine Information, hindert dich nicht am Fortfahren: Eine Abrechnung kann auch selbst fehlerhaft sein, genau das würden wir dann prüfen.
+              {zuVielErfasst ? (
+                <>
+                  <strong>Bitte kurz prüfen:</strong> Deine Posten ergeben zusammen {fmt(total)}, auf der Abrechnung steht aber {fmt(gesamtsummeNum)}. Es sind also {fmt(summenDiff)} <strong>zu viel</strong> erfasst. Meist liegt es daran, dass eine Position doppelt drinsteht oder eine erkannt wurde, die es auf deiner Abrechnung gar nicht gibt. Geh die Liste unten einmal durch und lösche, was nicht auf deiner Abrechnung steht. Das ist wichtig, weil eine Position, die es nicht gibt, sonst im Schreiben an deinen Vermieter auftauchen würde.
+                </>
+              ) : (
+                <>
+                  Hinweis: Deine Posten ergeben zusammen {fmt(total)}, auf der Abrechnung steht {fmt(gesamtsummeNum)}. Es fehlen also {fmt(summenDiff)}, möglicherweise ist eine Position noch nicht erfasst. Reine Information, hindert dich nicht am Fortfahren: Eine Abrechnung kann auch selbst fehlerhaft sein, genau das würden wir dann prüfen.
+                </>
+              )}
             </div>
           )}
         </div>

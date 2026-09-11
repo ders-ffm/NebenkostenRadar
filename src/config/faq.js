@@ -79,4 +79,24 @@ export const FAQ_STARTSEITE = [
     antwort:
       "Nach § 556 Abs. 3 BGB kannst du Einwendungen bis zum Ablauf des zwölften Monats nach Zugang der Abrechnung geltend machen. Danach sind sie in der Regel ausgeschlossen, außer du hast die Verspätung nicht zu vertreten. Unabhängig davon muss der Vermieter dir die Abrechnung spätestens zwölf Monate nach Ende des Abrechnungszeitraums zustellen, versäumt er das, kann er eine Nachforderung meist nicht mehr durchsetzen. Beide Fristen prüfen wir mit.",
   },
+  {
+    // ERGÄNZT 11.09.2026 auf Stefans Vorgabe, nachdem der Echttest mit seiner
+    // eigenen Abrechnung gezeigt hat, dass Wasser allein wegen der Höhe
+    // beanstandet wurde. Die Frage muss beantwortet werden, BEVOR ein Kunde
+    // sich wundert, warum sein auffällig hoher Heizkostenposten nicht im
+    // Schreiben auftaucht.
+    frage: "Warum werden Heizung, Warmwasser und Wasser bei euch nicht beanstandet?",
+    antwort:
+      "Weil diese Kosten nach deinem tatsächlichen Verbrauch abgerechnet werden und jeder Haushalt anders verbraucht. Die Vergleichswerte des Deutschen Mieterbundes sind Durchschnitte pro Quadratmeter. Wie viel Wasser und Wärme verbraucht wird, hängt aber an der Personenzahl, am Verhalten und am Zustand des Gebäudes, nicht an der Wohnfläche. Ein Vierpersonenhaushalt auf 70 Quadratmetern liegt zwangsläufig über dem Durchschnitt, ohne dass die Abrechnung einen Fehler hätte. Würden wir das trotzdem beanstanden, bekämst du vom Vermieter zu Recht die Antwort, dass die Zähler eben diesen Verbrauch anzeigen, und das würde deine berechtigten Einwände unglaubwürdig machen. Wir weisen diese Posten deshalb aus und ordnen sie ein, erheben aber keine Einwendung allein wegen ihrer Höhe.",
+  },
+  {
+    frage: "Heißt das, bei Heizkosten kann man gar nichts prüfen?",
+    antwort:
+      "Nein, im Gegenteil. Nicht prüfbar ist die Höhe deines Verbrauchs, sehr wohl prüfbar ist die Art der Abrechnung, und das sind die stärksten Rechte, die Mieter überhaupt haben. Erstens muss der Vermieter mindestens 50 und höchstens 70 Prozent der Heizkosten nach dem erfassten Verbrauch verteilen (§ 7 Abs. 1 HeizkostenV). Zweitens darfst du deinen Anteil um 15 Prozent kürzen, wenn überhaupt nicht verbrauchsabhängig abgerechnet wurde (§ 12 Abs. 1 Satz 1 HeizkostenV). Drittens gilt eine Kürzung um 3 Prozent, wenn keine fernablesbaren Zähler installiert sind oder die vorgeschriebenen Verbrauchsinformationen fehlen (§ 12 Abs. 1 Sätze 2 und 3 HeizkostenV). Das sind feste Vorgaben mit klarer Rechtsfolge, über die sich nicht streiten lässt, anders als über eine statistische Abweichung. Genau solche Punkte nehmen wir in das Schreiben auf.",
+  },
+  {
+    frage: "Wann nennt ihr einen Posten überhaupt auffällig?",
+    antwort:
+      "Nur wenn wir es belegen können. Wir unterscheiden drei Arten von Befunden. Erstens rechtlich eindeutige: Positionen, die gar nicht umlagefähig sind, etwa Verwaltungskosten und Instandhaltung (§ 1 Abs. 2 BetrKV) oder der Kabelanschluss seit dem 1. Juli 2024. Da gibt es nichts zu diskutieren. Zweitens formal prüfbare: Fristen und Verteilungsvorgaben, deren Einhaltung sich eindeutig feststellen lässt. Drittens statistisch auffällige: deutliche Abweichungen vom Vergleichswert des Deutschen Mieterbundes, und das ausschließlich bei festen Kostenarten wie Grundsteuer, Versicherungen, Müllgebühren oder Hausreinigung, die nicht vom Verbrauch abhängen. In dieser dritten Gruppe behaupten wir keinen Fehler, sondern stützen uns auf dein Recht auf Belegeinsicht nach § 259 BGB. Das steht dir unabhängig davon zu, ob am Ende tatsächlich ein Fehler vorliegt.",
+  },
 ];

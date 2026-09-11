@@ -122,6 +122,135 @@ Details, Quellen und die Bewertung Frankreichs in `planung/europa-potenzial-nkr.
 
 ---
 
+## 11.09.2026 — Echttest mit Stefans eigener Abrechnung: drei erfundene Positionen, Verbrauchsposten werden nicht mehr beanstandet
+
+Der wichtigste Eintrag seit Projektbeginn. Stefan hat seine echte Abrechnung (ABG Frankfurt Holding, 80,55 m², Abrechnungsjahr 2025) durch den fertigen Funnel geschickt. Das Ergebnis war unbrauchbar, und die Ursachenanalyse hat zwei grundsätzliche Fehler freigelegt.
+
+### Fehler 1: Die Erkennung hat drei Positionen erzeugt, die es nicht gibt
+
+Im Prüfbericht standen:
+
+| Position | Betrag | steht auf der Abrechnung? |
+|---|---|---|
+| CO2-Abgabe | 12,00 € | nein (echter Wert wäre 80,87 €) |
+| Entwässerung | 25,00 € | nein |
+| Gemeinschaftsantenne und SAT-Anlage | 78,00 € | nein |
+
+**Der Beweis ist arithmetisch eindeutig:**
+
+| | |
+|---|---|
+| Summe aller erkannten Posten | 3.279,84 € |
+| Aufgedruckte Endsumme der Abrechnung | 3.164,84 € |
+| Differenz | **115,00 €** |
+| 12,00 + 25,00 + 78,00 | **115,00 €** |
+
+Ohne die drei stimmt die Summe auf den Cent. Alle übrigen Werte hatte die Erkennung korrekt gelesen, auch die schwierigen Sammelposten (Kaltwasser aus fünf Zeilen, Versicherungen aus vier).
+
+Aus dem Bericht wurde ein Schreiben an den Vermieter, das Positionen beanstandet, die nicht existieren.
+
+#### Die Gegenmaßnahme: Betragsabgleich gegen die Zeilen-Abschrift
+
+Im Prompt stand längst „Erfinde keine Werte". Das reicht nicht. Eine Anweisung an ein Sprachmodell ist eine Bitte, keine Garantie. Gebraucht wird eine Prüfung, die unabhängig vom Modell rechnet.
+
+Das Modell liefert bereits ein Feld `zeilenErfasst`, eine reine Abschrift jeder gedruckten Kostenzeile. **Dieses Feld wurde angefordert und danach nie verwendet.** Genau dort saß die Lücke.
+
+Neu in `api/analyse-foto.js`: Ein Betrag wird nur übernommen, wenn er sich aus **direkt aufeinanderfolgenden** Zeilen der Abschrift addieren lässt. Sonst fällt er weg und das Feld bleibt leer.
+
+Warum zusammenhängende Blöcke und nicht beliebige Kombinationen: Ein erster Entwurf erlaubte bis zu sechs frei gewählte Zeilen. Der Test mit den echten Zahlen hat ihn sofort widerlegt. Die erfundenen 78,00 € galten als belegt, weil sich aus 26 Zeilen über 200.000 Kombinationen bilden lassen und darunter zufällig eine mit Summe 78,00 war. Echte Sammelposten stehen auf einer Abrechnung dagegen immer untereinander:
+
+```
+Heizung        = Grundanteil + Verbrauchsanteil            (2 Zeilen)
+Warmwasser     = Grundanteil + Verbrauchsanteil            (2 Zeilen)
+Versicherungen = Feuer + Haftpflicht + Sturm + Leitungswasser (4 Zeilen)
+Kaltwasser     = Wasser + Legionellen + Miete + Kanal + Service (5 Zeilen)
+```
+
+Die Blockprüfung braucht rund 340 statt 200.000 Vergleiche, ist also schneller **und** strenger. Gegengeprüft an Stefans Fall: alle sieben echten Posten behalten, alle drei erfundenen verworfen, keine Fehlentscheidung.
+
+#### Zusätzlich: doppelte Dateien werden aussortiert
+
+Stefan hatte dieselbe Seite absichtlich zweimal hochgeladen, um zu sehen, ob das auffällt. Es fiel nicht auf. Zweimal dieselbe Seite bedeutet zweimal dieselben Kostenzeilen und damit die Gefahr der Doppelzählung. Byte-identische Uploads werden jetzt vor dem Senden verworfen.
+
+Grenze, die man kennen muss: Zwei **Fotos** derselben Papierseite sind nie byte-identisch. Dafür ist der Betragsabgleich zuständig, der unabhängig davon arbeitet.
+
+#### Und: der Summenabgleich sagt jetzt, in welche Richtung es abweicht
+
+Die Prüfung in `Posten.jsx` existierte bereits und hätte bei 115 € anschlagen müssen. Ihr Text sprach aber ausschließlich von „möglicherweise fehlt ein Posten", also vom umgekehrten Fall. Die Richtungen sind fachlich völlig verschieden:
+
+- Summe zu **niedrig** → ein Posten wurde übersehen, meist harmlos.
+- Summe zu **hoch** → es ist etwas erfasst, das nicht auf der Abrechnung steht. Der gefährliche Fall.
+
+### Fehler 2: Verbrauchsabhängige Posten wurden beanstandet
+
+Stefans Vorgabe: „Verbrauchszahlen können nicht beanstandet werden, da sie vom Verbrauch abhängig sind. Jeder verbraucht anders."
+
+Das ist fachlich richtig und war bisher verletzt. Der Bericht warf bei Wasser sogar „mögliche Doppelberechnung!" aus, allein weil der Betrag 84 % über dem DMB-Wert lag.
+
+Der DMB-Wert ist ein Durchschnitt **pro Quadratmeter** (Primärquelle geprüft: „Alle Betriebskostenarten im Überblick", DMB, 18.12.2025, Wasser und Abwasser gemeinsam 0,29 €/m²/Monat). Wasserverbrauch hängt aber an der Personenzahl, nicht an der Fläche. Stefans Abrechnung weist 113,64 m³ im Jahr aus, bei etwa 45 m³ pro Person also zwei bis drei Personen. Die Abweichung ist vollständig durch den Verbrauch erklärt.
+
+Wer einen hohen Verbrauch beanstandet, bekommt zu Recht die Antwort, dass die Zähler das eben anzeigen, und verliert Glaubwürdigkeit für die Positionen, bei denen er recht hat.
+
+**Neu:** Heizung, Warmwasser und Wasser erzeugen keine Beanstandung mehr. Sie werden weiterhin angezeigt und eingeordnet, aber als Information. Bei Heizung bleibt ein echter Prüfpunkt erhalten, der nichts mit der Höhe zu tun hat: Der Verbrauchsanteil muss nach § 7 Abs. 1 HeizkostenV zwingend zwischen 50 und 70 Prozent liegen.
+
+Der Flächenvergleich bleibt unverändert dort, wo er aussagekräftig ist: bei **fixen** Kosten wie Grundsteuer, Versicherungen, Müll, Hausreinigung, Gartenpflege, Hausmeister.
+
+### Ergebnis desselben Falls nach den Änderungen
+
+| | vorher | nachher |
+|---|---|---|
+| Erfasste Gesamtkosten | 3.279,84 € | **3.164,84 €** (= Abrechnung) |
+| Beanstandungen im Brief | 6 | **1** |
+| davon sachlich haltbar | 1 | 1 |
+| „mögliche Doppelberechnung" | ja | nein |
+
+Übrig bleibt die Beanstandung, die tatsächlich trägt: Die vier Gebäudeversicherungen summieren sich auf 600,53 € und liegen damit 100 % über dem DMB-Wert. Versicherung ist eine fixe Kostenart, hier ist der Vergleich zulässig und die Nachfrage berechtigt.
+
+### Weitere Korrektur im Brief
+
+„Summe der beanstandeten Positionen 684,43 €" war falsch beschriftet. Die beanstandeten Positionen summierten sich auf 1.584,79 €; die 684,43 € waren der Betrag oberhalb der Richtwerte. Wer den Brief so abschickt, nennt dem Vermieter eine Zahl, die er auf Nachfrage nicht herleiten kann. Beschriftung jetzt: „Betrag oberhalb der DMB-Vergleichswerte".
+
+### Die Regel wird jetzt auch erklärt, statt nur angewendet
+
+Stefans Vorgabe: „Das Verbrauchsposten nicht beanstandet werden und warum muss erklärt werden. In den FAQ und auch auf der Abrechnung selbst."
+
+Der Grund ist zwingend: Seit der Änderung sieht der Kunde bei Heizung und Wasser den Status „unauffällig", obwohl der Betrag sichtbar über dem Richtwert liegt. Ohne Erklärung wirkt das wie ein Fehler im Bericht, und zwar genau an der Stelle, an der besonders sorgfältig gearbeitet wurde.
+
+**Drei neue FAQ-Einträge** (`src/config/faq.js`, wandern automatisch ins FAQPage-Markup für Google, geprüft in `dist/faq/index.html`):
+
+1. Warum Heizung, Warmwasser und Wasser nicht beanstandet werden.
+2. Heißt das, bei Heizkosten kann man gar nichts prüfen? (Antwort: nein, siehe unten)
+3. Wann wird ein Posten überhaupt auffällig genannt? (die drei Befundarten)
+
+**Erklärblock im Prüfbericht selbst** (`src/pdf/AbrechnungPDF.jsx`), erscheint nur, wenn tatsächlich Verbrauchsposten erfasst sind.
+
+### Korrektur an einer Annahme: bei Heizkosten ist sehr wohl etwas beanstandbar
+
+Stefan hatte vermutet, man könne dem Kunden bei Verbrauchsposten „wenn überhaupt dazu raten, die Posten zu prüfen". Das stimmt für die **Höhe** des Verbrauchs, aber nicht für die **Art der Abrechnung**. Dort liegen sogar die stärksten Rechte, die Mieter überhaupt haben. Wortlaut an der Primärquelle geprüft (gesetze-im-internet.de):
+
+| Vorschrift | Inhalt | Rechtsfolge |
+|---|---|---|
+| § 7 Abs. 1 Satz 1 HeizkostenV | mindestens 50, höchstens 70 Prozent nach erfasstem Verbrauch verteilen | feste Vorgabe, Verstoß eindeutig feststellbar |
+| § 12 Abs. 1 Satz 1 HeizkostenV | nicht verbrauchsabhängig abgerechnet | **15 Prozent Kürzungsrecht** |
+| § 12 Abs. 1 Satz 2 HeizkostenV | keine fernablesbare Ausstattung entgegen § 5 Abs. 2 oder 3 | **3 Prozent Kürzungsrecht** |
+| § 12 Abs. 1 Satz 3 HeizkostenV | Informationen nach § 6a nicht oder unvollständig mitgeteilt | **3 Prozent Kürzungsrecht** |
+
+Das sind binäre Prüfungen mit klarer Rechtsfolge. Ein Vermieter kann dagegen nichts einwenden, anders als gegen eine statistische Abweichung. Ein 15-Prozent-Kürzungsrecht ist außerdem betragsmäßig meist mehr wert als jeder statistische Befund.
+
+Diese Prüfungen sind noch **nicht implementiert**, aber als Backlog-Punkt festgehalten, weil sie besser zum Anspruch passen als alles, was auf Durchschnittswerten beruht. Voraussetzung wäre, dass die Erkennung Grund- und Verbrauchsanteil getrennt ausliest, was sie bei Stefans Abrechnung bereits getan hat (251,88 + 448,93).
+
+### Zur Frage nach der Personenanzahl
+
+Stefan hat gefragt, ob eine Abfrage der Haushaltsgröße die Prüfung genauer machen würde. Einschätzung: Sie würde die **Einordnung** verbessern (Aussage „113,64 m³ bei drei Personen entspricht dem Üblichen" statt eines Flächenvergleichs), aber **keinen Beanstandungsgrund** schaffen. Der Vermieter rechnet ab, was der Zähler zeigt.
+
+Dagegen sprechen ein zusätzliches Pflichtfeld im Formular und ein zusätzliches personenbezogenes Datum (Haushaltsgröße, Art. 5 Abs. 1 lit. c DSGVO, Datensparsamkeit). Dafür spricht wenig, was nicht auch ohne ginge: Der Verbrauch in Kubikmetern steht ohnehin auf der Abrechnung und ließe sich direkt auslesen. Empfehlung deshalb: nicht als Pflichtfeld.
+
+### Offen
+
+Die Vorauszahlung (3.360,00 €) wurde im Testlauf nicht erfasst, deshalb fehlte im Bericht der Hinweis auf das Guthaben von 195,16 €. Die Logik dafür existiert und funktioniert (geprüft: Saldo wird korrekt als Guthaben ausgewiesen, samt Hinweis „trotzdem inhaltlich prüfen"). Warum das Feld leer blieb, ist noch zu klären.
+
+---
+
 ## 11.09.2026 — Gedankenstriche entfernt, Überschrift bricht nicht mehr um, Search-Console-Befund
 
 ### Keine Gedankenstriche mehr im sichtbaren Text

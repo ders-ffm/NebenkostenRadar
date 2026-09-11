@@ -152,7 +152,7 @@ export default function Result({ navigateTo, result, wohnung, werte, gesamtsumme
             Widerspruch helfen, es gäbe schlicht nichts, das ein Musterbrief
             enthalten könnte. Stefans ausdrücklicher Wunsch: nicht verkaufen,
             nur weil es technisch möglich ist, sondern ehrlich sagen, wenn ein
-            Kauf keinen Mehrwert hätte — das ist wichtiger als die Conversion. */}
+            Kauf keinen Mehrwert hätte: das ist wichtiger als die Conversion. */}
         {result.gesamtbewertung === "ok" && (
           <div style={{ background: C.okBg, border: "1px solid " + C.ok, borderRadius: THEME.radius.lg, padding: "16px 18px", marginBottom: 14 }}>
             <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 6 }}>
@@ -169,8 +169,8 @@ export default function Result({ navigateTo, result, wohnung, werte, gesamtsumme
           {/* Kurze, am Kundenwunsch orientierte Formulierung statt "hart"/
               "statistisch"-Fachsprache (10.08.2026, siehe CHANGELOG, Stefans
               Wunsch): Die Entscheidung Bericht vs. Brief hängt letztlich
-              daran, was der Kunde als Nächstes tun will — Belege anfordern
-              (Brief) oder nicht (Bericht reicht) —, nicht an unserer eigenen
+              daran, was der Kunde als Nächstes tun will. Belege anfordern
+              (Brief) oder nicht (Bericht reicht), nicht an unserer eigenen
               Beweisstärke-Einordnung. Die liefert nur die Grundlage für die
               Empfehlung, wird dem Kunden aber nicht mehr als Begriff gezeigt. */}
           <div style={{ textAlign: "center", marginBottom: 16 }}>
@@ -179,10 +179,10 @@ export default function Result({ navigateTo, result, wohnung, werte, gesamtsumme
             </h3>
             <p style={{ margin: 0, fontSize: 12, color: C.textMuted }}>
               {result.gesamtbewertung === "ok"
-                ? "Optional — für deine eigenen Unterlagen, nicht für einen Widerspruch nötig"
+                ? "Optional, für deine eigenen Unterlagen, nicht für einen Widerspruch nötig"
                 : hatHart
                   ? "Wir haben einen eindeutigen Verstoß gefunden. Willst du Belege vom Vermieter anfordern? Dann brauchst du den Brief."
-                  : "Willst du Belege vom Vermieter anfordern? Dann hilft dir der Brief. Reicht dir die Auswertung — die genügt."}
+                  : "Willst du Belege vom Vermieter anfordern? Dann hilft dir der Brief. Reicht dir die Auswertung: die genügt."}
             </p>
           </div>
 
@@ -204,7 +204,7 @@ export default function Result({ navigateTo, result, wohnung, werte, gesamtsumme
               <div style={{ fontSize: 10, color: C.textDim, marginTop: 4 }}>3-seitiges PDF inkl. Musterbrief und Steuer-Bonus (§ 35a EStG)</div>
               {/* 14.08.2026, siehe planung/steuerbonus-35a-rollout.md: kleiner
                   eigener Badge für den Kaufanreiz, zusätzlich zum Beschreibungstext
-                  — Stefan hat das Mockup mit diesem Badge freigegeben. */}
+, Stefan hat das Mockup mit diesem Badge freigegeben. */}
               <div style={{ display: "inline-block", marginTop: 8, background: C.accentBg, color: C.textDim, fontSize: 9, fontWeight: 600, padding: "3px 8px", borderRadius: 8 }}>+ Steuer-Bonus</div>
             </button>
           </div>
@@ -213,28 +213,28 @@ export default function Result({ navigateTo, result, wohnung, werte, gesamtsumme
           {/* Umformuliert weg von "Mögliche Rückforderung" als Kernversprechen
               (10.08.2026, siehe CHANGELOG, Stefans Frage zur Plausibilität/
               Wiederkauf-Tragfähigkeit): Fast jede Position ist eine Richtwert-
-              Abweichung — ein Anlass zur Nachfrage beim Vermieter, kein
+              Abweichung: ein Anlass zur Nachfrage beim Vermieter, kein
               Beweis für einen Fehler. Das Kernversprechen ist jetzt in erster
-              Linie Klarheit/Gewissheit über die eigene Abrechnung; ein
+              Linie Klarheit und Gewissheit über die eigene Abrechnung; ein
               möglicher Rückforderungsbetrag wird weiterhin genannt, aber nach
-              Beweisstärke getrennt und nicht mehr als Garantie formuliert —
+              Beweisstärke getrennt und nicht mehr als Garantie formuliert, 
               ähnlich wie es z.B. NebenkostenPro handhabt (kein "Geld zurück"
               als Versprechen, sondern "Auffälligkeitshinweise"/"Prüfpotenzial"). */}
           {(result.ersparnis_hart > 0 || result.ersparnis_statistisch > 0) && (
             <div style={{ background: C.brandBg, borderLeft: "3px solid " + C.brand, borderRadius: 8, padding: "10px 14px", fontSize: 12, color: C.brand, marginBottom: 14 }}>
               {result.ersparnis_hart > 0 && (
-                <div><strong>{fmt(result.ersparnis_hart)}</strong> eindeutig zu viel gezahlt — unabhängig von Belegen nachweisbar.</div>
+                <div><strong>{fmt(result.ersparnis_hart)}</strong> eindeutig zu viel gezahlt, unabhängig von Belegen nachweisbar.</div>
               )}
               {result.ersparnis_statistisch > 0 && (
                 <div style={{ marginTop: result.ersparnis_hart > 0 ? 4 : 0 }}>
-                  {result.ersparnis_hart > 0 ? "Zusätzlich " : ""}<strong>{fmt(result.ersparnis_statistisch)}</strong> {result.ersparnis_hart > 0 ? "möglich" : "möglicherweise zu viel gezahlt"} — liegt über dem DMB-Durchschnitt, dein Vermieter muss dazu Nachweise vorlegen. Das ist eine begründete Vermutung, keine Garantie.
+                  {result.ersparnis_hart > 0 ? "Zusätzlich " : ""}<strong>{fmt(result.ersparnis_statistisch)}</strong> {result.ersparnis_hart > 0 ? "möglich" : "möglicherweise zu viel gezahlt"}, liegt über dem DMB-Durchschnitt, dein Vermieter muss dazu Nachweise vorlegen. Das ist eine begründete Vermutung, keine Garantie.
                 </div>
               )}
               {result.saldo != null && (
                 <div style={{ fontWeight: 400, marginTop: 6 }}>
                   {result.saldo > 0
-                    ? "Zusätzlich zu deiner Nachzahlung laut Abrechnung (" + fmt(result.saldo) + ") — bei Erfolg würde sich deine Nachzahlung um diesen Betrag verringern."
-                    : "Zusätzlich zu deinem Guthaben laut Abrechnung (" + fmt(Math.abs(result.saldo)) + ") — nicht Teil davon, sondern obendrauf."}
+                    ? "Zusätzlich zu deiner Nachzahlung laut Abrechnung (" + fmt(result.saldo) + "), bei Erfolg würde sich deine Nachzahlung um diesen Betrag verringern."
+                    : "Zusätzlich zu deinem Guthaben laut Abrechnung (" + fmt(Math.abs(result.saldo)) + "), nicht Teil davon, sondern obendrauf."}
                 </div>
               )}
             </div>
@@ -280,12 +280,12 @@ export default function Result({ navigateTo, result, wohnung, werte, gesamtsumme
                 {fortsetzenStatus === "speichert" ? "Wird gespeichert …" : "Link zum späteren Fortsetzen erstellen"}
               </button>
               {fortsetzenStatus === "fehler" && (
-                <div style={{ fontSize: 11, color: C.warn, marginTop: 8 }}>Konnte nicht gespeichert werden. Bitte kurz erneut versuchen — deine Eingabe bleibt in diesem Browser trotzdem automatisch erhalten.</div>
+                <div style={{ fontSize: 11, color: C.warn, marginTop: 8 }}>Konnte nicht gespeichert werden. Bitte kurz erneut versuchen, deine Eingabe bleibt in diesem Browser trotzdem automatisch erhalten.</div>
               )}
             </>
           ) : (
             <>
-              <div style={{ fontSize: 13, fontWeight: 600, color: C.brand, marginBottom: 6, fontFamily: THEME.font.heading }}>✓ Link erstellt — 30 Tage gültig</div>
+              <div style={{ fontSize: 13, fontWeight: 600, color: C.brand, marginBottom: 6, fontFamily: THEME.font.heading }}>✓ Link erstellt, 30 Tage gültig</div>
               <div style={{ display: "flex", gap: 8, alignItems: "center", background: C.bg, border: "1px solid " + C.border, borderRadius: THEME.radius.md, padding: "8px 10px" }}>
                 <div style={{ flex: 1, fontSize: 11, color: C.textMuted, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{fortsetzenLink}</div>
                 <button onClick={linkKopieren} style={{ flexShrink: 0, background: C.brand, color: "#fff", border: "none", borderRadius: 6, padding: "6px 12px", fontSize: 11, fontWeight: 600, cursor: "pointer" }}>
