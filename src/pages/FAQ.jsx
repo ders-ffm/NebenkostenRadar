@@ -37,7 +37,7 @@ export default function FAQ({ navigateTo }) {
           Häufige Fragen
         </h1>
         <p style={{ fontSize: 15, color: C.textMuted, lineHeight: 1.7, margin: "0 0 32px" }}>
-          Hier stehen die Fragen, die wir uns selbst stellen würden — auch die unbequemen. Wenn deine Frage fehlt, schreib uns; wir nehmen sie auf.
+          Hier stehen die Fragen, die wir uns selbst stellen würden, auch die unbequemen. Wenn deine Frage fehlt, schreib uns; wir nehmen sie auf.
         </p>
 
         {/* Bewusst natives <details>/<summary> statt React-State:
@@ -72,7 +72,7 @@ export default function FAQ({ navigateTo }) {
         <div style={{ marginTop: 40 }}>
           <h2 style={{ fontFamily: THEME.font.heading, fontSize: 20, fontWeight: 600, color: C.text, margin: "0 0 8px" }}>Was die Alternativen kosten</h2>
           <p style={{ fontSize: 14, color: C.textMuted, lineHeight: 1.7, margin: "0 0 18px" }}>
-            Damit du den Preis einordnen kannst — einschließlich der kostenlosen Alternative.
+            Damit du den Preis einordnen kannst, einschließlich der kostenlosen Alternative.
           </p>
           <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
             {[
@@ -87,7 +87,7 @@ export default function FAQ({ navigateTo }) {
               },
               {
                 titel: "NebenkostenRadar", hervor: true,
-                preis: euro(BUSINESS.PREIS_AUSWERTUNG) + " – " + euro(BUSINESS.PREIS_VOLL),
+                preis: euro(BUSINESS.PREIS_AUSWERTUNG) + ", " + euro(BUSINESS.PREIS_VOLL),
                 punkte: [
                   "Einmalig, kein Abo, kein Kundenkonto nötig",
                   "Jede Position gegen Richtwert und Rechtsgrundlage geprüft",
@@ -96,10 +96,10 @@ export default function FAQ({ navigateTo }) {
                 ],
               },
               {
-                titel: "Mieterverein", preis: "ca. 60 – 132 € / Jahr", hervor: false,
+                titel: "Mieterverein", preis: "ca. 60  bis 132 € / Jahr", hervor: false,
                 punkte: [
                   "Beitrag je nach Ortsverein, teils zzgl. einmaliger Aufnahmegebühr",
-                  "Persönliche Beratung durch Menschen — inhaltlich das Gründlichste",
+                  "Persönliche Beratung durch Menschen, inhaltlich das Gründlichste",
                   "Deckt weit mehr ab als die Nebenkostenabrechnung",
                   "Meist Terminvereinbarung nötig, teils Wartezeit für Neumitglieder",
                 ],
@@ -109,7 +109,7 @@ export default function FAQ({ navigateTo }) {
                 punkte: [
                   "Höchstbetrag nach § 34 Abs. 1 S. 3 RVG, wenn keine Vergütungsvereinbarung getroffen wurde",
                   "Ein Widerspruchsschreiben wird darüber hinaus nach Streitwert abgerechnet",
-                  "Verbindliche Einschätzung des Einzelfalls — das kann keine Software",
+                  "Verbindliche Einschätzung des Einzelfalls: das kann keine Software",
                   "Bei kleineren Beträgen übersteigen die Kosten oft die Ersparnis",
                 ],
               },

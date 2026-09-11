@@ -15,7 +15,7 @@ const url = import.meta.env.VITE_SUPABASE_URL;
 const anonKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
 
 if (!url || !anonKey) {
-  console.warn("Supabase-Client nicht konfiguriert — VITE_SUPABASE_URL/VITE_SUPABASE_ANON_KEY fehlen. Login funktioniert nicht.");
+  console.warn("Supabase-Client nicht konfiguriert. VITE_SUPABASE_URL/VITE_SUPABASE_ANON_KEY fehlen. Login funktioniert nicht.");
 }
 
 export const supabase = url && anonKey ? createClient(url, anonKey) : null;

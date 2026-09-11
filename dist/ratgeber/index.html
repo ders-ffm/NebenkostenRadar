@@ -8,7 +8,7 @@
     Einzelne Elemente sollten ohnehin nie breiter als der Viewport werden,
     aber diese Regel fängt Restfälle ab (z.B. sehr lange unbrechbare Wörter,
     Rundungsfehler bei Prozent-/Padding-Kombinationen) und verhindert, dass
-    daraus eine seitlich wegziehbare Seite wird — wirkt sonst unfertig.
+    daraus eine seitlich wegziehbare Seite wird, wirkt sonst unfertig.
   -->
   <style>
     /*
@@ -19,7 +19,7 @@
     */
     html, body, #root { max-width: 100%; overflow-x: hidden; }
     /*
-      Kein echter Überlauf vorhanden (per Konsolen-Check bestätigt) — das
+      Kein echter Überlauf vorhanden (per Konsolen-Check bestätigt), das
       seitliche "Hin- und Herschubsen" war iOS Safaris eingebautes
       elastisches Rubber-Band-Verhalten, das standardmäßig auch ohne
       überlaufenden Inhalt aktiv ist. overscroll-behavior-x schaltet gezielt
@@ -29,7 +29,7 @@
     */
     /*
       overscroll-behavior-x (siehe unten) und touch-action greifen für das
-      elastische Rubber-Band NICHT auf iOS Safari — WebKit implementiert
+      elastische Rubber-Band NICHT auf iOS Safari. WebKit implementiert
       overscroll-behavior für diesen Fall nicht (offener WebKit-Bug 176454,
       Stand 08/2026, ungelöst seit Jahren). Bleiben trotzdem stehen, schaden
       nicht und helfen in anderen Browsern (Chrome/Firefox Android). Die
@@ -38,7 +38,7 @@
     html, body { overscroll-behavior-x: none; touch-action: pan-y; }
     /*
       Reines Sicherheitsnetz für sehr lange, unbrechbare Wörter (z.B. in
-      Ratgeber-Artikeln) — bricht im Extremfall mitten im Wort um, statt
+      Ratgeber-Artikeln), bricht im Extremfall mitten im Wort um, statt
       über den Container hinauszulaufen. `hyphens:auto` wurde bewusst NICHT
       global gesetzt: hat auf der Startseite "Transparent" unerwünscht zu
       "Transpa-rent" getrennt, obwohl gar keine Not dazu bestand (Browser
@@ -53,15 +53,15 @@
   <link rel="canonical" href="https://nebenkostenradar.com/ratgeber" />
 
   <title>Ratgeber Nebenkosten &amp; Mietrecht | NebenkostenRadar</title>
-  <meta name="description" content="Verständliche Artikel für Mieter: Betriebskosten, Umlageschlüssel, Belegeinsicht und Fristen — mit Rechtsgrundlage und ohne Fachchinesisch." />
+  <meta name="description" content="Verständliche Artikel für Mieter: Betriebskosten, Umlageschlüssel, Belegeinsicht und Fristen, mit Rechtsgrundlage und ohne Fachchinesisch." />
 
   <meta property="og:type" content="website" />
   <meta property="og:title" content="Ratgeber Nebenkosten &amp; Mietrecht | NebenkostenRadar" />
-  <meta property="og:description" content="Verständliche Artikel für Mieter: Betriebskosten, Umlageschlüssel, Belegeinsicht und Fristen — mit Rechtsgrundlage und ohne Fachchinesisch." />
+  <meta property="og:description" content="Verständliche Artikel für Mieter: Betriebskosten, Umlageschlüssel, Belegeinsicht und Fristen, mit Rechtsgrundlage und ohne Fachchinesisch." />
   <meta property="og:url" content="https://nebenkostenradar.com/ratgeber" />
   <meta property="og:locale" content="de_DE" />
   <!-- Vorschaubild für geteilte Links. ERGÄNZT 10.09.2026: Bis dahin gab es
-       gar kein og:image — jeder auf WhatsApp, Facebook oder LinkedIn geteilte
+       gar kein og:image, jeder auf WhatsApp, Facebook oder LinkedIn geteilte
        Link zeigte eine leere graue Vorschau. Das Bild liegt in public/ und
        wird unverändert nach dist/ kopiert. Die URL muss absolut sein, relative
        Pfade werden von den meisten Netzwerken nicht aufgelöst.
@@ -71,14 +71,14 @@
   <meta property="og:image" content="https://nebenkostenradar.com/og-bild.png" />
   <meta property="og:image:width" content="1200" />
   <meta property="og:image:height" content="630" />
-  <meta property="og:image:alt" content="NebenkostenRadar — jede zweite Abrechnung enthält Fehler" />
+  <meta property="og:image:alt" content="NebenkostenRadar, jede zweite Abrechnung enthält Fehler" />
   <meta name="twitter:image" content="https://nebenkostenradar.com/og-bild.png" />
 
   <!--
     Gestaltung des vorgerenderten Zwischenzustands (11.09.2026).
 
     WOFÜR: Stefan ist aufgefallen, dass beim Aufruf der Seite für den
-    Bruchteil einer Sekunde reiner Text ohne Gestaltung aufblitzt — schwarz
+    Bruchteil einer Sekunde reiner Text ohne Gestaltung aufblitzt, schwarz
     auf weiß. Das ist eine Nebenwirkung des Vorrenderns: Seit dem 10.09.2026
     steht im ausgelieferten HTML echter Text, den der Browser sofort anzeigt.
     Die Gestaltung der Seite steckt dagegen komplett als JavaScript-Objekte
@@ -92,14 +92,14 @@
        Seite aussieht und nicht nach einem Rohdokument.
 
     WARUM INLINE UND NICHT ALS DATEI: Ein externes Stylesheet wäre ein
-    zusätzlicher Netzwerkabruf — und genau während dieses Abrufs wäre der
+    zusätzlicher Netzwerkabruf und genau während dieses Abrufs wäre der
     ungestaltete Zustand wieder sichtbar. Inline gilt es ab der ersten
     Bildschirmausgabe.
 
     WARUM DIE KLASSE .vorab: Die Regeln dürfen ausschließlich den
     Zwischenzustand betreffen. scripts/prerender.mjs verpackt den
     vorgerenderten Inhalt in <div class="vorab">. React ersetzt den Inhalt
-    von #root beim Start vollständig, die Klasse verschwindet dabei — die
+    von #root beim Start vollständig, die Klasse verschwindet dabei, die
     Regeln können also nicht in die fertige Seite hineinwirken.
 
     Bewusst KEIN display:none auf dem Inhalt: Text vor Nutzern zu verstecken,
@@ -147,11 +147,11 @@
        zeigt X/Twitter die große Vorschaukarte statt einer kleinen Kachel. -->
   <meta name="twitter:card" content="summary_large_image" />
   <meta name="twitter:title" content="Ratgeber Nebenkosten &amp; Mietrecht | NebenkostenRadar" />
-  <meta name="twitter:description" content="Verständliche Artikel für Mieter: Betriebskosten, Umlageschlüssel, Belegeinsicht und Fristen — mit Rechtsgrundlage und ohne Fachchinesisch." />
+  <meta name="twitter:description" content="Verständliche Artikel für Mieter: Betriebskosten, Umlageschlüssel, Belegeinsicht und Fristen, mit Rechtsgrundlage und ohne Fachchinesisch." />
 
   <!--
     Verhindert das elastische horizontale "Rubber-Band"-Wischen auf iOS
-    Safari (08/2026) — reines CSS (overscroll-behavior-x) wirkt dafür nicht,
+    Safari (08/2026), reines CSS (overscroll-behavior-x) wirkt dafür nicht,
     siehe Kommentar im <style>-Block oben (WebKit-Bug 176454). Ermittelt bei
     jeder Berührung, ob die Bewegung überwiegend horizontal ist, und
     unterdrückt nur dann das Standardverhalten. Vertikales Scrollen bleibt
@@ -185,7 +185,7 @@
     GA4-Consent-Stub: setzt NUR den Default-Zustand (analytics_storage: denied)
     und lädt NICHTS. Das eigentliche gtag.js-Skript wird erst in
     components/layout/CookieBanner.jsx (ladeGA4()) nach Einwilligung geladen.
-    NIEMALS hier ein <script src="googletagmanager.com/gtag/js..."> ergänzen —
+    NIEMALS hier ein <script src="googletagmanager.com/gtag/js..."> ergänzen, 
     das war der ursprüngliche Abmahn-/Bußgeld-Risikopunkt (Cookieless Ping mit
     IP-Adresse vor Einwilligung), siehe CHANGELOG.md.
   -->
@@ -197,10 +197,10 @@
 
   <!--
     ACHTUNG bei Preisänderungen: Diese Datei ist reines statisches HTML, kein
-    JSX — kann NICHT wie Datenschutz.jsx/AGB.jsx aus BUSINESS.PREIS_* in
+    JSX, kann NICHT wie Datenschutz.jsx/AGB.jsx aus BUSINESS.PREIS_* in
     src/config/business.js gerendert werden. Preise unten müssen bei jeder
     Änderung von Hand nachgezogen werden. Am 13.08.2026 hier veraltete Preise
-    (7,99 €/9,99 €) gefunden und auf die aktuellen 9,99 €/12,99 € korrigiert —
+    (7,99 €/9,99 €) gefunden und auf die aktuellen 9,99 €/12,99 € korrigiert, 
     derselbe Fehler wie zuvor in Datenschutz.jsx, siehe CHANGELOG.md.
   -->
   <script type="application/ld+json">
@@ -216,30 +216,30 @@
     ]
   }
   </script>
-  <script type="module" crossorigin src="/assets/index-D10jUKK8.js"></script>
+  <script type="module" crossorigin src="/assets/index-7CbgBkHf.js"></script>
 </head>
 <body>
-  <div id="root"><div class="vorab"><h1>Ratgeber Mietrecht</h1><ul><li><a href="/ratgeber/grundsteuerreform-2026-auswirkungen-auf-die-nebenkostenabrechnung">Grundsteuerreform 2026: Auswirkungen auf die Nebenkostenabrechnung für Mieter</a><br>Die neuen Grundsteuerwerte tauchen 2026 erstmals in vielen Nebenkostenabrechnungen auf – mit teils erheblichen Nachzahlungen. Dieser Ratgeber erklärt, welche Rechtsgrundlage gilt, was Sie prüfen sollten und wann Sie sich gegen eine überhöhte Umlage wehren können.</li>
-<li><a href="/ratgeber/hausmeisterkosten-in-der-nebenkostenabrechnung-was-ist-umlagefaehig">Hausmeisterkosten in der Nebenkostenabrechnung 2026: Was ist umlagefähig – und was nicht?</a><br>Hausmeisterkosten zählen zu den häufigsten Streitpunkten in der Nebenkostenabrechnung, weil Vermieter oft Verwaltungs- und Reparaturarbeiten mit einrechnen, die Mieter gar nicht zahlen müssen. Dieser Ratgeber zeigt, welche Tätigkeiten wirklich umlagefähig sind und wie Sie typische Fehler in Ihrer Abrechnung erkennen.</li>
-<li><a href="/ratgeber/muellgebuehren-und-abfallentsorgung-als-betriebskosten-2026">Müllgebühren und Abfallentsorgung als Betriebskosten 2026: Was Mieter zahlen müssen – und was nicht</a><br>Müllgebühren gehören zu den Nebenkosten, die fast jede Abrechnung enthält – doch nicht jede Position darf der Vermieter umlegen. Dieser Ratgeber zeigt, was 2026 rechtlich zulässig ist, welche Kosten Vermieter selbst tragen müssen und wie Sie eine überhöhte Müllabrechnung erkennen.</li>
-<li><a href="/ratgeber/wasserkosten-und-kaltwasserzaehler-in-der-nebenkostenabrechnung">Wasserkosten und Kaltwasserzähler in der Nebenkostenabrechnung 2026: Was Mieter wissen müssen</a><br>Wasserkosten zählen zu den größten Posten in der Nebenkostenabrechnung – und Kaltwasserzähler sind dabei oft eine Fehlerquelle. Erfahren Sie, welche Kosten umlagefähig sind, wie die Eichpflicht funktioniert und wie Sie Ihre Abrechnung selbst prüfen.</li>
-<li><a href="/ratgeber/betriebskostenabrechnung-fristen-und-verjaehrung-2026">Betriebskostenabrechnung 2026: Fristen und Verjährung – was Mieter wissen müssen</a><br>Wann muss der Vermieter abrechnen, wie lange können Sie widersprechen und ab wann sind Nachforderungen verjährt? Der komplette Überblick über alle Fristen rund um die Betriebskostenabrechnung 2026.</li>
-<li><a href="/ratgeber/heizkostenabrechnung-vermieterfehler-2026-leitfaden">Heizkostenabrechnung 2026: Die häufigsten Fehler der Vermieter – und wie Sie als Mieter reagieren</a><br>Fast jede zweite Heizkostenabrechnung enthält Fehler, die Mieter bares Geld kosten. Dieser Leitfaden zeigt die typischen Stolperfallen 2026 und erklärt, wie Sie Ihre Abrechnung Schritt für Schritt prüfen.</li>
-<li><a href="/ratgeber/bgh-urteile-mietrecht-nebenkosten-2026">Aktuelle BGH-Urteile Mietrecht Nebenkosten 2026: Das müssen Mieter wissen</a><br>Der Bundesgerichtshof hat 2026 mehrere wichtige Entscheidungen zur Betriebskostenabrechnung getroffen – von der Wirtschaftlichkeit der Kosten bis zur Grundsteuer. Wir erklären dir verständlich, was sich geändert hat und wie du davon profitierst.</li>
-<li><a href="/ratgeber/widerspruch-nebenkostenabrechnung">Widerspruch Nebenkostenabrechnung 2026: Frist, Muster &amp; Anleitung</a><br>12 Monate Zeit, aber nur 30 Tage für die Nachzahlung — viele Mieter verwechseln diese Fristen. Was Sie jetzt wissen müssen.</li>
+  <div id="root"><div class="vorab"><h1>Ratgeber Mietrecht</h1><ul><li><a href="/ratgeber/grundsteuerreform-2026-auswirkungen-auf-die-nebenkostenabrechnung">Grundsteuerreform 2026: Auswirkungen auf die Nebenkostenabrechnung für Mieter</a><br>Die neuen Grundsteuerwerte tauchen 2026 erstmals in vielen Nebenkostenabrechnungen auf, mit teils erheblichen Nachzahlungen. Dieser Ratgeber erklärt, welche Rechtsgrundlage gilt, was Sie prüfen sollten und wann Sie sich gegen eine überhöhte Umlage wehren können.</li>
+<li><a href="/ratgeber/hausmeisterkosten-in-der-nebenkostenabrechnung-was-ist-umlagefaehig">Hausmeisterkosten in der Nebenkostenabrechnung 2026: Was ist umlagefähig und was nicht?</a><br>Hausmeisterkosten zählen zu den häufigsten Streitpunkten in der Nebenkostenabrechnung, weil Vermieter oft Verwaltungs- und Reparaturarbeiten mit einrechnen, die Mieter gar nicht zahlen müssen. Dieser Ratgeber zeigt, welche Tätigkeiten wirklich umlagefähig sind und wie Sie typische Fehler in Ihrer Abrechnung erkennen.</li>
+<li><a href="/ratgeber/muellgebuehren-und-abfallentsorgung-als-betriebskosten-2026">Müllgebühren und Abfallentsorgung als Betriebskosten 2026: Was Mieter zahlen müssen und was nicht</a><br>Müllgebühren gehören zu den Nebenkosten, die fast jede Abrechnung enthält, doch nicht jede Position darf der Vermieter umlegen. Dieser Ratgeber zeigt, was 2026 rechtlich zulässig ist, welche Kosten Vermieter selbst tragen müssen und wie Sie eine überhöhte Müllabrechnung erkennen.</li>
+<li><a href="/ratgeber/wasserkosten-und-kaltwasserzaehler-in-der-nebenkostenabrechnung">Wasserkosten und Kaltwasserzähler in der Nebenkostenabrechnung 2026: Was Mieter wissen müssen</a><br>Wasserkosten zählen zu den größten Posten in der Nebenkostenabrechnung und Kaltwasserzähler sind dabei oft eine Fehlerquelle. Erfahren Sie, welche Kosten umlagefähig sind, wie die Eichpflicht funktioniert und wie Sie Ihre Abrechnung selbst prüfen.</li>
+<li><a href="/ratgeber/betriebskostenabrechnung-fristen-und-verjaehrung-2026">Betriebskostenabrechnung 2026: Fristen und Verjährung: was Mieter wissen müssen</a><br>Wann muss der Vermieter abrechnen, wie lange können Sie widersprechen und ab wann sind Nachforderungen verjährt? Der komplette Überblick über alle Fristen rund um die Betriebskostenabrechnung 2026.</li>
+<li><a href="/ratgeber/heizkostenabrechnung-vermieterfehler-2026-leitfaden">Heizkostenabrechnung 2026: Die häufigsten Fehler der Vermieter und wie Sie als Mieter reagieren</a><br>Fast jede zweite Heizkostenabrechnung enthält Fehler, die Mieter bares Geld kosten. Dieser Leitfaden zeigt die typischen Stolperfallen 2026 und erklärt, wie Sie Ihre Abrechnung Schritt für Schritt prüfen.</li>
+<li><a href="/ratgeber/bgh-urteile-mietrecht-nebenkosten-2026">Aktuelle BGH-Urteile Mietrecht Nebenkosten 2026: Das müssen Mieter wissen</a><br>Der Bundesgerichtshof hat 2026 mehrere wichtige Entscheidungen zur Betriebskostenabrechnung getroffen, von der Wirtschaftlichkeit der Kosten bis zur Grundsteuer. Wir erklären dir verständlich, was sich geändert hat und wie du davon profitierst.</li>
+<li><a href="/ratgeber/widerspruch-nebenkostenabrechnung">Widerspruch Nebenkostenabrechnung 2026: Frist, Muster &amp; Anleitung</a><br>12 Monate Zeit, aber nur 30 Tage für die Nachzahlung, viele Mieter verwechseln diese Fristen. Was Sie jetzt wissen müssen.</li>
 <li><a href="/ratgeber/kabelanschluss-nicht-umlagefaehig">Kabelanschluss in Nebenkosten: Seit Juli 2024 nicht mehr umlagefähig</a><br>Vermieter dürfen Kabelgebühren seit dem 01.07.2024 nicht mehr auf Mieter umlegen. Was das bedeutet und wie Sie zu viel gezahltes Geld zurückbekommen.</li>
-<li><a href="/ratgeber/betriebskostenspiegel-2024">DMB Betriebskostenspiegel 2024: Was ist normal?</a><br>Der Deutsche Mieterbund veröffentlicht jährlich Durchschnittswerte für alle Nebenkostenarten. Hier erfahren Sie, was für Ihre Wohnungsgröße normal ist — und wann Ihre Abrechnung zu teuer ist.</li>
-<li><a href="/ratgeber/umlageschluessel-nebenkostenabrechnung-pruefen">Umlageschlüssel in der Nebenkostenabrechnung prüfen: Welcher Maßstab gilt?</a><br>Wohnfläche, Personenzahl oder Verbrauch — der Umlageschlüssel entscheidet mit darüber, wie viel Sie zahlen. Was im Mietvertrag stehen muss, was ohne Vereinbarung gilt und wann Ihr Vermieter den Schlüssel ändern darf.</li>
-<li><a href="/ratgeber/belegeinsicht-nebenkostenabrechnung-verlangen">Belegeinsicht bei der Nebenkostenabrechnung verlangen: So gehen Sie vor</a><br>Sie dürfen alle Originalbelege zu Ihrer Abrechnung einsehen — und die Nachzahlung bis dahin zurückhalten. Rechtsgrundlage, Ablauf und was der Vermieter Ihnen nicht abverlangen darf.</li>
-<li><a href="/ratgeber/nebenkosten-nachzahlung-nicht-zahlen">Nebenkosten-Nachzahlung nicht zahlen: Wann Sie dürfen — und wann es riskant wird</a><br>Eine hohe Nachforderung ist noch kein Grund, die Zahlung zu verweigern. Wann ein Zurückbehaltungsrecht besteht, warum die Zahlung unter Vorbehalt fast immer der bessere Weg ist und ab wann eine Kündigung droht.</li>
-<li><a href="/ratgeber/keine-nebenkostenabrechnung-erhalten">Keine Nebenkostenabrechnung erhalten: Was Mieter jetzt tun können</a><br>Bleibt die Abrechnung aus, verliert der Vermieter nach Ablauf der Frist in der Regel seinen Anspruch auf eine Nachzahlung — Ihr Anspruch auf ein Guthaben bleibt dagegen bestehen. Was das genau bedeutet und wie Sie vorgehen.</li>
-<li><a href="/ratgeber/nicht-umlagefaehige-nebenkosten">Nicht umlagefähige Nebenkosten: Was Ihr Vermieter nicht abrechnen darf</a><br>Verwaltungskosten, Reparaturen, Rücklagen: Es gibt Positionen, die in keiner Nebenkostenabrechnung etwas zu suchen haben — unabhängig davon, was im Mietvertrag steht. Die vollständige Übersicht mit Rechtsgrundlage.</li>
-<li><a href="/ratgeber/sonstige-betriebskosten-nr-17-betrkv">„Sonstige Betriebskosten“ (§ 2 Nr. 17 BetrKV): Wann sie zulässig sind</a><br>Der Auffangposten ist der häufigste Sammelplatz für Kosten, die nirgends sonst hineinpassen. Umlagefähig ist er nur unter einer klaren Bedingung — und die erfüllen viele Mietverträge nicht.</li>
-<li><a href="/ratgeber/aufzugskosten-nebenkostenabrechnung">Aufzugskosten in der Nebenkostenabrechnung: Muss auch das Erdgeschoss zahlen?</a><br>Ja — der Bundesgerichtshof hat das entschieden. Es gibt aber eine Ausnahme, die viele nicht kennen, und eine klare Grenze zwischen umlagefähigem Betrieb und nicht umlagefähiger Reparatur.</li>
-<li><a href="/ratgeber/gartenpflege-nebenkostenabrechnung">Gartenpflege in der Nebenkostenabrechnung: Was umlagefähig ist</a><br>Rasenmähen ja, neue Bäume nein: Bei der Gartenpflege verläuft die Grenze zwischen laufender Pflege und einmaliger Neuanlage. Was das für Ihre Abrechnung bedeutet — auch ohne eigenen Gartenzugang.</li>
-<li><a href="/ratgeber/versicherungen-nebenkostenabrechnung">Versicherungen in der Nebenkostenabrechnung: Welche der Vermieter umlegen darf</a><br>Gebäude- und Haftpflichtversicherung ja, Rechtsschutz und Mietausfall nein. Die Unterscheidung ist einfach — sie wird in Abrechnungen aber regelmäßig übergangen.</li>
-<li><a href="/ratgeber/leerstand-nebenkosten-wer-zahlt">Leerstand und Nebenkosten: Wer zahlt für leerstehende Wohnungen?</a><br>Nicht die verbliebenen Mieter. Der Bundesgerichtshof hat klargestellt, dass der Vermieter die auf leerstehende Wohnungen entfallenden Betriebskosten selbst trägt — und den Verteilerschlüssel dafür nicht ändern darf.</li>
-<li><a href="/ratgeber/nebenkostenabrechnung-bei-auszug">Nebenkostenabrechnung nach dem Auszug: Fristen, Kaution und Rückforderung</a><br>Auch nach dem Auszug bekommen Sie noch eine Abrechnung — und der Vermieter hat dafür deutlich länger Zeit, als die meisten annehmen. Was gilt, wenn er die Kaution deshalb einbehält.</li>
-<li><a href="/ratgeber/nebenkostenabrechnung-formell-unwirksam">Nebenkostenabrechnung formell unwirksam: Diese vier Angaben müssen drinstehen</a><br>Bevor Sie einzelne Beträge prüfen, lohnt der Blick auf die Form. Fehlt eine der vier Mindestangaben, ist die Abrechnung insgesamt angreifbar — unabhängig davon, ob die Zahlen stimmen.</li></ul></div></div>
+<li><a href="/ratgeber/betriebskostenspiegel-2024">DMB Betriebskostenspiegel 2024: Was ist normal?</a><br>Der Deutsche Mieterbund veröffentlicht jährlich Durchschnittswerte für alle Nebenkostenarten. Hier erfahren Sie, was für Ihre Wohnungsgröße normal ist und wann Ihre Abrechnung zu teuer ist.</li>
+<li><a href="/ratgeber/umlageschluessel-nebenkostenabrechnung-pruefen">Umlageschlüssel in der Nebenkostenabrechnung prüfen: Welcher Maßstab gilt?</a><br>Wohnfläche, Personenzahl oder Verbrauch: der Umlageschlüssel entscheidet mit darüber, wie viel Sie zahlen. Was im Mietvertrag stehen muss, was ohne Vereinbarung gilt und wann Ihr Vermieter den Schlüssel ändern darf.</li>
+<li><a href="/ratgeber/belegeinsicht-nebenkostenabrechnung-verlangen">Belegeinsicht bei der Nebenkostenabrechnung verlangen: So gehen Sie vor</a><br>Sie dürfen alle Originalbelege zu Ihrer Abrechnung einsehen und die Nachzahlung bis dahin zurückhalten. Rechtsgrundlage, Ablauf und was der Vermieter Ihnen nicht abverlangen darf.</li>
+<li><a href="/ratgeber/nebenkosten-nachzahlung-nicht-zahlen">Nebenkosten-Nachzahlung nicht zahlen: Wann Sie dürfen und wann es riskant wird</a><br>Eine hohe Nachforderung ist noch kein Grund, die Zahlung zu verweigern. Wann ein Zurückbehaltungsrecht besteht, warum die Zahlung unter Vorbehalt fast immer der bessere Weg ist und ab wann eine Kündigung droht.</li>
+<li><a href="/ratgeber/keine-nebenkostenabrechnung-erhalten">Keine Nebenkostenabrechnung erhalten: Was Mieter jetzt tun können</a><br>Bleibt die Abrechnung aus, verliert der Vermieter nach Ablauf der Frist in der Regel seinen Anspruch auf eine Nachzahlung. Ihr Anspruch auf ein Guthaben bleibt dagegen bestehen. Was das genau bedeutet und wie Sie vorgehen.</li>
+<li><a href="/ratgeber/nicht-umlagefaehige-nebenkosten">Nicht umlagefähige Nebenkosten: Was Ihr Vermieter nicht abrechnen darf</a><br>Verwaltungskosten, Reparaturen, Rücklagen: Es gibt Positionen, die in keiner Nebenkostenabrechnung etwas zu suchen haben, unabhängig davon, was im Mietvertrag steht. Die vollständige Übersicht mit Rechtsgrundlage.</li>
+<li><a href="/ratgeber/sonstige-betriebskosten-nr-17-betrkv">„Sonstige Betriebskosten“ (§ 2 Nr. 17 BetrKV): Wann sie zulässig sind</a><br>Der Auffangposten ist der häufigste Sammelplatz für Kosten, die nirgends sonst hineinpassen. Umlagefähig ist er nur unter einer klaren Bedingung und die erfüllen viele Mietverträge nicht.</li>
+<li><a href="/ratgeber/aufzugskosten-nebenkostenabrechnung">Aufzugskosten in der Nebenkostenabrechnung: Muss auch das Erdgeschoss zahlen?</a><br>Ja: der Bundesgerichtshof hat das entschieden. Es gibt aber eine Ausnahme, die viele nicht kennen, und eine klare Grenze zwischen umlagefähigem Betrieb und nicht umlagefähiger Reparatur.</li>
+<li><a href="/ratgeber/gartenpflege-nebenkostenabrechnung">Gartenpflege in der Nebenkostenabrechnung: Was umlagefähig ist</a><br>Rasenmähen ja, neue Bäume nein: Bei der Gartenpflege verläuft die Grenze zwischen laufender Pflege und einmaliger Neuanlage. Was das für Ihre Abrechnung bedeutet, auch ohne eigenen Gartenzugang.</li>
+<li><a href="/ratgeber/versicherungen-nebenkostenabrechnung">Versicherungen in der Nebenkostenabrechnung: Welche der Vermieter umlegen darf</a><br>Gebäude- und Haftpflichtversicherung ja, Rechtsschutz und Mietausfall nein. Die Unterscheidung ist einfach, sie wird in Abrechnungen aber regelmäßig übergangen.</li>
+<li><a href="/ratgeber/leerstand-nebenkosten-wer-zahlt">Leerstand und Nebenkosten: Wer zahlt für leerstehende Wohnungen?</a><br>Nicht die verbliebenen Mieter. Der Bundesgerichtshof hat klargestellt, dass der Vermieter die auf leerstehende Wohnungen entfallenden Betriebskosten selbst trägt und den Verteilerschlüssel dafür nicht ändern darf.</li>
+<li><a href="/ratgeber/nebenkostenabrechnung-bei-auszug">Nebenkostenabrechnung nach dem Auszug: Fristen, Kaution und Rückforderung</a><br>Auch nach dem Auszug bekommen Sie noch eine Abrechnung und der Vermieter hat dafür deutlich länger Zeit, als die meisten annehmen. Was gilt, wenn er die Kaution deshalb einbehält.</li>
+<li><a href="/ratgeber/nebenkostenabrechnung-formell-unwirksam">Nebenkostenabrechnung formell unwirksam: Diese vier Angaben müssen drinstehen</a><br>Bevor Sie einzelne Beträge prüfen, lohnt der Blick auf die Form. Fehlt eine der vier Mindestangaben, ist die Abrechnung insgesamt angreifbar, unabhängig davon, ob die Zahlen stimmen.</li></ul></div></div>
 </body>
 </html>

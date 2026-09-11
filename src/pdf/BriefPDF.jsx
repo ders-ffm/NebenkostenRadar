@@ -122,7 +122,7 @@ export default function BriefPDF({ result, wohnung, adressen }) {
 
       {/* .trim() 12.08.2026: ein Leerzeichen im eingegebenen Ort-Feld
           erzeugte sichtbar "Frankfurt , 12. August 2026" statt "Frankfurt,
-          12. August 2026" — Eingabefehler, nicht im Formular verhindert;
+          12. August 2026". Eingabefehler, nicht im Formular verhindert;
           hier defensiv abgefangen statt nur an der Formularvalidierung. */}
       <Text style={s.datum}>{(adressen.mieterOrt || "").trim()}, {heute}</Text>
       <Text style={s.betreff}>
@@ -147,7 +147,7 @@ export default function BriefPDF({ result, wohnung, adressen }) {
         </Text>
       )}
 
-      {/* Tabelle entfällt im Modus "belegeinsicht" — dort gibt es keine
+      {/* Tabelle entfällt im Modus "belegeinsicht", dort gibt es keine
           Positionsliste, und eine leere Tabelle mit Rahmenlinie sähe nach
           einem Darstellungsfehler aus. */}
       <View style={zeigtListe ? s.table : { marginBottom: 4 }}>
@@ -163,7 +163,7 @@ export default function BriefPDF({ result, wohnung, adressen }) {
         )}
         {gruendeStatistisch.length > 0 && (
           <>
-            <Text style={s.gruppenTitel}>Auffällig im Vergleich zum DMB-Betriebskostenspiegel — bitte um Prüfung und Beleg</Text>
+            <Text style={s.gruppenTitel}>Auffällig im Vergleich zum DMB-Betriebskostenspiegel, bitte um Prüfung und Beleg</Text>
             {gruendeStatistisch.map((g, i) => (
               <View key={"s" + i} style={s.tRow}>
                 <Text style={s.tLabel}>{gruendeHart.length + i + 1}. {g.text}</Text>
@@ -174,7 +174,7 @@ export default function BriefPDF({ result, wohnung, adressen }) {
         {/* Summenzeile steht DIREKT unter den Beanstandungen und VOR dem
             Fragen-Block (Reihenfolge geändert 09.09.2026, zweiter Testkauf):
             vorher stand sie ganz unten unter einer gemischten Liste aus
-            Beanstandungen und bloßen Rückfragen — dort las sie sich, als
+            Beanstandungen und bloßen Rückfragen, dort las sie sich, als
             summiere sie auch die Fragen mit, was sachlich falsch wäre. */}
         {hatBeanstandungen && (
           <View style={s.tRowSum}>
@@ -182,7 +182,7 @@ export default function BriefPDF({ result, wohnung, adressen }) {
             <Text style={s.tValue}>{fmt(result.moegliche_ersparnis)}</Text>
           </View>
         )}
-        {/* Positionen ohne offiziellen Vergleichswert — siehe Kommentar zu
+        {/* Positionen ohne offiziellen Vergleichswert, siehe Kommentar zu
             offenePositionen oben. Bewusst als Frage formuliert, nicht als
             Vorwurf: Wir wissen nicht, was im Mietvertrag steht. */}
         {offenePositionen.length > 0 && (
@@ -201,16 +201,16 @@ export default function BriefPDF({ result, wohnung, adressen }) {
 
       {/* 12.08.2026, echter Bug: Hier stand vorher zusätzlich "...bis zum 30.
           September {fristJahr}" (fristJahr = Abrechnungsjahr + 2, feststehend
-          "30. September") — eine grobe, längst durch die echte Fristprüfung
+          "30. September"): eine grobe, längst durch die echte Fristprüfung
           in analyse.js (buildResult, Einwendungsfrist anhand erhaltenAm)
           ersetzte Näherung, die hier aber übersehen wurde und einen
           Widerspruch im selben Brief erzeugte: eine Zahlungsforderung erst
           in 13 Monaten, direkt gefolgt von der Bitte um Stellungnahme
-          "innerhalb von 4 Wochen". Ersatzlos gestrichen — die 4-Wochen-Frist
+          "innerhalb von 4 Wochen". Ersatzlos gestrichen: die 4-Wochen-Frist
           unten ist die einzige im Brief genannte Frist, wie von Stefan
           bestätigt (siehe CHANGELOG). */}
       {/* Schlussabsatz angepasst 09.09.2026: Ohne einzige Beanstandung darf
-          hier keine Korrektur und keine Rückerstattung gefordert werden —
+          hier keine Korrektur und keine Rückerstattung gefordert werden, 
           das wäre sachlich falsch und würde den Mieter angreifbar machen. */}
       <Text style={s.absatz}>
         {{

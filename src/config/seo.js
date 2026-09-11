@@ -60,7 +60,7 @@ export const SEO_SEITEN = {
   ratgeber: {
     titel: "Ratgeber Nebenkosten & Mietrecht | NebenkostenRadar",
     beschreibung:
-      "Verständliche Artikel für Mieter: Betriebskosten, Umlageschlüssel, Belegeinsicht und Fristen — mit Rechtsgrundlage und ohne Fachchinesisch.",
+      "Verständliche Artikel für Mieter: Betriebskosten, Umlageschlüssel, Belegeinsicht und Fristen, mit Rechtsgrundlage und ohne Fachchinesisch.",
   },
 
   faq: {
@@ -70,7 +70,7 @@ export const SEO_SEITEN = {
   },
 
   ueberuns: {
-    titel: "Über NebenkostenRadar — wer dahintersteht",
+    titel: "Über NebenkostenRadar, wer dahintersteht",
     beschreibung:
       "Wer NebenkostenRadar betreibt, worauf die Prüfung beruht und warum das Angebot unabhängig von Vermietern und Hausverwaltungen ist.",
   },

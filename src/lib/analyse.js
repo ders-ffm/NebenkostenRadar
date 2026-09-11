@@ -93,33 +93,33 @@ export const POSTEN_GRUPPEN = [
     ]},
   { id: "entwaesserung", label: "Entwässerung", paragraf: "§ 2 Nr. 3 BetrKV", icon: "💧",
     posten: [
-      { key: "entwasserung", label: "Entwässerung / Abwasser", tip: "Kanalgebühren der Gemeinde", aliases: ["Kanalgebühr", "Abwasserkosten"] },
+      { key: "entwasserung", label: "Entwässerung und Abwasser", tip: "Kanalgebühren der Gemeinde", aliases: ["Kanalgebühr", "Abwasserkosten"] },
       { key: "niederschlagswasser", label: "Niederschlagswassergebühr", tip: "Manche Kommunen erheben dies separat", aliases: ["Regenwasser"], selten: true },
     ]},
   { id: "heizung", label: "Heizung", paragraf: "§ 2 Nr. 4 BetrKV", icon: "🔥",
     posten: [
-      { key: "heizkosten_gesamt", label: "Heizkosten", pflicht: true, tip: "Gesamte Heizkosten lt. Abrechnung — auf vielen Abrechnungen als 'Heizung Grundanteil' + 'Heizung Verbrauchsanteil' getrennt ausgewiesen, dann beide Beträge zusammenzählen", aliases: ["Wärmeversorgung", "Zentralheizung", "Heizung Grundanteil", "Heizung Verbrauchsanteil"] },
+      { key: "heizkosten_gesamt", label: "Heizkosten", pflicht: true, tip: "Gesamte Heizkosten lt. Abrechnung, auf vielen Abrechnungen als 'Heizung Grundanteil' + 'Heizung Verbrauchsanteil' getrennt ausgewiesen, dann beide Beträge zusammenzählen", aliases: ["Wärmeversorgung", "Zentralheizung", "Heizung Grundanteil", "Heizung Verbrauchsanteil"] },
       { key: "heizung_betriebsstrom", label: "Betriebsstrom Heizungsanlage", tip: "Strom für Pumpen, Steuerung", aliases: ["Stromkosten Heizung"], selten: true },
       { key: "heizung_wartung", label: "Wartung Heizungsanlage", tip: "Wartung ja, Reparaturen nein", aliases: ["Heizkosten Wartung", "Gerätemiete Heizung"], selten: true },
-      { key: "co2_abgabe", label: "CO2-Abgabe / Kohlendioxidkosten", tip: "Vermieter trägt je nach Energieklasse 0-95%. Achtung: steht oft NICHT als eigene Zeile auf der Hauptseite, sondern nur auf einer Detail-Anlage weiter hinten in der Abrechnung ('CO2-Kosten', 'Aufteilung der CO2-Kosten') — dort nachschauen, wenn hier nichts auf den ersten Blick zu finden ist.", aliases: ["CO2-Kosten", "CO2KostAufG", "Kohlendioxidabgabe"] },
+      { key: "co2_abgabe", label: "CO2-Abgabe (Kohlendioxidkosten)", tip: "Vermieter trägt je nach Energieklasse 0-95%. Achtung: steht oft NICHT als eigene Zeile auf der Hauptseite, sondern nur auf einer Detail-Anlage weiter hinten in der Abrechnung ('CO2-Kosten', 'Aufteilung der CO2-Kosten'), dort nachschauen, wenn hier nichts auf den ersten Blick zu finden ist.", aliases: ["CO2-Kosten", "CO2KostAufG", "Kohlendioxidabgabe"] },
     ]},
   { id: "warmwasser", label: "Warmwasser", paragraf: "§ 2 Nr. 5 BetrKV", icon: "🔥",
     posten: [
-      { key: "warmwasser_gesamt", label: "Warmwasserversorgung", pflicht: true, tip: "Muss separat ausgewiesen sein — auf manchen Abrechnungen als 'Warmwasser Grundanteil' + 'Warmwasser Verbrauchsanteil' getrennt, dann beide zusammenzählen", aliases: ["Warmwasser Grundanteil", "Warmwasser Verbrauchsanteil"] },
+      { key: "warmwasser_gesamt", label: "Warmwasserversorgung", pflicht: true, tip: "Muss separat ausgewiesen sein, auf manchen Abrechnungen als 'Warmwasser Grundanteil' + 'Warmwasser Verbrauchsanteil' getrennt, dann beide zusammenzählen", aliases: ["Warmwasser Grundanteil", "Warmwasser Verbrauchsanteil"] },
     ]},
   { id: "aufzug", label: "Aufzug", paragraf: "§ 2 Nr. 7 BetrKV", icon: "⚙️",
     posten: [
-      { key: "aufzug", label: "Aufzug (Betrieb, Wartung, TÜV)", tip: "Nur Betrieb/Wartung, keine Reparaturen", aliases: ["Fahrstuhl"], selten: true },
+      { key: "aufzug", label: "Aufzug (Betrieb, Wartung, TÜV)", tip: "Nur Betrieb und Wartung, keine Reparaturen", aliases: ["Fahrstuhl"], selten: true },
     ]},
   { id: "strassenreinigung", label: "Straßenreinigung und Müllbeseitigung", paragraf: "§ 2 Nr. 8 BetrKV", icon: "🧹",
     posten: [
-      { key: "strassenreinigung", label: "Straßenreinigung", tip: "Ohne Winterdienst — der hat auf vielen Abrechnungen eine eigene Zeile, siehe unten", aliases: ["Straßenreinigungsgebühr"] },
-      { key: "schnee_eis_beseitigung", label: "Schnee- und Eisbeseitigung", tip: "Winterdienst — auf manchen Abrechnungen mit der Straßenreinigung zusammengefasst, auf anderen eigene Zeile", aliases: ["Winterdienst", "Räum- und Streudienst"] },
-      { key: "muellbeseitigung", label: "Müllbeseitigung / Abfallentsorgung", tip: "Gebühren für alle Tonnen", aliases: ["Müllabfuhr", "Abfallgebühren"] },
+      { key: "strassenreinigung", label: "Straßenreinigung", tip: "Ohne Winterdienst: der hat auf vielen Abrechnungen eine eigene Zeile, siehe unten", aliases: ["Straßenreinigungsgebühr"] },
+      { key: "schnee_eis_beseitigung", label: "Schnee- und Eisbeseitigung", tip: "Winterdienst, auf manchen Abrechnungen mit der Straßenreinigung zusammengefasst, auf anderen eigene Zeile", aliases: ["Winterdienst", "Räum- und Streudienst"] },
+      { key: "muellbeseitigung", label: "Müllbeseitigung und Abfallentsorgung", tip: "Gebühren für alle Tonnen", aliases: ["Müllabfuhr", "Abfallgebühren"] },
     ]},
   { id: "gebaeude", label: "Gebäudereinigung und Ungezieferbekämpfung", paragraf: "§ 2 Nr. 9 BetrKV", icon: "🧹",
     posten: [
-      { key: "hausreinigung", label: "Hausreinigung / Treppenhausreinigung", tip: "Nur umlagefähig wenn vertraglich vereinbart", aliases: ["Gebäudereinigung", "Treppenhausreinigung"] },
+      { key: "hausreinigung", label: "Hausreinigung und Treppenhausreinigung", tip: "Nur umlagefähig wenn vertraglich vereinbart", aliases: ["Gebäudereinigung", "Treppenhausreinigung"] },
       { key: "ungezieferbekaempfung", label: "Ungezieferbekämpfung", tip: "Nur bei tatsächlichem Bedarf", aliases: ["Schädlingsbekämpfung"], selten: true },
     ]},
   { id: "garten", label: "Gartenpflege", paragraf: "§ 2 Nr. 10 BetrKV", icon: "🧹",
@@ -128,16 +128,16 @@ export const POSTEN_GRUPPEN = [
     ]},
   { id: "beleuchtung", label: "Beleuchtung", paragraf: "§ 2 Nr. 11 BetrKV", icon: "⚙️",
     posten: [
-      { key: "allgemeinstrom", label: "Beleuchtung / Allgemeinstrom", tip: "Strom für Gemeinschaftsflächen", aliases: ["Gemeinschaftsstrom", "Hausstrom"] },
+      { key: "allgemeinstrom", label: "Beleuchtung und Allgemeinstrom", tip: "Strom für Gemeinschaftsflächen", aliases: ["Gemeinschaftsstrom", "Hausstrom"] },
     ]},
   { id: "schornstein", label: "Schornsteinreinigung", paragraf: "§ 2 Nr. 12 BetrKV", icon: "🔥",
     posten: [
       { key: "schornsteinreinigung", label: "Schornsteinreinigung", tip: "Kehrgebühren", aliases: ["Kaminkehrer", "Kehrgebühr"], selten: true },
     ]},
   { id: "versicherungen", label: "Versicherungen", paragraf: "§ 2 Nr. 13 BetrKV", icon: "🛡",
-    hint: "Nur Sachversicherungen des Gebäudes — nicht deine Hausratsversicherung",
+    hint: "Nur Sachversicherungen des Gebäudes, nicht deine Hausratsversicherung",
     posten: [
-      { key: "feuerversicherung", label: "Gebäude-/Feuerversicherung", tip: "Auf manchen Abrechnungen mit Sturm/Leitungswasser zu einer 'Gebäudeversicherung' zusammengefasst — dann hier den Gesamtbetrag eintragen", aliases: ["Gebäudeversicherung", "Brandversicherung"] },
+      { key: "feuerversicherung", label: "Gebäude- und Feuerversicherung", tip: "Auf manchen Abrechnungen mit Sturm und Leitungswasser zu einer 'Gebäudeversicherung' zusammengefasst, dann hier den Gesamtbetrag eintragen", aliases: ["Gebäudeversicherung", "Brandversicherung"] },
       { key: "sturm_hagel_versicherung", label: "Sturm- und Hagelversicherung", tip: "Oft eigene Zeile, manchmal Teil der Gebäudeversicherung", aliases: ["Sturmversicherung", "Hagelversicherung"] },
       { key: "leitungswasser_versicherung", label: "Leitungswasserversicherung", tip: "Oft eigene Zeile, manchmal Teil der Gebäudeversicherung", aliases: ["Wasserschadenversicherung"] },
       { key: "haftpflichtversicherung", label: "Haftpflichtversicherung Gebäude", tip: "Haus- und Grundbesitzerhaftpflicht", aliases: ["Grundbesitzerhaftpflicht"] },
@@ -145,20 +145,20 @@ export const POSTEN_GRUPPEN = [
     ]},
   { id: "hauswart", label: "Hauswart", paragraf: "§ 2 Nr. 14 BetrKV", icon: "🏠",
     posten: [
-      { key: "hauswart", label: "Hauswart / Hausmeister", tip: "Nur Betriebskostenanteile — keine Verwaltung/Instandhaltung", aliases: ["Hausmeisterkosten", "Concierge"] },
+      { key: "hauswart", label: "Hauswart (Hausmeister)", tip: "Nur Betriebskostenanteile: keine Verwaltung und keine Instandhaltung", aliases: ["Hausmeisterkosten", "Concierge"] },
     ]},
   { id: "technik", label: "Gemeinschaftsantenne, Kabel und Waschräume", paragraf: "§ 2 Nr. 15 BetrKV", icon: "⚙️",
     posten: [
-      { key: "gemeinschaftsantenne", label: "Gemeinschafts-Antenne / SAT-Anlage", tip: "Umlagefähig wenn Gemeinschaftsanlage", aliases: ["Antennenanlage"], selten: true },
-      { key: "kabelanschluss", label: "Kabelanschluss / TV-Versorgung", tip: "Seit 01.07.2024 grundsätzlich nicht mehr umlagefähig — bei Abrechnungsjahr vor 2024 regulär zulässig", aliases: ["Breitbandkabelanschluss", "TV-Kabel"] },
-      { key: "gemeinschaftswaschmaschine", label: "Waschmaschinen / Trockenräume", tip: "Betrieb der Gemeinschaftsgeräte", aliases: ["Waschküche", "Trockenraum"], selten: true },
-      { key: "tiefgarage", label: "Tiefgaragenbelüftung / -entwässerung", tip: "Wenn im Mietvertrag vereinbart", aliases: ["Tiefgarage"], selten: true },
+      { key: "gemeinschaftsantenne", label: "Gemeinschaftsantenne und SAT-Anlage", tip: "Umlagefähig wenn Gemeinschaftsanlage", aliases: ["Antennenanlage"], selten: true },
+      { key: "kabelanschluss", label: "Kabelanschluss und TV-Versorgung", tip: "Seit 01.07.2024 grundsätzlich nicht mehr umlagefähig, bei Abrechnungsjahr vor 2024 regulär zulässig", aliases: ["Breitbandkabelanschluss", "TV-Kabel"] },
+      { key: "gemeinschaftswaschmaschine", label: "Waschmaschinen und Trockenräume", tip: "Betrieb der Gemeinschaftsgeräte", aliases: ["Waschküche", "Trockenraum"], selten: true },
+      { key: "tiefgarage", label: "Tiefgaragenbelüftung und -entwässerung", tip: "Wenn im Mietvertrag vereinbart", aliases: ["Tiefgarage"], selten: true },
     ]},
   { id: "sonstiges", label: "Sonstige Betriebskosten", paragraf: "§ 2 Nr. 17 BetrKV", icon: "🏠",
     hint: "Achtung: Verwaltungskosten darf der Vermieter NICHT umlegen",
     posten: [
-      { key: "rauchwarnmelder_wartung", label: "Wartung Rauchwarnmelder", tip: "Nur Wartung/Miete, keine Anschaffung", aliases: ["Rauchmelder"], selten: true },
-      { key: "gasleitungspruefung", label: "Gasleitungs- / Gasgeräteprüfung", tip: "Wiederkehrende Prüfpflicht", aliases: ["Gasprüfung", "Gasleitungsprüfung Allgemein"], selten: true },
+      { key: "rauchwarnmelder_wartung", label: "Wartung Rauchwarnmelder", tip: "Nur Wartung und Miete, keine Anschaffung", aliases: ["Rauchmelder"], selten: true },
+      { key: "gasleitungspruefung", label: "Gasleitungs- und Gasgeräteprüfung", tip: "Wiederkehrende Prüfpflicht", aliases: ["Gasprüfung", "Gasleitungsprüfung Allgemein"], selten: true },
       { key: "sonstiges_vereinbart", label: "Sonstige vereinbarte Betriebskosten", tip: "Nur wenn explizit im Mietvertrag benannt", aliases: ["Wartung Sonstige"] },
     ]},
   // Neu 10.08.2026 (siehe CHANGELOG, Stefans Frage "was ist ein harter
@@ -170,10 +170,10 @@ export const POSTEN_GRUPPEN = [
   // Leistung bewarb ("Wir erkennen... Verwaltungskosten") — das Versprechen
   // stimmt jetzt tatsächlich.
   { id: "nicht_umlagefaehig", label: "Kategorisch ausgeschlossene Kosten", paragraf: "§ 1 Abs. 2 BetrKV", icon: "🚫",
-    hint: "Nur ausfüllen, falls auf der Abrechnung separat ausgewiesen — diese Kosten darf dein Vermieter nach dem Gesetz nie umlegen",
+    hint: "Nur ausfüllen, falls auf der Abrechnung separat ausgewiesen, diese Kosten darf dein Vermieter nach dem Gesetz nie umlegen",
     posten: [
-      { key: "verwaltungskosten", label: "Verwaltungskosten", tip: "Kaufmännische/technische Verwaltung — nie umlagefähig (§ 1 Abs. 2 Nr. 1 BetrKV)", aliases: ["Verwaltungsgebühr", "Verwaltungspauschale", "Verwaltungskostenpauschale"], selten: true },
-      { key: "instandhaltung", label: "Instandhaltung / Instandsetzung", tip: "Reparaturen, Erhaltungsaufwand — nie umlagefähig (§ 1 Abs. 2 Nr. 2 BetrKV)", aliases: ["Reparaturkosten", "Instandsetzungskosten", "Erhaltungsaufwand"], selten: true },
+      { key: "verwaltungskosten", label: "Verwaltungskosten", tip: "Kaufmännische und technische Verwaltung, nie umlagefähig (§ 1 Abs. 2 Nr. 1 BetrKV)", aliases: ["Verwaltungsgebühr", "Verwaltungspauschale", "Verwaltungskostenpauschale"], selten: true },
+      { key: "instandhaltung", label: "Instandhaltung und Instandsetzung", tip: "Reparaturen, Erhaltungsaufwand, nie umlagefähig (§ 1 Abs. 2 Nr. 2 BetrKV)", aliases: ["Reparaturkosten", "Instandsetzungskosten", "Erhaltungsaufwand"], selten: true },
     ]},
 ];
 
@@ -181,8 +181,8 @@ export const ALLE_POSTEN = POSTEN_GRUPPEN.flatMap(g => g.posten);
 
 export const BEWERTUNG = {
   ok:         { label: "Unauffällig",  farbe: THEME.color.ok,       bg: THEME.color.okBg,       icon: "✅", sub: "Keine wesentlichen Fehler gefunden" },
-  auffaellig: { label: "Prüfenswert",  farbe: THEME.color.warn,     bg: THEME.color.warnBg,     icon: "⚠️", sub: "Auffälligkeiten — Einwände ratsam" },
-  kritisch:   { label: "Fehlerhaft",   farbe: THEME.color.critical, bg: THEME.color.criticalBg, icon: "🚨", sub: "Erhebliche Fehler — Einwände dringend empfohlen" },
+  auffaellig: { label: "Prüfenswert",  farbe: THEME.color.warn,     bg: THEME.color.warnBg,     icon: "⚠️", sub: "Auffälligkeiten. Einwände ratsam" },
+  kritisch:   { label: "Fehlerhaft",   farbe: THEME.color.critical, bg: THEME.color.criticalBg, icon: "🚨", sub: "Erhebliche Fehler. Einwände dringend empfohlen" },
 };
 
 function abw(betrag, richtwert) {
@@ -268,7 +268,7 @@ export function analysierePosten(w, wohn) {
   }
   if (toNum(w.instandhaltung) > 0) {
     const b = toNum(w.instandhaltung);
-    posten_bewertung.push({ posten: "Instandhaltung / Instandsetzung", betrag: b, richtwert: 0, abweichung_prozent: 100, status: "nicht_umlagefaehig", hinweis: "Nie umlagefähig, unabhängig von der Höhe. Voller Betrag rückforderbar.", paragraf: "§ 1 Abs. 2 Nr. 2 BetrKV" });
+    posten_bewertung.push({ posten: "Instandhaltung und Instandsetzung", betrag: b, richtwert: 0, abweichung_prozent: 100, status: "nicht_umlagefaehig", hinweis: "Nie umlagefähig, unabhängig von der Höhe. Voller Betrag rückforderbar.", paragraf: "§ 1 Abs. 2 Nr. 2 BetrKV" });
     widerspruch.push({ typ: "hart", text: "Instandhaltungs-/Instandsetzungskosten " + fmt(b) + ": Nach § 1 Abs. 2 Nr. 2 BetrKV nicht umlagefähig. Rückforderung des vollen Betrags." });
   }
 
@@ -300,7 +300,7 @@ export function analysierePosten(w, wohn) {
     widerspruch.push({ typ: "statistisch", text: "CO2-Abgabe " + fmt(b) + ": Prüfe ob Vermieteranteil korrekt abgezogen wurde (§ 5 CO2KostAufG)." });
   }
 
-  // Hauswart — DMB-Wert "separat abgerechnet" (0,21), da Hausreinigung/Garten bei uns eigene Felder sind
+  // Hauswart — DMB-Wert "separat abgerechnet" (0,21), da Hausreinigung und Garten bei uns eigene Felder sind
   if (toNum(w.hauswart) > 0) {
     const b = toNum(w.hauswart), rw = rj(R.hausmeister), a = abw(b, rw);
     let st = "ok", hi = "Nur Betriebskostenanteile umlagefähig. Richtwert (separat abgerechnet): " + fmt(rw) + "/Jahr.";
@@ -312,7 +312,7 @@ export function analysierePosten(w, wohn) {
       st = "hoch";
       widerspruch.push({ typ: "statistisch", text: "Hausmeisterkosten " + fmt(b) + " (" + a + "% über Richtwert). Nachweis anfordern." });
     }
-    posten_bewertung.push({ posten: "Hauswart/Hausmeister", betrag: b, richtwert: rw, abweichung_prozent: a, status: st, hinweis: hi, paragraf: "§ 2 Nr. 14 BetrKV", steuerlich_35a: true });
+    posten_bewertung.push({ posten: "Hauswart (Hausmeister)", betrag: b, richtwert: rw, abweichung_prozent: a, status: st, hinweis: hi, paragraf: "§ 2 Nr. 14 BetrKV", steuerlich_35a: true });
   }
 
   // Wasser + Abwasser
@@ -321,7 +321,7 @@ export function analysierePosten(w, wohn) {
   if (wg > 0) {
     const rw = rj(R.wasser_abwasser), a = abw(wg, rw);
     let st = "ok", hi = "Richtwert Wasser+Abwasser für " + flaeche + "m²: " + fmt(rw) + "/Jahr.";
-    if (wg > rw * 1.6) { st = "sehr_hoch"; widerspruch.push({ typ: "statistisch", text: "Wasser+Abwasser " + fmt(wg) + " (" + a + "% über Richtwert). Auf Doppelberechnung prüfen." }); hi = a + "% über Richtwert — mögliche Doppelberechnung!"; }
+    if (wg > rw * 1.6) { st = "sehr_hoch"; widerspruch.push({ typ: "statistisch", text: "Wasser+Abwasser " + fmt(wg) + " (" + a + "% über Richtwert). Auf Doppelberechnung prüfen." }); hi = a + "% über Richtwert, mögliche Doppelberechnung!"; }
     else if (wg > rw * 1.3) { st = "hoch"; hi = a + "% über Richtwert. Belege anfordern."; }
     // Richtwert-Anzeige proportional zum tatsächlichen Anteil an der Gesamtsumme wg aufteilen
     // (nicht pauschal 50/50) — bei pauschaler Aufteilung zeigte die Zeile "Wasserversorgung" einen
@@ -381,7 +381,7 @@ export function analysierePosten(w, wohn) {
         vLeitung = toNum(w.leitungswasser_versicherung), vHaft = toNum(w.haftpflichtversicherung),
         vGlas = toNum(w.glasversicherung);
   const vg = vFeuer + vSturm + vLeitung + vHaft + vGlas;
-  const vEinzelpositionen = [["Gebäude-/Feuerversicherung", vFeuer], ["Sturm- und Hagelversicherung", vSturm], ["Leitungswasserversicherung", vLeitung], ["Haftpflichtversicherung Gebäude", vHaft], ["Glasversicherung", vGlas]];
+  const vEinzelpositionen = [["Gebäude- und Feuerversicherung", vFeuer], ["Sturm- und Hagelversicherung", vSturm], ["Leitungswasserversicherung", vLeitung], ["Haftpflichtversicherung Gebäude", vHaft], ["Glasversicherung", vGlas]];
   const vAnzahlBefuellt = vEinzelpositionen.filter(([, b]) => b > 0).length;
   if (vg > 0) {
     const rw = rj(R.versicherungen), a = abw(vg, rw);
@@ -514,12 +514,12 @@ export function buildResult(w, wohn) {
           richtwert: 0,
           abweichung_prozent: 100,
           status: "nicht_umlagefaehig",
-          hinweis: "Die Abrechnung kam erst nach dem " + fristEndeText + " bei dir an — mehr als 12 Monate nach Ende des Abrechnungszeitraums " + jahrNum + ". Nach § 556 Abs. 3 Satz 2 BGB ist eine Nachforderung dann grundsätzlich ausgeschlossen, außer der Vermieter hat die Verspätung nicht zu vertreten.",
+          hinweis: "Die Abrechnung kam erst nach dem " + fristEndeText + " bei dir an, mehr als 12 Monate nach Ende des Abrechnungszeitraums " + jahrNum + ". Nach § 556 Abs. 3 Satz 2 BGB ist eine Nachforderung dann grundsätzlich ausgeschlossen, außer der Vermieter hat die Verspätung nicht zu vertreten.",
           paragraf: "§ 556 Abs. 3 S. 2 BGB",
         });
         widerspruch.push({
           typ: "hart",
-          text: "Die Abrechnung ist erst nach dem " + fristEndeText + " bei mir eingegangen — mehr als 12 Monate nach Ende des Abrechnungszeitraums " + jahrNum + ". Nach § 556 Abs. 3 Satz 2 BGB ist eine Nachforderung damit ausgeschlossen. Ich widerspreche einer etwaigen Nachforderung aus diesem Grund"
+          text: "Die Abrechnung ist erst nach dem " + fristEndeText + " bei mir eingegangen, mehr als 12 Monate nach Ende des Abrechnungszeitraums " + jahrNum + ". Nach § 556 Abs. 3 Satz 2 BGB ist eine Nachforderung damit ausgeschlossen. Ich widerspreche einer etwaigen Nachforderung aus diesem Grund"
             + (betroffenerBetrag > 0 ? " (" + fmt(betroffenerBetrag) + ")." : "."),
         });
       }
@@ -560,7 +560,7 @@ export function buildResult(w, wohn) {
   const widerspruchHart = widerspruch.filter(g => g.typ === "hart");
   const widerspruchStatistisch = widerspruch.filter(g => g.typ !== "hart");
 
-  const saldoText = saldo !== null ? (saldo > 0 ? " Nachzahlung: " + fmt(saldo) + "." : " Guthaben: " + fmt(Math.abs(saldo)) + " — trotzdem inhaltlich prüfen!") : "";
+  const saldoText = saldo !== null ? (saldo > 0 ? " Nachzahlung: " + fmt(saldo) + "." : " Guthaben: " + fmt(Math.abs(saldo)) + ", trotzdem inhaltlich prüfen!") : "";
 
   return {
     gesamtbewertung: bew,
@@ -574,7 +574,7 @@ export function buildResult(w, wohn) {
     zusammenfassung: hatKritisch
       ? "Kritisch: " + widerspruch.length + " fehlerhafte Posten (" + fmt(gesamt) + ", " + fmt(proQmJahr) + "/m2/Jahr)." + saldoText
       : (hatSehrHoch || gesamtZuHoch)
-        ? "Auffällig: " + fmt(proQmJahr) + "/m2/Jahr — DMB-Richtwert: " + fmt(richtwertJahr) + "/m2/Jahr. " + widerspruch.length + " Posten zur Prüfung." + saldoText
+        ? "Auffällig: " + fmt(proQmJahr) + "/m2/Jahr. DMB-Richtwert: " + fmt(richtwertJahr) + "/m2/Jahr. " + widerspruch.length + " Posten zur Prüfung." + saldoText
         : "Weitgehend unauffällig: " + fmt(proQmJahr) + "/m2/Jahr (DMB-Richtwert: " + fmt(richtwertJahr) + "/m2/Jahr)." + saldoText,
     fehler_anzahl: widerspruch.length,
     moegliche_ersparnis: Math.round(ersparnis * 100) / 100,
@@ -606,15 +606,15 @@ export function buildResult(w, wohn) {
           einwendungsfrist.setFullYear(einwendungsfrist.getFullYear() + 1);
           const heute = new Date();
           const abgelaufen = heute > einwendungsfrist;
-          return "Widerspruchsfrist: 12 Monate nach Erhalt der Abrechnung (§ 556 Abs. 3 Satz 3 BGB). Abrechnung erhalten am " + erhalten.toLocaleDateString("de-DE", { timeZone: "UTC" }) + " — Frist endet am " + einwendungsfrist.toLocaleDateString("de-DE", { timeZone: "UTC" }) + "."
-            + (abgelaufen ? " Diese Frist ist bereits abgelaufen — ein Widerspruch ist dann grundsätzlich nicht mehr möglich, bitte anwaltlich prüfen lassen." : " Sofort handeln!");
+          return "Widerspruchsfrist: 12 Monate nach Erhalt der Abrechnung (§ 556 Abs. 3 Satz 3 BGB). Abrechnung erhalten am " + erhalten.toLocaleDateString("de-DE", { timeZone: "UTC" }) + ". Frist endet am " + einwendungsfrist.toLocaleDateString("de-DE", { timeZone: "UTC" }) + "."
+            + (abgelaufen ? " Diese Frist ist bereits abgelaufen: ein Widerspruch ist dann grundsätzlich nicht mehr möglich, bitte anwaltlich prüfen lassen." : " Sofort handeln!");
         }
       }
-      return "Widerspruchsfrist: 12 Monate nach Erhalt der Abrechnung (§ 556 Abs. 3 Satz 3 BGB). Für Abrechnungsjahr " + wohn.jahr + " endet die Frist typisch Ende " + (parseInt(wohn.jahr) + 2) + " (Näherungswert — trage oben das genaue Erhaltsdatum ein für eine exakte Frist). Sofort handeln!";
+      return "Widerspruchsfrist: 12 Monate nach Erhalt der Abrechnung (§ 556 Abs. 3 Satz 3 BGB). Für Abrechnungsjahr " + wohn.jahr + " endet die Frist typisch Ende " + (parseInt(wohn.jahr) + 2) + " (Näherungswert, trage oben das genaue Erhaltsdatum ein für eine exakte Frist). Sofort handeln!";
     })(),
     naechste_schritte: [
       widerspruch.length > 0 ? "Prüfbericht mit Mustertext per Einschreiben senden" : "Belege beim Vermieter anfordern (§ 259 BGB)",
-      "Originalbelege einsehen — dieses Recht besteht unabhängig vom Ergebnis",
+      "Originalbelege einsehen, dieses Recht besteht unabhängig vom Ergebnis",
       "Bei Ablehnung: Deutschen Mieterbund einschalten (mieterbund.de · Tel. 030 223230)",
     ],
     co2_hinweis: toNum(w.co2_abgabe) > 0 ? "CO2-Abgabe abgerechnet: Vermieter muss je nach Energieklasse 0-95% selbst tragen. Energieausweis anfordern." : "",

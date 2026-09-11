@@ -40,7 +40,7 @@ export default function Nav({ activeStep, navigateTo }) {
         <div style={{ fontSize: 20, fontWeight: 700, color: C.text, fontFamily: THEME.font.heading, lineHeight: 1.1 }}>
           Nebenkosten<span style={{ color: C.brand }}>Radar</span>
         </div>
-        <div style={{ fontSize: 10, color: C.textMuted, fontWeight: 500 }}>Nebenkosten prüfen — für Mieter</div>
+        <div style={{ fontSize: 10, color: C.textMuted, fontWeight: 500 }}>Nebenkosten prüfen, für Mieter</div>
       </div>
     </div>
   );

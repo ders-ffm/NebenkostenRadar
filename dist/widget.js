@@ -1,4 +1,4 @@
-/* NebenkostenRadar — Richtwerte-Widget
+/* NebenkostenRadar. Richtwerte-Widget
  * Einbinden mit:  <div id="nkr-betriebskostenspiegel"></div>
  *                 <script src="https://nebenkostenradar.com/widget.js" async></script>
  * Quelle: Deutscher Mieterbund, Betriebskostenspiegel. Automatisch erzeugt,

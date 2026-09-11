@@ -270,7 +270,7 @@ export default function App() {
     if (!hatInhalt) return;
     try {
       localStorage.setItem(NKR_DRAFT_KEY, JSON.stringify({ wohnung, werte, gesamtsummeAbrechnung, savedAt: Date.now() }));
-    } catch { /* z.B. Safari privater Modus ohne localStorage — kein Blocker, Entwurf bleibt dann nur im Speicher */ }
+    } catch { /* z.B. Safari privater Modus ohne localStorage: kein Blocker, Entwurf bleibt dann nur im Speicher */ }
   }, [wohnung, werte, gesamtsummeAbrechnung, gekauft]);
 
   async function runAnalyse() {

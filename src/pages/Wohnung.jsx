@@ -24,7 +24,7 @@ import StepBar from "../components/ui/StepBar.jsx";
 // Chat gelesen) als zuverlässig lesbar erwiesen hat, mit etwas Reserve
 // gegenüber Vercels 4,5-MB-Body-Limit (siehe MAX_DATEIEN unten).
 const MAX_DATEIEN = 6;
-const MIN_AUFLOESUNG = 500; // px, kürzere Seite — darunter ist Text erfahrungsgemäß nicht zuverlässig lesbar
+const MIN_AUFLOESUNG = 500; // px, kürzere Seite, darunter ist Text erfahrungsgemäß nicht zuverlässig lesbar
 
 // PDF-Unterstützung (08/2026, siehe CHANGELOG.md): Wer seine Abrechnung digital
 // zugeschickt bekommt, hat oft ein PDF statt Fotos — meist sogar besser lesbar
@@ -141,7 +141,7 @@ export default function Wohnung({ navigateTo, wohnung, setWohnung, werte, setWer
   // Eingabe bleibt vollständig erhalten und funktioniert unverändert — nur
   // die Reihenfolge/Sichtbarkeit ändert sich, keine Funktion entfällt.
   const [aufgeklappt, setAufgeklappt] = useState(true);
-  const [fotoStatus, setFotoStatus] = useState("idle"); // idle | analysiert | fertig | fehler — bezieht sich nur auf den Analyse-Schritt
+  const [fotoStatus, setFotoStatus] = useState("idle"); // idle | analysiert | fertig | fehler, bezieht sich nur auf den Analyse-Schritt
   const [fotoAnzahl, setFotoAnzahl] = useState(0);
   const [analyseFehler, setAnalyseFehler] = useState(""); // konkrete Server-/Netzwerk-Fehlermeldung statt generischem Text
   const [hinweise, setHinweise] = useState([]); // Bild-/Lesbarkeitsprobleme laut KI-Antwort
@@ -177,7 +177,7 @@ export default function Wohnung({ navigateTo, wohnung, setWohnung, werte, setWer
   // einzelne schlechte Datei die Bearbeitung der übrigen nicht blockiert.
   function handleDateiAuswahl(e) {
     const neueDateien = Array.from(e.target.files || []);
-    e.target.value = ""; // sofort zurücksetzen — sonst lässt sich dieselbe Datei kein zweites Mal auswählen
+    e.target.value = ""; // sofort zurücksetzen, sonst lässt sich dieselbe Datei kein zweites Mal auswählen
     if (neueDateien.length === 0) return;
 
     const freiePlaetze = MAX_DATEIEN - dateien.length;
@@ -332,7 +332,7 @@ export default function Wohnung({ navigateTo, wohnung, setWohnung, werte, setWer
         </div>
 
         <div style={{ background: C.surface, border: "1px solid " + (fotoStatus === "fertig" ? C.brand : C.border), borderRadius: THEME.radius.lg, padding: "16px", marginBottom: 16 }}>
-          {/* Ganze Kopfzeile ist der Auf-/Zuklapp-Schalter — als <button> statt
+          {/* Ganze Kopfzeile ist der Auf-/Zuklapp-Schalter, als <button> statt
               <div onClick>, damit Tastatur/Screenreader die Interaktivität
               korrekt erkennen (aria-expanded). Icon kleiner als vorher (26px
               statt 40px): die Kopfzeile soll im eingeklappten Zustand so
@@ -349,7 +349,7 @@ export default function Wohnung({ navigateTo, wohnung, setWohnung, werte, setWer
           >
             <div style={{ fontSize: 26, lineHeight: 1, flexShrink: 0 }}>📱</div>
             <div style={{ flex: 1, minWidth: 0 }}>
-              <div style={{ display: "inline-block", background: C.brandBg, color: C.brand, fontSize: 10, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.04em", borderRadius: 4, padding: "2px 8px", marginBottom: 4 }}>Empfohlen — spart Abtippen</div>
+              <div style={{ display: "inline-block", background: C.brandBg, color: C.brand, fontSize: 10, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.04em", borderRadius: 4, padding: "2px 8px", marginBottom: 4 }}>Empfohlen, spart Abtippen</div>
               <div style={{ fontSize: 15, fontWeight: 700, color: C.text, fontFamily: THEME.font.heading }}>Foto oder PDF hochladen</div>
               <div style={{ fontSize: 12, color: C.textMuted, marginTop: 2 }}>Wir lesen die Beträge automatisch aus, du prüfst nur noch und bestätigst.</div>
             </div>
@@ -359,11 +359,11 @@ export default function Wohnung({ navigateTo, wohnung, setWohnung, werte, setWer
           {aufgeklappt && (
           <div style={{ marginTop: 16 }}>
           {/* Zwei Wege, klar getrennt, mit hängendem Einzug (Icon in fester Spalte,
-              Text danebengesetzt) statt Blocksatz oder Zentrierung — bei dieser
+              Text danebengesetzt) statt Blocksatz oder Zentrierung, bei dieser
               Spaltenbreite würde Blocksatz nur unschöne, ungleiche Wortabstände
               erzeugen und Zentrierung lässt Icon/Fettung ohne klare Kante wirken.
               Label (fett) und Beschreibung jetzt in getrennten Zeilen statt in
-              einer Zeile mit Doppelpunkt — auf Wunsch, die Fettung allein reicht
+              einer Zeile mit Doppelpunkt, auf Wunsch, die Fettung allein reicht
               als Kennzeichnung des Labels. */}
           <div style={{ background: C.bg, borderRadius: THEME.radius.md, padding: "10px 12px", marginBottom: 10 }}>
             <div style={{ display: "grid", gridTemplateColumns: "20px 1fr", columnGap: 8, rowGap: 10, fontSize: 12, color: C.text, lineHeight: 1.55 }}>
@@ -380,10 +380,10 @@ export default function Wohnung({ navigateTo, wohnung, setWohnung, werte, setWer
             </div>
           </div>
 
-          {/* Als Bulletpoints statt zwei getrennter Icon-Zeilen — bessere
+          {/* Als Bulletpoints statt zwei getrennter Icon-Zeilen, bessere
               Lesbarkeit für zwei kurze, gleichrangige Hinweise. Bullet in
               fester Spalte (hängender Einzug, gleiches Muster wie beim
-              Smartphone/PC-Block oben) statt Bullet+Text im Fließtext — sonst
+              Smartphone/PC-Block oben) statt Bullet+Text im Fließtext, sonst
               rutscht eine umgebrochene zweite Zeile unter das Bullet-Zeichen
               statt unter den Textanfang. */}
           <div style={{ display: "grid", gridTemplateColumns: "10px 1fr", columnGap: 6, rowGap: 4, fontSize: 11, color: C.textDim, marginBottom: 10, lineHeight: 1.6 }}>
@@ -431,12 +431,12 @@ export default function Wohnung({ navigateTo, wohnung, setWohnung, werte, setWer
           )}
 
           {/* Upload- und Analysieren-Button verschwinden, sobald fotoStatus
-              "fertig" ist (08/2026, siehe CHANGELOG.md — Stefans Meldung: ohne
+              "fertig" ist (08/2026, siehe CHANGELOG.md. Stefans Meldung: ohne
               diese Sperre ließ sich "analysieren" beliebig oft erneut klicken,
               jedes Mal ein neuer, echter API-Aufruf mit echten Kosten, obwohl
               das Ergebnis schon vorlag). Statt die Karte komplett zu sperren,
               gibt es einen bewussten zweiten Schritt ("Andere Datei hochladen"),
-              der fotoStatus zurück auf "idle" setzt — ein versehentlicher
+              der fotoStatus zurück auf "idle" setzt: ein versehentlicher
               Doppelklick löst dadurch nichts mehr aus, ein ABSICHTLICHES "ich
               will nochmal" bleibt aber möglich. */}
           {dateien.length < MAX_DATEIEN && fotoStatus !== "fertig" && (
@@ -466,7 +466,7 @@ export default function Wohnung({ navigateTo, wohnung, setWohnung, werte, setWer
           {/* Label+input-Kopplung statt Klick-Handler in JS: löst auf iOS/Android zuverlässig
               denselben nativen Dialog aus (Kamera direkt fotografieren, aus der Galerie wählen
               ODER eine Datei/PDF wählen), mit großem, gut sichtbarem Tap-Ziel. onChange FÜGT der
-              Liste oben hinzu, statt sofort zu analysieren — siehe Kommentar bei handleDateiAuswahl(). */}
+              Liste oben hinzu, statt sofort zu analysieren, siehe Kommentar bei handleDateiAuswahl(). */}
           {/* accept mit LEERZEICHEN statt Komma getrennt (08/2026, siehe
               CHANGELOG.md): Stefan konnte in der iOS-Fotomediathek nur ein
               Foto auf einmal auswählen statt mehrere. Dokumentierter iOS-
@@ -500,13 +500,13 @@ export default function Wohnung({ navigateTo, wohnung, setWohnung, werte, setWer
 
           {/* Eigener Fortschritts-Block statt nur geänderter Button-Text
               (08/2026, siehe CHANGELOG.md): seit effort:"high" kann ein
-              Durchlauf 30 Sek. bis über 2 Min. dauern (vorher 1-3 Sek.) —
+              Durchlauf 30 Sek. bis über 2 Min. dauern (vorher 1-3 Sek.), 
               ohne sichtbaren Fortschritt sieht das nach einem hängenden Tool
               aus. Ein reiner Sekunden-Zähler reichte laut Stefans Rückmeldung
               nicht: eine simulierte Prozentanzeige (siehe analyseProzent()
               oben) mit dazu passender Meldung wirkt konkreter, auch wenn sie
               technisch nur eine Schätzung ist (kein echtes Zwischen-Ergebnis
-              vom einzelnen, undurchsichtigen API-Aufruf verfügbar) — bleibt
+              vom einzelnen, undurchsichtigen API-Aufruf verfügbar), bleibt
               deshalb bewusst unter 100%, bis die Antwort wirklich da ist. */}
           {fotoStatus === "analysiere" && (
             <div style={{ marginTop: 10, background: C.brandBg, borderRadius: THEME.radius.md, padding: "14px 16px" }}>
@@ -519,7 +519,7 @@ export default function Wohnung({ navigateTo, wohnung, setWohnung, werte, setWer
               </div>
               <div style={{ fontSize: 12, color: C.textMuted, minHeight: 16, textAlign: "center" }}>{analyseMeldung(analysePct)}</div>
               <div style={{ fontSize: 11, color: C.textDim, marginTop: 8, textAlign: "center" }}>
-                Das kann bis zu 2 Minuten dauern — wir prüfen jede Zeile einzeln, um Verwechslungen zu vermeiden. Bitte die Seite offen lassen.
+                Das kann bis zu 2 Minuten dauern, wir prüfen jede Zeile einzeln, um Verwechslungen zu vermeiden. Bitte die Seite offen lassen.
               </div>
             </div>
           )}
@@ -567,11 +567,11 @@ export default function Wohnung({ navigateTo, wohnung, setWohnung, werte, setWer
         <Field label="Abrechnungsjahr" value={wohnung.jahr} onChange={v => setW("jahr", v)} type="number" placeholder="z. B. 2025" width="short" required error={errors.jahr} tip="Das Kalenderjahr oben auf der Abrechnung" />
         {/* Neu 10.08.2026 (siehe CHANGELOG, Stefans Wunsch): Ohne dieses Datum
             lässt sich nicht prüfen, ob der Vermieter die 12-Monats-Frist zur
-            Abrechnung eingehalten hat (§ 556 Abs. 3 BGB) — bei Fristversäumnis
+            Abrechnung eingehalten hat (§ 556 Abs. 3 BGB), bei Fristversäumnis
             ist die GESAMTE Nachforderung ausgeschlossen, ein sehr starker,
             harter Befund. Bewusst optional (nicht jeder weiß/merkt sich das
             genaue Datum), Fristprüfung greift nur, wenn ausgefüllt. */}
-        <Field label="Abrechnung erhalten am" value={wohnung.erhaltenAm} onChange={v => setW("erhaltenAm", v)} type="date" width="medium" tip="Bei Foto-Upload mit dem gedruckten Anschreiben-Datum vorausgefüllt — bei Postversand ggf. anpassen, falls du sie erst später erhalten hast. Optional, aber wichtig für die Fristprüfung." />
+        <Field label="Abrechnung erhalten am" value={wohnung.erhaltenAm} onChange={v => setW("erhaltenAm", v)} type="date" width="medium" tip="Bei Foto-Upload mit dem gedruckten Anschreiben-Datum vorausgefüllt, bei Postversand ggf. anpassen, falls du sie erst später erhalten hast. Optional, aber wichtig für die Fristprüfung." />
         <Field label="Geleistete Vorauszahlungen" value={wohnung.vorauszahlung} onChange={v => setW("vorauszahlung", v)} money placeholder="0,00" prefix="€" width="medium" required error={errors.vorauszahlung} tip="Alle Abschläge des Jahres, steht als 'Summe Vorauszahlungen' auf der Abrechnung" />
 
         {vzQm !== null && vzQm < 0.5 && (

@@ -142,7 +142,22 @@ async function main() {
   // GRENZE ANHEBEN ist erlaubt, aber bitte bewusst: Erst prüfen, welche
   // Bibliothek dazugekommen ist und ob sie wirklich beim ersten Aufruf
   // gebraucht wird. `npm run build` listet die Dateigrößen auf.
-  const START_BUNDLE_MAX_KB = 600;
+  //
+  // ZUR HÖHE DER GRENZE (nachjustiert am 11.09.2026):
+  // Zuerst stand hier 600 kB — kalibriert auf einen lokalen Build (423 kB).
+  // Der Build auf Vercel ist mit denselben Quelldateien aber 638 kB groß,
+  // vermutlich weil dort frisch installierte, leicht andere Paketversionen
+  // verwendet werden. Die Grenze hätte beim echten Deploy also fälschlich
+  // angeschlagen. Sie liegt jetzt bei 900 kB: genug Luft für solche
+  // Schwankungen, aber weit unter den 1,7 MB, bei denen das Problem
+  // aufgetreten ist. Ein versehentlich eingebundenes @react-pdf/renderer
+  // (allein rund 1,3 MB) schlägt damit weiterhin sicher an.
+  //
+  // Für die Ladezeit zählt ohnehin die übertragene Größe, nicht die
+  // entpackte: Live sind es 188 kB (Brotli) gegenüber rund 600 kB vorher.
+  // Die Dateigröße wird hier trotzdem geprüft, weil sie ohne Netzwerkzugriff
+  // messbar ist und sich proportional verhält.
+  const START_BUNDLE_MAX_KB = 900;
   const assetsPfad = join(DIST, "assets");
   if (existsSync(assetsPfad)) {
     const { readdirSync, statSync } = await import("node:fs");

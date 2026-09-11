@@ -122,6 +122,103 @@ Details, Quellen und die Bewertung Frankreichs in `planung/europa-potenzial-nkr.
 
 ---
 
+## 11.09.2026 — Gedankenstriche entfernt, Überschrift bricht nicht mehr um, Search-Console-Befund
+
+### Keine Gedankenstriche mehr im sichtbaren Text
+
+Stefans Vorgabe: „Ich mag generell keine Gedankenstriche. Das sieht sofort nach KI aus."
+
+Gezählt: 525 Vorkommen von `—` und `–` im Projekt. Davon 259 in Code-Kommentaren, die niemand außer uns liest, und **330 in nutzersichtbarem Text**. Nur die 330 wurden ersetzt; Kommentare bleiben unangetastet.
+
+Die Ersetzung lief regelbasiert, weil ein blindes Suchen-und-Ersetzen im Deutschen Unsinn produziert:
+
+| Fall | Regel | Beispiel |
+|---|---|---|
+| Zahlenbereich | „bis" | „9,99 € – 12,99 €" wird „9,99 € bis 12,99 €" |
+| vor „und" / „oder" | Strich ersatzlos weg | „für 2025 – und stoßen" wird „für 2025 und stoßen" |
+| vor „z. B.", „etwa", „nicht" | Komma | |
+| nach vollständigem Satz vor Großbuchstabe | Punkt | |
+| vor Artikel („der", „die", „ein" …) | Doppelpunkt | leitet eine Erläuterung ein |
+| sonst vor Kleinbuchstabe | Komma | |
+
+Der erste Durchlauf mit einfacheren Regeln erzeugte holprige Stellen wie „für das Jahr 2025, und stoßen dort" und „Fristen und Verjährung, was Mieter wissen müssen". Deshalb wurde vom Sicherungsstand zurückgesetzt und mit den verfeinerten Regeln neu gelaufen, danach eine Stichprobe von zwölf zufälligen Änderungen gelesen. Ein Titel wurde von Hand auf einen Doppelpunkt korrigiert.
+
+### Überschrift bricht auf dem Handy nicht mehr um, Schlagwörter bleiben drin
+
+Erster Versuch an diesem Tag war falsch und wurde zurückgenommen: Um den Umbruch zu vermeiden, war „Nebenkostenabrechnung" durch „Deine Nebenkosten" ersetzt worden. Stefan hat widersprochen, zu Recht. Das Wort aus der H1 zu nehmen hätte genau das Ranking-Problem verschärft, das im Abschnitt darunter dokumentiert ist. Die H1 ist für Google das stärkste Einzelsignal einer Seite, und „Nebenkostenabrechnung" und „Mieter" sind die beiden Begriffe, um die es geht.
+
+**Die Ursache war nie das Wort, sondern die feste Schriftgröße.** Gemessen im Browser mit der echten Schrift (Poppins 600):
+
+| | |
+|---|---|
+| „Nebenkostenabrechnung" bei 30 px | **391 px breit** |
+| verfügbar auf 360-px-Display (nach 48 px Seitenpolster) | **312 px** |
+
+Das Wort passte also schlicht nicht und wurde mitten im Wort getrennt.
+
+**Lösung:** `clamp(20px, 6.4vw, 30px)`, die Schriftgröße skaliert mit der Fensterbreite. Nachgerechnet:
+
+| Gerätebreite | verfügbar | Schrift | Wortbreite | passt |
+|---|---|---|---|---|
+| 320 px | 272 px | 20,5 px | 267 px | ja |
+| 360 px | 312 px | 23,0 px | 300 px | ja |
+| 390 px | 342 px | 25,0 px | 326 px | ja |
+| 430 px | 382 px | 27,5 px | 358 px | ja |
+| ab 469 px | 421 px | 30,0 px | 391 px | ja |
+
+**Endgültige Fassung, von Stefan ausgewählt.** Die Zwischenfassung „Nebenkostenabrechnung prüfen, für Mieter, in wenigen Minuten" las sich wie eine Aufzählung von Bruchstücken. Stefan hat außerdem „in 3 Schritten" statt „in wenigen Minuten" angeregt. Sechs Varianten wurden im Browser auf tatsächliche Textbreite vermessen; nur zwei passten auf Handy und Desktop ganz ohne Umbruch. Gewählt:
+
+```
+FÜR MIETER                 ← klein, gesperrt, Markenfarbe
+Nebenkostenabrechnung
+in 3 Schritten prüfen      ← Markenfarbe
+```
+
+Drei Punkte dazu:
+
+1. Die Vorzeile steht **innerhalb** des `h1`-Elements. Dadurch zählt „Mieter" für Google zur Überschrift, obwohl es optisch kleiner gesetzt ist. Als eigenes Element darüber ginge das Signal verloren.
+2. Die Dreiteilung macht Kommas überflüssig. Genau daran klang die Vorfassung unrund.
+3. „in 3 Schritten" deckt sich mit dem Block „So läuft es ab" direkt darunter, der genau drei Schritte zeigt. Wer die Anzahl dort ändert, muss diese Zeile mitändern, sonst widerspricht sich die Seite.
+
+Im vorgerenderten HTML wird daraus ein durchlaufender Satz („Für Mieter: Nebenkostenabrechnung in 3 Schritten prüfen"), weil HTML die Zeilen sonst zu „MieterNebenkosten" verschmelzen würde. Beide Stellen müssen bei Änderungen gleich bleiben, sonst sieht Google eine andere Überschrift als der Besucher. Als Hinweis im Vorrender-Skript vermerkt.
+
+Ergänzend steht „Nebenkostenabrechnung" jetzt auch im ersten Satz des Fließtextes („Du hast als Mieter deine Nebenkostenabrechnung bekommen …"), zusammen mit dem Synonym „Betriebskostenabrechnung".
+
+### Keine Schrägstriche mehr im sichtbaren Text
+
+Stefans Vorgabe. 26 Stellen ersetzt, jede von Hand entschieden, weil je nach Bedeutung etwas anderes passt:
+
+| Fall | Beispiel |
+|---|---|
+| Aufzählung | „Müllbeseitigung / Abfallentsorgung" wird „… und …" |
+| Bindestrich-Verkürzung | „Gebäude-/Feuerversicherung" wird „Gebäude- und Feuerversicherung" |
+| Synonyme (hier wäre „und" sachlich falsch) | „Hauswart / Hausmeister" wird „Hauswart (Hausmeister)" |
+| Alternativen | „Vermieter / Hausverwaltung" wird „… oder …" |
+
+Vorher geprüft, dass `label` nur zur Anzeige dient und nicht zum Erkennen von Posten. Das Erkennen läuft über die 33 `aliases`-Listen, die unangetastet blieben. Die Konsistenzprüfung über 68 Konstellationen bestätigt das.
+
+### Gedankenstrich im Vorrender-Skript gefunden
+
+`scripts/prerender.mjs` erzeugt den HTML-Text, **den Google sieht**, und setzte die beiden Überschriftzeilen mit einem Gedankenstrich zusammen. Vier weitere Stellen im vorgerenderten Startseitentext ebenfalls. Alle ersetzt. Kontrolliert durch `grep` im gebauten `dist/`: übrig bleibt genau ein Vorkommen, und das steht in einem HTML-Kommentar.
+
+### Search-Console-Befund: es ist kein Produktproblem
+
+Anlass war Stefans Satz „Mir gehen für NebenkostenRadar die Ideen aus." Die Leistungsdaten vom 13.06. bis 08.09.2026 zeigen die Ursache sehr genau:
+
+| Kennzahl | Wert |
+|---|---|
+| Impressionen | 992 |
+| Klicks | 34 |
+| **Durchschnittliche Position** | **38,6** (Seite 4) |
+
+Die **einzige** Suchanfrage mit Klicks ist der eigene Markenname („nebenkostenradar", 7 Klicks). Alle inhaltlichen Anfragen haben **null Klicks bei vorhandenen Impressionen**, darunter „nebenkostenabrechnung prüfen lassen online" mit 21 Impressionen: genau die Anfrage eines kaufbereiten Nutzers, 21-mal auf Seite 4 angezeigt.
+
+Damit ist die Lage eindeutig: kein Produktproblem, kein Konversionsproblem, sondern ein Rangproblem. Und die größte Änderung an der Sichtbarkeit, die die Seite je erfahren hat (22 statt 10 Artikel plus die technischen Korrekturen), ist erst 24 Stunden alt und wirkt sich typischerweise nach vier bis zwölf Wochen aus.
+
+Vollständige Auswertung mit Handlungsvorschlägen in `planung/wo-es-wirklich-klemmt.md`.
+
+---
+
 ## 11.09.2026 — Aufblitzen beim Laden behoben: Startbundle von 1,72 MB auf 423 kB
 
 Stefans Beobachtung: „Während die Seite lädt sieht man kurz für den Bruchteil einer Sekunde die Homepage ohne Gestaltung (praktisch der reine Text in schwarz auf weißem Hintergrund). Sehr kurz aber man registriert es als Anwender."
@@ -179,6 +276,24 @@ Gegenprobe: Grenze testweise auf 100 kB gesetzt → „Startbundle index-*.js is
 | Startbundle | 423 kB (Grenze 600 kB) |
 | `.vorab`-Klasse in `/`, `/faq`, `/ratgeber`, Artikelseiten | vorhanden |
 | Regressionstests | 950 Prüfungen und 31 Eingaben, 0 Abweichungen |
+
+### Nachtrag nach dem Deploy: Grenzwert war falsch kalibriert
+
+Die Live-Messung hat einen Fehler in meiner eigenen Absicherung gezeigt. Ich hatte die Bundle-Grenze auf 600 kB gesetzt — kalibriert am **lokalen** Build (423 kB). Der Build auf Vercel ist mit denselben Quelldateien aber **638 kB** groß, vermutlich wegen frisch installierter, leicht abweichender Paketversionen.
+
+Die Prüfung hätte beim echten Deploy also fälschlich angeschlagen. Grenze auf 900 kB angehoben: genug Luft für solche Schwankungen, aber weit unter den 1,7 MB des Ausgangsproblems — ein versehentlich eingebundenes `@react-pdf/renderer` (allein rund 1,3 MB) schlägt weiterhin sicher an.
+
+Lehre daraus: Einen Schwellwert am lokalen Build zu eichen, wenn die Produktion woanders baut, ist genau die Art stiller Fehlkalibrierung, die später als „der Test spinnt" abgetan wird.
+
+### Live-Messung nach dem Deploy
+
+| Größe | vorher | jetzt |
+|---|---|---|
+| Startbundle übertragen (Brotli) | ~601 kB | **188 kB** |
+| Startbundle entpackt | 1.749 kB | 638 kB |
+| Enthält `@react-pdf`/pdfkit | ja | **nein** |
+
+Der Zwischenzustand wurde nachgestellt, indem die Live-Seite ohne JavaScript gerendert wurde: Er zeigt jetzt Markenschrift, Markenfarben und eine gesetzte Satzbreite — ein schlichtes, aber gestaltetes Dokument statt schwarzem Text auf Weiß.
 
 ### Indexierung: Kontingent noch nicht zurückgesetzt
 

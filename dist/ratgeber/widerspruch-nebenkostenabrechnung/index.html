@@ -8,7 +8,7 @@
     Einzelne Elemente sollten ohnehin nie breiter als der Viewport werden,
     aber diese Regel fängt Restfälle ab (z.B. sehr lange unbrechbare Wörter,
     Rundungsfehler bei Prozent-/Padding-Kombinationen) und verhindert, dass
-    daraus eine seitlich wegziehbare Seite wird — wirkt sonst unfertig.
+    daraus eine seitlich wegziehbare Seite wird, wirkt sonst unfertig.
   -->
   <style>
     /*
@@ -19,7 +19,7 @@
     */
     html, body, #root { max-width: 100%; overflow-x: hidden; }
     /*
-      Kein echter Überlauf vorhanden (per Konsolen-Check bestätigt) — das
+      Kein echter Überlauf vorhanden (per Konsolen-Check bestätigt), das
       seitliche "Hin- und Herschubsen" war iOS Safaris eingebautes
       elastisches Rubber-Band-Verhalten, das standardmäßig auch ohne
       überlaufenden Inhalt aktiv ist. overscroll-behavior-x schaltet gezielt
@@ -29,7 +29,7 @@
     */
     /*
       overscroll-behavior-x (siehe unten) und touch-action greifen für das
-      elastische Rubber-Band NICHT auf iOS Safari — WebKit implementiert
+      elastische Rubber-Band NICHT auf iOS Safari. WebKit implementiert
       overscroll-behavior für diesen Fall nicht (offener WebKit-Bug 176454,
       Stand 08/2026, ungelöst seit Jahren). Bleiben trotzdem stehen, schaden
       nicht und helfen in anderen Browsern (Chrome/Firefox Android). Die
@@ -38,7 +38,7 @@
     html, body { overscroll-behavior-x: none; touch-action: pan-y; }
     /*
       Reines Sicherheitsnetz für sehr lange, unbrechbare Wörter (z.B. in
-      Ratgeber-Artikeln) — bricht im Extremfall mitten im Wort um, statt
+      Ratgeber-Artikeln), bricht im Extremfall mitten im Wort um, statt
       über den Container hinauszulaufen. `hyphens:auto` wurde bewusst NICHT
       global gesetzt: hat auf der Startseite "Transparent" unerwünscht zu
       "Transpa-rent" getrennt, obwohl gar keine Not dazu bestand (Browser
@@ -53,15 +53,15 @@
   <link rel="canonical" href="https://nebenkostenradar.com/ratgeber/widerspruch-nebenkostenabrechnung" />
 
   <title>Widerspruch Nebenkostenabrechnung | NebenkostenRadar</title>
-  <meta name="description" content="12 Monate Zeit, aber nur 30 Tage für die Nachzahlung — viele Mieter verwechseln diese Fristen. Was Sie jetzt wissen müssen." />
+  <meta name="description" content="12 Monate Zeit, aber nur 30 Tage für die Nachzahlung, viele Mieter verwechseln diese Fristen. Was Sie jetzt wissen müssen." />
 
   <meta property="og:type" content="article" />
   <meta property="og:title" content="Widerspruch Nebenkostenabrechnung | NebenkostenRadar" />
-  <meta property="og:description" content="12 Monate Zeit, aber nur 30 Tage für die Nachzahlung — viele Mieter verwechseln diese Fristen. Was Sie jetzt wissen müssen." />
+  <meta property="og:description" content="12 Monate Zeit, aber nur 30 Tage für die Nachzahlung, viele Mieter verwechseln diese Fristen. Was Sie jetzt wissen müssen." />
   <meta property="og:url" content="https://nebenkostenradar.com/ratgeber/widerspruch-nebenkostenabrechnung" />
   <meta property="og:locale" content="de_DE" />
   <!-- Vorschaubild für geteilte Links. ERGÄNZT 10.09.2026: Bis dahin gab es
-       gar kein og:image — jeder auf WhatsApp, Facebook oder LinkedIn geteilte
+       gar kein og:image, jeder auf WhatsApp, Facebook oder LinkedIn geteilte
        Link zeigte eine leere graue Vorschau. Das Bild liegt in public/ und
        wird unverändert nach dist/ kopiert. Die URL muss absolut sein, relative
        Pfade werden von den meisten Netzwerken nicht aufgelöst.
@@ -71,14 +71,14 @@
   <meta property="og:image" content="https://nebenkostenradar.com/og-bild.png" />
   <meta property="og:image:width" content="1200" />
   <meta property="og:image:height" content="630" />
-  <meta property="og:image:alt" content="NebenkostenRadar — jede zweite Abrechnung enthält Fehler" />
+  <meta property="og:image:alt" content="NebenkostenRadar, jede zweite Abrechnung enthält Fehler" />
   <meta name="twitter:image" content="https://nebenkostenradar.com/og-bild.png" />
 
   <!--
     Gestaltung des vorgerenderten Zwischenzustands (11.09.2026).
 
     WOFÜR: Stefan ist aufgefallen, dass beim Aufruf der Seite für den
-    Bruchteil einer Sekunde reiner Text ohne Gestaltung aufblitzt — schwarz
+    Bruchteil einer Sekunde reiner Text ohne Gestaltung aufblitzt, schwarz
     auf weiß. Das ist eine Nebenwirkung des Vorrenderns: Seit dem 10.09.2026
     steht im ausgelieferten HTML echter Text, den der Browser sofort anzeigt.
     Die Gestaltung der Seite steckt dagegen komplett als JavaScript-Objekte
@@ -92,14 +92,14 @@
        Seite aussieht und nicht nach einem Rohdokument.
 
     WARUM INLINE UND NICHT ALS DATEI: Ein externes Stylesheet wäre ein
-    zusätzlicher Netzwerkabruf — und genau während dieses Abrufs wäre der
+    zusätzlicher Netzwerkabruf und genau während dieses Abrufs wäre der
     ungestaltete Zustand wieder sichtbar. Inline gilt es ab der ersten
     Bildschirmausgabe.
 
     WARUM DIE KLASSE .vorab: Die Regeln dürfen ausschließlich den
     Zwischenzustand betreffen. scripts/prerender.mjs verpackt den
     vorgerenderten Inhalt in <div class="vorab">. React ersetzt den Inhalt
-    von #root beim Start vollständig, die Klasse verschwindet dabei — die
+    von #root beim Start vollständig, die Klasse verschwindet dabei, die
     Regeln können also nicht in die fertige Seite hineinwirken.
 
     Bewusst KEIN display:none auf dem Inhalt: Text vor Nutzern zu verstecken,
@@ -147,11 +147,11 @@
        zeigt X/Twitter die große Vorschaukarte statt einer kleinen Kachel. -->
   <meta name="twitter:card" content="summary_large_image" />
   <meta name="twitter:title" content="Widerspruch Nebenkostenabrechnung | NebenkostenRadar" />
-  <meta name="twitter:description" content="12 Monate Zeit, aber nur 30 Tage für die Nachzahlung — viele Mieter verwechseln diese Fristen. Was Sie jetzt wissen müssen." />
+  <meta name="twitter:description" content="12 Monate Zeit, aber nur 30 Tage für die Nachzahlung, viele Mieter verwechseln diese Fristen. Was Sie jetzt wissen müssen." />
 
   <!--
     Verhindert das elastische horizontale "Rubber-Band"-Wischen auf iOS
-    Safari (08/2026) — reines CSS (overscroll-behavior-x) wirkt dafür nicht,
+    Safari (08/2026), reines CSS (overscroll-behavior-x) wirkt dafür nicht,
     siehe Kommentar im <style>-Block oben (WebKit-Bug 176454). Ermittelt bei
     jeder Berührung, ob die Bewegung überwiegend horizontal ist, und
     unterdrückt nur dann das Standardverhalten. Vertikales Scrollen bleibt
@@ -185,7 +185,7 @@
     GA4-Consent-Stub: setzt NUR den Default-Zustand (analytics_storage: denied)
     und lädt NICHTS. Das eigentliche gtag.js-Skript wird erst in
     components/layout/CookieBanner.jsx (ladeGA4()) nach Einwilligung geladen.
-    NIEMALS hier ein <script src="googletagmanager.com/gtag/js..."> ergänzen —
+    NIEMALS hier ein <script src="googletagmanager.com/gtag/js..."> ergänzen, 
     das war der ursprüngliche Abmahn-/Bußgeld-Risikopunkt (Cookieless Ping mit
     IP-Adresse vor Einwilligung), siehe CHANGELOG.md.
   -->
@@ -197,10 +197,10 @@
 
   <!--
     ACHTUNG bei Preisänderungen: Diese Datei ist reines statisches HTML, kein
-    JSX — kann NICHT wie Datenschutz.jsx/AGB.jsx aus BUSINESS.PREIS_* in
+    JSX, kann NICHT wie Datenschutz.jsx/AGB.jsx aus BUSINESS.PREIS_* in
     src/config/business.js gerendert werden. Preise unten müssen bei jeder
     Änderung von Hand nachgezogen werden. Am 13.08.2026 hier veraltete Preise
-    (7,99 €/9,99 €) gefunden und auf die aktuellen 9,99 €/12,99 € korrigiert —
+    (7,99 €/9,99 €) gefunden und auf die aktuellen 9,99 €/12,99 € korrigiert, 
     derselbe Fehler wie zuvor in Datenschutz.jsx, siehe CHANGELOG.md.
   -->
   <script type="application/ld+json">
@@ -216,7 +216,7 @@
     ]
   }
   </script>
-  <script type="module" crossorigin src="/assets/index-D10jUKK8.js"></script>
+  <script type="module" crossorigin src="/assets/index-7CbgBkHf.js"></script>
 </head>
 <body>
   <div id="root"><div class="vorab">
@@ -224,26 +224,26 @@
       <p><a href="/ratgeber">← Ratgeber</a></p>
       <p>Mietrecht · Juni 2026 · 6 Min.</p>
       <h1>Widerspruch Nebenkostenabrechnung 2026: Frist, Muster &amp; Anleitung</h1>
-      <p>Sie haben Ihre Nebenkostenabrechnung erhalten und vermuten Fehler? Dann haben Sie als Mieter das Recht, innerhalb von 12 Monaten Widerspruch einzulegen. Doch Vorsicht: Die Zahlungsfrist für eine Nachzahlung beträgt nur 30 Tage — unabhängig vom Widerspruch. Wer das verwechselt, riskiert Verzugszinsen oder schlimmstenfalls die Kündigung.</p>
-<h2>Die zwei entscheidenden Fristen — und warum viele Mieter sie verwechseln</h2>
+      <p>Sie haben Ihre Nebenkostenabrechnung erhalten und vermuten Fehler? Dann haben Sie als Mieter das Recht, innerhalb von 12 Monaten Widerspruch einzulegen. Doch Vorsicht: Die Zahlungsfrist für eine Nachzahlung beträgt nur 30 Tage, unabhängig vom Widerspruch. Wer das verwechselt, riskiert Verzugszinsen oder schlimmstenfalls die Kündigung.</p>
+<h2>Die zwei entscheidenden Fristen und warum viele Mieter sie verwechseln</h2>
 <p>Das Mietrecht kennt zwei völlig unterschiedliche Fristen nach Erhalt der Nebenkostenabrechnung:</p>
-<ul><li>30 Tage: Zahlungsfrist für eine Nachzahlung (§ 286 BGB). Diese Frist gilt unabhängig davon, ob Sie Widerspruch einlegen. Lösung: Zahlen Sie unter Vorbehalt — schreiben Sie auf die Überweisung: 'Zahlung unter Vorbehalt der Überprüfung'.</li><li>12 Monate: Widerspruchsfrist gegen fehlerhafte Positionen (§ 556 Abs. 3 BGB). Die Frist beginnt mit dem Tag des Erhalts der Abrechnung.</li></ul>
+<ul><li>30 Tage: Zahlungsfrist für eine Nachzahlung (§ 286 BGB). Diese Frist gilt unabhängig davon, ob Sie Widerspruch einlegen. Lösung: Zahlen Sie unter Vorbehalt, schreiben Sie auf die Überweisung: 'Zahlung unter Vorbehalt der Überprüfung'.</li><li>12 Monate: Widerspruchsfrist gegen fehlerhafte Positionen (§ 556 Abs. 3 BGB). Die Frist beginnt mit dem Tag des Erhalts der Abrechnung.</li></ul>
 <p><strong>Hinweis:</strong> Wichtig: Zahlung unter Vorbehalt schützt Sie. Auch wenn Sie die Nachzahlung leisten, können Sie innerhalb von 12 Monaten noch Widerspruch einlegen und zu viel gezahltes Geld zurückfordern.</p>
 <h2>Wann lohnt sich ein Widerspruch?</h2>
 <p>Ein Widerspruch ist sinnvoll wenn Ihre Abrechnung formelle oder inhaltliche Fehler enthält:</p>
-<ul><li>Formelle Fehler (gravierend): Abrechnung fehlt ganz, wurde zu spät zugestellt (nach dem 31.12. des Folgejahres), oder enthält keinen nachvollziehbaren Verteilerschlüssel. Folge: Die gesamte Abrechnung ist unwirksam — Sie müssen keine Nachzahlung leisten.</li><li>Inhaltliche Fehler: Nicht umlagefähige Posten (z.B. Kabelanschluss seit Juli 2024, Verwaltungskosten, Reparaturen), überhöhte Beträge über dem DMB-Richtwert, Verstoß gegen die Heizkostenverordnung.</li></ul>
-<p><a href="/ratgeber/kabelanschluss-nicht-umlagefaehig">Kabelanschluss in Ihrer Abrechnung? Seit Juli 2024 ist dieser Posten grundsätzlich nicht mehr umlagefähig — Details im Artikel zur Rechtsänderung.</a></p>
+<ul><li>Formelle Fehler (gravierend): Abrechnung fehlt ganz, wurde zu spät zugestellt (nach dem 31.12. des Folgejahres), oder enthält keinen nachvollziehbaren Verteilerschlüssel. Folge: Die gesamte Abrechnung ist unwirksam. Sie müssen keine Nachzahlung leisten.</li><li>Inhaltliche Fehler: Nicht umlagefähige Posten (z.B. Kabelanschluss seit Juli 2024, Verwaltungskosten, Reparaturen), überhöhte Beträge über dem DMB-Richtwert, Verstoß gegen die Heizkostenverordnung.</li></ul>
+<p><a href="/ratgeber/kabelanschluss-nicht-umlagefaehig">Kabelanschluss in Ihrer Abrechnung? Seit Juli 2024 ist dieser Posten grundsätzlich nicht mehr umlagefähig. Details im Artikel zur Rechtsänderung.</a></p>
 <p><a href="/ratgeber/betriebskostenspiegel-2024">Nicht sicher, ob Ihre Beträge zu hoch sind? Der DMB-Betriebskostenspiegel 2024 zeigt die aktuellen Durchschnittswerte je Kostenart.</a></p>
 <h2>Schritt-für-Schritt: So legen Sie wirksam Widerspruch ein</h2>
-<ol><li>Abrechnung systematisch prüfen: Jeden Posten auf Umlagefähigkeit (§ 2 BetrKV) und Plausibilität (DMB-Betriebskostenspiegel) prüfen.</li><li>Fehler konkret benennen: Pauschal 'die Abrechnung ist falsch' reicht nicht — benennen Sie jeden strittigen Posten mit Betrag und Begründung.</li><li>Widerspruch schriftlich formulieren: Per Einschreiben mit Rückschein — nur so ist der Zugang beim Vermieter beweisbar.</li><li>Belegeinsicht anfordern: Sie haben das Recht, alle Originalrechnungen einzusehen (§ 259 BGB). Verlangen Sie die Belege immer — auch wenn Sie zahlen.</li><li>Frist im Blick behalten: Spätestens 12 Monate nach Erhalt der Abrechnung muss der Widerspruch beim Vermieter eingegangen sein.</li></ol>
+<ol><li>Abrechnung systematisch prüfen: Jeden Posten auf Umlagefähigkeit (§ 2 BetrKV) und Plausibilität (DMB-Betriebskostenspiegel) prüfen.</li><li>Fehler konkret benennen: Pauschal 'die Abrechnung ist falsch' reicht nicht, benennen Sie jeden strittigen Posten mit Betrag und Begründung.</li><li>Widerspruch schriftlich formulieren: Per Einschreiben mit Rückschein, nur so ist der Zugang beim Vermieter beweisbar.</li><li>Belegeinsicht anfordern: Sie haben das Recht, alle Originalrechnungen einzusehen (§ 259 BGB). Verlangen Sie die Belege immer, auch wenn Sie zahlen.</li><li>Frist im Blick behalten: Spätestens 12 Monate nach Erhalt der Abrechnung muss der Widerspruch beim Vermieter eingegangen sein.</li></ol>
 <h2>Was gehört in den Widerspruchsbrief?</h2>
 <p>Ein wirksamer Widerspruch muss folgende Elemente enthalten:</p>
-<ul><li>Ihre vollständige Adresse und die des Vermieters</li><li>Klarer Betreff: 'Widerspruch zur Betriebskostenabrechnung [Jahr]'</li><li>Konkrete Benennung der beanstandeten Positionen mit Betrag</li><li>Rechtsgrundlage (z.B. '§ 2 BetrKV — nicht umlagefähig')</li><li>Aufforderung zur Belegeinsicht (§ 259 BGB)</li><li>Vorbehalt für weitere Einwände nach Belegeinsicht</li><li>Bitte um schriftliche Stellungnahme</li></ul>
-<p>NebenkostenRadar erstellt den Widerspruchsbrief automatisch — mit allen Rechtsgrundlagen, auf Basis Ihrer konkreten Abrechnung. <a href="/pruefen/wohnung">Kostenlos prüfen →</a></p>
-<h2>Häufige Fehler beim Widerspruch — und wie Sie sie vermeiden</h2>
-<ul><li>Nur mündlich widersprechen: Gilt rechtlich nicht — immer schriftlich.</li><li>Zu pauschal formulieren: 'Die Abrechnung stimmt nicht' reicht nicht — konkrete Positionen nennen.</li><li>Frist verpassen: Ab dem 13. Monat nach Erhalt sind Einwände in der Regel ausgeschlossen.</li><li>Nicht unter Vorbehalt zahlen: Wer die Nachzahlung ohne Vorbehalt zahlt, erschwert eine spätere Rückforderung.</li></ul>
+<ul><li>Ihre vollständige Adresse und die des Vermieters</li><li>Klarer Betreff: 'Widerspruch zur Betriebskostenabrechnung [Jahr]'</li><li>Konkrete Benennung der beanstandeten Positionen mit Betrag</li><li>Rechtsgrundlage (z.B. '§ 2 BetrKV, nicht umlagefähig')</li><li>Aufforderung zur Belegeinsicht (§ 259 BGB)</li><li>Vorbehalt für weitere Einwände nach Belegeinsicht</li><li>Bitte um schriftliche Stellungnahme</li></ul>
+<p>NebenkostenRadar erstellt den Widerspruchsbrief automatisch, mit allen Rechtsgrundlagen, auf Basis Ihrer konkreten Abrechnung. <a href="/pruefen/wohnung">Kostenlos prüfen →</a></p>
+<h2>Häufige Fehler beim Widerspruch und wie Sie sie vermeiden</h2>
+<ul><li>Nur mündlich widersprechen: Gilt rechtlich nicht, immer schriftlich.</li><li>Zu pauschal formulieren: 'Die Abrechnung stimmt nicht' reicht nicht, konkrete Positionen nennen.</li><li>Frist verpassen: Ab dem 13. Monat nach Erhalt sind Einwände in der Regel ausgeschlossen.</li><li>Nicht unter Vorbehalt zahlen: Wer die Nachzahlung ohne Vorbehalt zahlt, erschwert eine spätere Rückforderung.</li></ul>
     </article>
-    <script type="application/ld+json">{"@context":"https://schema.org","@type":"Article","headline":"Widerspruch Nebenkostenabrechnung 2026: Frist, Muster & Anleitung","description":"12 Monate Zeit, aber nur 30 Tage für die Nachzahlung — viele Mieter verwechseln diese Fristen. Was Sie jetzt wissen müssen.","url":"https://nebenkostenradar.com/ratgeber/widerspruch-nebenkostenabrechnung","image":"https://images.unsplash.com/photo-1731963094554-c5c981ccdefd?w=800&q=80"}</script>
+    <script type="application/ld+json">{"@context":"https://schema.org","@type":"Article","headline":"Widerspruch Nebenkostenabrechnung 2026: Frist, Muster & Anleitung","description":"12 Monate Zeit, aber nur 30 Tage für die Nachzahlung, viele Mieter verwechseln diese Fristen. Was Sie jetzt wissen müssen.","url":"https://nebenkostenradar.com/ratgeber/widerspruch-nebenkostenabrechnung","image":"https://images.unsplash.com/photo-1731963094554-c5c981ccdefd?w=800&q=80"}</script>
   </div></div>
 </body>
 </html>

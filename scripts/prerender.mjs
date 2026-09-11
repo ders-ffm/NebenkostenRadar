@@ -158,7 +158,7 @@ function schreibeWidget() {
 
   const daten = JSON.stringify({ zeilen, gesamt: R.gesamt, jahr: BUSINESS.RICHTWERTE_JAHR });
 
-  const js = `/* NebenkostenRadar — Richtwerte-Widget
+  const js = `/* NebenkostenRadar. Richtwerte-Widget
  * Einbinden mit:  <div id="nkr-betriebskostenspiegel"></div>
  *                 <script src="${BASE}/widget.js" async></script>
  * Quelle: Deutscher Mieterbund, Betriebskostenspiegel. Automatisch erzeugt,
@@ -351,18 +351,25 @@ function startseiteInhalt() {
   const preisA = BUSINESS.PREIS_AUSWERTUNG.toLocaleString("de-DE", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
   const preisV = BUSINESS.PREIS_VOLL.toLocaleString("de-DE", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
   return `
-    <h1>Nebenkostenabrechnung prüfen — für Mieter, in wenigen Minuten</h1>
-    <p>Du hast die Betriebskostenabrechnung für deine Mietwohnung bekommen und weißt nicht, ob sie stimmt? NebenkostenRadar vergleicht jeden Posten mit den Richtwerten des Deutschen Mieterbundes und prüft, was dein Vermieter überhaupt umlegen darf. Das Angebot richtet sich an Mieter von Wohnraum in Deutschland; für Gewerbemietverträge und für Eigentümer gelten andere Regeln.</p>
+    <!-- Diese H1 muss inhaltlich der H1 in src/pages/Welcome.jsx entsprechen.
+         Dort steht sie aus gestalterischen Gründen in drei Zeilen (Vorzeile
+         "Für Mieter" plus zwei große Zeilen); hier wird daraus ein
+         durchlaufender Satz, weil HTML die Zeilen sonst zu "MieterNebenkosten"
+         verschmelzen würde. Sieht Google unterschiedliche Überschriften in
+         vorgerenderter und interaktiver Fassung, wertet es das als
+         widersprüchliches Signal. Bei Änderungen also immer beide Stellen. -->
+    <h1>Für Mieter: Nebenkostenabrechnung in 3 Schritten prüfen</h1>
+    <p>Du hast als Mieter deine Nebenkostenabrechnung bekommen und weißt nicht, ob sie stimmt? NebenkostenRadar vergleicht jeden Posten der Betriebskostenabrechnung mit den Richtwerten des Deutschen Mieterbundes und prüft, was dein Vermieter überhaupt umlegen darf. Das Angebot richtet sich an Mieter von Wohnraum in Deutschland; für Gewerbemietverträge und für Eigentümer gelten andere Regeln.</p>
     <h2>So läuft es ab</h2>
     <ol>
-      <li>Abrechnung als Foto oder PDF hochladen — die Posten werden automatisch ausgelesen.</li>
+      <li>Abrechnung als Foto oder PDF hochladen, die Posten werden automatisch ausgelesen.</li>
       <li>Kostenlose Basisanalyse: Jeder Posten wird gegen Richtwerte und Rechtsgrundlagen geprüft, ohne Konto und ohne Zahlung.</li>
       <li>Auswertung als PDF, auf Wunsch mit versandfertigem Brief an den Vermieter.</li>
     </ol>
     <h2>Was geprüft wird</h2>
     <ul>
       <li>Jede Position wird mit dem Betriebskostenspiegel des Deutschen Mieterbundes verglichen und auf Zulässigkeit nach § 2 BetrKV geprüft.</li>
-      <li>Nicht umlagefähige Posten werden erkannt — etwa Verwaltungskosten oder, seit Juli 2024, der Kabelanschluss.</li>
+      <li>Nicht umlagefähige Posten werden erkannt, etwa Verwaltungskosten oder, seit Juli 2024, der Kabelanschluss.</li>
       <li>Prüfung der 50/70-Regel nach Heizkostenverordnung sowie der Aufteilung der CO₂-Abgabe.</li>
       <li>Fristen nach § 556 Abs. 3 BGB: rechtzeitige Zustellung und Einwendungsfrist.</li>
       <li>Im Paket „Auswertung + Brief“ zusätzlich ein Hinweis auf steuerlich absetzbare Positionen nach § 35a EStG.</li>

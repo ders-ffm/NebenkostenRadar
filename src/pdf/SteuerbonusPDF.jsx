@@ -77,11 +77,11 @@ export default function SteuerbonusPDF({ result, wohnung, adressen }) {
       </View>
 
       <Text style={s.titel}>Steuer-Bonus: was du absetzen kannst</Text>
-      <Text style={s.untertitel}>Unverbindlicher Hinweis nach § 35a EStG — reine Rechenhilfe, keine Steuerberatung.</Text>
+      <Text style={s.untertitel}>Unverbindlicher Hinweis nach § 35a EStG, reine Rechenhilfe, keine Steuerberatung.</Text>
 
       {positionen.length === 0 ? (
         <Text style={s.absatz}>
-          In deiner Abrechnung wurden keine Positionen gefunden, die typischerweise unter § 35a EStG fallen (z. B. Hausmeister, Gartenpflege, Hausreinigung, Winterdienst, Schornsteinfeger, Aufzug- oder Heizungswartung). Das heißt nicht zwingend, dass es nichts Absetzbares gibt — frag im Zweifel direkt bei deinem Vermieter nach.
+          In deiner Abrechnung wurden keine Positionen gefunden, die typischerweise unter § 35a EStG fallen (z. B. Hausmeister, Gartenpflege, Hausreinigung, Winterdienst, Schornsteinfeger, Aufzug- oder Heizungswartung). Das heißt nicht zwingend, dass es nichts Absetzbares gibt, frag im Zweifel direkt bei deinem Vermieter nach.
         </Text>
       ) : (
         <>
@@ -104,7 +104,7 @@ export default function SteuerbonusPDF({ result, wohnung, adressen }) {
 
           <View style={s.hinweisBox}>
             <Text>
-              Rechnerischer Hinweis: 20 % davon wären {fmt(rechnerischerHinweis)} — als Ausgangswert auf Basis des vollen Betrags oben. Absetzbar ist aber nur der reine Arbeits-, Fahrt- und Maschinenkostenanteil, kein Material (§ 35a Abs. 2/3 EStG) — deine Abrechnung weist das meist nicht getrennt aus. Gesetzliche Höchstbeträge: 4.000 €/Jahr für haushaltsnahe Dienstleistungen, 1.200 €/Jahr für Handwerkerleistungen.
+              Rechnerischer Hinweis: 20 % davon wären {fmt(rechnerischerHinweis)}, als Ausgangswert auf Basis des vollen Betrags oben. Absetzbar ist aber nur der reine Arbeits-, Fahrt- und Maschinenkostenanteil, kein Material (§ 35a Abs. 2/3 EStG), deine Abrechnung weist das meist nicht getrennt aus. Gesetzliche Höchstbeträge: 4.000 €/Jahr für haushaltsnahe Dienstleistungen, 1.200 €/Jahr für Handwerkerleistungen.
             </Text>
           </View>
 
@@ -123,7 +123,7 @@ export default function SteuerbonusPDF({ result, wohnung, adressen }) {
       <Text style={{ fontSize: 8.5, color: C.textDim }}>{(adressen.mieterOrt || "").trim()}, {heute}</Text>
 
       <View style={s.footer} fixed>
-        <Text>Reine Rechenhilfe, keine Steuerberatung. Automatisiert erstellter Hinweis, keine Gewähr für Richtigkeit oder Vollständigkeit — ob und in welcher Höhe die Ermäßigung im Einzelfall greift, hängt von deiner individuellen Steuererklärung ab.</Text>
+        <Text>Reine Rechenhilfe, keine Steuerberatung. Automatisiert erstellter Hinweis, keine Gewähr für Richtigkeit oder Vollständigkeit, ob und in welcher Höhe die Ermäßigung im Einzelfall greift, hängt von deiner individuellen Steuererklärung ab.</Text>
       </View>
     </Page>
   );

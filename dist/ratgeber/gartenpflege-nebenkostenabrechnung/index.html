@@ -8,7 +8,7 @@
     Einzelne Elemente sollten ohnehin nie breiter als der Viewport werden,
     aber diese Regel fängt Restfälle ab (z.B. sehr lange unbrechbare Wörter,
     Rundungsfehler bei Prozent-/Padding-Kombinationen) und verhindert, dass
-    daraus eine seitlich wegziehbare Seite wird — wirkt sonst unfertig.
+    daraus eine seitlich wegziehbare Seite wird, wirkt sonst unfertig.
   -->
   <style>
     /*
@@ -19,7 +19,7 @@
     */
     html, body, #root { max-width: 100%; overflow-x: hidden; }
     /*
-      Kein echter Überlauf vorhanden (per Konsolen-Check bestätigt) — das
+      Kein echter Überlauf vorhanden (per Konsolen-Check bestätigt), das
       seitliche "Hin- und Herschubsen" war iOS Safaris eingebautes
       elastisches Rubber-Band-Verhalten, das standardmäßig auch ohne
       überlaufenden Inhalt aktiv ist. overscroll-behavior-x schaltet gezielt
@@ -29,7 +29,7 @@
     */
     /*
       overscroll-behavior-x (siehe unten) und touch-action greifen für das
-      elastische Rubber-Band NICHT auf iOS Safari — WebKit implementiert
+      elastische Rubber-Band NICHT auf iOS Safari. WebKit implementiert
       overscroll-behavior für diesen Fall nicht (offener WebKit-Bug 176454,
       Stand 08/2026, ungelöst seit Jahren). Bleiben trotzdem stehen, schaden
       nicht und helfen in anderen Browsern (Chrome/Firefox Android). Die
@@ -38,7 +38,7 @@
     html, body { overscroll-behavior-x: none; touch-action: pan-y; }
     /*
       Reines Sicherheitsnetz für sehr lange, unbrechbare Wörter (z.B. in
-      Ratgeber-Artikeln) — bricht im Extremfall mitten im Wort um, statt
+      Ratgeber-Artikeln), bricht im Extremfall mitten im Wort um, statt
       über den Container hinauszulaufen. `hyphens:auto` wurde bewusst NICHT
       global gesetzt: hat auf der Startseite "Transparent" unerwünscht zu
       "Transpa-rent" getrennt, obwohl gar keine Not dazu bestand (Browser
@@ -53,15 +53,15 @@
   <link rel="canonical" href="https://nebenkostenradar.com/ratgeber/gartenpflege-nebenkostenabrechnung" />
 
   <title>Gartenpflege in der Abrechnung | NebenkostenRadar</title>
-  <meta name="description" content="Rasenmähen ja, neue Bäume nein: Bei der Gartenpflege verläuft die Grenze zwischen laufender Pflege und einmaliger Neuanlage. Was das für Ihre Abrechnung bedeutet — auch ohne eigenen Gartenzugang." />
+  <meta name="description" content="Rasenmähen ja, neue Bäume nein: Bei der Gartenpflege verläuft die Grenze zwischen laufender Pflege und einmaliger Neuanlage. Was das für Ihre Abrechnung bedeutet, auch ohne eigenen Gartenzugang." />
 
   <meta property="og:type" content="article" />
   <meta property="og:title" content="Gartenpflege in der Abrechnung | NebenkostenRadar" />
-  <meta property="og:description" content="Rasenmähen ja, neue Bäume nein: Bei der Gartenpflege verläuft die Grenze zwischen laufender Pflege und einmaliger Neuanlage. Was das für Ihre Abrechnung bedeutet — auch ohne eigenen Gartenzugang." />
+  <meta property="og:description" content="Rasenmähen ja, neue Bäume nein: Bei der Gartenpflege verläuft die Grenze zwischen laufender Pflege und einmaliger Neuanlage. Was das für Ihre Abrechnung bedeutet, auch ohne eigenen Gartenzugang." />
   <meta property="og:url" content="https://nebenkostenradar.com/ratgeber/gartenpflege-nebenkostenabrechnung" />
   <meta property="og:locale" content="de_DE" />
   <!-- Vorschaubild für geteilte Links. ERGÄNZT 10.09.2026: Bis dahin gab es
-       gar kein og:image — jeder auf WhatsApp, Facebook oder LinkedIn geteilte
+       gar kein og:image, jeder auf WhatsApp, Facebook oder LinkedIn geteilte
        Link zeigte eine leere graue Vorschau. Das Bild liegt in public/ und
        wird unverändert nach dist/ kopiert. Die URL muss absolut sein, relative
        Pfade werden von den meisten Netzwerken nicht aufgelöst.
@@ -71,14 +71,14 @@
   <meta property="og:image" content="https://nebenkostenradar.com/og-bild.png" />
   <meta property="og:image:width" content="1200" />
   <meta property="og:image:height" content="630" />
-  <meta property="og:image:alt" content="NebenkostenRadar — jede zweite Abrechnung enthält Fehler" />
+  <meta property="og:image:alt" content="NebenkostenRadar, jede zweite Abrechnung enthält Fehler" />
   <meta name="twitter:image" content="https://nebenkostenradar.com/og-bild.png" />
 
   <!--
     Gestaltung des vorgerenderten Zwischenzustands (11.09.2026).
 
     WOFÜR: Stefan ist aufgefallen, dass beim Aufruf der Seite für den
-    Bruchteil einer Sekunde reiner Text ohne Gestaltung aufblitzt — schwarz
+    Bruchteil einer Sekunde reiner Text ohne Gestaltung aufblitzt, schwarz
     auf weiß. Das ist eine Nebenwirkung des Vorrenderns: Seit dem 10.09.2026
     steht im ausgelieferten HTML echter Text, den der Browser sofort anzeigt.
     Die Gestaltung der Seite steckt dagegen komplett als JavaScript-Objekte
@@ -92,14 +92,14 @@
        Seite aussieht und nicht nach einem Rohdokument.
 
     WARUM INLINE UND NICHT ALS DATEI: Ein externes Stylesheet wäre ein
-    zusätzlicher Netzwerkabruf — und genau während dieses Abrufs wäre der
+    zusätzlicher Netzwerkabruf und genau während dieses Abrufs wäre der
     ungestaltete Zustand wieder sichtbar. Inline gilt es ab der ersten
     Bildschirmausgabe.
 
     WARUM DIE KLASSE .vorab: Die Regeln dürfen ausschließlich den
     Zwischenzustand betreffen. scripts/prerender.mjs verpackt den
     vorgerenderten Inhalt in <div class="vorab">. React ersetzt den Inhalt
-    von #root beim Start vollständig, die Klasse verschwindet dabei — die
+    von #root beim Start vollständig, die Klasse verschwindet dabei, die
     Regeln können also nicht in die fertige Seite hineinwirken.
 
     Bewusst KEIN display:none auf dem Inhalt: Text vor Nutzern zu verstecken,
@@ -147,11 +147,11 @@
        zeigt X/Twitter die große Vorschaukarte statt einer kleinen Kachel. -->
   <meta name="twitter:card" content="summary_large_image" />
   <meta name="twitter:title" content="Gartenpflege in der Abrechnung | NebenkostenRadar" />
-  <meta name="twitter:description" content="Rasenmähen ja, neue Bäume nein: Bei der Gartenpflege verläuft die Grenze zwischen laufender Pflege und einmaliger Neuanlage. Was das für Ihre Abrechnung bedeutet — auch ohne eigenen Gartenzugang." />
+  <meta name="twitter:description" content="Rasenmähen ja, neue Bäume nein: Bei der Gartenpflege verläuft die Grenze zwischen laufender Pflege und einmaliger Neuanlage. Was das für Ihre Abrechnung bedeutet, auch ohne eigenen Gartenzugang." />
 
   <!--
     Verhindert das elastische horizontale "Rubber-Band"-Wischen auf iOS
-    Safari (08/2026) — reines CSS (overscroll-behavior-x) wirkt dafür nicht,
+    Safari (08/2026), reines CSS (overscroll-behavior-x) wirkt dafür nicht,
     siehe Kommentar im <style>-Block oben (WebKit-Bug 176454). Ermittelt bei
     jeder Berührung, ob die Bewegung überwiegend horizontal ist, und
     unterdrückt nur dann das Standardverhalten. Vertikales Scrollen bleibt
@@ -185,7 +185,7 @@
     GA4-Consent-Stub: setzt NUR den Default-Zustand (analytics_storage: denied)
     und lädt NICHTS. Das eigentliche gtag.js-Skript wird erst in
     components/layout/CookieBanner.jsx (ladeGA4()) nach Einwilligung geladen.
-    NIEMALS hier ein <script src="googletagmanager.com/gtag/js..."> ergänzen —
+    NIEMALS hier ein <script src="googletagmanager.com/gtag/js..."> ergänzen, 
     das war der ursprüngliche Abmahn-/Bußgeld-Risikopunkt (Cookieless Ping mit
     IP-Adresse vor Einwilligung), siehe CHANGELOG.md.
   -->
@@ -197,10 +197,10 @@
 
   <!--
     ACHTUNG bei Preisänderungen: Diese Datei ist reines statisches HTML, kein
-    JSX — kann NICHT wie Datenschutz.jsx/AGB.jsx aus BUSINESS.PREIS_* in
+    JSX, kann NICHT wie Datenschutz.jsx/AGB.jsx aus BUSINESS.PREIS_* in
     src/config/business.js gerendert werden. Preise unten müssen bei jeder
     Änderung von Hand nachgezogen werden. Am 13.08.2026 hier veraltete Preise
-    (7,99 €/9,99 €) gefunden und auf die aktuellen 9,99 €/12,99 € korrigiert —
+    (7,99 €/9,99 €) gefunden und auf die aktuellen 9,99 €/12,99 € korrigiert, 
     derselbe Fehler wie zuvor in Datenschutz.jsx, siehe CHANGELOG.md.
   -->
   <script type="application/ld+json">
@@ -216,7 +216,7 @@
     ]
   }
   </script>
-  <script type="module" crossorigin src="/assets/index-D10jUKK8.js"></script>
+  <script type="module" crossorigin src="/assets/index-7CbgBkHf.js"></script>
 </head>
 <body>
   <div id="root"><div class="vorab">
@@ -224,19 +224,19 @@
       <p><a href="/ratgeber">← Ratgeber</a></p>
       <p>Mietrecht · September 2026 · 5 Min.</p>
       <h1>Gartenpflege in der Nebenkostenabrechnung: Was umlagefähig ist</h1>
-      <p>Die Gartenpflege ist einer der Posten, bei denen sich zwei Fragen überlagern: Darf sie überhaupt umgelegt werden — und ist der Betrag angemessen? Die erste Frage ist rechtlich meist schnell beantwortet, die zweite lohnt den genaueren Blick.</p>
+      <p>Die Gartenpflege ist einer der Posten, bei denen sich zwei Fragen überlagern: Darf sie überhaupt umgelegt werden und ist der Betrag angemessen? Die erste Frage ist rechtlich meist schnell beantwortet, die zweite lohnt den genaueren Blick.</p>
 <h2>Grundsätzlich umlagefähig</h2>
 <p>§ 2 Nr. 10 BetrKV nennt die Kosten der Gartenpflege ausdrücklich: die Pflege gärtnerisch angelegter Flächen einschließlich der Erneuerung von Pflanzen und Gehölzen, die Pflege von Spielplätzen einschließlich der Erneuerung von Sand sowie die Pflege von Plätzen, Zugängen und Zufahrten, die dem nicht öffentlichen Verkehr dienen.</p>
-<p>Bemerkenswert ist der Zusatz „einschließlich der Erneuerung von Pflanzen und Gehölzen“. Das Ersetzen einer eingegangenen Hecke ist also umlagefähig — obwohl es einer Reparatur ähnelt. Der Verordnungsgeber hat das bewusst so geregelt.</p>
+<p>Bemerkenswert ist der Zusatz „einschließlich der Erneuerung von Pflanzen und Gehölzen“. Das Ersetzen einer eingegangenen Hecke ist also umlagefähig, obwohl es einer Reparatur ähnelt. Der Verordnungsgeber hat das bewusst so geregelt.</p>
 <h2>Wo die Grenze verläuft</h2>
-<ul><li>Umlagefähig: Rasenmähen, Heckenschnitt, Laubentfernung, Bewässerung, Düngung, Ersatz einzelner abgestorbener Pflanzen, Sand im Sandkasten.</li><li>Nicht umlagefähig: die erstmalige Anlage eines Gartens, die Umgestaltung einer Fläche, das Anlegen neuer Wege oder Beete — das ist Investition, nicht laufende Pflege.</li><li>Nicht umlagefähig: das Fällen eines Baumes aus Gründen der Verkehrssicherung ist umstritten; die Neupflanzung als Teil einer Umgestaltung ist es nicht.</li></ul>
+<ul><li>Umlagefähig: Rasenmähen, Heckenschnitt, Laubentfernung, Bewässerung, Düngung, Ersatz einzelner abgestorbener Pflanzen, Sand im Sandkasten.</li><li>Nicht umlagefähig: die erstmalige Anlage eines Gartens, die Umgestaltung einer Fläche, das Anlegen neuer Wege oder Beete: das ist Investition, nicht laufende Pflege.</li><li>Nicht umlagefähig: das Fällen eines Baumes aus Gründen der Verkehrssicherung ist umstritten; die Neupflanzung als Teil einer Umgestaltung ist es nicht.</li></ul>
 <h2>Muss ich zahlen, wenn ich den Garten nicht nutzen darf?</h2>
-<p>In der Regel ja. Maßgeblich ist, ob die Fläche zum gemeinschaftlichen Gebrauch bestimmt ist — nicht, ob Sie sie tatsächlich nutzen. Etwas anderes gilt, wenn eine Fläche einem einzelnen Mieter zur alleinigen Nutzung überlassen ist: Deren Pflegekosten dürfen dann nicht auf die übrigen Mieter umgelegt werden.</p>
-<p><strong>Hinweis:</strong> Häufiger Prüfpunkt: Wenn der Hausmeister auch die Gartenpflege übernimmt, darf derselbe Aufwand nicht zweimal abgerechnet werden — einmal unter „Hausmeister“ und einmal unter „Gartenpflege“. Eine Doppelabrechnung lässt sich nur über die Belegeinsicht ausschließen.</p>
+<p>In der Regel ja. Maßgeblich ist, ob die Fläche zum gemeinschaftlichen Gebrauch bestimmt ist, nicht, ob Sie sie tatsächlich nutzen. Etwas anderes gilt, wenn eine Fläche einem einzelnen Mieter zur alleinigen Nutzung überlassen ist: Deren Pflegekosten dürfen dann nicht auf die übrigen Mieter umgelegt werden.</p>
+<p><strong>Hinweis:</strong> Häufiger Prüfpunkt: Wenn der Hausmeister auch die Gartenpflege übernimmt, darf derselbe Aufwand nicht zweimal abgerechnet werden, einmal unter „Hausmeister“ und einmal unter „Gartenpflege“. Eine Doppelabrechnung lässt sich nur über die Belegeinsicht ausschließen.</p>
 <p><a href="/ratgeber/hausmeisterkosten-in-der-nebenkostenabrechnung-was-ist-umlagefaehig">Welche Tätigkeiten unter die Hausmeisterkosten fallen und welche nicht, steht im Ratgeber zu Hausmeisterkosten.</a></p>
-<p>NebenkostenRadar prüft Gartenpflege und Hausmeister getrennt gegen die jeweiligen Richtwerte — auffällige Kombinationen fallen dabei auf. <a href="/pruefen/wohnung">Kostenlos prüfen →</a></p>
+<p>NebenkostenRadar prüft Gartenpflege und Hausmeister getrennt gegen die jeweiligen Richtwerte, auffällige Kombinationen fallen dabei auf. <a href="/pruefen/wohnung">Kostenlos prüfen →</a></p>
     </article>
-    <script type="application/ld+json">{"@context":"https://schema.org","@type":"Article","headline":"Gartenpflege in der Nebenkostenabrechnung: Was umlagefähig ist","description":"Rasenmähen ja, neue Bäume nein: Bei der Gartenpflege verläuft die Grenze zwischen laufender Pflege und einmaliger Neuanlage. Was das für Ihre Abrechnung bedeutet — auch ohne eigenen Gartenzugang.","url":"https://nebenkostenradar.com/ratgeber/gartenpflege-nebenkostenabrechnung","image":"https://images.unsplash.com/photo-1642541744624-7a2a89545a32?w=800&q=80"}</script>
+    <script type="application/ld+json">{"@context":"https://schema.org","@type":"Article","headline":"Gartenpflege in der Nebenkostenabrechnung: Was umlagefähig ist","description":"Rasenmähen ja, neue Bäume nein: Bei der Gartenpflege verläuft die Grenze zwischen laufender Pflege und einmaliger Neuanlage. Was das für Ihre Abrechnung bedeutet, auch ohne eigenen Gartenzugang.","url":"https://nebenkostenradar.com/ratgeber/gartenpflege-nebenkostenabrechnung","image":"https://images.unsplash.com/photo-1642541744624-7a2a89545a32?w=800&q=80"}</script>
   </div></div>
 </body>
 </html>

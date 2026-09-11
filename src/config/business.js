@@ -49,7 +49,7 @@ export const BUSINESS = {
     wasser_abwasser: 0.29,
     grundsteuer: 0.18,
     muell: 0.16,
-    hausmeister: 0.21, // DMB-Wert "separat abgerechnet" — passt zu unseren getrennten Feldern für Hausreinigung/Garten
+    hausmeister: 0.21, // DMB-Wert "separat abgerechnet", passt zu unseren getrennten Feldern für Hausreinigung und Garten
     versicherungen: 0.31,
     allgemeinstrom: 0.06,
     gebaeudereinigung: 0.21,

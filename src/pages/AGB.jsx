@@ -25,18 +25,18 @@ export default function AGB({ navigateTo }) {
     ]},
     { t: "§ 4 Preise und Zahlung", lines: [
       "Die Preise betragen " + euro(BUSINESS.PREIS_AUSWERTUNG) + " bzw. " + euro(BUSINESS.PREIS_VOLL) + ". Stefan Hennig ist Kleinunternehmer gemäß § 19 UStG; es wird keine Umsatzsteuer ausgewiesen.",
-      "Zahlung über Stripe Payments Europe, Ltd. Einmalzahlung — kein Abo, keine Folgekosten.",
+      "Zahlung über Stripe Payments Europe, Ltd. Einmalzahlung: kein Abo, keine Folgekosten.",
       "Nach jeder Zahlung erhältst du automatisch einen Zahlungsbeleg per E-Mail. Auf Anfrage stellen wir gerne eine Rechnung aus: support@nebenkostenradar.com",
     ]},
     { t: "§ 5 Lieferung und Zugang", lines: [
       "Das PDF wird nach erfolgreicher Zahlung automatisch zum Download bereitgestellt und zusätzlich per E-Mail zugesandt.",
-      "Es handelt sich um einen einmaligen Kauf — kein Abonnement, kein Dauerschuldverhältnis.",
+      "Es handelt sich um einen einmaligen Kauf: kein Abonnement, kein Dauerschuldverhältnis.",
     ]},
     { t: "§ 6 Widerrufsrecht", lines: [
       "Verbrauchern steht grundsätzlich ein gesetzliches Widerrufsrecht zu: Du hast das Recht, binnen vierzehn Tagen ohne Angabe von Gründen diesen Vertrag zu widerrufen. Die Widerrufsfrist beträgt vierzehn Tage ab dem Tag des Vertragsschlusses.",
       "Um dein Widerrufsrecht auszuüben, musst du uns (NebenkostenRadar, Stefan Hennig, Ludwigstr. 33-37, 60327 Frankfurt am Main, support@nebenkostenradar.com) mittels einer eindeutigen Erklärung (z. B. per E-Mail) über deinen Entschluss, diesen Vertrag zu widerrufen, informieren. Eine bestimmte Form ist dafür nicht vorgeschrieben. Zur Wahrung der Widerrufsfrist reicht es aus, dass du die Mitteilung über die Ausübung des Widerrufsrechts vor Ablauf der Widerrufsfrist absendest.",
       "Folgen des Widerrufs: Im Falle eines wirksamen Widerrufs erstatten wir dir alle bereits erhaltenen Zahlungen unverzüglich, spätestens binnen 14 Tagen ab dem Tag, an dem deine Widerrufserklärung bei uns eingegangen ist. Für die Rückzahlung verwenden wir dasselbe Zahlungsmittel, das du bei der ursprünglichen Zahlung genutzt hast, sofern nicht ausdrücklich etwas anderes vereinbart wurde; es werden dir dafür keine zusätzlichen Entgelte berechnet.",
-      "Vorzeitiges Erlöschen bei digitalen Inhalten (§ 356 Abs. 5 BGB): Da der Prüfbericht ein digitaler Inhalt ist, der nicht auf einem körperlichen Datenträger geliefert wird, erlischt dein Widerrufsrecht vorzeitig, sobald wir mit der Erstellung und Bereitstellung des PDFs begonnen haben — vorausgesetzt, du hast zuvor ausdrücklich zugestimmt, dass wir vor Ablauf der Widerrufsfrist mit der Ausführung beginnen, und gleichzeitig zur Kenntnis genommen, dass du dadurch dein Widerrufsrecht verlierst, sobald wir mit der Ausführung begonnen haben.",
+      "Vorzeitiges Erlöschen bei digitalen Inhalten (§ 356 Abs. 5 BGB): Da der Prüfbericht ein digitaler Inhalt ist, der nicht auf einem körperlichen Datenträger geliefert wird, erlischt dein Widerrufsrecht vorzeitig, sobald wir mit der Erstellung und Bereitstellung des PDFs begonnen haben, vorausgesetzt, du hast zuvor ausdrücklich zugestimmt, dass wir vor Ablauf der Widerrufsfrist mit der Ausführung beginnen, und gleichzeitig zur Kenntnis genommen, dass du dadurch dein Widerrufsrecht verlierst, sobald wir mit der Ausführung begonnen haben.",
       "Diese Zustimmung und Kenntnisnahme erteilst du im Bestellprozess durch Aktivierung der entsprechenden Checkbox vor Kaufabschluss. Ohne Aktivierung ist ein Kauf nicht möglich.",
     ]},
     { t: "§ 7 Haftungsausschluss", lines: [

@@ -16,7 +16,7 @@ export const ARTIKEL = [
       id: "grundsteuerreform-2026-auswirkungen-auf-die-nebenkostenabrechnung",
       titelKurz: "Grundsteuerreform 2026 in der Abrechnung",
       titel: "Grundsteuerreform 2026: Auswirkungen auf die Nebenkostenabrechnung für Mieter",
-      teaser: "Die neuen Grundsteuerwerte tauchen 2026 erstmals in vielen Nebenkostenabrechnungen auf – mit teils erheblichen Nachzahlungen. Dieser Ratgeber erklärt, welche Rechtsgrundlage gilt, was Sie prüfen sollten und wann Sie sich gegen eine überhöhte Umlage wehren können.",
+      teaser: "Die neuen Grundsteuerwerte tauchen 2026 erstmals in vielen Nebenkostenabrechnungen auf, mit teils erheblichen Nachzahlungen. Dieser Ratgeber erklärt, welche Rechtsgrundlage gilt, was Sie prüfen sollten und wann Sie sich gegen eine überhöhte Umlage wehren können.",
       datum: "September 2026",
       lesezeit: "9 Min.",
       bild: "https://images.unsplash.com/photo-1772588627342-5ec373e236d8?w=800&q=80",
@@ -26,7 +26,7 @@ export const ARTIKEL = [
       inhalt: [
         {
                 "typ": "intro",
-                "text": "Viele Mieter erhalten in diesen Wochen ihre Nebenkostenabrechnung für das Jahr 2025 – und stoßen dort erstmals auf einen deutlich veränderten Posten: die Grundsteuer. Grund dafür ist die Grundsteuerreform, die zum 1. Januar 2025 in Kraft getreten ist und die Bemessungsgrundlage für praktisch jedes Grundstück in Deutschland neu berechnet hat. Wer eine überraschend hohe Nachforderung in seiner Abrechnung findet, sollte wissen, worauf sich diese stützt und wo die Grenzen der Umlage liegen."
+                "text": "Viele Mieter erhalten in diesen Wochen ihre Nebenkostenabrechnung für das Jahr 2025 und stoßen dort erstmals auf einen deutlich veränderten Posten: die Grundsteuer. Grund dafür ist die Grundsteuerreform, die zum 1. Januar 2025 in Kraft getreten ist und die Bemessungsgrundlage für praktisch jedes Grundstück in Deutschland neu berechnet hat. Wer eine überraschend hohe Nachforderung in seiner Abrechnung findet, sollte wissen, worauf sich diese stützt und wo die Grenzen der Umlage liegen."
         },
         {
                 "typ": "h2",
@@ -42,11 +42,11 @@ export const ARTIKEL = [
         },
         {
                 "typ": "text",
-                "text": "Die Reform betrifft ausschließlich die Berechnung der Grundsteuer, nicht ihre grundsätzliche Umlagefähigkeit. Rechtsgrundlage bleibt § 2 Nr. 1 der Betriebskostenverordnung (BetrKV), der die Grundsteuer als erste von siebzehn Betriebskostenarten ausdrücklich als laufende öffentliche Last des Grundstücks benennt. Damit ein Vermieter diese Kosten tatsächlich auf Sie umlegen darf, muss die Umlage der Betriebskosten im Mietvertrag wirksam vereinbart worden sein, wobei bei Wohnraummietverhältnissen die strengeren Anforderungen des § 556 BGB gelten. Fehlt eine solche Klausel im Mietvertrag vollständig – etwa bei einer reinen Bruttomiete ohne jeden Betriebskostenbezug –, bleibt die Grundsteuer beim Vermieter, unabhängig davon, wie stark sie durch die Reform gestiegen ist."
+                "text": "Die Reform betrifft ausschließlich die Berechnung der Grundsteuer, nicht ihre grundsätzliche Umlagefähigkeit. Rechtsgrundlage bleibt § 2 Nr. 1 der Betriebskostenverordnung (BetrKV), der die Grundsteuer als erste von siebzehn Betriebskostenarten ausdrücklich als laufende öffentliche Last des Grundstücks benennt. Damit ein Vermieter diese Kosten tatsächlich auf Sie umlegen darf, muss die Umlage der Betriebskosten im Mietvertrag wirksam vereinbart worden sein, wobei bei Wohnraummietverhältnissen die strengeren Anforderungen des § 556 BGB gelten. Fehlt eine solche Klausel im Mietvertrag vollständig, etwa bei einer reinen Bruttomiete ohne jeden Betriebskostenbezug, bleibt die Grundsteuer beim Vermieter, unabhängig davon, wie stark sie durch die Reform gestiegen ist."
         },
         {
                 "typ": "text",
-                "text": "Praktisch reicht dabei häufig schon ein pauschaler Verweis im Mietvertrag auf § 2 BetrKV. Der Bundesgerichtshof hat bereits mit Urteil vom 7. April 2004 (Az. VIII ZR 167/03) entschieden, dass ein solcher Verweis genügt, damit alle dort aufgeführten Positionen – und damit auch die Grundsteuer – als vereinbart gelten. Eine gesonderte, namentliche Nennung der Grundsteuer im Vertrag ist also nicht zwingend erforderlich."
+                "text": "Praktisch reicht dabei häufig schon ein pauschaler Verweis im Mietvertrag auf § 2 BetrKV. Der Bundesgerichtshof hat bereits mit Urteil vom 7. April 2004 (Az. VIII ZR 167/03) entschieden, dass ein solcher Verweis genügt, damit alle dort aufgeführten Positionen und damit auch die Grundsteuer, als vereinbart gelten. Eine gesonderte, namentliche Nennung der Grundsteuer im Vertrag ist also nicht zwingend erforderlich."
         },
         {
                 "typ": "h2",
@@ -54,7 +54,7 @@ export const ARTIKEL = [
         },
         {
                 "typ": "text",
-                "text": "Auch wenn die neuen Grundsteuerwerte bereits ab dem 1. Januar 2025 gelten, erfolgt die Abrechnung der Betriebskosten üblicherweise erst nach Ablauf des Kalenderjahres. Die konkreten finanziellen Veränderungen werden für Mieter deshalb erstmals mit der Nebenkostenabrechnung für das Kalenderjahr 2025 spürbar, die üblicherweise im Laufe des Jahres 2026 zugeht. Da viele Vermieter diese Abrechnung erst gegen Ende des Jahres verschicken, sehen viele Mieter die neue, höhere Grundsteuer zum ersten Mal in einer Abrechnung, die bereits ein ganzes Jahr zurückliegt – häufig verbunden mit einer Nachzahlung, die auf einen Schlag fällig wird."
+                "text": "Auch wenn die neuen Grundsteuerwerte bereits ab dem 1. Januar 2025 gelten, erfolgt die Abrechnung der Betriebskosten üblicherweise erst nach Ablauf des Kalenderjahres. Die konkreten finanziellen Veränderungen werden für Mieter deshalb erstmals mit der Nebenkostenabrechnung für das Kalenderjahr 2025 spürbar, die üblicherweise im Laufe des Jahres 2026 zugeht. Da viele Vermieter diese Abrechnung erst gegen Ende des Jahres verschicken, sehen viele Mieter die neue, höhere Grundsteuer zum ersten Mal in einer Abrechnung, die bereits ein ganzes Jahr zurückliegt, häufig verbunden mit einer Nachzahlung, die auf einen Schlag fällig wird."
         },
         {
                 "typ": "verweis",
@@ -67,7 +67,7 @@ export const ARTIKEL = [
         },
         {
                 "typ": "text",
-                "text": "Die Auswirkungen der Reform fallen je nach Region und Immobilienlage sehr unterschiedlich aus. In begehrten Metropolregionen und Ballungszentren wie München oder Berlin, wo die Bodenrichtwerte in den letzten Jahren erheblich gestiegen sind, ist tendenziell mit deutlichen Steigerungen der Grundsteuer zu rechnen. In der Praxis werden dabei mitunter Erhöhungen von teils 30 bis 100 Prozent in gefragten Lagen beobachtet, während die Grundsteuer in strukturschwächeren Regionen stagnieren oder sogar sinken kann. Ein pauschaler Vergleich mit dem Vorjahreswert ist deshalb wenig aussagekräftig – entscheidend ist der aktuelle Bescheid für Ihr konkretes Objekt."
+                "text": "Die Auswirkungen der Reform fallen je nach Region und Immobilienlage sehr unterschiedlich aus. In begehrten Metropolregionen und Ballungszentren wie München oder Berlin, wo die Bodenrichtwerte in den letzten Jahren erheblich gestiegen sind, ist tendenziell mit deutlichen Steigerungen der Grundsteuer zu rechnen. In der Praxis werden dabei mitunter Erhöhungen von teils 30 bis 100 Prozent in gefragten Lagen beobachtet, während die Grundsteuer in strukturschwächeren Regionen stagnieren oder sogar sinken kann. Ein pauschaler Vergleich mit dem Vorjahreswert ist deshalb wenig aussagekräftig, entscheidend ist der aktuelle Bescheid für Ihr konkretes Objekt."
         },
         {
                 "typ": "h2",
@@ -105,7 +105,7 @@ export const ARTIKEL = [
         },
         {
                 "typ": "text",
-                "text": "Liegt die erste Betriebskostenabrechnung mit der neuen, höheren Grundsteuer vor, kann der Vermieter die monatliche Vorauszahlung anpassen. Rechtsgrundlage dafür ist § 560 Abs. 4 BGB: Sind Betriebskostenvorauszahlungen vereinbart worden, kann jede Vertragspartei nach einer Abrechnung durch Erklärung in Textform eine Anpassung auf eine angemessene Höhe vornehmen. Die Erklärung muss also in Textform erfolgen und die neue Höhe nachvollziehbar auf die vorangegangene Abrechnung stützen. Eine Zustimmung Ihrerseits ist dafür nicht erforderlich – die Anpassung wirkt als einseitige Erklärung, sobald sie Ihnen zugeht."
+                "text": "Liegt die erste Betriebskostenabrechnung mit der neuen, höheren Grundsteuer vor, kann der Vermieter die monatliche Vorauszahlung anpassen. Rechtsgrundlage dafür ist § 560 Abs. 4 BGB: Sind Betriebskostenvorauszahlungen vereinbart worden, kann jede Vertragspartei nach einer Abrechnung durch Erklärung in Textform eine Anpassung auf eine angemessene Höhe vornehmen. Die Erklärung muss also in Textform erfolgen und die neue Höhe nachvollziehbar auf die vorangegangene Abrechnung stützen. Eine Zustimmung Ihrerseits ist dafür nicht erforderlich: die Anpassung wirkt als einseitige Erklärung, sobald sie Ihnen zugeht."
         },
         {
                 "typ": "text",
@@ -137,7 +137,7 @@ export const ARTIKEL = [
         {
                 "typ": "verweis",
                 "ziel": "heizkostenabrechnung-vermieterfehler-2026-leitfaden",
-                "text": "Bei der Heizkostenabrechnung passieren besonders häufig Fehler – ein Überblick zu den typischen Vermieterfehlern hilft, auch diesen Posten kritisch zu prüfen."
+                "text": "Bei der Heizkostenabrechnung passieren besonders häufig Fehler: ein Überblick zu den typischen Vermieterfehlern hilft, auch diesen Posten kritisch zu prüfen."
         },
         {
                 "typ": "verweis",
@@ -150,7 +150,7 @@ export const ARTIKEL = [
         },
         {
                 "typ": "text",
-                "text": "Da die Grundsteuerreform noch relativ neu ist, ist mit weiterer Rechtsprechung zu einzelnen Detailfragen zu rechnen – etwa zur zeitanteiligen Berechnung bei unterjährigen Hebesatzänderungen oder zur Angemessenheit von Vorauszahlungsanpassungen."
+                "text": "Da die Grundsteuerreform noch relativ neu ist, ist mit weiterer Rechtsprechung zu einzelnen Detailfragen zu rechnen, etwa zur zeitanteiligen Berechnung bei unterjährigen Hebesatzänderungen oder zur Angemessenheit von Vorauszahlungsanpassungen."
         },
         {
                 "typ": "verweis",
@@ -184,7 +184,7 @@ export const ARTIKEL = [
     {
       id: "hausmeisterkosten-in-der-nebenkostenabrechnung-was-ist-umlagefaehig",
       titelKurz: "Hausmeisterkosten: was ist umlagefähig?",
-      titel: "Hausmeisterkosten in der Nebenkostenabrechnung 2026: Was ist umlagefähig – und was nicht?",
+      titel: "Hausmeisterkosten in der Nebenkostenabrechnung 2026: Was ist umlagefähig und was nicht?",
       teaser: "Hausmeisterkosten zählen zu den häufigsten Streitpunkten in der Nebenkostenabrechnung, weil Vermieter oft Verwaltungs- und Reparaturarbeiten mit einrechnen, die Mieter gar nicht zahlen müssen. Dieser Ratgeber zeigt, welche Tätigkeiten wirklich umlagefähig sind und wie Sie typische Fehler in Ihrer Abrechnung erkennen.",
       datum: "August 2026",
       lesezeit: "8 Min.",
@@ -195,7 +195,7 @@ export const ARTIKEL = [
       inhalt: [
         {
                 "typ": "intro",
-                "text": "Kaum eine Position in der Nebenkostenabrechnung sorgt für so viel Verwirrung wie die Hausmeisterkosten. Das liegt daran, dass ein Hausmeister ganz unterschiedliche Aufgaben übernimmt – manche davon dürfen auf Sie als Mieter umgelegt werden, andere ausdrücklich nicht. Wer die Grenzen kennt, kann seine Abrechnung gezielt prüfen und überzahlte Beträge zurückfordern."
+                "text": "Kaum eine Position in der Nebenkostenabrechnung sorgt für so viel Verwirrung wie die Hausmeisterkosten. Das liegt daran, dass ein Hausmeister ganz unterschiedliche Aufgaben übernimmt, manche davon dürfen auf Sie als Mieter umgelegt werden, andere ausdrücklich nicht. Wer die Grenzen kennt, kann seine Abrechnung gezielt prüfen und überzahlte Beträge zurückfordern."
         },
         {
                 "typ": "h2",
@@ -207,7 +207,7 @@ export const ARTIKEL = [
         },
         {
                 "typ": "text",
-                "text": "Wichtig ist außerdem der Grundsatz der Wirtschaftlichkeit: Die Kosten für den Hauswart dürfen nur umgelegt werden, wenn dieser Grundsatz eingehalten ist – schaltet der Vermieter eine externe Hausmeisterfirma ein, muss er auch dieses Gebot beachten. Überhöhte oder unangemessene Kosten können Mieter also grundsätzlich beanstanden."
+                "text": "Wichtig ist außerdem der Grundsatz der Wirtschaftlichkeit: Die Kosten für den Hauswart dürfen nur umgelegt werden, wenn dieser Grundsatz eingehalten ist, schaltet der Vermieter eine externe Hausmeisterfirma ein, muss er auch dieses Gebot beachten. Überhöhte oder unangemessene Kosten können Mieter also grundsätzlich beanstanden."
         },
         {
                 "typ": "h2",
@@ -253,7 +253,7 @@ export const ARTIKEL = [
         },
         {
                 "typ": "text",
-                "text": "Übernimmt der Hausmeister zusätzlich die Gartenpflege oder die Treppenhausreinigung, dürfen diese Kosten zwar grundsätzlich umgelegt werden – aber nur einmal. Wenn der Hausmeister etwa die Treppenhausreinigung übernimmt, darf der Vermieter entweder die Reinigungskosten als Teil der Hausmeisterkosten abrechnen oder die Position Gebäudereinigung separat aufführen, nicht beides gleichzeitig. Findet sich in Ihrer Abrechnung sowohl eine eigene Position 'Gartenpflege' oder 'Reinigung' als auch Hausmeisterkosten, die diese Leistungen mit umfassen, sollten Sie genau nachrechnen."
+                "text": "Übernimmt der Hausmeister zusätzlich die Gartenpflege oder die Treppenhausreinigung, dürfen diese Kosten zwar grundsätzlich umgelegt werden, aber nur einmal. Wenn der Hausmeister etwa die Treppenhausreinigung übernimmt, darf der Vermieter entweder die Reinigungskosten als Teil der Hausmeisterkosten abrechnen oder die Position Gebäudereinigung separat aufführen, nicht beides gleichzeitig. Findet sich in Ihrer Abrechnung sowohl eine eigene Position 'Gartenpflege' oder 'Reinigung' als auch Hausmeisterkosten, die diese Leistungen mit umfassen, sollten Sie genau nachrechnen."
         },
         {
                 "typ": "h2",
@@ -304,7 +304,7 @@ export const ARTIKEL = [
         {
                 "typ": "verweis",
                 "ziel": "heizkostenabrechnung-vermieterfehler-2026-leitfaden",
-                "text": "Ähnlich wie bei den Hausmeisterkosten schleichen sich auch bei der Heizkostenabrechnung häufig typische Vermieterfehler ein – ein Vergleich lohnt sich."
+                "text": "Ähnlich wie bei den Hausmeisterkosten schleichen sich auch bei der Heizkostenabrechnung häufig typische Vermieterfehler ein: ein Vergleich lohnt sich."
         },
         {
                 "typ": "verweis",
@@ -330,8 +330,8 @@ export const ARTIKEL = [
     {
       id: "muellgebuehren-und-abfallentsorgung-als-betriebskosten-2026",
       titelKurz: "Müllgebühren als Betriebskosten",
-      titel: "Müllgebühren und Abfallentsorgung als Betriebskosten 2026: Was Mieter zahlen müssen – und was nicht",
-      teaser: "Müllgebühren gehören zu den Nebenkosten, die fast jede Abrechnung enthält – doch nicht jede Position darf der Vermieter umlegen. Dieser Ratgeber zeigt, was 2026 rechtlich zulässig ist, welche Kosten Vermieter selbst tragen müssen und wie Sie eine überhöhte Müllabrechnung erkennen.",
+      titel: "Müllgebühren und Abfallentsorgung als Betriebskosten 2026: Was Mieter zahlen müssen und was nicht",
+      teaser: "Müllgebühren gehören zu den Nebenkosten, die fast jede Abrechnung enthält, doch nicht jede Position darf der Vermieter umlegen. Dieser Ratgeber zeigt, was 2026 rechtlich zulässig ist, welche Kosten Vermieter selbst tragen müssen und wie Sie eine überhöhte Müllabrechnung erkennen.",
       datum: "August 2026",
       lesezeit: "8 Min.",
       bild: "https://images.unsplash.com/photo-1780732659434-fab7f5b78681?w=800&q=80",
@@ -341,7 +341,7 @@ export const ARTIKEL = [
       inhalt: [
         {
                 "typ": "intro",
-                "text": "Kaum eine Position taucht in der Nebenkostenabrechnung so zuverlässig auf wie die Müllgebühren. Gleichzeitig zählt die Abfallentsorgung zu den Kostenarten, bei denen Mieter häufig zu viel zahlen – etwa weil ein falscher Verteilerschlüssel verwendet wird oder Kosten abgerechnet werden, die eigentlich der Vermieter tragen müsste. Dieser Artikel erklärt verständlich, welche Müllkosten 2026 umlagefähig sind, welche nicht, und wie Sie als Mieter reagieren, wenn etwas nicht stimmt."
+                "text": "Kaum eine Position taucht in der Nebenkostenabrechnung so zuverlässig auf wie die Müllgebühren. Gleichzeitig zählt die Abfallentsorgung zu den Kostenarten, bei denen Mieter häufig zu viel zahlen, etwa weil ein falscher Verteilerschlüssel verwendet wird oder Kosten abgerechnet werden, die eigentlich der Vermieter tragen müsste. Dieser Artikel erklärt verständlich, welche Müllkosten 2026 umlagefähig sind, welche nicht, und wie Sie als Mieter reagieren, wenn etwas nicht stimmt."
         },
         {
                 "typ": "h2",
@@ -399,7 +399,7 @@ export const ARTIKEL = [
         {
                 "typ": "verweis",
                 "ziel": "bgh-urteile-mietrecht-nebenkosten-2026",
-                "text": "Eine Übersicht weiterer aktueller Gerichtsentscheidungen zu Nebenkosten – nicht nur zu Müll, sondern zu allen Betriebskostenarten – finden Sie in unserer Zusammenfassung der wichtigsten BGH-Urteile."
+                "text": "Eine Übersicht weiterer aktueller Gerichtsentscheidungen zu Nebenkosten, nicht nur zu Müll, sondern zu allen Betriebskostenarten, finden Sie in unserer Zusammenfassung der wichtigsten BGH-Urteile."
         },
         {
                 "typ": "h2",
@@ -420,7 +420,7 @@ export const ARTIKEL = [
         },
         {
                 "typ": "text",
-                "text": "In manchen Kommunen erhält jede Wohneinheit eine eigene Müllgebührenveranlagung direkt von der Gemeinde. In diesem Fall entfällt die Umlage über die Nebenkostenabrechnung, und Sie zahlen die Gebühr direkt an die Gemeinde, ohne dass ein weiterer Posten in der Abrechnung erscheint. Prüfen Sie daher, ob Ihre Kommune dieses Modell anwendet – dann sollte in der Nebenkostenabrechnung Ihres Vermieters keine zusätzliche Müllposition auftauchen."
+                "text": "In manchen Kommunen erhält jede Wohneinheit eine eigene Müllgebührenveranlagung direkt von der Gemeinde. In diesem Fall entfällt die Umlage über die Nebenkostenabrechnung, und Sie zahlen die Gebühr direkt an die Gemeinde, ohne dass ein weiterer Posten in der Abrechnung erscheint. Prüfen Sie daher, ob Ihre Kommune dieses Modell anwendet, dann sollte in der Nebenkostenabrechnung Ihres Vermieters keine zusätzliche Müllposition auftauchen."
         },
         {
                 "typ": "h2",
@@ -428,12 +428,12 @@ export const ARTIKEL = [
         },
         {
                 "typ": "text",
-                "text": "Vermieter sind an das sogenannte Wirtschaftlichkeitsgebot gebunden. Bestellt der Vermieter zusätzliche Mülltonnen oder häufigere Leerungen, ohne dass dies erforderlich ist, kann dies gegen dieses Gebot verstoßen, und überhöhte Kosten sind als Klärungspunkt in der Abrechnung aufzunehmen. Auch der Einsatz eines externen Müllmanagements ist nur dann umlagefähig, wenn dieser tatsächlich zu einer Kostenersparnis führt – lässt sich das nicht nachweisen, muss der Vermieter die Mehrkosten selbst tragen."
+                "text": "Vermieter sind an das sogenannte Wirtschaftlichkeitsgebot gebunden. Bestellt der Vermieter zusätzliche Mülltonnen oder häufigere Leerungen, ohne dass dies erforderlich ist, kann dies gegen dieses Gebot verstoßen, und überhöhte Kosten sind als Klärungspunkt in der Abrechnung aufzunehmen. Auch der Einsatz eines externen Müllmanagements ist nur dann umlagefähig, wenn dieser tatsächlich zu einer Kostenersparnis führt, lässt sich das nicht nachweisen, muss der Vermieter die Mehrkosten selbst tragen."
         },
         {
                 "typ": "verweis",
                 "ziel": "heizkostenabrechnung-vermieterfehler-2026-leitfaden",
-                "text": "Ähnliche Fehlerquellen wie unwirtschaftliches Handeln des Vermieters treten auch bei der Heizkostenabrechnung häufig auf – unser Leitfaden zeigt, wie Sie diese erkennen."
+                "text": "Ähnliche Fehlerquellen wie unwirtschaftliches Handeln des Vermieters treten auch bei der Heizkostenabrechnung häufig auf, unser Leitfaden zeigt, wie Sie diese erkennen."
         },
         {
                 "typ": "h2",
@@ -493,7 +493,7 @@ export const ARTIKEL = [
       id: "wasserkosten-und-kaltwasserzaehler-in-der-nebenkostenabrechnung",
       titelKurz: "Wasserkosten und Zähler prüfen",
       titel: "Wasserkosten und Kaltwasserzähler in der Nebenkostenabrechnung 2026: Was Mieter wissen müssen",
-      teaser: "Wasserkosten zählen zu den größten Posten in der Nebenkostenabrechnung – und Kaltwasserzähler sind dabei oft eine Fehlerquelle. Erfahren Sie, welche Kosten umlagefähig sind, wie die Eichpflicht funktioniert und wie Sie Ihre Abrechnung selbst prüfen.",
+      teaser: "Wasserkosten zählen zu den größten Posten in der Nebenkostenabrechnung und Kaltwasserzähler sind dabei oft eine Fehlerquelle. Erfahren Sie, welche Kosten umlagefähig sind, wie die Eichpflicht funktioniert und wie Sie Ihre Abrechnung selbst prüfen.",
       datum: "Juli 2026",
       lesezeit: "8 Min.",
       bild: "https://images.unsplash.com/photo-1776802740593-ab7833cd813a?w=800&q=80",
@@ -537,7 +537,7 @@ export const ARTIKEL = [
         },
         {
                 "typ": "text",
-                "text": "Ist die Eichfrist bei den Zählern in Ihrer Wohnung überschritten, können Sie als Mieter die Abrechnung entsprechend kürzen. Verantwortlich für die rechtzeitige Erneuerung ist grundsätzlich der Vermieter beziehungsweise die von ihm beauftragte Hausverwaltung – ein abgelaufener Eichtermin geht nicht zulasten des Mieters."
+                "text": "Ist die Eichfrist bei den Zählern in Ihrer Wohnung überschritten, können Sie als Mieter die Abrechnung entsprechend kürzen. Verantwortlich für die rechtzeitige Erneuerung ist grundsätzlich der Vermieter beziehungsweise die von ihm beauftragte Hausverwaltung: ein abgelaufener Eichtermin geht nicht zulasten des Mieters."
         },
         {
                 "typ": "hinweis",
@@ -558,14 +558,14 @@ export const ARTIKEL = [
         {
                 "typ": "liste",
                 "items": [
-                        "Verbrauch nach geeichtem Wasserzähler – fairster und empfohlener Maßstab",
-                        "Personenzahl pro Wohnung – gängiger Ersatzschlüssel ohne Einzelzähler",
-                        "Wohnfläche – zulässig, aber weniger verursachungsgerecht"
+                        "Verbrauch nach geeichtem Wasserzähler, fairster und empfohlener Maßstab",
+                        "Personenzahl pro Wohnung, gängiger Ersatzschlüssel ohne Einzelzähler",
+                        "Wohnfläche, zulässig, aber weniger verursachungsgerecht"
                 ]
         },
         {
                 "typ": "text",
-                "text": "Zur Orientierung: In Deutschland liegt der durchschnittliche Wasserverbrauch bei etwa 125 Litern pro Person und Tag, also rund 45 Kubikmetern im Jahr. Bei einem Durchschnittspreis von etwa 2,20 Euro pro Kubikmeter ergeben sich daraus grob geschätzte Kosten von rund 100 Euro pro Person und Jahr allein für Frischwasser – ein Wert, an dem Sie Ihre eigene Abrechnung grob spiegeln können."
+                "text": "Zur Orientierung: In Deutschland liegt der durchschnittliche Wasserverbrauch bei etwa 125 Litern pro Person und Tag, also rund 45 Kubikmetern im Jahr. Bei einem Durchschnittspreis von etwa 2,20 Euro pro Kubikmeter ergeben sich daraus grob geschätzte Kosten von rund 100 Euro pro Person und Jahr allein für Frischwasser: ein Wert, an dem Sie Ihre eigene Abrechnung grob spiegeln können."
         },
         {
                 "typ": "verweis",
@@ -629,7 +629,7 @@ export const ARTIKEL = [
         {
                 "typ": "verweis",
                 "ziel": "kabelanschluss-nicht-umlagefaehig",
-                "text": "Nicht jede Position, die im Mietvertrag als Nebenkosten aufgeführt wird, darf tatsächlich umgelegt werden – ein Beispiel dafür ist der Kabelanschluss, der seit Juli 2024 nicht mehr umlagefähig ist."
+                "text": "Nicht jede Position, die im Mietvertrag als Nebenkosten aufgeführt wird, darf tatsächlich umgelegt werden: ein Beispiel dafür ist der Kabelanschluss, der seit Juli 2024 nicht mehr umlagefähig ist."
         },
         {
                 "typ": "hinweis",
@@ -644,7 +644,7 @@ export const ARTIKEL = [
     {
       id: "betriebskostenabrechnung-fristen-und-verjaehrung-2026",
       titelKurz: "Fristen und Verjährung 2026",
-      titel: "Betriebskostenabrechnung 2026: Fristen und Verjährung – was Mieter wissen müssen",
+      titel: "Betriebskostenabrechnung 2026: Fristen und Verjährung: was Mieter wissen müssen",
       teaser: "Wann muss der Vermieter abrechnen, wie lange können Sie widersprechen und ab wann sind Nachforderungen verjährt? Der komplette Überblick über alle Fristen rund um die Betriebskostenabrechnung 2026.",
       datum: "Juli 2026",
       lesezeit: "9 Min.",
@@ -667,7 +667,7 @@ export const ARTIKEL = [
         },
         {
                 "typ": "text",
-                "text": "Diese Zwölf-Monats-Frist ist eine sogenannte Ausschlussfrist. Das bedeutet: Es gibt keine Kulanz, keine automatische Verlängerung und keine Gnadenfrist. Versäumt der Vermieter diesen Termin, verliert er grundsätzlich das Recht, eine Nachzahlung von Ihnen zu verlangen – selbst wenn die Abrechnung inhaltlich korrekt wäre."
+                "text": "Diese Zwölf-Monats-Frist ist eine sogenannte Ausschlussfrist. Das bedeutet: Es gibt keine Kulanz, keine automatische Verlängerung und keine Gnadenfrist. Versäumt der Vermieter diesen Termin, verliert er grundsätzlich das Recht, eine Nachzahlung von Ihnen zu verlangen, selbst wenn die Abrechnung inhaltlich korrekt wäre."
         },
         {
                 "typ": "h2",
@@ -675,7 +675,7 @@ export const ARTIKEL = [
         },
         {
                 "typ": "text",
-                "text": "Kommt die Betriebskostenabrechnung erst nach Ablauf der Zwölf-Monats-Frist bei Ihnen an, sind eventuelle Nachforderungen ausgeschlossen. Ein Guthaben aus derselben Abrechnung steht Ihnen als Mieter hingegen weiterhin zu – die Frist schützt nur Sie, nicht den Vermieter. Eine Ausnahme gilt nur dann, wenn der Vermieter die Verspätung nachweislich nicht zu vertreten hat, etwa weil ein Energieversorger selbst extrem spät abgerechnet hat. Solche Fälle sind in der Praxis jedoch selten und müssen vom Vermieter konkret belegt werden."
+                "text": "Kommt die Betriebskostenabrechnung erst nach Ablauf der Zwölf-Monats-Frist bei Ihnen an, sind eventuelle Nachforderungen ausgeschlossen. Ein Guthaben aus derselben Abrechnung steht Ihnen als Mieter hingegen weiterhin zu: die Frist schützt nur Sie, nicht den Vermieter. Eine Ausnahme gilt nur dann, wenn der Vermieter die Verspätung nachweislich nicht zu vertreten hat, etwa weil ein Energieversorger selbst extrem spät abgerechnet hat. Solche Fälle sind in der Praxis jedoch selten und müssen vom Vermieter konkret belegt werden."
         },
         {
                 "typ": "hinweis",
@@ -713,13 +713,13 @@ export const ARTIKEL = [
                         "Beispiel: Die Abrechnung geht dem Mieter im Juni 2024 zu, der Zahlungsanspruch entsteht damit 2024.",
                         "Die dreijährige Verjährungsfrist beginnt zum 1. Januar 2025 und endet am 31. Dezember 2027.",
                         "Danach kann weder der Vermieter eine offene Nachzahlung noch der Mieter ein offenes Guthaben gerichtlich durchsetzen.",
-                        "Verjährung tritt nicht automatisch ein – sie muss von der betroffenen Partei aktiv eingewendet werden.",
+                        "Verjährung tritt nicht automatisch ein, sie muss von der betroffenen Partei aktiv eingewendet werden.",
                         "Verhandlungen zwischen Mieter und Vermieter über die Abrechnung können die Verjährung vorübergehend hemmen, eine einfache Mahnung reicht dafür jedoch nicht aus."
                 ]
         },
         {
                 "typ": "hinweis",
-                "text": "Wichtig für die Praxis: Die Zwölf-Monats-Ausschlussfrist und die dreijährige Verjährung sind zwei unterschiedliche Dinge und laufen unabhängig voneinander. Eine fristgerecht zugestellte Abrechnung mit berechtigter Nachforderung bleibt bis zu drei Jahre lang durchsetzbar – auch wenn seit Zustellung schon viel Zeit vergangen ist."
+                "text": "Wichtig für die Praxis: Die Zwölf-Monats-Ausschlussfrist und die dreijährige Verjährung sind zwei unterschiedliche Dinge und laufen unabhängig voneinander. Eine fristgerecht zugestellte Abrechnung mit berechtigter Nachforderung bleibt bis zu drei Jahre lang durchsetzbar, auch wenn seit Zustellung schon viel Zeit vergangen ist."
         },
         {
                 "typ": "h2",
@@ -736,7 +736,7 @@ export const ARTIKEL = [
         {
                 "typ": "liste",
                 "items": [
-                        "Zugangsdatum der Abrechnung sofort notieren – es ist der Startpunkt für Ihre Widerspruchsfrist.",
+                        "Zugangsdatum der Abrechnung sofort notieren, es ist der Startpunkt für Ihre Widerspruchsfrist.",
                         "Prüfen, ob der Abrechnungszeitraum korrekt zwölf Monate umfasst und ob die Zwölf-Monats-Frist des Vermieters eingehalten wurde.",
                         "Bei verspäteter Zustellung schriftlich und nachweisbar auf die Ausschlussfrist hinweisen, bevor Sie zahlen.",
                         "Einzelne Kostenpositionen mit üblichen Vergleichswerten abgleichen, um auffällig hohe Posten zu erkennen.",
@@ -768,7 +768,7 @@ export const ARTIKEL = [
     {
       id: "heizkostenabrechnung-vermieterfehler-2026-leitfaden",
       titelKurz: "Heizkostenabrechnung: typische Fehler",
-      titel: "Heizkostenabrechnung 2026: Die häufigsten Fehler der Vermieter – und wie Sie als Mieter reagieren",
+      titel: "Heizkostenabrechnung 2026: Die häufigsten Fehler der Vermieter und wie Sie als Mieter reagieren",
       teaser: "Fast jede zweite Heizkostenabrechnung enthält Fehler, die Mieter bares Geld kosten. Dieser Leitfaden zeigt die typischen Stolperfallen 2026 und erklärt, wie Sie Ihre Abrechnung Schritt für Schritt prüfen.",
       datum: "Juli 2026",
       lesezeit: "8 Min.",
@@ -779,7 +779,7 @@ export const ARTIKEL = [
       inhalt: [
         {
                 "typ": "intro",
-                "text": "Jedes Jahr flattert sie ins Haus: die Heizkostenabrechnung. Und jedes Jahr sorgt sie für Kopfschmerzen – nicht nur wegen der Höhe der Nachzahlung, sondern weil sich in vielen Abrechnungen handfeste Fehler verstecken. Studien und Verbraucherzentralen gehen davon aus, dass ein erheblicher Teil aller Abrechnungen fehlerhaft ist. Dieser Ratgeber erklärt verständlich, welche Fehler Vermieter 2026 am häufigsten machen und wie Sie als Mieter davon profitieren können."
+                "text": "Jedes Jahr flattert sie ins Haus: die Heizkostenabrechnung. Und jedes Jahr sorgt sie für Kopfschmerzen, nicht nur wegen der Höhe der Nachzahlung, sondern weil sich in vielen Abrechnungen handfeste Fehler verstecken. Studien und Verbraucherzentralen gehen davon aus, dass ein erheblicher Teil aller Abrechnungen fehlerhaft ist. Dieser Ratgeber erklärt verständlich, welche Fehler Vermieter 2026 am häufigsten machen und wie Sie als Mieter davon profitieren können."
         },
         {
                 "typ": "h2",
@@ -787,7 +787,7 @@ export const ARTIKEL = [
         },
         {
                 "typ": "text",
-                "text": "Die Zahlen schwanken je nach Quelle, doch der Trend ist eindeutig: Ein sehr großer Teil der Abrechnungen weist Mängel auf. Verbraucherschützer sprechen konservativ von jeder zweiten Abrechnung, andere Auswertungen kommen sogar auf deutlich höhere Fehlerquoten. Wichtig für Sie: Nicht jeder Fehler ist böswillig – oft entstehen Ungenauigkeiten schlicht durch die komplizierte Rechtslage, die sich in den letzten Jahren durch CO2-Kostenaufteilung, neue Zählerpflichten und Änderungen bei den Nebenkosten spürbar verschärft hat."
+                "text": "Die Zahlen schwanken je nach Quelle, doch der Trend ist eindeutig: Ein sehr großer Teil der Abrechnungen weist Mängel auf. Verbraucherschützer sprechen konservativ von jeder zweiten Abrechnung, andere Auswertungen kommen sogar auf deutlich höhere Fehlerquoten. Wichtig für Sie: Nicht jeder Fehler ist böswillig, oft entstehen Ungenauigkeiten schlicht durch die komplizierte Rechtslage, die sich in den letzten Jahren durch CO2-Kostenaufteilung, neue Zählerpflichten und Änderungen bei den Nebenkosten spürbar verschärft hat."
         },
         {
                 "typ": "h2",
@@ -827,7 +827,7 @@ export const ARTIKEL = [
         },
         {
                 "typ": "hinweis",
-                "text": "Verstößt der Vermieter gegen die Vorgaben der Heizkostenverordnung, haben Sie ein Kürzungsrecht: Die Heizkostenabrechnung darf um pauschal 15 Prozent gekürzt werden – und zwar unabhängig davon, ob Ihnen dadurch tatsächlich ein Nachteil entstanden ist. Dieses Recht ist in § 12 HeizkostenV verankert."
+                "text": "Verstößt der Vermieter gegen die Vorgaben der Heizkostenverordnung, haben Sie ein Kürzungsrecht: Die Heizkostenabrechnung darf um pauschal 15 Prozent gekürzt werden und zwar unabhängig davon, ob Ihnen dadurch tatsächlich ein Nachteil entstanden ist. Dieses Recht ist in § 12 HeizkostenV verankert."
         },
         {
                 "typ": "h2",
@@ -847,7 +847,7 @@ export const ARTIKEL = [
         },
         {
                 "typ": "text",
-                "text": "Viele Vermieter legen die CO2-Abgabe schlicht komplett als Teil der Brennstoffkosten um, ohne den eigenen Pflichtanteil abzuziehen – das ist rechtswidrig und kann zu Rückforderungen führen. Prüfen Sie deshalb genau, ob in Ihrer Abrechnung überhaupt eine gesonderte CO2-Kostenaufteilung ausgewiesen ist."
+                "text": "Viele Vermieter legen die CO2-Abgabe schlicht komplett als Teil der Brennstoffkosten um, ohne den eigenen Pflichtanteil abzuziehen: das ist rechtswidrig und kann zu Rückforderungen führen. Prüfen Sie deshalb genau, ob in Ihrer Abrechnung überhaupt eine gesonderte CO2-Kostenaufteilung ausgewiesen ist."
         },
         {
                 "typ": "h2",
@@ -863,7 +863,7 @@ export const ARTIKEL = [
         },
         {
                 "typ": "text",
-                "text": "Bei fernablesbaren Geräten gilt eine zusätzliche Informationspflicht: Seit Dezember 2021 müssen Vermieter bei fernablesbaren Heizkostenverteilern und Wasserzählern den Mietern monatlich eine Verbrauchsinformation bereitstellen. Fehlt diese monatliche Information dauerhaft, kann dies neben dem Kürzungsrecht nach § 12 HeizkV zusätzliche Ansprüche begründen. Bis Ende 2026 müssen zudem alle Messgeräte in Wohngebäuden auf fernauslesbare Technik umgerüstet sein – ein Punkt, der viele Vermieter aktuell noch beschäftigt."
+                "text": "Bei fernablesbaren Geräten gilt eine zusätzliche Informationspflicht: Seit Dezember 2021 müssen Vermieter bei fernablesbaren Heizkostenverteilern und Wasserzählern den Mietern monatlich eine Verbrauchsinformation bereitstellen. Fehlt diese monatliche Information dauerhaft, kann dies neben dem Kürzungsrecht nach § 12 HeizkV zusätzliche Ansprüche begründen. Bis Ende 2026 müssen zudem alle Messgeräte in Wohngebäuden auf fernauslesbare Technik umgerüstet sein: ein Punkt, der viele Vermieter aktuell noch beschäftigt."
         },
         {
                 "typ": "h2",
@@ -923,7 +923,7 @@ export const ARTIKEL = [
       id: "bgh-urteile-mietrecht-nebenkosten-2026",
       titelKurz: "BGH-Urteile zu Nebenkosten 2026",
       titel: "Aktuelle BGH-Urteile Mietrecht Nebenkosten 2026: Das müssen Mieter wissen",
-      teaser: "Der Bundesgerichtshof hat 2026 mehrere wichtige Entscheidungen zur Betriebskostenabrechnung getroffen – von der Wirtschaftlichkeit der Kosten bis zur Grundsteuer. Wir erklären dir verständlich, was sich geändert hat und wie du davon profitierst.",
+      teaser: "Der Bundesgerichtshof hat 2026 mehrere wichtige Entscheidungen zur Betriebskostenabrechnung getroffen, von der Wirtschaftlichkeit der Kosten bis zur Grundsteuer. Wir erklären dir verständlich, was sich geändert hat und wie du davon profitierst.",
       datum: "Juli 2026",
       lesezeit: "8 Min.",
       bild: "https://images.unsplash.com/photo-1636652966850-5ac4d02370e9?w=800&q=80",
@@ -933,7 +933,7 @@ export const ARTIKEL = [
       inhalt: [
         {
                 "typ": "intro",
-                "text": "Jedes Jahr entscheidet der Bundesgerichtshof (BGH) über strittige Fragen rund um die Nebenkostenabrechnung – und diese Urteile wirken sich unmittelbar auf deine Rechte als Mieter aus. Im Jahr 2026 gab es gleich mehrere wichtige Entscheidungen, die klären, wann Vermieter Vergleichsangebote einholen müssen, wie sich Einsprüche gegen die Grundsteuer auf deine Abrechnungsfrist auswirken und welche Fehler eine Nachzahlung zu Fall bringen können. Dieser Ratgeber fasst die wichtigsten Urteile zusammen – verständlich erklärt, ohne Juristendeutsch."
+                "text": "Jedes Jahr entscheidet der Bundesgerichtshof (BGH) über strittige Fragen rund um die Nebenkostenabrechnung und diese Urteile wirken sich unmittelbar auf deine Rechte als Mieter aus. Im Jahr 2026 gab es gleich mehrere wichtige Entscheidungen, die klären, wann Vermieter Vergleichsangebote einholen müssen, wie sich Einsprüche gegen die Grundsteuer auf deine Abrechnungsfrist auswirken und welche Fehler eine Nachzahlung zu Fall bringen können. Dieser Ratgeber fasst die wichtigsten Urteile zusammen, verständlich erklärt, ohne Juristendeutsch."
         },
         {
                 "typ": "h2",
@@ -960,12 +960,12 @@ export const ARTIKEL = [
                 "items": [
                         "Du musst konkret darlegen, dass der vereinbarte Preis objektiv überhöht war",
                         "Ein bloßer Verweis auf ein einzelnes günstigeres Angebot reicht meist nicht aus",
-                        "Der BGH stellte zudem klar, dass die Regelungen zum Einwendungsausschluss auch für Einwände zur Wirtschaftlichkeit gelten – du musst also fristgerecht widersprechen"
+                        "Der BGH stellte zudem klar, dass die Regelungen zum Einwendungsausschluss auch für Einwände zur Wirtschaftlichkeit gelten, du musst also fristgerecht widersprechen"
                 ]
         },
         {
                 "typ": "hinweis",
-                "text": "Wichtig: Auch wenn dieses Urteil auf den ersten Blick vermieterfreundlich wirkt, bleibt das Wirtschaftlichkeitsgebot bestehen. Bei tatsächlich überhöhten Preisen – etwa deutlich über dem Marktniveau – hast du weiterhin gute Chancen, eine Kürzung durchzusetzen."
+                "text": "Wichtig: Auch wenn dieses Urteil auf den ersten Blick vermieterfreundlich wirkt, bleibt das Wirtschaftlichkeitsgebot bestehen. Bei tatsächlich überhöhten Preisen, etwa deutlich über dem Marktniveau, hast du weiterhin gute Chancen, eine Kürzung durchzusetzen."
         },
         {
                 "typ": "h2",
@@ -1006,7 +1006,7 @@ export const ARTIKEL = [
         },
         {
                 "typ": "text",
-                "text": "Materiell-rechtliche Fehler – also inhaltliche Fehler bei der Berechnung – führen dagegen lediglich zu einer Kürzung des Nachzahlungsanspruchs, gegebenenfalls bis auf null Euro. Sie machen die Abrechnung aber nicht von vornherein insgesamt unwirksam, wie es bei schweren formellen Mängeln der Fall sein kann."
+                "text": "Materiell-rechtliche Fehler, also inhaltliche Fehler bei der Berechnung, führen dagegen lediglich zu einer Kürzung des Nachzahlungsanspruchs, gegebenenfalls bis auf null Euro. Sie machen die Abrechnung aber nicht von vornherein insgesamt unwirksam, wie es bei schweren formellen Mängeln der Fall sein kann."
         },
         {
                 "typ": "text",
@@ -1023,7 +1023,7 @@ export const ARTIKEL = [
         },
         {
                 "typ": "text",
-                "text": "Auch wenn dieses Urteil nicht ganz neu ist, bestätigt sich die Linie des BGH 2026 weiter: Mieter haben Anspruch auf Einsicht in die Originalbelege der Nebenkostenabrechnung, Kopien gelten dabei nicht als gleichwertig. Für dieses Recht musst du kein besonderes Interesse nachweisen – es ergibt sich schon aus der grundsätzlichen Rechenschaftspflicht deines Vermieters."
+                "text": "Auch wenn dieses Urteil nicht ganz neu ist, bestätigt sich die Linie des BGH 2026 weiter: Mieter haben Anspruch auf Einsicht in die Originalbelege der Nebenkostenabrechnung, Kopien gelten dabei nicht als gleichwertig. Für dieses Recht musst du kein besonderes Interesse nachweisen, es ergibt sich schon aus der grundsätzlichen Rechenschaftspflicht deines Vermieters."
         },
         {
                 "typ": "text",
@@ -1036,9 +1036,9 @@ export const ARTIKEL = [
         {
                 "typ": "liste",
                 "items": [
-                        "Prüfe bei Verdacht auf überhöhte Kosten, ob die Preise objektiv marktunüblich sind – ein einzelnes günstigeres Angebot reicht als Beweis oft nicht",
+                        "Prüfe bei Verdacht auf überhöhte Kosten, ob die Preise objektiv marktunüblich sind: ein einzelnes günstigeres Angebot reicht als Beweis oft nicht",
                         "Achte bei Umstellungen auf Wärmelieferung darauf, ob vorher überhaupt Heizkosten separat abgerechnet wurden",
-                        "Verlange bei Zweifeln Einsicht in die Originalbelege – dieses Recht steht dir uneingeschränkt zu",
+                        "Verlange bei Zweifeln Einsicht in die Originalbelege, dieses Recht steht dir uneingeschränkt zu",
                         "Vergleiche deine Abrechnung mit üblichen Werten, um schnell zu erkennen, ob einzelne Posten aus dem Rahmen fallen",
                         "Widerspreche fristgerecht, denn auch Einwände zur Wirtschaftlichkeit unterliegen dem Einwendungsausschluss"
                 ]
@@ -1062,7 +1062,7 @@ export const ARTIKEL = [
       id: "widerspruch-nebenkostenabrechnung",
       titelKurz: "Widerspruch Nebenkostenabrechnung",
       titel: "Widerspruch Nebenkostenabrechnung 2026: Frist, Muster & Anleitung",
-      teaser: "12 Monate Zeit, aber nur 30 Tage für die Nachzahlung — viele Mieter verwechseln diese Fristen. Was Sie jetzt wissen müssen.",
+      teaser: "12 Monate Zeit, aber nur 30 Tage für die Nachzahlung, viele Mieter verwechseln diese Fristen. Was Sie jetzt wissen müssen.",
       datum: "Juni 2026",
       lesezeit: "6 Min.",
       bild: "https://images.unsplash.com/photo-1731963094554-c5c981ccdefd?w=800&q=80",
@@ -1070,28 +1070,28 @@ export const ARTIKEL = [
       kategorie: "Mietrecht",
       keywords: ["Widerspruch Nebenkostenabrechnung", "Frist", "Muster", "§ 556 BGB"],
       inhalt: [
-        { typ: "intro", text: "Sie haben Ihre Nebenkostenabrechnung erhalten und vermuten Fehler? Dann haben Sie als Mieter das Recht, innerhalb von 12 Monaten Widerspruch einzulegen. Doch Vorsicht: Die Zahlungsfrist für eine Nachzahlung beträgt nur 30 Tage — unabhängig vom Widerspruch. Wer das verwechselt, riskiert Verzugszinsen oder schlimmstenfalls die Kündigung." },
-        { typ: "h2", text: "Die zwei entscheidenden Fristen — und warum viele Mieter sie verwechseln" },
+        { typ: "intro", text: "Sie haben Ihre Nebenkostenabrechnung erhalten und vermuten Fehler? Dann haben Sie als Mieter das Recht, innerhalb von 12 Monaten Widerspruch einzulegen. Doch Vorsicht: Die Zahlungsfrist für eine Nachzahlung beträgt nur 30 Tage, unabhängig vom Widerspruch. Wer das verwechselt, riskiert Verzugszinsen oder schlimmstenfalls die Kündigung." },
+        { typ: "h2", text: "Die zwei entscheidenden Fristen und warum viele Mieter sie verwechseln" },
         { typ: "text", text: "Das Mietrecht kennt zwei völlig unterschiedliche Fristen nach Erhalt der Nebenkostenabrechnung:" },
         { typ: "liste", items: [
-          "30 Tage: Zahlungsfrist für eine Nachzahlung (§ 286 BGB). Diese Frist gilt unabhängig davon, ob Sie Widerspruch einlegen. Lösung: Zahlen Sie unter Vorbehalt — schreiben Sie auf die Überweisung: 'Zahlung unter Vorbehalt der Überprüfung'.",
+          "30 Tage: Zahlungsfrist für eine Nachzahlung (§ 286 BGB). Diese Frist gilt unabhängig davon, ob Sie Widerspruch einlegen. Lösung: Zahlen Sie unter Vorbehalt, schreiben Sie auf die Überweisung: 'Zahlung unter Vorbehalt der Überprüfung'.",
           "12 Monate: Widerspruchsfrist gegen fehlerhafte Positionen (§ 556 Abs. 3 BGB). Die Frist beginnt mit dem Tag des Erhalts der Abrechnung.",
         ]},
         { typ: "hinweis", text: "Wichtig: Zahlung unter Vorbehalt schützt Sie. Auch wenn Sie die Nachzahlung leisten, können Sie innerhalb von 12 Monaten noch Widerspruch einlegen und zu viel gezahltes Geld zurückfordern." },
         { typ: "h2", text: "Wann lohnt sich ein Widerspruch?" },
         { typ: "text", text: "Ein Widerspruch ist sinnvoll wenn Ihre Abrechnung formelle oder inhaltliche Fehler enthält:" },
         { typ: "liste", items: [
-          "Formelle Fehler (gravierend): Abrechnung fehlt ganz, wurde zu spät zugestellt (nach dem 31.12. des Folgejahres), oder enthält keinen nachvollziehbaren Verteilerschlüssel. Folge: Die gesamte Abrechnung ist unwirksam — Sie müssen keine Nachzahlung leisten.",
+          "Formelle Fehler (gravierend): Abrechnung fehlt ganz, wurde zu spät zugestellt (nach dem 31.12. des Folgejahres), oder enthält keinen nachvollziehbaren Verteilerschlüssel. Folge: Die gesamte Abrechnung ist unwirksam. Sie müssen keine Nachzahlung leisten.",
           "Inhaltliche Fehler: Nicht umlagefähige Posten (z.B. Kabelanschluss seit Juli 2024, Verwaltungskosten, Reparaturen), überhöhte Beträge über dem DMB-Richtwert, Verstoß gegen die Heizkostenverordnung.",
         ]},
-        { typ: "verweis", ziel: "kabelanschluss-nicht-umlagefaehig", text: "Kabelanschluss in Ihrer Abrechnung? Seit Juli 2024 ist dieser Posten grundsätzlich nicht mehr umlagefähig — Details im Artikel zur Rechtsänderung." },
+        { typ: "verweis", ziel: "kabelanschluss-nicht-umlagefaehig", text: "Kabelanschluss in Ihrer Abrechnung? Seit Juli 2024 ist dieser Posten grundsätzlich nicht mehr umlagefähig. Details im Artikel zur Rechtsänderung." },
         { typ: "verweis", ziel: "betriebskostenspiegel-2024", text: "Nicht sicher, ob Ihre Beträge zu hoch sind? Der DMB-Betriebskostenspiegel 2024 zeigt die aktuellen Durchschnittswerte je Kostenart." },
         { typ: "h2", text: "Schritt-für-Schritt: So legen Sie wirksam Widerspruch ein" },
         { typ: "schritte", items: [
           "Abrechnung systematisch prüfen: Jeden Posten auf Umlagefähigkeit (§ 2 BetrKV) und Plausibilität (DMB-Betriebskostenspiegel) prüfen.",
-          "Fehler konkret benennen: Pauschal 'die Abrechnung ist falsch' reicht nicht — benennen Sie jeden strittigen Posten mit Betrag und Begründung.",
-          "Widerspruch schriftlich formulieren: Per Einschreiben mit Rückschein — nur so ist der Zugang beim Vermieter beweisbar.",
-          "Belegeinsicht anfordern: Sie haben das Recht, alle Originalrechnungen einzusehen (§ 259 BGB). Verlangen Sie die Belege immer — auch wenn Sie zahlen.",
+          "Fehler konkret benennen: Pauschal 'die Abrechnung ist falsch' reicht nicht, benennen Sie jeden strittigen Posten mit Betrag und Begründung.",
+          "Widerspruch schriftlich formulieren: Per Einschreiben mit Rückschein, nur so ist der Zugang beim Vermieter beweisbar.",
+          "Belegeinsicht anfordern: Sie haben das Recht, alle Originalrechnungen einzusehen (§ 259 BGB). Verlangen Sie die Belege immer, auch wenn Sie zahlen.",
           "Frist im Blick behalten: Spätestens 12 Monate nach Erhalt der Abrechnung muss der Widerspruch beim Vermieter eingegangen sein.",
         ]},
         { typ: "h2", text: "Was gehört in den Widerspruchsbrief?" },
@@ -1100,16 +1100,16 @@ export const ARTIKEL = [
           "Ihre vollständige Adresse und die des Vermieters",
           "Klarer Betreff: 'Widerspruch zur Betriebskostenabrechnung [Jahr]'",
           "Konkrete Benennung der beanstandeten Positionen mit Betrag",
-          "Rechtsgrundlage (z.B. '§ 2 BetrKV — nicht umlagefähig')",
+          "Rechtsgrundlage (z.B. '§ 2 BetrKV, nicht umlagefähig')",
           "Aufforderung zur Belegeinsicht (§ 259 BGB)",
           "Vorbehalt für weitere Einwände nach Belegeinsicht",
           "Bitte um schriftliche Stellungnahme",
         ]},
-        { typ: "cta", text: "NebenkostenRadar erstellt den Widerspruchsbrief automatisch — mit allen Rechtsgrundlagen, auf Basis Ihrer konkreten Abrechnung." },
-        { typ: "h2", text: "Häufige Fehler beim Widerspruch — und wie Sie sie vermeiden" },
+        { typ: "cta", text: "NebenkostenRadar erstellt den Widerspruchsbrief automatisch, mit allen Rechtsgrundlagen, auf Basis Ihrer konkreten Abrechnung." },
+        { typ: "h2", text: "Häufige Fehler beim Widerspruch und wie Sie sie vermeiden" },
         { typ: "liste", items: [
-          "Nur mündlich widersprechen: Gilt rechtlich nicht — immer schriftlich.",
-          "Zu pauschal formulieren: 'Die Abrechnung stimmt nicht' reicht nicht — konkrete Positionen nennen.",
+          "Nur mündlich widersprechen: Gilt rechtlich nicht, immer schriftlich.",
+          "Zu pauschal formulieren: 'Die Abrechnung stimmt nicht' reicht nicht, konkrete Positionen nennen.",
           "Frist verpassen: Ab dem 13. Monat nach Erhalt sind Einwände in der Regel ausgeschlossen.",
           "Nicht unter Vorbehalt zahlen: Wer die Nachzahlung ohne Vorbehalt zahlt, erschwert eine spätere Rückforderung.",
         ]},
@@ -1127,25 +1127,25 @@ export const ARTIKEL = [
       kategorie: "Rechtsänderungen",
       keywords: ["Kabelanschluss Nebenkosten", "nicht umlagefähig 2024", "§ 2 TKG"],
       inhalt: [
-        { typ: "intro", text: "Seit dem 1. Juli 2024 dürfen Vermieter die Kosten für einen Kabelanschluss nicht mehr als Betriebskosten auf Mieter umlegen. Das Telekommunikationsgesetz (TKG) schreibt dies klar vor — trotzdem findet sich der Posten noch in vielen Abrechnungen." },
+        { typ: "intro", text: "Seit dem 1. Juli 2024 dürfen Vermieter die Kosten für einen Kabelanschluss nicht mehr als Betriebskosten auf Mieter umlegen. Das Telekommunikationsgesetz (TKG) schreibt dies klar vor, trotzdem findet sich der Posten noch in vielen Abrechnungen." },
         { typ: "h2", text: "Was hat sich geändert?" },
-        { typ: "text", text: "Bis Juni 2024 war es Vermietern erlaubt, Kosten für einen Sammelkabelanschluss (§ 2 Nr. 15b BetrKV a.F.) auf die Mieter umzulegen — das sogenannte 'Nebenkostenprivileg'. Durch das Telekommunikationsmodernisierungsgesetz (TKMoG) wurde dieses Privileg abgeschafft." },
+        { typ: "text", text: "Bis Juni 2024 war es Vermietern erlaubt, Kosten für einen Sammelkabelanschluss (§ 2 Nr. 15b BetrKV a.F.) auf die Mieter umzulegen: das sogenannte 'Nebenkostenprivileg'. Durch das Telekommunikationsmodernisierungsgesetz (TKMoG) wurde dieses Privileg abgeschafft." },
         { typ: "hinweis", text: "Ab dem 01.07.2024 gilt: Kabelanschlusskosten sind keine umlagefähigen Betriebskosten mehr. Jeder Betrag unter diesem Posten in einer Abrechnung für Zeiträume ab Juli 2024 kann vollständig zurückgefordert werden." },
         { typ: "h2", text: "Welche Abrechnungen sind betroffen?" },
         { typ: "liste", items: [
           "Abrechnungen für das gesamte Jahr 2025 und später: Kabelkosten komplett nicht umlagefähig.",
-          "Abrechnungen für 2024 (gemischter Zeitraum): Nur der Anteil ab Juli 2024 ist nicht umlagefähig — also 6/12 des Jahresbetrags.",
-          "Abrechnungen für 2023 und früher: Das alte Recht gilt — Kabelkosten waren umlagefähig.",
+          "Abrechnungen für 2024 (gemischter Zeitraum): Nur der Anteil ab Juli 2024 ist nicht umlagefähig, also 6/12 des Jahresbetrags.",
+          "Abrechnungen für 2023 und früher: Das alte Recht gilt. Kabelkosten waren umlagefähig.",
         ]},
-        { typ: "verweis", ziel: "widerspruch-nebenkostenabrechnung", text: "So legen Sie formal Widerspruch ein und fordern zu viel gezahlte Kabelkosten zurück — Fristen und Muster im Widerspruchs-Ratgeber." },
-        { typ: "cta", text: "NebenkostenRadar erkennt Kabelanschlusskosten automatisch und weist sie als nicht umlagefähig aus — mit der korrekten Rechtsgrundlage für Ihren Widerspruch." },
+        { typ: "verweis", ziel: "widerspruch-nebenkostenabrechnung", text: "So legen Sie formal Widerspruch ein und fordern zu viel gezahlte Kabelkosten zurück. Fristen und Muster im Widerspruchs-Ratgeber." },
+        { typ: "cta", text: "NebenkostenRadar erkennt Kabelanschlusskosten automatisch und weist sie als nicht umlagefähig aus, mit der korrekten Rechtsgrundlage für Ihren Widerspruch." },
       ],
     },
     {
       id: "betriebskostenspiegel-2024",
       titelKurz: "Betriebskostenspiegel: was ist normal?",
       titel: "DMB Betriebskostenspiegel 2024: Was ist normal?",
-      teaser: "Der Deutsche Mieterbund veröffentlicht jährlich Durchschnittswerte für alle Nebenkostenarten. Hier erfahren Sie, was für Ihre Wohnungsgröße normal ist — und wann Ihre Abrechnung zu teuer ist.",
+      teaser: "Der Deutsche Mieterbund veröffentlicht jährlich Durchschnittswerte für alle Nebenkostenarten. Hier erfahren Sie, was für Ihre Wohnungsgröße normal ist und wann Ihre Abrechnung zu teuer ist.",
       datum: "Juni 2026",
       lesezeit: "5 Min.",
       bild: "https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=800&q=80",
@@ -1153,43 +1153,43 @@ export const ARTIKEL = [
       kategorie: "Richtwerte",
       keywords: ["Betriebskostenspiegel 2024", "DMB Richtwerte", "Nebenkosten Durchschnitt"],
       inhalt: [
-        { typ: "intro", text: "Der Deutsche Mieterbund (DMB) veröffentlicht jährlich den Betriebskostenspiegel — eine Auswertung realer Nebenkostenabrechnungen in Deutschland. Er zeigt Durchschnittswerte und Höchstwerte für alle umlagefähigen Kostenarten pro Quadratmeter und Monat." },
+        { typ: "intro", text: "Der Deutsche Mieterbund (DMB) veröffentlicht jährlich den Betriebskostenspiegel: eine Auswertung realer Nebenkostenabrechnungen in Deutschland. Er zeigt Durchschnittswerte und Höchstwerte für alle umlagefähigen Kostenarten pro Quadratmeter und Monat." },
         { typ: "h2", text: "Die wichtigsten Richtwerte 2024 im Überblick" },
         { typ: "richtwerte" },
-        { typ: "hinweis", text: "Liegt Ihre Abrechnung deutlich über dem Durchschnitt, lohnt sich eine genauere Prüfung. Wichtig: Eine Abweichung nach oben ist ein Anlass zur Nachfrage, kein Beweis für einen Fehler — warum, erklärt der Abschnitt zu den Grenzen weiter unten." },
+        { typ: "hinweis", text: "Liegt Ihre Abrechnung deutlich über dem Durchschnitt, lohnt sich eine genauere Prüfung. Wichtig: Eine Abweichung nach oben ist ein Anlass zur Nachfrage, kein Beweis für einen Fehler, warum, erklärt der Abschnitt zu den Grenzen weiter unten." },
         { typ: "h2", text: "Wie nutze ich die Richtwerte?" },
-        { typ: "text", text: "Multiplizieren Sie den €/m²/Monat-Wert mit Ihrer Wohnfläche und mit 12 — das ergibt den erwarteten Jahresbetrag für Ihre Wohnung. Beispiel: Der Gesamtdurchschnitt von 2,67 €/m²/Monat bedeutet für eine 75-Quadratmeter-Wohnung rund 2.403 Euro im Jahr, also etwa 200 Euro im Monat." },
-        { typ: "text", text: "Für einzelne Positionen funktioniert die Rechnung genauso. Liegt ein Posten deutlich über dem erwarteten Wert, ist das der Punkt, an dem Sie Belegeinsicht verlangen sollten — nicht, um sofort zu widersprechen, sondern um nachzuvollziehen, wie der Betrag zustande kommt." },
+        { typ: "text", text: "Multiplizieren Sie den €/m²/Monat-Wert mit Ihrer Wohnfläche und mit 12: das ergibt den erwarteten Jahresbetrag für Ihre Wohnung. Beispiel: Der Gesamtdurchschnitt von 2,67 €/m²/Monat bedeutet für eine 75-Quadratmeter-Wohnung rund 2.403 Euro im Jahr, also etwa 200 Euro im Monat." },
+        { typ: "text", text: "Für einzelne Positionen funktioniert die Rechnung genauso. Liegt ein Posten deutlich über dem erwarteten Wert, ist das der Punkt, an dem Sie Belegeinsicht verlangen sollten, nicht, um sofort zu widersprechen, sondern um nachzuvollziehen, wie der Betrag zustande kommt." },
 
         { typ: "h2", text: "Was sich gegenüber dem Vorjahr verändert hat" },
         { typ: "text", text: "Der Betriebskostenspiegel für das Abrechnungsjahr 2024 wurde am 18. Dezember 2025 veröffentlicht. Gegenüber dem Abrechnungsjahr 2023 sind die durchschnittlichen Betriebskosten um mehr als sechs Prozent gestiegen. Fallen in einem Gebäude sämtliche denkbaren Betriebskostenarten an, kann die sogenannte zweite Miete laut DMB bis zu 3,68 €/m²/Monat betragen." },
         { typ: "liste", items: [
           "Für eine 80 Quadratmeter große Wohnung ergaben sich beim Anfallen aller Betriebskostenarten durchschnittlich 3.532,80 Euro für das Abrechnungsjahr 2024.",
-          "Das sind 508,80 Euro mehr als im Vorjahr — bei unveränderter Wohnung und unverändertem Verhalten.",
+          "Das sind 508,80 Euro mehr als im Vorjahr, bei unveränderter Wohnung und unverändertem Verhalten.",
           "Treiber sind vor allem die Energiepreise sowie die CO2-Abgabe, die fossile Energieträger zusätzlich verteuert.",
           "Gegenläufig entwickelte sich eine einzige Position: Antenne und Kabel sanken um rund 42 Prozent, weil das sogenannte Nebenkostenprivileg zum 1. Juli 2024 weggefallen ist.",
         ]},
-        { typ: "verweis", ziel: "kabelanschluss-nicht-umlagefaehig", text: "Steht in Ihrer Abrechnung trotzdem noch ein Posten für Kabel oder Gemeinschaftsantenne? Seit Juli 2024 ist er grundsätzlich nicht mehr umlagefähig — was das für Sie bedeutet, steht im Detailartikel." },
+        { typ: "verweis", ziel: "kabelanschluss-nicht-umlagefaehig", text: "Steht in Ihrer Abrechnung trotzdem noch ein Posten für Kabel oder Gemeinschaftsantenne? Seit Juli 2024 ist er grundsätzlich nicht mehr umlagefähig, was das für Sie bedeutet, steht im Detailartikel." },
         { typ: "verweis", ziel: "grundsteuerreform-2026-auswirkungen-auf-die-nebenkostenabrechnung", text: "Ein zweiter Kostentreiber kommt gerade erst in den Abrechnungen an: die reformierte Grundsteuer, die seit Januar 2025 neu berechnet wird." },
 
-        { typ: "h2", text: "Die Grenzen des Betriebskostenspiegels — ehrlich betrachtet" },
-        { typ: "text", text: "Der DMB-Betriebskostenspiegel ist ein bundesweiter Durchschnitt. Er unterscheidet nicht nach Region, Gebäudegröße oder Ausstattung. Das macht ihn zu einem guten ersten Anhaltspunkt, aber zu einem schlechten Beweismittel — und wer ihn als Beweis benutzt, verliert im Zweifel die Diskussion mit dem Vermieter." },
+        { typ: "h2", text: "Die Grenzen des Betriebskostenspiegels, ehrlich betrachtet" },
+        { typ: "text", text: "Der DMB-Betriebskostenspiegel ist ein bundesweiter Durchschnitt. Er unterscheidet nicht nach Region, Gebäudegröße oder Ausstattung. Das macht ihn zu einem guten ersten Anhaltspunkt, aber zu einem schlechten Beweismittel und wer ihn als Beweis benutzt, verliert im Zweifel die Diskussion mit dem Vermieter." },
         { typ: "text", text: "Ein Blick ins Ausland zeigt, wie es sonst gemacht wird: In Südkorea veröffentlicht ein staatliches Portal die Nebenkosten offenlegungspflichtiger Wohnanlagen, und Bewohner können ihre Kosten Position für Position gegen ähnlich große Anlagen stellen. In Japan weist die Wohnungseigentumserhebung des Ministeriums die Werte nach Einheitenzahl, Geschosszahl und Objekttyp getrennt aus. Verglichen wird dort also gegen eine Vergleichsgruppe, nicht gegen einen Landesdurchschnitt." },
         { typ: "liste", items: [
           "Regionale Unterschiede: Die Grundsteuer liegt in Großstädten mit hohen Bodenrichtwerten regelmäßig deutlich über dem Bundesdurchschnitt, ohne dass ein Abrechnungsfehler vorliegt.",
-          "Gebäudegröße: Fixkosten wie Hausmeister oder Versicherungen verteilen sich in großen Häusern auf mehr Parteien — pro Quadratmeter sinkt der Anteil.",
+          "Gebäudegröße: Fixkosten wie Hausmeister oder Versicherungen verteilen sich in großen Häusern auf mehr Parteien, pro Quadratmeter sinkt der Anteil.",
           "Ausstattung: Ein Aufzug, eine Tiefgarage oder ein gepflegter Garten erzeugen Kosten, die in einem Haus ohne diese Ausstattung schlicht nicht anfallen.",
           "Verbrauch: Heizkosten hängen stark vom energetischen Zustand des Gebäudes ab, nicht nur vom eigenen Heizverhalten.",
           "Abrechnungszeitraum: Ein besonders kalter Winter verschiebt die Heizkosten aller Haushalte nach oben.",
         ]},
-        { typ: "hinweis", text: "Praktische Folge: Eine Abweichung nach oben ist ein Grund, Belege anzufordern — nicht mehr und nicht weniger. Erst wenn sich aus den Belegen keine sachliche Erklärung ergibt, wird daraus ein begründeter Einwand." },
+        { typ: "hinweis", text: "Praktische Folge: Eine Abweichung nach oben ist ein Grund, Belege anzufordern, nicht mehr und nicht weniger. Erst wenn sich aus den Belegen keine sachliche Erklärung ergibt, wird daraus ein begründeter Einwand." },
 
         { typ: "h2", text: "Häufige Fragen zum Betriebskostenspiegel" },
         { typ: "liste", items: [
           "Woher stammen die Daten? Vom Deutschen Mieterbund, ausgewertet aus bundesweit eingereichten realen Abrechnungen. Die Ausgabe für das Abrechnungsjahr 2024 wurde am 18.12.2025 veröffentlicht.",
-          "Warum gibt es keine Werte für meine Stadt? Auf Stadt- oder Kreisebene existieren in Deutschland keine belastbaren Betriebskostendaten. Was dort veröffentlicht wird, sind Mietspiegel — die bilden die Kaltmiete ab, nicht die Nebenkosten.",
+          "Warum gibt es keine Werte für meine Stadt? Auf Stadt- oder Kreisebene existieren in Deutschland keine belastbaren Betriebskostendaten. Was dort veröffentlicht wird, sind Mietspiegel: die bilden die Kaltmiete ab, nicht die Nebenkosten.",
           "Ist eine Abweichung nach oben ein Beweis für einen Fehler? Nein. Sie ist ein Anlass, Belegeinsicht zu verlangen (§ 259 BGB). Diesen Anspruch haben Sie ohne Angabe von Gründen.",
-          "Muss ich zahlen, wenn ich die Abrechnung anzweifle? Ja — und zwar zuerst. Zahlen Sie unter Vorbehalt und widersprechen Sie parallel. Wer nicht zahlt, riskiert Verzugszinsen und im Extremfall die Kündigung, unabhängig davon, ob der Widerspruch später Erfolg hat.",
+          "Muss ich zahlen, wenn ich die Abrechnung anzweifle? Ja und zwar zuerst. Zahlen Sie unter Vorbehalt und widersprechen Sie parallel. Wer nicht zahlt, riskiert Verzugszinsen und im Extremfall die Kündigung, unabhängig davon, ob der Widerspruch später Erfolg hat.",
           "Wie aktuell sind die Werte auf dieser Seite? Sie stammen direkt aus der Konfiguration, mit der auch unsere Prüfung rechnet. Ratgeber und Prüfbericht können deshalb nicht auseinanderlaufen.",
           "Ist NebenkostenRadar unabhängig? Ja. Keine Verbindung zu Vermietern, Hausverwaltungen, Messdienstleistern oder Immobilienunternehmen. Wir verkaufen ausschließlich die Prüfung an Mieter.",
         ]},
@@ -1201,11 +1201,11 @@ export const ARTIKEL = [
           '<div id="nkr-betriebskostenspiegel"></div>',
           '<script src="https://nebenkostenradar.com/widget.js" async></script>',
         ]},
-        { typ: "text", text: "Die Tabelle aktualisiert sich automatisch, sobald der Deutsche Mieterbund neue Werte veröffentlicht — Sie müssen nichts nachpflegen. Unter der Tabelle erscheint eine Quellenangabe mit Verweis auf diese Seite. Es werden keine Cookies gesetzt und keine Besucherdaten erhoben." },
+        { typ: "text", text: "Die Tabelle aktualisiert sich automatisch, sobald der Deutsche Mieterbund neue Werte veröffentlicht. Sie müssen nichts nachpflegen. Unter der Tabelle erscheint eine Quellenangabe mit Verweis auf diese Seite. Es werden keine Cookies gesetzt und keine Besucherdaten erhoben." },
 
         { typ: "verweis", ziel: "widerspruch-nebenkostenabrechnung", text: "Liegt Ihre Abrechnung deutlich über dem Durchschnitt? Der Widerspruchs-Ratgeber zeigt Fristen und den korrekten Ablauf." },
         { typ: "verweis", ziel: "betriebskostenabrechnung-fristen-und-verjaehrung-2026", text: "Wie lange Ihr Vermieter für die Abrechnung Zeit hat und bis wann Sie widersprechen können, erklärt der Ratgeber zu Fristen und Verjährung." },
-        { typ: "cta", text: "NebenkostenRadar macht diesen Vergleich automatisch für jeden Posten Ihrer Abrechnung — und sagt Ihnen dazu, wo eine Abweichung erklärbar ist und wo nicht." },
+        { typ: "cta", text: "NebenkostenRadar macht diesen Vergleich automatisch für jeden Posten Ihrer Abrechnung und sagt Ihnen dazu, wo eine Abweichung erklärbar ist und wo nicht." },
       ],
     },
 
@@ -1234,7 +1234,7 @@ export const ARTIKEL = [
       id: "umlageschluessel-nebenkostenabrechnung-pruefen",
       titelKurz: "Umlageschlüssel prüfen",
       titel: "Umlageschlüssel in der Nebenkostenabrechnung prüfen: Welcher Maßstab gilt?",
-      teaser: "Wohnfläche, Personenzahl oder Verbrauch — der Umlageschlüssel entscheidet mit darüber, wie viel Sie zahlen. Was im Mietvertrag stehen muss, was ohne Vereinbarung gilt und wann Ihr Vermieter den Schlüssel ändern darf.",
+      teaser: "Wohnfläche, Personenzahl oder Verbrauch: der Umlageschlüssel entscheidet mit darüber, wie viel Sie zahlen. Was im Mietvertrag stehen muss, was ohne Vereinbarung gilt und wann Ihr Vermieter den Schlüssel ändern darf.",
       datum: "September 2026",
       lesezeit: "6 Min.",
       bild: "https://images.unsplash.com/photo-1721244654210-a505a99661e9?w=800&q=80",
@@ -1242,29 +1242,29 @@ export const ARTIKEL = [
       kategorie: "Mietrecht",
       keywords: ["Umlageschlüssel", "Verteilerschlüssel Nebenkosten", "§ 556a BGB", "Nebenkosten nach Personenzahl"],
       inhalt: [
-        { typ: "intro", text: "Zwei Mieter im selben Haus, dieselben Gesamtkosten — und trotzdem völlig unterschiedliche Beträge auf der Abrechnung. Der Grund liegt oft nicht bei den Kosten selbst, sondern beim Umlageschlüssel: der Regel, nach der die Gesamtkosten auf die einzelnen Wohnungen verteilt werden. Er ist eine der wenigen Stellschrauben, an denen ein Fehler mehrere Hundert Euro ausmachen kann." },
+        { typ: "intro", text: "Zwei Mieter im selben Haus, dieselben Gesamtkosten und trotzdem völlig unterschiedliche Beträge auf der Abrechnung. Der Grund liegt oft nicht bei den Kosten selbst, sondern beim Umlageschlüssel: der Regel, nach der die Gesamtkosten auf die einzelnen Wohnungen verteilt werden. Er ist eine der wenigen Stellschrauben, an denen ein Fehler mehrere Hundert Euro ausmachen kann." },
         { typ: "h2", text: "Was gilt, wenn im Mietvertrag nichts steht?" },
-        { typ: "text", text: "Dann greift § 556a Abs. 1 Satz 1 BGB: Betriebskosten sind nach dem Anteil der Wohnfläche umzulegen. Der Flächenmaßstab ist also der gesetzliche Auffangmaßstab — er gilt immer dann, wenn die Parteien nichts anderes vereinbart haben. Wer eine Abrechnung nach Personenzahl oder nach Wohneinheiten erhält, sollte deshalb zuerst in den Mietvertrag schauen: Ohne entsprechende Vereinbarung ist dieser Maßstab nicht anwendbar." },
-        { typ: "text", text: "Eine wichtige Ausnahme macht § 556a Abs. 1 Satz 2 BGB: Kosten, die von einem erfassten Verbrauch oder einer erfassten Verursachung abhängen, sind nach einem Maßstab umzulegen, der diesen Verbrauch berücksichtigt. Wo also Zähler vorhanden sind — typischerweise für Wasser und Wärme —, darf nicht einfach nach Fläche verteilt werden." },
+        { typ: "text", text: "Dann greift § 556a Abs. 1 Satz 1 BGB: Betriebskosten sind nach dem Anteil der Wohnfläche umzulegen. Der Flächenmaßstab ist also der gesetzliche Auffangmaßstab, er gilt immer dann, wenn die Parteien nichts anderes vereinbart haben. Wer eine Abrechnung nach Personenzahl oder nach Wohneinheiten erhält, sollte deshalb zuerst in den Mietvertrag schauen: Ohne entsprechende Vereinbarung ist dieser Maßstab nicht anwendbar." },
+        { typ: "text", text: "Eine wichtige Ausnahme macht § 556a Abs. 1 Satz 2 BGB: Kosten, die von einem erfassten Verbrauch oder einer erfassten Verursachung abhängen, sind nach einem Maßstab umzulegen, der diesen Verbrauch berücksichtigt. Wo also Zähler vorhanden sind, typischerweise für Wasser und Wärme, darf nicht einfach nach Fläche verteilt werden." },
         { typ: "h2", text: "Die gebräuchlichen Umlageschlüssel im Überblick" },
         { typ: "liste", items: [
           "Wohnfläche: der gesetzliche Auffangmaßstab. Sachgerecht bei flächenabhängigen Kosten wie Grundsteuer, Versicherung oder Gebäudereinigung.",
-          "Personenzahl: sachgerecht bei personenabhängigen Kosten wie Müllabfuhr oder teils Wasser. Setzt eine Vereinbarung voraus — und dass der Vermieter die Personenzahl tatsächlich fortlaufend erfasst.",
+          "Personenzahl: sachgerecht bei personenabhängigen Kosten wie Müllabfuhr oder teils Wasser. Setzt eine Vereinbarung voraus und dass der Vermieter die Personenzahl tatsächlich fortlaufend erfasst.",
           "Wohneinheiten: alle Wohnungen tragen gleich viel, unabhängig von der Größe. Für den Mieter einer kleinen Wohnung meist der ungünstigste Maßstab.",
-          "Verbrauch: zwingend, soweit erfasst wird — bei Heizung und Warmwasser zusätzlich durch die Heizkostenverordnung vorgeschrieben.",
+          "Verbrauch: zwingend, soweit erfasst wird, bei Heizung und Warmwasser zusätzlich durch die Heizkostenverordnung vorgeschrieben.",
         ]},
         { typ: "h2", text: "Darf der Vermieter den Schlüssel einfach ändern?" },
-        { typ: "text", text: "Nicht nach Belieben. Ein einmal vereinbarter Maßstab bindet beide Seiten. § 556a Abs. 2 BGB erlaubt dem Vermieter zwar, verbrauchsabhängige Kosten künftig auf einen Verbrauchsmaßstab umzustellen — das aber nur durch Erklärung in Textform und nur vor Beginn eines Abrechnungszeitraums, nicht rückwirkend mitten im Jahr." },
-        { typ: "hinweis", text: "Besonders kritisch: eine Änderung, die genau dann kommt, wenn sie für den Vermieter günstiger wird. Der Bundesgerichtshof hat mit Urteil vom 31. Mai 2006 (Az. VIII ZR 159/05) entschieden, dass ein Vermieter die Flächen leerstehender Wohnungen nicht plötzlich aus der Verteilung herausnehmen darf, wenn zuvor nach Gesamtfläche verteilt wurde — die Kosten würden sonst auf die verbliebenen Mieter verschoben." },
+        { typ: "text", text: "Nicht nach Belieben. Ein einmal vereinbarter Maßstab bindet beide Seiten. § 556a Abs. 2 BGB erlaubt dem Vermieter zwar, verbrauchsabhängige Kosten künftig auf einen Verbrauchsmaßstab umzustellen: das aber nur durch Erklärung in Textform und nur vor Beginn eines Abrechnungszeitraums, nicht rückwirkend mitten im Jahr." },
+        { typ: "hinweis", text: "Besonders kritisch: eine Änderung, die genau dann kommt, wenn sie für den Vermieter günstiger wird. Der Bundesgerichtshof hat mit Urteil vom 31. Mai 2006 (Az. VIII ZR 159/05) entschieden, dass ein Vermieter die Flächen leerstehender Wohnungen nicht plötzlich aus der Verteilung herausnehmen darf, wenn zuvor nach Gesamtfläche verteilt wurde: die Kosten würden sonst auf die verbliebenen Mieter verschoben." },
         { typ: "h2", text: "Was Sie konkret prüfen sollten" },
         { typ: "schritte", items: [
-          "Mietvertrag heraussuchen und nachlesen, welcher Umlageschlüssel dort vereinbart ist — oft in der Betriebskostenklausel oder einer Anlage.",
+          "Mietvertrag heraussuchen und nachlesen, welcher Umlageschlüssel dort vereinbart ist, oft in der Betriebskostenklausel oder einer Anlage.",
           "Abrechnung danebenlegen: Steht der verwendete Schlüssel überhaupt darauf? Er muss angegeben und verständlich sein.",
           "Prüfen, ob der Schlüssel gegenüber dem Vorjahr gewechselt hat. Ein stiller Wechsel ist ein starkes Warnsignal.",
           "Die eigene Wohnfläche in der Abrechnung mit der Fläche im Mietvertrag vergleichen. Abweichungen wirken sich auf jede einzelne Position aus.",
           "Bei Verbrauchskosten: Sind Zähler vorhanden? Dann darf nicht nach Fläche allein verteilt werden.",
         ]},
-        { typ: "verweis", ziel: "belegeinsicht-nebenkostenabrechnung-verlangen", text: "Lässt sich der Schlüssel aus der Abrechnung nicht nachvollziehen, hilft die Belegeinsicht — wie Sie sie verlangen, steht im eigenen Ratgeber dazu." },
+        { typ: "verweis", ziel: "belegeinsicht-nebenkostenabrechnung-verlangen", text: "Lässt sich der Schlüssel aus der Abrechnung nicht nachvollziehen, hilft die Belegeinsicht, wie Sie sie verlangen, steht im eigenen Ratgeber dazu." },
         { typ: "cta", text: "NebenkostenRadar prüft jede Position gegen die Richtwerte des Deutschen Mieterbundes und weist aus, wo eine Abweichung erklärbar ist und wo nicht." },
       ],
     },
@@ -1272,7 +1272,7 @@ export const ARTIKEL = [
       id: "belegeinsicht-nebenkostenabrechnung-verlangen",
       titelKurz: "Belegeinsicht verlangen",
       titel: "Belegeinsicht bei der Nebenkostenabrechnung verlangen: So gehen Sie vor",
-      teaser: "Sie dürfen alle Originalbelege zu Ihrer Abrechnung einsehen — und die Nachzahlung bis dahin zurückhalten. Rechtsgrundlage, Ablauf und was der Vermieter Ihnen nicht abverlangen darf.",
+      teaser: "Sie dürfen alle Originalbelege zu Ihrer Abrechnung einsehen und die Nachzahlung bis dahin zurückhalten. Rechtsgrundlage, Ablauf und was der Vermieter Ihnen nicht abverlangen darf.",
       datum: "September 2026",
       lesezeit: "6 Min.",
       bild: "https://images.unsplash.com/photo-1750935578389-6e1445f5fd8d?w=800&q=80",
@@ -1280,31 +1280,31 @@ export const ARTIKEL = [
       kategorie: "Mietrecht",
       keywords: ["Belegeinsicht", "Belege Nebenkostenabrechnung", "§ 259 BGB", "Zurückbehaltungsrecht"],
       inhalt: [
-        { typ: "intro", text: "Eine Abrechnung nennt Ihnen Zahlen. Ob diese Zahlen stimmen, sagt sie Ihnen nicht. Genau dafür gibt es das Recht auf Belegeinsicht — den wirksamsten und zugleich am seltensten genutzten Hebel, den Mieter bei der Nebenkostenabrechnung haben." },
+        { typ: "intro", text: "Eine Abrechnung nennt Ihnen Zahlen. Ob diese Zahlen stimmen, sagt sie Ihnen nicht. Genau dafür gibt es das Recht auf Belegeinsicht, den wirksamsten und zugleich am seltensten genutzten Hebel, den Mieter bei der Nebenkostenabrechnung haben." },
         { typ: "h2", text: "Worauf sich der Anspruch stützt" },
         { typ: "text", text: "Der Vermieter schuldet mit der Abrechnung eine Rechenschaftslegung. Nach § 259 Abs. 1 BGB umfasst diese auch die Vorlage der Belege, soweit Belege üblicherweise erteilt werden. Der Bundesgerichtshof hat dieses Recht mit Urteil vom 8. März 2006 (Az. VIII ZR 78/05) ausdrücklich bestätigt: Der Mieter darf die Unterlagen einsehen, die der Betriebskostenabrechnung zugrunde liegen." },
-        { typ: "text", text: "Dazu gehören nicht nur die Rechnungen selbst, sondern auch die Unterlagen, aus denen sich die Verteilung nachvollziehen lässt — etwa Verträge mit Dienstleistern, Zählerablesungen oder die Flächenberechnung. Erst diese Unterlagen machen die Abrechnung überprüfbar." },
+        { typ: "text", text: "Dazu gehören nicht nur die Rechnungen selbst, sondern auch die Unterlagen, aus denen sich die Verteilung nachvollziehen lässt, etwa Verträge mit Dienstleistern, Zählerablesungen oder die Flächenberechnung. Erst diese Unterlagen machen die Abrechnung überprüfbar." },
         { typ: "h2", text: "Der stärkste Punkt: das Zurückbehaltungsrecht" },
         { typ: "text", text: "Solange der Vermieter eine berechtigte Bitte um Belegeinsicht nicht erfüllt, können Sie die Nachzahlung nach § 273 Abs. 1 BGB zurückhalten. Auch das hat der Bundesgerichtshof in derselben Entscheidung (VIII ZR 78/05) festgestellt. Der Gedanke dahinter ist einfach: Wer eine Forderung stellt, muss sie auch belegen können." },
-        { typ: "hinweis", text: "Zurückhalten heißt nicht: nicht zahlen und die Sache aussitzen. Das Zurückbehaltungsrecht endet, sobald die Einsicht gewährt wird — dann ist der Betrag fällig. Wer auf Nummer sicher gehen will, zahlt unter Vorbehalt und verlangt die Belege parallel. Damit vermeiden Sie jedes Verzugsrisiko und behalten trotzdem alle Rechte." },
+        { typ: "hinweis", text: "Zurückhalten heißt nicht: nicht zahlen und die Sache aussitzen. Das Zurückbehaltungsrecht endet, sobald die Einsicht gewährt wird, dann ist der Betrag fällig. Wer auf Nummer sicher gehen will, zahlt unter Vorbehalt und verlangt die Belege parallel. Damit vermeiden Sie jedes Verzugsrisiko und behalten trotzdem alle Rechte." },
         { typ: "h2", text: "Wo die Einsicht stattfinden muss" },
-        { typ: "text", text: "Der Grundsatz lautet: am Ort der Verwaltung, also dort, wo die Unterlagen geführt werden. Liegt dieser Ort für Sie unzumutbar weit entfernt, kann ausnahmsweise die Übersendung von Kopien geschuldet sein. Kopien darf der Vermieter Ihnen grundsätzlich in Rechnung stellen — die Einsicht in die Originale selbst ist dagegen kostenlos." },
+        { typ: "text", text: "Der Grundsatz lautet: am Ort der Verwaltung, also dort, wo die Unterlagen geführt werden. Liegt dieser Ort für Sie unzumutbar weit entfernt, kann ausnahmsweise die Übersendung von Kopien geschuldet sein. Kopien darf der Vermieter Ihnen grundsätzlich in Rechnung stellen: die Einsicht in die Originale selbst ist dagegen kostenlos." },
         { typ: "h2", text: "So formulieren Sie die Aufforderung" },
         { typ: "schritte", items: [
-          "Schriftlich anfordern, am besten per Einschreiben — mündliche Bitten lassen sich später nicht nachweisen.",
+          "Schriftlich anfordern, am besten per Einschreiben, mündliche Bitten lassen sich später nicht nachweisen.",
           "Konkret benennen, welche Positionen Sie prüfen wollen. Eine pauschale Anforderung „aller Unterlagen“ ist zwar zulässig, führt aber oft zu Verzögerungen.",
           "Eine angemessene Frist setzen, üblich sind zwei bis vier Wochen.",
           "Auf § 259 BGB und auf das Zurückbehaltungsrecht nach § 273 BGB hinweisen.",
           "Parallel die Nachzahlung unter Vorbehalt überweisen, um Verzug auszuschließen.",
         ]},
         { typ: "verweis", ziel: "betriebskostenabrechnung-fristen-und-verjaehrung-2026", text: "Achten Sie dabei auf die Einwendungsfrist: Wie lange Sie Zeit haben, steht im Ratgeber zu Fristen und Verjährung." },
-        { typ: "cta", text: "Im Paket „Auswertung + Brief“ erstellt NebenkostenRadar das Schreiben an Ihren Vermieter automatisch — mit den passenden Rechtsgrundlagen und den konkreten Positionen aus Ihrer Abrechnung." },
+        { typ: "cta", text: "Im Paket „Auswertung + Brief“ erstellt NebenkostenRadar das Schreiben an Ihren Vermieter automatisch, mit den passenden Rechtsgrundlagen und den konkreten Positionen aus Ihrer Abrechnung." },
       ],
     },
     {
       id: "nebenkosten-nachzahlung-nicht-zahlen",
       titelKurz: "Nachzahlung nicht zahlen?",
-      titel: "Nebenkosten-Nachzahlung nicht zahlen: Wann Sie dürfen — und wann es riskant wird",
+      titel: "Nebenkosten-Nachzahlung nicht zahlen: Wann Sie dürfen und wann es riskant wird",
       teaser: "Eine hohe Nachforderung ist noch kein Grund, die Zahlung zu verweigern. Wann ein Zurückbehaltungsrecht besteht, warum die Zahlung unter Vorbehalt fast immer der bessere Weg ist und ab wann eine Kündigung droht.",
       datum: "September 2026",
       lesezeit: "6 Min.",
@@ -1313,13 +1313,13 @@ export const ARTIKEL = [
       kategorie: "Mietrecht",
       keywords: ["Nachzahlung verweigern", "Zahlung unter Vorbehalt", "Nebenkosten nicht zahlen", "§ 273 BGB"],
       inhalt: [
-        { typ: "intro", text: "Der häufigste Reflex bei einer überraschend hohen Nachforderung ist: erst mal nicht zahlen. Verständlich — aber in den meisten Fällen der teuerste Weg. Wer die Zahlung zu Unrecht verweigert, gerät in Verzug, schuldet Zinsen und riskiert im Extremfall die Wohnung. Es gibt einen deutlich besseren Weg, der Sie nichts kostet und alle Rechte erhält." },
+        { typ: "intro", text: "Der häufigste Reflex bei einer überraschend hohen Nachforderung ist: erst mal nicht zahlen. Verständlich, aber in den meisten Fällen der teuerste Weg. Wer die Zahlung zu Unrecht verweigert, gerät in Verzug, schuldet Zinsen und riskiert im Extremfall die Wohnung. Es gibt einen deutlich besseren Weg, der Sie nichts kostet und alle Rechte erhält." },
         { typ: "h2", text: "Der sichere Standardweg: Zahlung unter Vorbehalt" },
         { typ: "text", text: "Sie überweisen die Nachforderung fristgerecht und schreiben in den Verwendungszweck: „Zahlung unter Vorbehalt der Überprüfung“. Damit erklären Sie ausdrücklich, dass die Zahlung kein Anerkenntnis der Forderung ist. Sie kommen nicht in Verzug, es entstehen keine Zinsen, und Sie können zu viel gezahlte Beträge weiterhin zurückfordern." },
         { typ: "hinweis", text: "Der umgekehrte Fall ist der gefährliche: Wer vorbehaltlos zahlt, erschwert eine spätere Rückforderung erheblich, weil die Zahlung als Anerkenntnis gewertet werden kann. Der eine Satz im Verwendungszweck kostet nichts und macht den Unterschied." },
         { typ: "h2", text: "Wann Sie tatsächlich zurückhalten dürfen" },
         { typ: "text", text: "Ein echtes Zurückbehaltungsrecht nach § 273 Abs. 1 BGB besteht, solange der Vermieter eine berechtigte Bitte um Belegeinsicht nicht erfüllt. Das hat der Bundesgerichtshof mit Urteil vom 8. März 2006 (Az. VIII ZR 78/05) entschieden. Sobald die Einsicht gewährt wird, entfällt das Recht und der Betrag wird fällig." },
-        { typ: "text", text: "Daneben gibt es Fälle, in denen die Forderung von vornherein nicht besteht — etwa wenn die Abrechnung formell unwirksam ist oder die Abrechnungsfrist des § 556 Abs. 3 BGB abgelaufen ist. Dann geht es nicht um Zurückhalten, sondern darum, dass gar kein Anspruch entstanden ist. Das ist aber eine rechtliche Bewertung, die man nicht auf Verdacht treffen sollte." },
+        { typ: "text", text: "Daneben gibt es Fälle, in denen die Forderung von vornherein nicht besteht, etwa wenn die Abrechnung formell unwirksam ist oder die Abrechnungsfrist des § 556 Abs. 3 BGB abgelaufen ist. Dann geht es nicht um Zurückhalten, sondern darum, dass gar kein Anspruch entstanden ist. Das ist aber eine rechtliche Bewertung, die man nicht auf Verdacht treffen sollte." },
         { typ: "h2", text: "Ab wann es gefährlich wird" },
         { typ: "liste", items: [
           "Verzugszinsen: Ab Fälligkeit und Verzug entstehen Zinsen auf den offenen Betrag.",
@@ -1329,21 +1329,21 @@ export const ARTIKEL = [
         ]},
         { typ: "h2", text: "Die pragmatische Reihenfolge" },
         { typ: "schritte", items: [
-          "Zustelldatum der Abrechnung notieren — davon hängen alle Fristen ab.",
+          "Zustelldatum der Abrechnung notieren, davon hängen alle Fristen ab.",
           "Nachforderung fristgerecht unter Vorbehalt überweisen.",
           "Abrechnung prüfen oder prüfen lassen.",
           "Bei Auffälligkeiten schriftlich Einwendungen erheben und Belegeinsicht verlangen.",
-          "Zu viel gezahlte Beträge zurückfordern — dafür haben Sie deutlich länger Zeit als für die Einwendungen selbst.",
+          "Zu viel gezahlte Beträge zurückfordern, dafür haben Sie deutlich länger Zeit als für die Einwendungen selbst.",
         ]},
         { typ: "verweis", ziel: "belegeinsicht-nebenkostenabrechnung-verlangen", text: "Wie Sie die Belegeinsicht konkret anfordern und was der Vermieter vorlegen muss, steht im Ratgeber zur Belegeinsicht." },
-        { typ: "cta", text: "NebenkostenRadar sagt Ihnen in wenigen Minuten, ob sich ein Widerspruch bei Ihrer Abrechnung überhaupt lohnt — bevor Sie eine Auseinandersetzung beginnen." },
+        { typ: "cta", text: "NebenkostenRadar sagt Ihnen in wenigen Minuten, ob sich ein Widerspruch bei Ihrer Abrechnung überhaupt lohnt, bevor Sie eine Auseinandersetzung beginnen." },
       ],
     },
     {
       id: "keine-nebenkostenabrechnung-erhalten",
       titelKurz: "Keine Nebenkostenabrechnung erhalten",
       titel: "Keine Nebenkostenabrechnung erhalten: Was Mieter jetzt tun können",
-      teaser: "Bleibt die Abrechnung aus, verliert der Vermieter nach Ablauf der Frist in der Regel seinen Anspruch auf eine Nachzahlung — Ihr Anspruch auf ein Guthaben bleibt dagegen bestehen. Was das genau bedeutet und wie Sie vorgehen.",
+      teaser: "Bleibt die Abrechnung aus, verliert der Vermieter nach Ablauf der Frist in der Regel seinen Anspruch auf eine Nachzahlung. Ihr Anspruch auf ein Guthaben bleibt dagegen bestehen. Was das genau bedeutet und wie Sie vorgehen.",
       datum: "September 2026",
       lesezeit: "5 Min.",
       bild: "https://images.unsplash.com/photo-1771532631713-19f3f7b020c2?w=800&q=80",
@@ -1354,27 +1354,27 @@ export const ARTIKEL = [
         { typ: "intro", text: "Es klingt nach einem Problem, ist aber oft ein Vorteil: Wenn Ihr Vermieter die Nebenkostenabrechnung nicht rechtzeitig erstellt, kann er eine Nachforderung in der Regel nicht mehr durchsetzen. Ihr eigener Anspruch auf ein mögliches Guthaben bleibt davon unberührt." },
         { typ: "h2", text: "Die Frist, auf die es ankommt" },
         { typ: "text", text: "Nach § 556 Abs. 3 Satz 2 BGB ist dem Mieter die Abrechnung spätestens bis zum Ablauf des zwölften Monats nach Ende des Abrechnungszeitraums mitzuteilen. Für ein Kalenderjahr als Abrechnungszeitraum heißt das: Die Abrechnung für 2025 muss Ihnen bis zum 31. Dezember 2026 zugegangen sein." },
-        { typ: "text", text: "Versäumt der Vermieter diese Frist, ist die Geltendmachung einer Nachforderung nach § 556 Abs. 3 Satz 3 BGB ausgeschlossen — es sei denn, er hat die verspätete Geltendmachung nicht zu vertreten. Diese Ausnahme ist eng: Personalmangel oder Überlastung der Verwaltung genügen dafür regelmäßig nicht." },
+        { typ: "text", text: "Versäumt der Vermieter diese Frist, ist die Geltendmachung einer Nachforderung nach § 556 Abs. 3 Satz 3 BGB ausgeschlossen, es sei denn, er hat die verspätete Geltendmachung nicht zu vertreten. Diese Ausnahme ist eng: Personalmangel oder Überlastung der Verwaltung genügen dafür regelmäßig nicht." },
         { typ: "hinweis", text: "Wichtig ist die Unterscheidung: Ausgeschlossen ist die NACHFORDERUNG. Ergibt die verspätete Abrechnung ein Guthaben zu Ihren Gunsten, können Sie es weiterhin verlangen. Der Vermieter bleibt zur Abrechnung verpflichtet, auch wenn er nichts mehr nachfordern kann." },
         { typ: "h2", text: "Was Sie tun sollten" },
         { typ: "schritte", items: [
-          "Abrechnungszeitraum aus dem Mietvertrag ermitteln — meist das Kalenderjahr, es sind aber auch abweichende Zeiträume möglich.",
+          "Abrechnungszeitraum aus dem Mietvertrag ermitteln, meist das Kalenderjahr, es sind aber auch abweichende Zeiträume möglich.",
           "Frist berechnen: Ende des Abrechnungszeitraums plus zwölf Monate.",
           "Den Vermieter schriftlich zur Abrechnung auffordern und dabei eine Frist setzen. Das ist auch dann sinnvoll, wenn Sie ein Guthaben erwarten.",
-          "Zugang dokumentieren: Einschreiben oder Zeuge. Im Streitfall muss der Vermieter den rechtzeitigen Zugang seiner Abrechnung beweisen — Ihre eigene Dokumentation hilft aber, den Sachverhalt sauber darzustellen.",
+          "Zugang dokumentieren: Einschreiben oder Zeuge. Im Streitfall muss der Vermieter den rechtzeitigen Zugang seiner Abrechnung beweisen. Ihre eigene Dokumentation hilft aber, den Sachverhalt sauber darzustellen.",
           "Kommt die Abrechnung verspätet und enthält eine Nachforderung: schriftlich auf § 556 Abs. 3 Satz 3 BGB hinweisen.",
         ]},
         { typ: "h2", text: "Und wenn gar nicht abgerechnet wird?" },
-        { typ: "text", text: "Der Anspruch auf Abrechnung besteht unabhängig davon fort. Rechnet der Vermieter dauerhaft nicht ab, obwohl Sie Vorauszahlungen leisten, kann das auch ein Zurückbehaltungsrecht an künftigen Vorauszahlungen begründen. Das ist allerdings eine Einzelfallfrage — hier lohnt sich die Rücksprache mit einem Mieterverein oder einem Anwalt, bevor Sie laufende Zahlungen kürzen." },
-        { typ: "verweis", ziel: "betriebskostenabrechnung-fristen-und-verjaehrung-2026", text: "Alle Fristen im Zusammenhang — Abrechnungsfrist, Einwendungsfrist und Verjährung — stehen im Ratgeber zu Fristen und Verjährung." },
-        { typ: "cta", text: "Sobald die Abrechnung da ist, prüft NebenkostenRadar sie in wenigen Minuten — inklusive der Frage, ob die Fristen eingehalten wurden." },
+        { typ: "text", text: "Der Anspruch auf Abrechnung besteht unabhängig davon fort. Rechnet der Vermieter dauerhaft nicht ab, obwohl Sie Vorauszahlungen leisten, kann das auch ein Zurückbehaltungsrecht an künftigen Vorauszahlungen begründen. Das ist allerdings eine Einzelfallfrage, hier lohnt sich die Rücksprache mit einem Mieterverein oder einem Anwalt, bevor Sie laufende Zahlungen kürzen." },
+        { typ: "verweis", ziel: "betriebskostenabrechnung-fristen-und-verjaehrung-2026", text: "Alle Fristen im Zusammenhang. Abrechnungsfrist, Einwendungsfrist und Verjährung, stehen im Ratgeber zu Fristen und Verjährung." },
+        { typ: "cta", text: "Sobald die Abrechnung da ist, prüft NebenkostenRadar sie in wenigen Minuten, inklusive der Frage, ob die Fristen eingehalten wurden." },
       ],
     },
     {
       id: "nicht-umlagefaehige-nebenkosten",
       titelKurz: "Nicht umlagefähige Nebenkosten",
       titel: "Nicht umlagefähige Nebenkosten: Was Ihr Vermieter nicht abrechnen darf",
-      teaser: "Verwaltungskosten, Reparaturen, Rücklagen: Es gibt Positionen, die in keiner Nebenkostenabrechnung etwas zu suchen haben — unabhängig davon, was im Mietvertrag steht. Die vollständige Übersicht mit Rechtsgrundlage.",
+      teaser: "Verwaltungskosten, Reparaturen, Rücklagen: Es gibt Positionen, die in keiner Nebenkostenabrechnung etwas zu suchen haben, unabhängig davon, was im Mietvertrag steht. Die vollständige Übersicht mit Rechtsgrundlage.",
       datum: "September 2026",
       lesezeit: "7 Min.",
       bild: "https://images.unsplash.com/photo-1759661937582-0ccd5dacf20f?w=800&q=80",
@@ -1382,12 +1382,12 @@ export const ARTIKEL = [
       kategorie: "Mietrecht",
       keywords: ["nicht umlagefähige Nebenkosten", "Verwaltungskosten Nebenkosten", "Instandhaltung", "§ 1 BetrKV"],
       inhalt: [
-        { typ: "intro", text: "Die meisten Streitfälle bei der Nebenkostenabrechnung drehen sich um die Höhe einzelner Posten. Die klareren Fälle liegen woanders: bei Positionen, die überhaupt nicht auf die Abrechnung gehören. Hier braucht es keinen Vergleichswert und keine Belegeinsicht — die Rechtslage ist eindeutig." },
+        { typ: "intro", text: "Die meisten Streitfälle bei der Nebenkostenabrechnung drehen sich um die Höhe einzelner Posten. Die klareren Fälle liegen woanders: bei Positionen, die überhaupt nicht auf die Abrechnung gehören. Hier braucht es keinen Vergleichswert und keine Belegeinsicht: die Rechtslage ist eindeutig." },
         { typ: "h2", text: "Der Grundsatz: § 1 Abs. 2 BetrKV" },
-        { typ: "text", text: "Die Betriebskostenverordnung nennt in § 1 Abs. 2 ausdrücklich zwei Kostenarten, die keine Betriebskosten sind: die Verwaltungskosten und die Instandhaltungs- und Instandsetzungskosten. Beide dürfen im Wohnraummietverhältnis nicht auf den Mieter umgelegt werden — auch dann nicht, wenn der Mietvertrag es vorsieht. Eine entgegenstehende Klausel ist unwirksam." },
+        { typ: "text", text: "Die Betriebskostenverordnung nennt in § 1 Abs. 2 ausdrücklich zwei Kostenarten, die keine Betriebskosten sind: die Verwaltungskosten und die Instandhaltungs- und Instandsetzungskosten. Beide dürfen im Wohnraummietverhältnis nicht auf den Mieter umgelegt werden, auch dann nicht, wenn der Mietvertrag es vorsieht. Eine entgegenstehende Klausel ist unwirksam." },
         { typ: "h2", text: "Verwaltungskosten" },
-        { typ: "text", text: "Dazu zählen die Kosten der Hausverwaltung, die Erstellung der Abrechnung selbst, Kontoführung, Porto und der Aufwand für die Geschäftsführung. Der Posten taucht in Abrechnungen unter verschiedenen Namen auf — „Verwaltungspauschale“, „Verwaltungshonorar“, „Verwaltergebühr“ oder als Prozentsatz auf die übrigen Kosten. Entscheidend ist nicht der Name, sondern die Sache." },
-        { typ: "hinweis", text: "Achtung, häufige Verwechslung: Bei Eigentumswohnungen zahlt der Eigentümer sehr wohl ein Verwalterhonorar an die WEG-Verwaltung. Er darf es nur nicht an seinen Mieter weiterreichen. Steht es trotzdem auf Ihrer Abrechnung, wurde die Eigentümerabrechnung unbesehen durchgereicht — ein sehr verbreiteter Fehler." },
+        { typ: "text", text: "Dazu zählen die Kosten der Hausverwaltung, die Erstellung der Abrechnung selbst, Kontoführung, Porto und der Aufwand für die Geschäftsführung. Der Posten taucht in Abrechnungen unter verschiedenen Namen auf, „Verwaltungspauschale“, „Verwaltungshonorar“, „Verwaltergebühr“ oder als Prozentsatz auf die übrigen Kosten. Entscheidend ist nicht der Name, sondern die Sache." },
+        { typ: "hinweis", text: "Achtung, häufige Verwechslung: Bei Eigentumswohnungen zahlt der Eigentümer sehr wohl ein Verwalterhonorar an die WEG-Verwaltung. Er darf es nur nicht an seinen Mieter weiterreichen. Steht es trotzdem auf Ihrer Abrechnung, wurde die Eigentümerabrechnung unbesehen durchgereicht: ein sehr verbreiteter Fehler." },
         { typ: "h2", text: "Instandhaltung und Instandsetzung" },
         { typ: "text", text: "Reparaturen sind keine Betriebskosten. Betriebskosten sind laufende Kosten des bestimmungsgemäßen Gebrauchs; die Erhaltung der Bausubstanz ist Sache des Vermieters. Die Abgrenzung ist im Einzelfall nicht immer trivial: Die Wartung einer Heizungsanlage ist umlagefähig, ihre Reparatur nicht. Die regelmäßige Prüfung eines Aufzugs ist umlagefähig, der Austausch eines defekten Teils nicht." },
         { typ: "h2", text: "Weitere Positionen, die nicht umlagefähig sind" },
@@ -1400,16 +1400,16 @@ export const ARTIKEL = [
           "Bankgebühren und Kontoführung: gehören zu den Verwaltungskosten.",
         ]},
         { typ: "h2", text: "Und die „sonstigen Betriebskosten“?" },
-        { typ: "text", text: "Der Auffangposten des § 2 Nr. 17 BetrKV ist die häufigste Grauzone. Er ist nicht per se unzulässig — er ist aber an eine strenge Bedingung geknüpft, die viele Abrechnungen nicht erfüllen. Dazu gibt es einen eigenen Ratgeber." },
+        { typ: "text", text: "Der Auffangposten des § 2 Nr. 17 BetrKV ist die häufigste Grauzone. Er ist nicht per se unzulässig, er ist aber an eine strenge Bedingung geknüpft, die viele Abrechnungen nicht erfüllen. Dazu gibt es einen eigenen Ratgeber." },
         { typ: "verweis", ziel: "sonstige-betriebskosten-nr-17-betrkv", text: "Warum „sonstige Betriebskosten“ nur bei einzelner Benennung im Mietvertrag umlagefähig sind, lesen Sie im Ratgeber dazu." },
-        { typ: "cta", text: "NebenkostenRadar erkennt nicht umlagefähige Positionen automatisch und weist sie mit der zugehörigen Rechtsgrundlage aus — getrennt von bloßen Richtwertabweichungen." },
+        { typ: "cta", text: "NebenkostenRadar erkennt nicht umlagefähige Positionen automatisch und weist sie mit der zugehörigen Rechtsgrundlage aus, getrennt von bloßen Richtwertabweichungen." },
       ],
     },
     {
       id: "sonstige-betriebskosten-nr-17-betrkv",
       titelKurz: "Sonstige Betriebskosten (§ 2 Nr. 17)",
       titel: "„Sonstige Betriebskosten“ (§ 2 Nr. 17 BetrKV): Wann sie zulässig sind",
-      teaser: "Der Auffangposten ist der häufigste Sammelplatz für Kosten, die nirgends sonst hineinpassen. Umlagefähig ist er nur unter einer klaren Bedingung — und die erfüllen viele Mietverträge nicht.",
+      teaser: "Der Auffangposten ist der häufigste Sammelplatz für Kosten, die nirgends sonst hineinpassen. Umlagefähig ist er nur unter einer klaren Bedingung und die erfüllen viele Mietverträge nicht.",
       datum: "September 2026",
       lesezeit: "5 Min.",
       bild: "https://images.unsplash.com/photo-1609877992115-8cd060c2e9e4?w=800&q=80",
@@ -1419,16 +1419,16 @@ export const ARTIKEL = [
       inhalt: [
         { typ: "intro", text: "Wenn auf einer Abrechnung ein Posten „Sonstige Betriebskosten“ mit einem dreistelligen Betrag steht und sonst nichts, ist das kein Detail, sondern der wahrscheinlichste Angriffspunkt der ganzen Abrechnung." },
         { typ: "h2", text: "Was der Gesetzgeber gemeint hat" },
-        { typ: "text", text: "§ 2 BetrKV listet sechzehn konkret benannte Betriebskostenarten auf — von der Grundsteuer bis zur Gemeinschaftsantenne. Nummer 17 ist ein Auffangtatbestand für Kosten, die sachlich Betriebskosten sind, aber in keine der sechzehn Kategorien passen: etwa die Wartung von Rauchwarnmeldern, die Reinigung einer Dachrinne oder die Pflege einer Zisterne." },
+        { typ: "text", text: "§ 2 BetrKV listet sechzehn konkret benannte Betriebskostenarten auf, von der Grundsteuer bis zur Gemeinschaftsantenne. Nummer 17 ist ein Auffangtatbestand für Kosten, die sachlich Betriebskosten sind, aber in keine der sechzehn Kategorien passen: etwa die Wartung von Rauchwarnmeldern, die Reinigung einer Dachrinne oder die Pflege einer Zisterne." },
         { typ: "h2", text: "Die entscheidende Bedingung" },
         { typ: "text", text: "Für die sechzehn benannten Positionen genügt ein pauschaler Verweis auf § 2 BetrKV im Mietvertrag. Der Bundesgerichtshof hat dies mit Urteil vom 7. April 2004 (Az. VIII ZR 167/03) bestätigt: Ein solcher Verweis reicht aus, damit die dort aufgeführten Kosten als vereinbart gelten." },
-        { typ: "hinweis", text: "Für die „sonstigen Betriebskosten“ nach Nummer 17 gilt das gerade nicht. Sie sind nur umlagefähig, wenn sie im Mietvertrag einzeln und konkret benannt sind. Ein allgemeiner Verweis auf die BetrKV oder die bloße Formulierung „sonstige Betriebskosten“ genügt dafür nicht — sonst könnte der Vermieter über diesen Posten beliebige Kosten nachschieben, die der Mieter bei Vertragsschluss nicht absehen konnte." },
+        { typ: "hinweis", text: "Für die „sonstigen Betriebskosten“ nach Nummer 17 gilt das gerade nicht. Sie sind nur umlagefähig, wenn sie im Mietvertrag einzeln und konkret benannt sind. Ein allgemeiner Verweis auf die BetrKV oder die bloße Formulierung „sonstige Betriebskosten“ genügt dafür nicht, sonst könnte der Vermieter über diesen Posten beliebige Kosten nachschieben, die der Mieter bei Vertragsschluss nicht absehen konnte." },
         { typ: "h2", text: "So prüfen Sie den Posten" },
         { typ: "schritte", items: [
-          "In der Abrechnung nachsehen, ob der Betrag aufgeschlüsselt ist. Eine reine Summe ohne Einzelaufstellung ist bereits ein Mangel — Sie können die Aufschlüsselung verlangen.",
+          "In der Abrechnung nachsehen, ob der Betrag aufgeschlüsselt ist. Eine reine Summe ohne Einzelaufstellung ist bereits ein Mangel. Sie können die Aufschlüsselung verlangen.",
           "Jede genannte Einzelposition daraufhin prüfen, ob sie nicht doch unter eine der Nummern 1 bis 16 fällt. Dann gehört sie dorthin und nicht in den Auffangposten.",
           "Den Mietvertrag prüfen: Ist genau diese Kostenart dort einzeln aufgeführt? Wenn nein, fehlt die Umlagevereinbarung.",
-          "Prüfen, ob es sich in Wahrheit um Instandhaltung oder Verwaltung handelt — beides ist nach § 1 Abs. 2 BetrKV nie umlagefähig.",
+          "Prüfen, ob es sich in Wahrheit um Instandhaltung oder Verwaltung handelt, beides ist nach § 1 Abs. 2 BetrKV nie umlagefähig.",
           "Schriftlich Einwendungen erheben und die Streichung oder Aufschlüsselung verlangen.",
         ]},
         { typ: "h2", text: "Was typischerweise darin versteckt wird" },
@@ -1439,14 +1439,14 @@ export const ARTIKEL = [
           "Positionen aus der Eigentümerabrechnung, die unbesehen übernommen wurden.",
         ]},
         { typ: "verweis", ziel: "nicht-umlagefaehige-nebenkosten", text: "Welche Kostenarten grundsätzlich nie auf eine Nebenkostenabrechnung gehören, steht in der Übersicht zu nicht umlagefähigen Kosten." },
-        { typ: "cta", text: "NebenkostenRadar weist Sammelpositionen ohne Aufschlüsselung gesondert aus — mit der Formulierung, mit der Sie die Aufschlüsselung anfordern können." },
+        { typ: "cta", text: "NebenkostenRadar weist Sammelpositionen ohne Aufschlüsselung gesondert aus, mit der Formulierung, mit der Sie die Aufschlüsselung anfordern können." },
       ],
     },
     {
       id: "aufzugskosten-nebenkostenabrechnung",
       titelKurz: "Aufzugskosten: zahlt das Erdgeschoss?",
       titel: "Aufzugskosten in der Nebenkostenabrechnung: Muss auch das Erdgeschoss zahlen?",
-      teaser: "Ja — der Bundesgerichtshof hat das entschieden. Es gibt aber eine Ausnahme, die viele nicht kennen, und eine klare Grenze zwischen umlagefähigem Betrieb und nicht umlagefähiger Reparatur.",
+      teaser: "Ja: der Bundesgerichtshof hat das entschieden. Es gibt aber eine Ausnahme, die viele nicht kennen, und eine klare Grenze zwischen umlagefähigem Betrieb und nicht umlagefähiger Reparatur.",
       datum: "September 2026",
       lesezeit: "5 Min.",
       bild: "https://images.unsplash.com/photo-1592256410394-51c948ec13d5?w=800&q=80",
@@ -1454,20 +1454,20 @@ export const ARTIKEL = [
       kategorie: "Mietrecht",
       keywords: ["Aufzugskosten", "Erdgeschoss Aufzug zahlen", "§ 2 Nr. 7 BetrKV", "VIII ZR 103/06"],
       inhalt: [
-        { typ: "intro", text: "Kaum eine Position sorgt für so viel Unverständnis wie der Aufzug in der Abrechnung einer Erdgeschosswohnung. Die rechtliche Antwort ist eindeutig — sie fällt nur anders aus, als die meisten erwarten." },
+        { typ: "intro", text: "Kaum eine Position sorgt für so viel Unverständnis wie der Aufzug in der Abrechnung einer Erdgeschosswohnung. Die rechtliche Antwort ist eindeutig, sie fällt nur anders aus, als die meisten erwarten." },
         { typ: "h2", text: "Die Rechtslage" },
         { typ: "text", text: "§ 2 Nr. 7 BetrKV nennt die Kosten des Betriebs des Personen- oder Lastenaufzugs ausdrücklich als umlagefähige Betriebskosten. Eine Ausnahme für Erdgeschosswohnungen sieht die Verordnung nicht vor." },
-        { typ: "text", text: "Der Bundesgerichtshof hat das mit Urteil vom 20. September 2006 (Az. VIII ZR 103/06) bestätigt: Die formularvertragliche Beteiligung des Mieters einer Erdgeschosswohnung an den Aufzugskosten benachteiligt diesen nicht unangemessen. Ob der Aufzug tatsächlich genutzt wird, spielt dabei keine Rolle — maßgeblich ist die Nutzungsmöglichkeit, etwa um Nachbarn zu besuchen oder in einen Keller im Untergeschoss zu gelangen." },
+        { typ: "text", text: "Der Bundesgerichtshof hat das mit Urteil vom 20. September 2006 (Az. VIII ZR 103/06) bestätigt: Die formularvertragliche Beteiligung des Mieters einer Erdgeschosswohnung an den Aufzugskosten benachteiligt diesen nicht unangemessen. Ob der Aufzug tatsächlich genutzt wird, spielt dabei keine Rolle, maßgeblich ist die Nutzungsmöglichkeit, etwa um Nachbarn zu besuchen oder in einen Keller im Untergeschoss zu gelangen." },
         { typ: "h2", text: "Die Ausnahme, die viele übersehen" },
         { typ: "hinweis", text: "Anders liegt der Fall, wenn der Mieter in einem anderen Gebäudeteil wohnt und den Aufzug gar nicht nutzen kann. Dazu hat der Bundesgerichtshof mit Urteil vom 8. April 2009 (Az. VIII ZR 128/08) entschieden. Wenn Ihr Hauseingang keinen Zugang zum Aufzug hat, lohnt sich der genaue Blick auf diese Position." },
-        { typ: "h2", text: "Was zum Betrieb gehört — und was nicht" },
+        { typ: "h2", text: "Was zum Betrieb gehört und was nicht" },
         { typ: "liste", items: [
           "Umlagefähig: Betriebsstrom, regelmäßige Wartung, die vorgeschriebene Prüfung durch eine zugelassene Überwachungsstelle, Notrufbereitschaft, Reinigung der Kabine.",
           "Nicht umlagefähig: Reparaturen, Austausch von Bauteilen, Modernisierung der Anlage, Rücklagen für eine spätere Erneuerung.",
           "Grauzone: Ein Wartungsvertrag, der ausdrücklich auch Reparaturen abdeckt (Vollwartungsvertrag). Der darin enthaltene Reparaturanteil muss herausgerechnet werden.",
         ]},
         { typ: "text", text: "Gerade der letzte Punkt lohnt die Prüfung. Vollwartungsverträge sind verbreitet, und der Reparaturanteil wird häufig nicht abgezogen. Da der Anteil aus dem Vertrag hervorgeht, ist hier die Belegeinsicht der richtige Hebel." },
-        { typ: "verweis", ziel: "belegeinsicht-nebenkostenabrechnung-verlangen", text: "So fordern Sie den Wartungsvertrag zur Einsicht an — die Anleitung steht im Ratgeber zur Belegeinsicht." },
+        { typ: "verweis", ziel: "belegeinsicht-nebenkostenabrechnung-verlangen", text: "So fordern Sie den Wartungsvertrag zur Einsicht an: die Anleitung steht im Ratgeber zur Belegeinsicht." },
         { typ: "cta", text: "NebenkostenRadar vergleicht Ihre Aufzugskosten mit dem Richtwert des Deutschen Mieterbundes und weist auffällige Abweichungen aus." },
       ],
     },
@@ -1475,7 +1475,7 @@ export const ARTIKEL = [
       id: "gartenpflege-nebenkostenabrechnung",
       titelKurz: "Gartenpflege in der Abrechnung",
       titel: "Gartenpflege in der Nebenkostenabrechnung: Was umlagefähig ist",
-      teaser: "Rasenmähen ja, neue Bäume nein: Bei der Gartenpflege verläuft die Grenze zwischen laufender Pflege und einmaliger Neuanlage. Was das für Ihre Abrechnung bedeutet — auch ohne eigenen Gartenzugang.",
+      teaser: "Rasenmähen ja, neue Bäume nein: Bei der Gartenpflege verläuft die Grenze zwischen laufender Pflege und einmaliger Neuanlage. Was das für Ihre Abrechnung bedeutet, auch ohne eigenen Gartenzugang.",
       datum: "September 2026",
       lesezeit: "5 Min.",
       bild: "https://images.unsplash.com/photo-1642541744624-7a2a89545a32?w=800&q=80",
@@ -1483,28 +1483,28 @@ export const ARTIKEL = [
       kategorie: "Mietrecht",
       keywords: ["Gartenpflege Nebenkosten", "§ 2 Nr. 10 BetrKV", "Gartenkosten umlagefähig"],
       inhalt: [
-        { typ: "intro", text: "Die Gartenpflege ist einer der Posten, bei denen sich zwei Fragen überlagern: Darf sie überhaupt umgelegt werden — und ist der Betrag angemessen? Die erste Frage ist rechtlich meist schnell beantwortet, die zweite lohnt den genaueren Blick." },
+        { typ: "intro", text: "Die Gartenpflege ist einer der Posten, bei denen sich zwei Fragen überlagern: Darf sie überhaupt umgelegt werden und ist der Betrag angemessen? Die erste Frage ist rechtlich meist schnell beantwortet, die zweite lohnt den genaueren Blick." },
         { typ: "h2", text: "Grundsätzlich umlagefähig" },
         { typ: "text", text: "§ 2 Nr. 10 BetrKV nennt die Kosten der Gartenpflege ausdrücklich: die Pflege gärtnerisch angelegter Flächen einschließlich der Erneuerung von Pflanzen und Gehölzen, die Pflege von Spielplätzen einschließlich der Erneuerung von Sand sowie die Pflege von Plätzen, Zugängen und Zufahrten, die dem nicht öffentlichen Verkehr dienen." },
-        { typ: "text", text: "Bemerkenswert ist der Zusatz „einschließlich der Erneuerung von Pflanzen und Gehölzen“. Das Ersetzen einer eingegangenen Hecke ist also umlagefähig — obwohl es einer Reparatur ähnelt. Der Verordnungsgeber hat das bewusst so geregelt." },
+        { typ: "text", text: "Bemerkenswert ist der Zusatz „einschließlich der Erneuerung von Pflanzen und Gehölzen“. Das Ersetzen einer eingegangenen Hecke ist also umlagefähig, obwohl es einer Reparatur ähnelt. Der Verordnungsgeber hat das bewusst so geregelt." },
         { typ: "h2", text: "Wo die Grenze verläuft" },
         { typ: "liste", items: [
           "Umlagefähig: Rasenmähen, Heckenschnitt, Laubentfernung, Bewässerung, Düngung, Ersatz einzelner abgestorbener Pflanzen, Sand im Sandkasten.",
-          "Nicht umlagefähig: die erstmalige Anlage eines Gartens, die Umgestaltung einer Fläche, das Anlegen neuer Wege oder Beete — das ist Investition, nicht laufende Pflege.",
+          "Nicht umlagefähig: die erstmalige Anlage eines Gartens, die Umgestaltung einer Fläche, das Anlegen neuer Wege oder Beete: das ist Investition, nicht laufende Pflege.",
           "Nicht umlagefähig: das Fällen eines Baumes aus Gründen der Verkehrssicherung ist umstritten; die Neupflanzung als Teil einer Umgestaltung ist es nicht.",
         ]},
         { typ: "h2", text: "Muss ich zahlen, wenn ich den Garten nicht nutzen darf?" },
-        { typ: "text", text: "In der Regel ja. Maßgeblich ist, ob die Fläche zum gemeinschaftlichen Gebrauch bestimmt ist — nicht, ob Sie sie tatsächlich nutzen. Etwas anderes gilt, wenn eine Fläche einem einzelnen Mieter zur alleinigen Nutzung überlassen ist: Deren Pflegekosten dürfen dann nicht auf die übrigen Mieter umgelegt werden." },
-        { typ: "hinweis", text: "Häufiger Prüfpunkt: Wenn der Hausmeister auch die Gartenpflege übernimmt, darf derselbe Aufwand nicht zweimal abgerechnet werden — einmal unter „Hausmeister“ und einmal unter „Gartenpflege“. Eine Doppelabrechnung lässt sich nur über die Belegeinsicht ausschließen." },
+        { typ: "text", text: "In der Regel ja. Maßgeblich ist, ob die Fläche zum gemeinschaftlichen Gebrauch bestimmt ist, nicht, ob Sie sie tatsächlich nutzen. Etwas anderes gilt, wenn eine Fläche einem einzelnen Mieter zur alleinigen Nutzung überlassen ist: Deren Pflegekosten dürfen dann nicht auf die übrigen Mieter umgelegt werden." },
+        { typ: "hinweis", text: "Häufiger Prüfpunkt: Wenn der Hausmeister auch die Gartenpflege übernimmt, darf derselbe Aufwand nicht zweimal abgerechnet werden, einmal unter „Hausmeister“ und einmal unter „Gartenpflege“. Eine Doppelabrechnung lässt sich nur über die Belegeinsicht ausschließen." },
         { typ: "verweis", ziel: "hausmeisterkosten-in-der-nebenkostenabrechnung-was-ist-umlagefaehig", text: "Welche Tätigkeiten unter die Hausmeisterkosten fallen und welche nicht, steht im Ratgeber zu Hausmeisterkosten." },
-        { typ: "cta", text: "NebenkostenRadar prüft Gartenpflege und Hausmeister getrennt gegen die jeweiligen Richtwerte — auffällige Kombinationen fallen dabei auf." },
+        { typ: "cta", text: "NebenkostenRadar prüft Gartenpflege und Hausmeister getrennt gegen die jeweiligen Richtwerte, auffällige Kombinationen fallen dabei auf." },
       ],
     },
     {
       id: "versicherungen-nebenkostenabrechnung",
       titelKurz: "Versicherungen in der Abrechnung",
       titel: "Versicherungen in der Nebenkostenabrechnung: Welche der Vermieter umlegen darf",
-      teaser: "Gebäude- und Haftpflichtversicherung ja, Rechtsschutz und Mietausfall nein. Die Unterscheidung ist einfach — sie wird in Abrechnungen aber regelmäßig übergangen.",
+      teaser: "Gebäude- und Haftpflichtversicherung ja, Rechtsschutz und Mietausfall nein. Die Unterscheidung ist einfach, sie wird in Abrechnungen aber regelmäßig übergangen.",
       datum: "September 2026",
       lesezeit: "4 Min.",
       bild: "https://images.unsplash.com/photo-1523772721666-22ad3c3b6f90?w=800&q=80",
@@ -1512,20 +1512,20 @@ export const ARTIKEL = [
       kategorie: "Mietrecht",
       keywords: ["Versicherung Nebenkosten", "§ 2 Nr. 13 BetrKV", "Rechtsschutzversicherung umlagefähig"],
       inhalt: [
-        { typ: "intro", text: "„Versicherungen“ steht auf fast jeder Abrechnung, meist als eine einzige Summe. Dahinter können sich sehr unterschiedliche Verträge verbergen — und nicht alle davon dürfen auf Sie umgelegt werden." },
+        { typ: "intro", text: "„Versicherungen“ steht auf fast jeder Abrechnung, meist als eine einzige Summe. Dahinter können sich sehr unterschiedliche Verträge verbergen und nicht alle davon dürfen auf Sie umgelegt werden." },
         { typ: "h2", text: "Was § 2 Nr. 13 BetrKV erlaubt" },
         { typ: "text", text: "Umlagefähig sind die Kosten der Sach- und Haftpflichtversicherung. Die Verordnung nennt dazu beispielhaft die Versicherung des Gebäudes gegen Feuer-, Sturm-, Wasser- sowie sonstige Elementarschäden, die Glasversicherung, die Haftpflichtversicherung für das Gebäude, den Öltank und den Aufzug." },
         { typ: "text", text: "Der gemeinsame Nenner: Diese Versicherungen schützen das Gebäude und schützen davor, dass aus dem Gebäude heraus Schäden bei Dritten entstehen. Sie dienen damit auch dem Mieter." },
         { typ: "h2", text: "Was nicht umlagefähig ist" },
         { typ: "liste", items: [
-          "Rechtsschutzversicherung des Vermieters — sie schützt allein sein Interesse, unter Umständen sogar gegen Sie.",
-          "Mietausfallversicherung — sichert das wirtschaftliche Risiko des Vermieters ab, nicht das Gebäude.",
-          "Hausratversicherung — die betrifft das Eigentum in der Wohnung und ist Sache des jeweiligen Bewohners.",
+          "Rechtsschutzversicherung des Vermieters, sie schützt allein sein Interesse, unter Umständen sogar gegen Sie.",
+          "Mietausfallversicherung, sichert das wirtschaftliche Risiko des Vermieters ab, nicht das Gebäude.",
+          "Hausratversicherung: die betrifft das Eigentum in der Wohnung und ist Sache des jeweiligen Bewohners.",
           "Betriebsunterbrechungs- und Vermögensschadenversicherungen des Vermieters.",
         ]},
         { typ: "hinweis", text: "Weil auf der Abrechnung meist nur eine Summe steht, lässt sich von außen nicht erkennen, welche Verträge enthalten sind. Genau deshalb ist die Position ein guter Kandidat für eine Aufschlüsselungsanfrage: Verlangen Sie die Vorlage der Versicherungsscheine oder eine Aufstellung der enthaltenen Policen." },
         { typ: "h2", text: "Zwei weitere Prüfpunkte" },
-        { typ: "text", text: "Erstens der Selbstbehalt: Trägt der Vermieter einen Selbstbehalt selbst, ist dieser Betrag eine Schadensposition und keine Versicherungsprämie — er gehört nicht in die Abrechnung. Zweitens die Höhe: Der Versicherungsposten ist verhältnismäßig gut mit dem Richtwert des Betriebskostenspiegels vergleichbar, weil er kaum von individuellem Verhalten abhängt. Eine deutliche Abweichung nach oben ist deshalb aussagekräftiger als bei verbrauchsabhängigen Positionen." },
+        { typ: "text", text: "Erstens der Selbstbehalt: Trägt der Vermieter einen Selbstbehalt selbst, ist dieser Betrag eine Schadensposition und keine Versicherungsprämie, er gehört nicht in die Abrechnung. Zweitens die Höhe: Der Versicherungsposten ist verhältnismäßig gut mit dem Richtwert des Betriebskostenspiegels vergleichbar, weil er kaum von individuellem Verhalten abhängt. Eine deutliche Abweichung nach oben ist deshalb aussagekräftiger als bei verbrauchsabhängigen Positionen." },
         { typ: "verweis", ziel: "betriebskostenspiegel-2024", text: "Welcher Durchschnittswert für Versicherungen gilt, steht in der Übersicht zum DMB-Betriebskostenspiegel." },
         { typ: "cta", text: "NebenkostenRadar vergleicht Ihre Versicherungskosten mit dem bundesweiten Richtwert und nennt die Rechtsgrundlage für Ihre Nachfrage." },
       ],
@@ -1534,7 +1534,7 @@ export const ARTIKEL = [
       id: "leerstand-nebenkosten-wer-zahlt",
       titelKurz: "Leerstand: wer zahlt die Nebenkosten?",
       titel: "Leerstand und Nebenkosten: Wer zahlt für leerstehende Wohnungen?",
-      teaser: "Nicht die verbliebenen Mieter. Der Bundesgerichtshof hat klargestellt, dass der Vermieter die auf leerstehende Wohnungen entfallenden Betriebskosten selbst trägt — und den Verteilerschlüssel dafür nicht ändern darf.",
+      teaser: "Nicht die verbliebenen Mieter. Der Bundesgerichtshof hat klargestellt, dass der Vermieter die auf leerstehende Wohnungen entfallenden Betriebskosten selbst trägt und den Verteilerschlüssel dafür nicht ändern darf.",
       datum: "September 2026",
       lesezeit: "5 Min.",
       bild: "https://images.unsplash.com/photo-1722650272764-08d92d193a9c?w=800&q=80",
@@ -1542,11 +1542,11 @@ export const ARTIKEL = [
       kategorie: "Mietrecht",
       keywords: ["Leerstand Nebenkosten", "VIII ZR 159/05", "leerstehende Wohnung Betriebskosten"],
       inhalt: [
-        { typ: "intro", text: "Wenn im Haus mehrere Wohnungen leer stehen, stellt sich eine naheliegende Frage: Steigen dadurch die Nebenkosten für alle anderen? Die Antwort des Bundesgerichtshofs ist klar — und sie fällt zugunsten der Mieter aus." },
+        { typ: "intro", text: "Wenn im Haus mehrere Wohnungen leer stehen, stellt sich eine naheliegende Frage: Steigen dadurch die Nebenkosten für alle anderen? Die Antwort des Bundesgerichtshofs ist klar und sie fällt zugunsten der Mieter aus." },
         { typ: "h2", text: "Die Grundregel" },
         { typ: "text", text: "Ist vereinbart, dass die Betriebskosten nach der Wohnfläche umgelegt werden, muss der Vermieter die auf leerstehende Wohnungen entfallenden Kosten grundsätzlich selbst tragen. Der Bundesgerichtshof hat das mit Urteil vom 31. Mai 2006 (Az. VIII ZR 159/05) entschieden." },
-        { typ: "text", text: "Praktisch heißt das: Die Gesamtfläche in der Berechnung bleibt die Gesamtfläche des Hauses — auch dann, wenn ein Teil davon nicht vermietet ist. Ihr Anteil bemisst sich weiterhin an Ihrer Fläche im Verhältnis zur Gesamtfläche, nicht im Verhältnis zur vermieteten Fläche." },
-        { typ: "hinweis", text: "Der Bundesgerichtshof hat in derselben Entscheidung auch klargestellt, dass der Vermieter den Verteilerschlüssel nicht einfach umstellen darf, um die Leerstandsflächen herauszurechnen. Genau das ist der typische Weg, auf dem Leerstandskosten doch bei den Mietern landen — und er ist unzulässig." },
+        { typ: "text", text: "Praktisch heißt das: Die Gesamtfläche in der Berechnung bleibt die Gesamtfläche des Hauses, auch dann, wenn ein Teil davon nicht vermietet ist. Ihr Anteil bemisst sich weiterhin an Ihrer Fläche im Verhältnis zur Gesamtfläche, nicht im Verhältnis zur vermieteten Fläche." },
+        { typ: "hinweis", text: "Der Bundesgerichtshof hat in derselben Entscheidung auch klargestellt, dass der Vermieter den Verteilerschlüssel nicht einfach umstellen darf, um die Leerstandsflächen herauszurechnen. Genau das ist der typische Weg, auf dem Leerstandskosten doch bei den Mietern landen und er ist unzulässig." },
         { typ: "h2", text: "So erkennen Sie es in Ihrer Abrechnung" },
         { typ: "schritte", items: [
           "Die in der Abrechnung genannte Gesamtwohnfläche notieren.",
@@ -1564,7 +1564,7 @@ export const ARTIKEL = [
       id: "nebenkostenabrechnung-bei-auszug",
       titelKurz: "Nebenkostenabrechnung nach Auszug",
       titel: "Nebenkostenabrechnung nach dem Auszug: Fristen, Kaution und Rückforderung",
-      teaser: "Auch nach dem Auszug bekommen Sie noch eine Abrechnung — und der Vermieter hat dafür deutlich länger Zeit, als die meisten annehmen. Was gilt, wenn er die Kaution deshalb einbehält.",
+      teaser: "Auch nach dem Auszug bekommen Sie noch eine Abrechnung und der Vermieter hat dafür deutlich länger Zeit, als die meisten annehmen. Was gilt, wenn er die Kaution deshalb einbehält.",
       datum: "September 2026",
       lesezeit: "5 Min.",
       bild: "https://images.unsplash.com/photo-1758523671165-967ec4af0d76?w=800&q=80",
@@ -1572,23 +1572,23 @@ export const ARTIKEL = [
       kategorie: "Mietrecht",
       keywords: ["Nebenkostenabrechnung nach Auszug", "Kaution einbehalten Nebenkosten", "Abrechnung Mieterwechsel"],
       inhalt: [
-        { typ: "intro", text: "Der Mietvertrag ist beendet, die Wohnung übergeben — und Monate später liegt eine Nebenkostenabrechnung im Briefkasten. Das ist kein Versehen, sondern der Normalfall. Die Frist des Vermieters richtet sich nämlich nicht nach Ihrem Auszug." },
+        { typ: "intro", text: "Der Mietvertrag ist beendet, die Wohnung übergeben und Monate später liegt eine Nebenkostenabrechnung im Briefkasten. Das ist kein Versehen, sondern der Normalfall. Die Frist des Vermieters richtet sich nämlich nicht nach Ihrem Auszug." },
         { typ: "h2", text: "Wie lange der Vermieter Zeit hat" },
-        { typ: "text", text: "Die Frist des § 556 Abs. 3 Satz 2 BGB knüpft an das Ende des Abrechnungszeitraums an, nicht an das Ende des Mietverhältnisses. Wer im März 2025 auszieht und dessen Abrechnungszeitraum das Kalenderjahr ist, kann die Abrechnung für 2025 noch bis zum 31. Dezember 2026 erhalten — also mehr als anderthalb Jahre nach dem Auszug." },
+        { typ: "text", text: "Die Frist des § 556 Abs. 3 Satz 2 BGB knüpft an das Ende des Abrechnungszeitraums an, nicht an das Ende des Mietverhältnisses. Wer im März 2025 auszieht und dessen Abrechnungszeitraum das Kalenderjahr ist, kann die Abrechnung für 2025 noch bis zum 31. Dezember 2026 erhalten, also mehr als anderthalb Jahre nach dem Auszug." },
         { typ: "text", text: "Abgerechnet wird dabei zeitanteilig für die Monate, in denen Sie die Wohnung noch gemietet hatten. Prüfen Sie deshalb als Erstes, ob der zugrunde gelegte Zeitraum stimmt." },
-        { typ: "hinweis", text: "Vergessen Sie nicht, dem Vermieter Ihre neue Anschrift mitzuteilen — schriftlich und nachweisbar. Erreicht Sie die Abrechnung nicht, weil die Adresse fehlt, hilft Ihnen das nicht: Sie bekommen dann möglicherweise ein Guthaben nicht ausgezahlt, das Ihnen zusteht." },
+        { typ: "hinweis", text: "Vergessen Sie nicht, dem Vermieter Ihre neue Anschrift mitzuteilen, schriftlich und nachweisbar. Erreicht Sie die Abrechnung nicht, weil die Adresse fehlt, hilft Ihnen das nicht: Sie bekommen dann möglicherweise ein Guthaben nicht ausgezahlt, das Ihnen zusteht." },
         { typ: "h2", text: "Darf die Kaution einbehalten werden?" },
-        { typ: "text", text: "Der Vermieter darf einen angemessenen Teil der Kaution zurückbehalten, bis über die noch offene Nebenkostenabrechnung entschieden ist. Angemessen ist dabei ein Betrag in der Größenordnung einer zu erwartenden Nachforderung — nicht die gesamte Kaution auf unbestimmte Zeit." },
+        { typ: "text", text: "Der Vermieter darf einen angemessenen Teil der Kaution zurückbehalten, bis über die noch offene Nebenkostenabrechnung entschieden ist. Angemessen ist dabei ein Betrag in der Größenordnung einer zu erwartenden Nachforderung, nicht die gesamte Kaution auf unbestimmte Zeit." },
         { typ: "text", text: "Als Orientierung dient meist die Nachzahlung des Vorjahres. Wird deutlich mehr einbehalten oder liegt die Abrechnung längst vor, ohne dass abgerechnet wurde, sollten Sie die Auszahlung schriftlich unter Fristsetzung verlangen." },
         { typ: "h2", text: "Ihre Prüfpunkte nach dem Auszug" },
         { typ: "liste", items: [
           "Stimmt der abgerechnete Zeitraum mit Ihrer tatsächlichen Mietzeit überein?",
-          "Wurden Ihre geleisteten Vorauszahlungen vollständig angerechnet — auch die des letzten Monats?",
+          "Wurden Ihre geleisteten Vorauszahlungen vollständig angerechnet, auch die des letzten Monats?",
           "Sind bei verbrauchsabhängigen Kosten die Zählerstände zum Auszugstag zugrunde gelegt worden? Eine Zwischenablesung ist der saubere Weg.",
           "Wurde die Abrechnung innerhalb der Frist zugestellt? Sonst ist eine Nachforderung in der Regel ausgeschlossen.",
           "Wurde ein Guthaben tatsächlich ausgezahlt oder nur mit der Kaution verrechnet?",
         ]},
-        { typ: "verweis", ziel: "keine-nebenkostenabrechnung-erhalten", text: "Bleibt die Abrechnung ganz aus, gelten eigene Regeln — nachzulesen im Ratgeber dazu." },
+        { typ: "verweis", ziel: "keine-nebenkostenabrechnung-erhalten", text: "Bleibt die Abrechnung ganz aus, gelten eigene Regeln, nachzulesen im Ratgeber dazu." },
         { typ: "cta", text: "NebenkostenRadar prüft auch Abrechnungen für Teilzeiträume und rechnet die anteiligen Richtwerte entsprechend um." },
       ],
     },
@@ -1596,7 +1596,7 @@ export const ARTIKEL = [
       id: "nebenkostenabrechnung-formell-unwirksam",
       titelKurz: "Abrechnung formell unwirksam?",
       titel: "Nebenkostenabrechnung formell unwirksam: Diese vier Angaben müssen drinstehen",
-      teaser: "Bevor Sie einzelne Beträge prüfen, lohnt der Blick auf die Form. Fehlt eine der vier Mindestangaben, ist die Abrechnung insgesamt angreifbar — unabhängig davon, ob die Zahlen stimmen.",
+      teaser: "Bevor Sie einzelne Beträge prüfen, lohnt der Blick auf die Form. Fehlt eine der vier Mindestangaben, ist die Abrechnung insgesamt angreifbar, unabhängig davon, ob die Zahlen stimmen.",
       datum: "September 2026",
       lesezeit: "5 Min.",
       bild: "https://images.unsplash.com/photo-1583521214690-73421a1829a9?w=800&q=80",
@@ -1604,19 +1604,19 @@ export const ARTIKEL = [
       kategorie: "Mietrecht",
       keywords: ["Nebenkostenabrechnung formell unwirksam", "Mindestangaben Betriebskostenabrechnung", "Abrechnung fehlerhaft"],
       inhalt: [
-        { typ: "intro", text: "Es gibt zwei Arten von Fehlern in einer Nebenkostenabrechnung. Inhaltliche Fehler betreffen einzelne Beträge — sie führen dazu, dass die Abrechnung korrigiert wird. Formelle Fehler betreffen den Aufbau der Abrechnung selbst und können dazu führen, dass sie insgesamt keine wirksame Abrechnung ist. Deshalb sollte die Formprüfung immer am Anfang stehen." },
+        { typ: "intro", text: "Es gibt zwei Arten von Fehlern in einer Nebenkostenabrechnung. Inhaltliche Fehler betreffen einzelne Beträge, sie führen dazu, dass die Abrechnung korrigiert wird. Formelle Fehler betreffen den Aufbau der Abrechnung selbst und können dazu führen, dass sie insgesamt keine wirksame Abrechnung ist. Deshalb sollte die Formprüfung immer am Anfang stehen." },
         { typ: "h2", text: "Die vier Mindestangaben" },
         { typ: "text", text: "Nach der ständigen Rechtsprechung des Bundesgerichtshofs muss eine Betriebskostenabrechnung für einen durchschnittlichen Mieter ohne besondere Vorkenntnisse gedanklich und rechnerisch nachvollziehbar sein. Daraus ergeben sich vier Bestandteile, die eine Abrechnung enthalten muss:" },
         { typ: "schritte", items: [
-          "Eine Zusammenstellung der Gesamtkosten je Kostenart — also nicht nur Ihr Anteil, sondern der Gesamtbetrag für das ganze Haus.",
+          "Eine Zusammenstellung der Gesamtkosten je Kostenart, also nicht nur Ihr Anteil, sondern der Gesamtbetrag für das ganze Haus.",
           "Die Angabe und Erläuterung des Verteilerschlüssels, nach dem umgelegt wird.",
           "Die Berechnung Ihres Anteils, sodass der Weg von den Gesamtkosten zu Ihrem Betrag nachvollziehbar ist.",
           "Der Abzug Ihrer geleisteten Vorauszahlungen.",
         ]},
-        { typ: "hinweis", text: "Fehlen die Gesamtkosten und steht nur Ihr Anteil da, ist die Abrechnung nicht überprüfbar — Sie können weder den Schlüssel noch die Rechnung nachvollziehen. Das ist der mit Abstand häufigste Formfehler in der Praxis." },
+        { typ: "hinweis", text: "Fehlen die Gesamtkosten und steht nur Ihr Anteil da, ist die Abrechnung nicht überprüfbar. Sie können weder den Schlüssel noch die Rechnung nachvollziehen. Das ist der mit Abstand häufigste Formfehler in der Praxis." },
         { typ: "h2", text: "Was ein Formfehler bewirkt" },
         { typ: "text", text: "Eine formell unwirksame Abrechnung setzt die Abrechnungsfrist des § 556 Abs. 3 BGB nicht wirksam in Gang. Läuft die Zwölfmonatsfrist ab, ohne dass eine formell ordnungsgemäße Abrechnung vorliegt, kann der Vermieter eine Nachforderung in der Regel nicht mehr durchsetzen. Ein Guthaben zu Ihren Gunsten können Sie dagegen weiterhin verlangen." },
-        { typ: "text", text: "Davon zu unterscheiden sind inhaltliche Fehler — etwa ein zu hoher Betrag oder eine nicht umlagefähige Position. Diese kann der Vermieter auch nach Fristablauf noch zu Ihren Gunsten korrigieren; eine Erhöhung ist ihm dann aber verwehrt." },
+        { typ: "text", text: "Davon zu unterscheiden sind inhaltliche Fehler, etwa ein zu hoher Betrag oder eine nicht umlagefähige Position. Diese kann der Vermieter auch nach Fristablauf noch zu Ihren Gunsten korrigieren; eine Erhöhung ist ihm dann aber verwehrt." },
         { typ: "h2", text: "Ihre Formprüfung in fünf Minuten" },
         { typ: "liste", items: [
           "Sind für jede Position die Gesamtkosten des Hauses angegeben?",
@@ -1626,7 +1626,7 @@ export const ARTIKEL = [
           "Sind Abrechnungszeitraum, Wohnung und Mieter eindeutig bezeichnet?",
         ]},
         { typ: "verweis", ziel: "betriebskostenabrechnung-fristen-und-verjaehrung-2026", text: "Warum die Frist bei Formfehlern so entscheidend ist, erklärt der Ratgeber zu Fristen und Verjährung." },
-        { typ: "cta", text: "NebenkostenRadar prüft neben den Beträgen auch, ob Zeitraum und Fristen stimmen — und weist fehlende Angaben aus." },
+        { typ: "cta", text: "NebenkostenRadar prüft neben den Beträgen auch, ob Zeitraum und Fristen stimmen und weist fehlende Angaben aus." },
       ],
     },
   ];

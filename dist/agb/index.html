@@ -8,7 +8,7 @@
     Einzelne Elemente sollten ohnehin nie breiter als der Viewport werden,
     aber diese Regel fängt Restfälle ab (z.B. sehr lange unbrechbare Wörter,
     Rundungsfehler bei Prozent-/Padding-Kombinationen) und verhindert, dass
-    daraus eine seitlich wegziehbare Seite wird — wirkt sonst unfertig.
+    daraus eine seitlich wegziehbare Seite wird, wirkt sonst unfertig.
   -->
   <style>
     /*
@@ -19,7 +19,7 @@
     */
     html, body, #root { max-width: 100%; overflow-x: hidden; }
     /*
-      Kein echter Überlauf vorhanden (per Konsolen-Check bestätigt) — das
+      Kein echter Überlauf vorhanden (per Konsolen-Check bestätigt), das
       seitliche "Hin- und Herschubsen" war iOS Safaris eingebautes
       elastisches Rubber-Band-Verhalten, das standardmäßig auch ohne
       überlaufenden Inhalt aktiv ist. overscroll-behavior-x schaltet gezielt
@@ -29,7 +29,7 @@
     */
     /*
       overscroll-behavior-x (siehe unten) und touch-action greifen für das
-      elastische Rubber-Band NICHT auf iOS Safari — WebKit implementiert
+      elastische Rubber-Band NICHT auf iOS Safari. WebKit implementiert
       overscroll-behavior für diesen Fall nicht (offener WebKit-Bug 176454,
       Stand 08/2026, ungelöst seit Jahren). Bleiben trotzdem stehen, schaden
       nicht und helfen in anderen Browsern (Chrome/Firefox Android). Die
@@ -38,7 +38,7 @@
     html, body { overscroll-behavior-x: none; touch-action: pan-y; }
     /*
       Reines Sicherheitsnetz für sehr lange, unbrechbare Wörter (z.B. in
-      Ratgeber-Artikeln) — bricht im Extremfall mitten im Wort um, statt
+      Ratgeber-Artikeln), bricht im Extremfall mitten im Wort um, statt
       über den Container hinauszulaufen. `hyphens:auto` wurde bewusst NICHT
       global gesetzt: hat auf der Startseite "Transparent" unerwünscht zu
       "Transpa-rent" getrennt, obwohl gar keine Not dazu bestand (Browser
@@ -61,7 +61,7 @@
   <meta property="og:url" content="https://nebenkostenradar.com/agb" />
   <meta property="og:locale" content="de_DE" />
   <!-- Vorschaubild für geteilte Links. ERGÄNZT 10.09.2026: Bis dahin gab es
-       gar kein og:image — jeder auf WhatsApp, Facebook oder LinkedIn geteilte
+       gar kein og:image, jeder auf WhatsApp, Facebook oder LinkedIn geteilte
        Link zeigte eine leere graue Vorschau. Das Bild liegt in public/ und
        wird unverändert nach dist/ kopiert. Die URL muss absolut sein, relative
        Pfade werden von den meisten Netzwerken nicht aufgelöst.
@@ -71,14 +71,14 @@
   <meta property="og:image" content="https://nebenkostenradar.com/og-bild.png" />
   <meta property="og:image:width" content="1200" />
   <meta property="og:image:height" content="630" />
-  <meta property="og:image:alt" content="NebenkostenRadar — jede zweite Abrechnung enthält Fehler" />
+  <meta property="og:image:alt" content="NebenkostenRadar, jede zweite Abrechnung enthält Fehler" />
   <meta name="twitter:image" content="https://nebenkostenradar.com/og-bild.png" />
 
   <!--
     Gestaltung des vorgerenderten Zwischenzustands (11.09.2026).
 
     WOFÜR: Stefan ist aufgefallen, dass beim Aufruf der Seite für den
-    Bruchteil einer Sekunde reiner Text ohne Gestaltung aufblitzt — schwarz
+    Bruchteil einer Sekunde reiner Text ohne Gestaltung aufblitzt, schwarz
     auf weiß. Das ist eine Nebenwirkung des Vorrenderns: Seit dem 10.09.2026
     steht im ausgelieferten HTML echter Text, den der Browser sofort anzeigt.
     Die Gestaltung der Seite steckt dagegen komplett als JavaScript-Objekte
@@ -92,14 +92,14 @@
        Seite aussieht und nicht nach einem Rohdokument.
 
     WARUM INLINE UND NICHT ALS DATEI: Ein externes Stylesheet wäre ein
-    zusätzlicher Netzwerkabruf — und genau während dieses Abrufs wäre der
+    zusätzlicher Netzwerkabruf und genau während dieses Abrufs wäre der
     ungestaltete Zustand wieder sichtbar. Inline gilt es ab der ersten
     Bildschirmausgabe.
 
     WARUM DIE KLASSE .vorab: Die Regeln dürfen ausschließlich den
     Zwischenzustand betreffen. scripts/prerender.mjs verpackt den
     vorgerenderten Inhalt in <div class="vorab">. React ersetzt den Inhalt
-    von #root beim Start vollständig, die Klasse verschwindet dabei — die
+    von #root beim Start vollständig, die Klasse verschwindet dabei, die
     Regeln können also nicht in die fertige Seite hineinwirken.
 
     Bewusst KEIN display:none auf dem Inhalt: Text vor Nutzern zu verstecken,
@@ -151,7 +151,7 @@
 
   <!--
     Verhindert das elastische horizontale "Rubber-Band"-Wischen auf iOS
-    Safari (08/2026) — reines CSS (overscroll-behavior-x) wirkt dafür nicht,
+    Safari (08/2026), reines CSS (overscroll-behavior-x) wirkt dafür nicht,
     siehe Kommentar im <style>-Block oben (WebKit-Bug 176454). Ermittelt bei
     jeder Berührung, ob die Bewegung überwiegend horizontal ist, und
     unterdrückt nur dann das Standardverhalten. Vertikales Scrollen bleibt
@@ -185,7 +185,7 @@
     GA4-Consent-Stub: setzt NUR den Default-Zustand (analytics_storage: denied)
     und lädt NICHTS. Das eigentliche gtag.js-Skript wird erst in
     components/layout/CookieBanner.jsx (ladeGA4()) nach Einwilligung geladen.
-    NIEMALS hier ein <script src="googletagmanager.com/gtag/js..."> ergänzen —
+    NIEMALS hier ein <script src="googletagmanager.com/gtag/js..."> ergänzen, 
     das war der ursprüngliche Abmahn-/Bußgeld-Risikopunkt (Cookieless Ping mit
     IP-Adresse vor Einwilligung), siehe CHANGELOG.md.
   -->
@@ -197,10 +197,10 @@
 
   <!--
     ACHTUNG bei Preisänderungen: Diese Datei ist reines statisches HTML, kein
-    JSX — kann NICHT wie Datenschutz.jsx/AGB.jsx aus BUSINESS.PREIS_* in
+    JSX, kann NICHT wie Datenschutz.jsx/AGB.jsx aus BUSINESS.PREIS_* in
     src/config/business.js gerendert werden. Preise unten müssen bei jeder
     Änderung von Hand nachgezogen werden. Am 13.08.2026 hier veraltete Preise
-    (7,99 €/9,99 €) gefunden und auf die aktuellen 9,99 €/12,99 € korrigiert —
+    (7,99 €/9,99 €) gefunden und auf die aktuellen 9,99 €/12,99 € korrigiert, 
     derselbe Fehler wie zuvor in Datenschutz.jsx, siehe CHANGELOG.md.
   -->
   <script type="application/ld+json">
@@ -216,7 +216,7 @@
     ]
   }
   </script>
-  <script type="module" crossorigin src="/assets/index-D10jUKK8.js"></script>
+  <script type="module" crossorigin src="/assets/index-7CbgBkHf.js"></script>
 </head>
 <body>
   <div id="root"><div class="vorab"><h1>AGB und Widerrufsbelehrung</h1><p>Der vollständige Text wird beim Laden der Seite angezeigt.</p><p><a href="/">Zur Startseite</a></p></div></div>

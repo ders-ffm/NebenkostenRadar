@@ -162,11 +162,11 @@ export default function Posten({ navigateTo, werte, setWerte, runAnalyse, gesamt
           </div>
         )}
         <div style={{ marginBottom: 12 }}>
-          <EuroInput label="Gesamtsumme laut Abrechnung" value={gesamtsummeAbrechnung} tip="Optional — steht meist oben auf der Abrechnung als 'Summe'. Dient nur dem Abgleich, hat keinen Einfluss aufs Fortfahren."
+          <EuroInput label="Gesamtsumme laut Abrechnung" value={gesamtsummeAbrechnung} tip="Optional, steht meist oben auf der Abrechnung als 'Summe'. Dient nur dem Abgleich, hat keinen Einfluss aufs Fortfahren."
             onChange={setGesamtsummeAbrechnung} />
           {summenAbweichung && (
             <div style={{ background: C.warnBg, borderLeft: "3px solid " + C.warn, borderRadius: THEME.radius.md, padding: "10px 14px", marginTop: -4, fontSize: 12, color: C.warn, lineHeight: 1.6 }}>
-              Hinweis: Deine eingetragenen Posten ({fmt(total)}) weichen von der Gesamtsumme laut Abrechnung ({fmt(gesamtsummeNum)}) ab — möglicherweise fehlt ein Posten. Reine Information, hindert dich nicht am Fortfahren: Eine Abrechnung kann auch selbst fehlerhaft sein, genau das würden wir dann prüfen.
+              Hinweis: Deine eingetragenen Posten ({fmt(total)}) weichen von der Gesamtsumme laut Abrechnung ({fmt(gesamtsummeNum)}) ab, möglicherweise fehlt ein Posten. Reine Information, hindert dich nicht am Fortfahren: Eine Abrechnung kann auch selbst fehlerhaft sein, genau das würden wir dann prüfen.
             </div>
           )}
         </div>
@@ -187,7 +187,7 @@ export default function Posten({ navigateTo, werte, setWerte, runAnalyse, gesamt
         </div>
       </div>
       <div style={{ padding: "10px 20px 120px", maxWidth: THEME.layout.formMax, margin: "0 auto", boxSizing: "border-box" }}>
-        {/* Kompaktmodus-Banner — erklärt, warum hier nur wenige Felder stehen,
+        {/* Kompaktmodus-Banner, erklärt, warum hier nur wenige Felder stehen,
             und macht den Weg zu allen Posten in einem Klick zugänglich. */}
         {kompaktModus && !sucheAktiv && (
           <div style={{ background: C.brandBg, border: "1px solid " + C.brand, borderRadius: THEME.radius.md, padding: "12px 14px", marginBottom: 16 }}>
@@ -205,7 +205,7 @@ export default function Posten({ navigateTo, werte, setWerte, runAnalyse, gesamt
         )}
         {/* Zurück in den Kompaktmodus, falls jemand aufgeklappt hat und die
             Übersicht wiederhaben möchte. Nur anbieten, wenn ein Foto im Spiel
-            war — sonst gab es nie einen Kompaktmodus. */}
+            war, sonst gab es nie einen Kompaktmodus. */}
         {fotoErkannt > 0 && alleAnzeigen && !sucheAktiv && (
           <button onClick={() => setAlleAnzeigen(false)}
             style={{ background: "none", border: "none", color: C.brand, fontSize: 12.5, fontWeight: 600, cursor: "pointer", padding: "0 0 12px", fontFamily: THEME.font.body, textDecoration: "underline" }}>
@@ -258,7 +258,7 @@ export default function Posten({ navigateTo, werte, setWerte, runAnalyse, gesamt
         <div style={{ padding: "20px 20px 24px", maxWidth: THEME.layout.formMax, margin: "0 auto", boxSizing: "border-box" }}>
           {errors.pflicht && (
             <div style={{ fontSize: 12, color: C.warn, marginBottom: 8, textAlign: "center" }}>
-              ⚠ Pflichtfeld fehlt — wir haben nach oben gescrollt, dort steht welches.
+              ⚠ Pflichtfeld fehlt, wir haben nach oben gescrollt, dort steht welches.
             </div>
           )}
           <button

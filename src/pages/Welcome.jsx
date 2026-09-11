@@ -57,19 +57,77 @@ export default function Welcome({ navigateTo, IS_DEMO }) {
           Für Mieter · Unabhängig · Ohne Registrierung
         </div>
 
-        <h1 style={{ fontFamily: THEME.font.heading, fontSize: 30, fontWeight: 600, lineHeight: 1.3, margin: "0 0 16px", color: C.text, maxWidth: 540, marginLeft: "auto", marginRight: "auto" }}>
-          <div>Nebenkostenabrechnung prüfen —</div>
-          <div style={{ color: C.brand }}>für Mieter, in wenigen Minuten</div>
+        {/* ÜBERSCHRIFT, Stand 11.09.2026.
+            Die beiden Schlagwörter "Nebenkostenabrechnung" und "Mieter"
+            MÜSSEN hier stehen bleiben. Das sind die Begriffe, nach denen
+            gesucht wird, und die H1 ist für Google das wichtigste Signal
+            einer Seite. Eine Zwischenfassung an diesem Tag hatte
+            "Nebenkostenabrechnung" durch "Deine Nebenkosten" ersetzt, um
+            einen Umbruch zu vermeiden. Das war der falsche Weg: Es hätte das
+            Ranking-Problem verschlimmert, das die Search Console für genau
+            diese Begriffe zeigt (Position 38,6).
+
+            DAS EIGENTLICHE PROBLEM war die feste Schriftgröße von 30 px.
+            Gemessen in der echten Schrift (Poppins 600) ist das Wort
+            "Nebenkostenabrechnung" bei 30 px 391 Pixel breit. Auf einem
+            360-Pixel-Display bleiben nach den 48 px Seitenpolster nur
+            312 Pixel übrig. Das Wort passte also nicht und wurde mitten
+            im Wort getrennt.
+
+            LÖSUNG: Die Schriftgröße skaliert mit der Bildschirmbreite.
+            clamp(20px, 6.4vw, 30px) heißt: nie kleiner als 20 px, nie
+            größer als 30 px, dazwischen 6,4 Prozent der Fensterbreite.
+            Nachgerechnet für die üblichen Gerätebreiten:
+
+              Breite   verfügbar   Schrift   Wortbreite   passt
+              320 px   272 px      20,5 px   267 px       ja
+              360 px   312 px      23,0 px   300 px       ja
+              390 px   342 px      25,0 px   326 px       ja
+              430 px   382 px      27,5 px   358 px       ja
+              ab 469   421+ px     30,0 px   391 px       ja
+
+            AUFBAU, von Stefan am 11.09.2026 so ausgewählt: eine kleine
+            Vorzeile "Für Mieter", darunter zwei kräftige Zeilen. Der Vorteil
+            dieser Form gegenüber einer durchlaufenden Überschrift ist, dass
+            keine Kommas nötig sind, um die Teile zu trennen. Frühere
+            Fassungen lasen sich wie eine Aufzählung von Bruchstücken
+            ("Nebenkostenabrechnung prüfen, für Mieter, in wenigen Minuten").
+
+            Die Vorzeile steht bewusst INNERHALB des h1-Elements. Dadurch
+            zählt "Mieter" für Google zur Überschrift, obwohl es optisch
+            kleiner gesetzt ist. Stünde sie als eigenes Element darüber,
+            ginge dieses Signal verloren.
+
+            "in 3 Schritten" ist keine Werbefloskel, sondern deckt sich mit
+            dem Block "So läuft es ab" direkt darunter, der genau drei
+            Schritte zeigt. Wer die Anzahl dort ändert, muss diese Zeile
+            mitändern, sonst widerspricht sich die Seite selbst.
+
+            GEMESSENE BREITEN (Poppins 600, im Browser nachgemessen):
+            "Nebenkostenabrechnung" ist die längste Zeile, 391 px bei 30 px
+            Schrift und 300 px bei 23 px. Beide Zeilen passen damit von
+            320 px Displaybreite aufwärts ohne jeden Umbruch.
+
+            WER HIER ETWAS ÄNDERT: Faustregel für Poppins 600, Breite in
+            Pixeln ist ungefähr Zeichenzahl mal Schriftgröße mal 0,62.
+            Bleibt die längste Zeile bei 20 px unter 272 Pixeln, passt sie
+            auf jedem gängigen Gerät. */}
+        <h1 style={{ fontFamily: THEME.font.heading, fontWeight: 600, lineHeight: 1.3, margin: "0 0 16px", color: C.text, maxWidth: 540, marginLeft: "auto", marginRight: "auto" }}>
+          <div style={{ fontSize: 13, fontWeight: 600, letterSpacing: "0.08em", textTransform: "uppercase", color: C.brand, marginBottom: 8 }}>
+            Für Mieter
+          </div>
+          <div style={{ fontSize: "clamp(20px, 6.4vw, 30px)" }}>Nebenkostenabrechnung</div>
+          <div style={{ fontSize: "clamp(20px, 6.4vw, 30px)", color: C.brand }}>in 3 Schritten prüfen</div>
         </h1>
 
         <p style={{ fontSize: 16, color: C.textMuted, margin: "0 0 8px", lineHeight: 1.7, maxWidth: 520, marginLeft: "auto", marginRight: "auto" }}>
-          Du hast die Betriebskostenabrechnung für deine Mietwohnung bekommen und weißt nicht, ob sie stimmt? Wir vergleichen jeden Posten mit den Richtwerten des Deutschen Mieterbundes und prüfen, was dein Vermieter überhaupt umlegen darf.
+          Du hast als Mieter deine Nebenkostenabrechnung bekommen und weißt nicht, ob sie stimmt? Wir vergleichen jeden Posten der Betriebskostenabrechnung mit den Richtwerten des Deutschen Mieterbundes und prüfen, was dein Vermieter überhaupt umlegen darf.
         </p>
         <p style={{ fontSize: 12, color: C.textDim, margin: "0 0 28px", lineHeight: 1.6, maxWidth: 520, marginLeft: "auto", marginRight: "auto" }}>
           Für Wohnraummiete in Deutschland. Für Gewerbemietverträge und für Eigentümer gelten andere Regeln.
         </p>
 
-        {IS_DEMO && <div style={{ background: C.warnBg, borderRadius: 6, padding: "8px 14px", marginBottom: 16, fontSize: 11, color: C.warn }}>Demo-Modus — Stripe nicht konfiguriert</div>}
+        {IS_DEMO && <div style={{ background: C.warnBg, borderRadius: 6, padding: "8px 14px", marginBottom: 16, fontSize: 11, color: C.warn }}>Demo-Modus. Stripe nicht konfiguriert</div>}
 
         <button onClick={() => navigateTo("wohnung")}
           style={{ width: "100%", maxWidth: 420, background: C.accent, color: C.accentText, border: "none", borderRadius: THEME.radius.lg, padding: "18px 40px", fontSize: 16, fontFamily: THEME.font.heading, fontWeight: 600, cursor: "pointer" }}>
@@ -89,9 +147,9 @@ export default function Welcome({ navigateTo, IS_DEMO }) {
         <div style={ueberschrift}>So läuft es ab</div>
         <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(180px, 1fr))", gap: 12, maxWidth: 640, margin: "0 auto" }}>
           {[
-            ["1", "Abrechnung hochladen", "Foto oder PDF. Die Posten werden automatisch ausgelesen — du bestätigst sie nur kurz."],
+            ["1", "Abrechnung hochladen", "Foto oder PDF. Die Posten werden automatisch ausgelesen, du bestätigst sie nur kurz."],
             ["2", "Kostenlose Basisanalyse", "Jeder Posten wird gegen Richtwerte und Rechtsgrundlagen geprüft. Ohne Konto, ohne Zahlung."],
-            ["3", "Auswertung als PDF", "Alle Positionen mit Begründung — auf Wunsch mit versandfertigem Brief an den Vermieter."],
+            ["3", "Auswertung als PDF", "Alle Positionen mit Begründung, auf Wunsch mit versandfertigem Brief an den Vermieter."],
           ].map(([nr, titel, text]) => (
             <div key={nr} style={{ padding: "16px 18px", background: C.surface, border: "1px solid " + C.border, borderRadius: THEME.radius.md }}>
               <div style={{ width: 26, height: 26, borderRadius: "50%", background: C.brand, color: "#fff", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 13, fontWeight: 700, fontFamily: THEME.font.heading, marginBottom: 10 }}>{nr}</div>
@@ -165,7 +223,7 @@ export default function Welcome({ navigateTo, IS_DEMO }) {
         </div>
         <button onClick={() => navigateTo("wohnung")}
           style={{ marginTop: 20, background: C.accent, border: "none", borderRadius: THEME.radius.md, padding: "14px 32px", fontSize: 14, fontFamily: THEME.font.heading, fontWeight: 600, color: C.accentText, cursor: "pointer" }}>
-          Kostenlos starten — Preis später wählen
+          Kostenlos starten. Preis später wählen
         </button>
         <p style={{ fontSize: 12, color: C.textDim, marginTop: 10 }}>
           Einmalig, kein Abo. <a href="/faq" onClick={e => { e.preventDefault(); navigateTo("faq"); }} style={{ color: C.brand, fontWeight: 600 }}>Was kosten die Alternativen?</a>
@@ -177,9 +235,9 @@ export default function Welcome({ navigateTo, IS_DEMO }) {
         <div style={ueberschrift}>Mehr erfahren</div>
         <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(180px, 1fr))", gap: 12, maxWidth: 640, margin: "0 auto" }}>
           {[
-            ["Häufige Fragen", "Unabhängigkeit, Genauigkeit, Fristen, Datenschutz — auch die unbequemen Fragen.", "faq"],
-            ["Worauf die Prüfung beruht", "DMB-Betriebskostenspiegel, § 2 BetrKV, HeizkostenV, CO₂KostAufG — alle Quellen benannt.", "ueberuns"],
-            ["Ratgeber", "Umlageschlüssel, Belegeinsicht, Fristen und mehr — verständlich erklärt.", "ratgeber"],
+            ["Häufige Fragen", "Unabhängigkeit, Genauigkeit, Fristen, Datenschutz, auch die unbequemen Fragen.", "faq"],
+            ["Worauf die Prüfung beruht", "DMB-Betriebskostenspiegel, § 2 BetrKV, HeizkostenV, CO₂KostAufG, alle Quellen benannt.", "ueberuns"],
+            ["Ratgeber", "Umlageschlüssel, Belegeinsicht, Fristen und mehr, verständlich erklärt.", "ratgeber"],
           ].map(([titel, text, ziel]) => (
             <a key={ziel} href={"/" + (ziel === "ueberuns" ? "ueber-uns" : ziel)}
               onClick={e => { e.preventDefault(); navigateTo(ziel); }}
@@ -191,7 +249,7 @@ export default function Welcome({ navigateTo, IS_DEMO }) {
         </div>
 
         <p style={{ fontSize: 12, color: C.textDim, lineHeight: 1.7, margin: "20px auto 0", maxWidth: 560, textAlign: "center" }}>
-          Grundlage der Prüfung ist der Betriebskostenspiegel des Deutschen Mieterbundes ({BUSINESS.RICHTWERTE_JAHR}). Er ist ein bundesweiter Durchschnitt: Eine Abweichung nach oben ist ein Anlass zur Nachfrage — kein Nachweis eines Fehlers. Genau so weisen wir es auch aus.
+          Grundlage der Prüfung ist der Betriebskostenspiegel des Deutschen Mieterbundes ({BUSINESS.RICHTWERTE_JAHR}). Er ist ein bundesweiter Durchschnitt: Eine Abweichung nach oben ist ein Anlass zur Nachfrage: kein Nachweis eines Fehlers. Genau so weisen wir es auch aus.
         </p>
       </div>
 

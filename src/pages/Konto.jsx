@@ -75,7 +75,7 @@ export default function Konto({ navigateTo }) {
         {status === "angemeldet" && (
           <>
             <p style={{ fontSize: 13, color: C.textMuted, marginBottom: 4 }}>Angemeldet als {email}</p>
-            <p style={{ fontSize: 12, color: C.textDim, marginBottom: 20 }}>Hier findest du alle deine bisherigen Prüfberichte — jederzeit zum erneuten Download.</p>
+            <p style={{ fontSize: 12, color: C.textDim, marginBottom: 20 }}>Hier findest du alle deine bisherigen Prüfberichte, jederzeit zum erneuten Download.</p>
 
             {berichte.length === 0 ? (
               <p style={{ fontSize: 14, color: C.textMuted }}>Noch keine Prüfung gekauft.</p>

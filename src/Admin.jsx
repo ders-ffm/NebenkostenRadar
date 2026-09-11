@@ -254,15 +254,15 @@ export default function Admin() {
                   <div style={{ height: "100%", width: config.stats.analysen_gesamt > 0 ? `${Math.min((config.stats.kaeufe_gesamt / config.stats.analysen_gesamt) * 100, 100)}%` : "0%", background: `linear-gradient(90deg,${C.gold},${C.goldDim})`, borderRadius: 4 }} />
                 </div>
                 <div style={{ fontSize: 18, fontWeight: 700, color: C.gold, flexShrink: 0 }}>
-                  {config.stats.analysen_gesamt > 0 ? `${((config.stats.kaeufe_gesamt / config.stats.analysen_gesamt) * 100).toFixed(1)}%` : "–"}
+                  {config.stats.analysen_gesamt > 0 ? `${((config.stats.kaeufe_gesamt / config.stats.analysen_gesamt) * 100).toFixed(1)}%` : ", "}
                 </div>
               </div>
-              <div style={{ fontSize: 11, color: C.dim, marginTop: 8 }}>Ziel: 10% · Branchenschnitt: 3–8%</div>
+              <div style={{ fontSize: 11, color: C.dim, marginTop: 8 }}>Ziel: 10% · Branchenschnitt: 3 bis 8%</div>
             </Card>
             <Card title="Letzte Aktivitäten" icon="🕐">
               <div style={{ fontSize: 13, color: C.muted, lineHeight: 2 }}>
-                <div>Letzte Analyse: <span style={{ color: C.text }}>{config.stats.letzte_analyse || "–"}</span></div>
-                <div>Letzter Kauf: <span style={{ color: C.text }}>{config.stats.letzter_kauf || "–"}</span></div>
+                <div>Letzte Analyse: <span style={{ color: C.text }}>{config.stats.letzte_analyse || ", "}</span></div>
+                <div>Letzter Kauf: <span style={{ color: C.text }}>{config.stats.letzter_kauf || ", "}</span></div>
               </div>
             </Card>
             <Card title="Statistiken manuell anpassen" icon="✏️">
@@ -350,7 +350,7 @@ export default function Admin() {
                 { key: "hausmeister",        label: "Hausmeister (Durchschnitt)" },
                 { key: "hausmeister_max",    label: "Hausmeister (Maximum)" },
                 { key: "versicherungen",     label: "Versicherungen gesamt" },
-                { key: "allgemeinstrom",     label: "Allgemeinstrom / Beleuchtung" },
+                { key: "allgemeinstrom",     label: "Allgemeinstrom und Beleuchtung" },
                 { key: "gartenpflege",       label: "Gartenpflege" },
                 { key: "strassenreinigung",  label: "Straßenreinigung + Winterdienst" },
                 { key: "aufzug",             label: "Aufzug" },

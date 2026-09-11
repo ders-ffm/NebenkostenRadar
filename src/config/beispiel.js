@@ -67,7 +67,7 @@ const ROH_POSTEN = [
     richtwert: null,
     status: "unzulaessig",
     begruendung:
-      "Verwaltungskosten gehören ausdrücklich nicht zu den Betriebskosten und dürfen im Wohnraummietverhältnis nicht umgelegt werden — auch nicht als „Verwaltungspauschale“ oder unter anderem Namen.",
+      "Verwaltungskosten gehören ausdrücklich nicht zu den Betriebskosten und dürfen im Wohnraummietverhältnis nicht umgelegt werden, auch nicht als „Verwaltungspauschale“ oder unter anderem Namen.",
     grundlage: "§ 1 Abs. 2 Nr. 1 BetrKV",
   },
   {
@@ -76,7 +76,7 @@ const ROH_POSTEN = [
     richtwert: "hausmeister",
     status: "auffaellig",
     begruendung:
-      "Deutlich über dem bundesweiten Durchschnitt. Das kann an einem hohen Leistungsumfang liegen — es können aber auch Instandhaltungs- oder Reparaturarbeiten enthalten sein, die der Vermieter selbst tragen muss. Das lässt sich nur über die Belege klären.",
+      "Deutlich über dem bundesweiten Durchschnitt. Das kann an einem hohen Leistungsumfang liegen, es können aber auch Instandhaltungs- oder Reparaturarbeiten enthalten sein, die der Vermieter selbst tragen muss. Das lässt sich nur über die Belege klären.",
     grundlage: "§ 2 Nr. 14 BetrKV",
   },
   {

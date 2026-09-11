@@ -65,7 +65,7 @@ export default function Login({ navigateTo }) {
               Prüf dein Postfach ({email}) und klick auf den Link. Er ist eine Stunde gültig. Nichts erhalten? Schau auch im Spam- oder Werbeordner nach.
             </div>
             <div style={{ fontSize: 12, color: C.textDim, lineHeight: 1.6, marginTop: 10 }}>
-              Der Link führt dich direkt in dein Kundenkonto — dort findest du alle deine bisherigen Prüfberichte zum jederzeit erneuten Download.
+              Der Link führt dich direkt in dein Kundenkonto, dort findest du alle deine bisherigen Prüfberichte zum jederzeit erneuten Download.
             </div>
           </div>
         ) : (
@@ -82,7 +82,7 @@ export default function Login({ navigateTo }) {
         )}
 
         <p style={{ fontSize: 11, color: C.textDim, lineHeight: 1.6, marginTop: 16 }}>
-          Für die sichere Anmeldung nutzen wir Supabase, einen etablierten Anbieter für Nutzerkonten — DSGVO-konform, siehe{" "}
+          Für die sichere Anmeldung nutzen wir Supabase, einen etablierten Anbieter für Nutzerkonten. DSGVO-konform, siehe{" "}
           <a href="/datenschutz" onClick={e => { e.preventDefault(); navigateTo("datenschutz"); }} style={{ color: C.brand }}>Datenschutzerklärung</a>.
         </p>
 

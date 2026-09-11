@@ -15,7 +15,7 @@ export default function Ratgeber({ navigateTo, navigateToArtikel }) {
       <div style={{ maxWidth: PAGE_MAX, margin: "0 auto", padding: "32px 20px 60px" }}>
         <button onClick={() => navigateTo("welcome")} style={{ background: "none", border: "none", color: C.textMuted, cursor: "pointer", fontSize: 13, padding: 0, marginBottom: 8 }}>← Startseite</button>
         <h1 style={{ fontFamily: THEME.font.heading, fontSize: 26, fontWeight: 600, margin: "0 0 8px" }}>Ratgeber Mietrecht</h1>
-        <p style={{ fontSize: 15, color: C.textMuted, margin: "0 0 32px", lineHeight: 1.6 }}>Fundierte Informationen zu Nebenkostenabrechnungen, Fristen und deinen Rechten als Mieter — kostenlos und aktuell.</p>
+        <p style={{ fontSize: 15, color: C.textMuted, margin: "0 0 32px", lineHeight: 1.6 }}>Fundierte Informationen zu Nebenkostenabrechnungen, Fristen und deinen Rechten als Mieter, kostenlos und aktuell.</p>
         <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
           {ARTIKEL.map(a => (
             <div key={a.id} onClick={() => navigateToArtikel(a.id)}

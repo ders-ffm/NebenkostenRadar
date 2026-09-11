@@ -28,7 +28,7 @@ export const THEME = {
     border: "#E3D9C6",
 
     // Text
-    text: "#2E2A22",      // Ink — Haupttext
+    text: "#2E2A22",      // Ink. Haupttext
     textMuted: "#6B6152",
     textDim: "#8A7A5C",
 
@@ -76,7 +76,7 @@ export const THEME = {
     // 680 statt z.B. 900+, weil ein einspaltiges Formular (Label + Feld
     // untereinander) bei größerer Breite unruhig zu lesen wird — üblicher
     // Richtwert für Formular-Spalten liegt bei 600–750px.
-    formMax: 680, // einspaltige Formular-Schritte (Wohnung/Posten/Adressen) — schmaler als pageMax, nach Vorbild Taxfix
+    formMax: 680, // einspaltige Formular-Schritte (Wohnung/Posten/Adressen), schmaler als pageMax, nach Vorbild Taxfix
     mobileBreakpoint: 760,
   },
 };

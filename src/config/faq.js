@@ -35,7 +35,7 @@ export const FAQ_STARTSEITE = [
   {
     frage: "Wie genau sind die Vergleichswerte für meine konkrete Wohnung?",
     antwort:
-      "Der Betriebskostenspiegel des Deutschen Mieterbundes ist ein bundesweiter Durchschnitt ohne regionale Aufschlüsselung. In teuren Großstädten liegen einzelne Positionen — vor allem die Grundsteuer — regelmäßig deutlich darüber, ohne dass etwas falsch ist. Eine Abweichung nach oben ist deshalb ein Anlass zur Nachfrage, kein Nachweis eines Fehlers. Genau so weisen wir es in der Auswertung auch aus: Wir trennen ausdrücklich zwischen rechtlich unzulässigen Positionen (harte Beanstandung) und statistischen Auffälligkeiten (Nachfrage).",
+      "Der Betriebskostenspiegel des Deutschen Mieterbundes ist ein bundesweiter Durchschnitt ohne regionale Aufschlüsselung. In teuren Großstädten liegen einzelne Positionen, vor allem die Grundsteuer, regelmäßig deutlich darüber, ohne dass etwas falsch ist. Eine Abweichung nach oben ist deshalb ein Anlass zur Nachfrage, kein Nachweis eines Fehlers. Genau so weisen wir es in der Auswertung auch aus: Wir trennen ausdrücklich zwischen rechtlich unzulässigen Positionen (harte Beanstandung) und statistischen Auffälligkeiten (Nachfrage).",
   },
   {
     frage: "Ist das eine Rechtsberatung?",
@@ -45,12 +45,12 @@ export const FAQ_STARTSEITE = [
   {
     frage: "Was passiert, wenn die Prüfung nichts findet?",
     antwort:
-      "Dann bekommst du das ausdrücklich bestätigt — mit allen geprüften Positionen und ihren Richtwerten. Das ist kein Fehlkauf: Du weißt danach belegbar, dass deine Abrechnung im üblichen Rahmen liegt, und hast die Unterlage für deine Akten. Der beigelegte Brief ist in diesem Fall ein Antrag auf Belegeinsicht, mit dem du die Abrechnung selbst gegenprüfen kannst.",
+      "Dann bekommst du das ausdrücklich bestätigt, mit allen geprüften Positionen und ihren Richtwerten. Das ist kein Fehlkauf: Du weißt danach belegbar, dass deine Abrechnung im üblichen Rahmen liegt, und hast die Unterlage für deine Akten. Der beigelegte Brief ist in diesem Fall ein Antrag auf Belegeinsicht, mit dem du die Abrechnung selbst gegenprüfen kannst.",
   },
   {
     frage: "Bekomme ich mein Geld zurück, wenn ich unzufrieden bin?",
     antwort:
-      "Bei der Auswertung handelt es sich um einen digitalen Inhalt, der sofort nach dem Kauf bereitgestellt wird. Mit dem Kauf stimmst du der sofortigen Ausführung zu und erklärst dein Erlöschen des Widerrufsrechts (§ 356 Abs. 5 BGB) — das ist die gesetzliche Folge und steht so auch in den AGB. Wenn technisch etwas schiefgeht oder die Auswertung erkennbar fehlerhaft ist, melde dich: Solche Fälle klären wir direkt.",
+      "Bei der Auswertung handelt es sich um einen digitalen Inhalt, der sofort nach dem Kauf bereitgestellt wird. Mit dem Kauf stimmst du der sofortigen Ausführung zu und erklärst dein Erlöschen des Widerrufsrechts (§ 356 Abs. 5 BGB): das ist die gesetzliche Folge und steht so auch in den AGB. Wenn technisch etwas schiefgeht oder die Auswertung erkennbar fehlerhaft ist, melde dich: Solche Fälle klären wir direkt.",
   },
   {
     frage: "Was passiert mit meinen Daten und meiner hochgeladenen Abrechnung?",
@@ -60,7 +60,7 @@ export const FAQ_STARTSEITE = [
   {
     frage: "Warum sollte ich zahlen, wenn ich auch selbst prüfen könnte?",
     antwort:
-      "Könntest du. Der Betriebskostenspiegel ist öffentlich, die BetrKV ebenfalls. Was du dafür brauchst: den Richtwert je Position finden und umrechnen, den Umlageschlüssel und die 50/70-Regel nachvollziehen, die CO₂-Aufteilung nachrechnen und daraus einen Brief formulieren, der die richtigen Vorschriften nennt. Genau diese Arbeit nimmt dir die Auswertung ab — für " +
+      "Könntest du. Der Betriebskostenspiegel ist öffentlich, die BetrKV ebenfalls. Was du dafür brauchst: den Richtwert je Position finden und umrechnen, den Umlageschlüssel und die 50/70-Regel nachvollziehen, die CO₂-Aufteilung nachrechnen und daraus einen Brief formulieren, der die richtigen Vorschriften nennt. Genau diese Arbeit nimmt dir die Auswertung ab, für " +
       euro(BUSINESS.PREIS_AUSWERTUNG) +
       " bzw. " +
       euro(BUSINESS.PREIS_VOLL) +
@@ -72,11 +72,11 @@ export const FAQ_STARTSEITE = [
     // beantwortet die Frage, die sich beim Blick auf die Nachzahlung stellt.
     frage: "Muss ich die Nachzahlung bezahlen, wenn ich der Abrechnung widerspreche?",
     antwort:
-      "Ja — und zwar fristgerecht, sonst drohen Verzugszinsen und im Extremfall eine Kündigung wegen Zahlungsverzugs. Der richtige Weg: Überweise den Betrag und schreibe in den Verwendungszweck „Zahlung unter Vorbehalt der Überprüfung“. Damit ist die Zahlung ausdrücklich kein Anerkenntnis der Forderung. Du kommst nicht in Verzug und kannst zu viel gezahlte Beträge trotzdem zurückfordern. Wer dagegen vorbehaltlos zahlt, erschwert eine spätere Rückforderung erheblich. Ein echtes Zurückbehaltungsrecht besteht nur, solange der Vermieter dir die Belegeinsicht verweigert (§ 273 Abs. 1 BGB, BGH VIII ZR 78/05).",
+      "Ja und zwar fristgerecht, sonst drohen Verzugszinsen und im Extremfall eine Kündigung wegen Zahlungsverzugs. Der richtige Weg: Überweise den Betrag und schreibe in den Verwendungszweck „Zahlung unter Vorbehalt der Überprüfung“. Damit ist die Zahlung ausdrücklich kein Anerkenntnis der Forderung. Du kommst nicht in Verzug und kannst zu viel gezahlte Beträge trotzdem zurückfordern. Wer dagegen vorbehaltlos zahlt, erschwert eine spätere Rückforderung erheblich. Ein echtes Zurückbehaltungsrecht besteht nur, solange der Vermieter dir die Belegeinsicht verweigert (§ 273 Abs. 1 BGB, BGH VIII ZR 78/05).",
   },
   {
     frage: "Welche Frist habe ich, um zu widersprechen?",
     antwort:
-      "Nach § 556 Abs. 3 BGB kannst du Einwendungen bis zum Ablauf des zwölften Monats nach Zugang der Abrechnung geltend machen. Danach sind sie in der Regel ausgeschlossen, außer du hast die Verspätung nicht zu vertreten. Unabhängig davon muss der Vermieter dir die Abrechnung spätestens zwölf Monate nach Ende des Abrechnungszeitraums zustellen — versäumt er das, kann er eine Nachforderung meist nicht mehr durchsetzen. Beide Fristen prüfen wir mit.",
+      "Nach § 556 Abs. 3 BGB kannst du Einwendungen bis zum Ablauf des zwölften Monats nach Zugang der Abrechnung geltend machen. Danach sind sie in der Regel ausgeschlossen, außer du hast die Verspätung nicht zu vertreten. Unabhängig davon muss der Vermieter dir die Abrechnung spätestens zwölf Monate nach Ende des Abrechnungszeitraums zustellen, versäumt er das, kann er eine Nachforderung meist nicht mehr durchsetzen. Beide Fristen prüfen wir mit.",
   },
 ];
