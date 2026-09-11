@@ -189,12 +189,39 @@ export default function BriefPDF({ result, wohnung, adressen }) {
             Zahl, die er auf Nachfrage nicht herleiten kann, weil sie weder
             der Summe der Positionen noch einer Forderung entspricht. Genau
             solche Angriffsflächen soll das Schreiben vermeiden. */}
-        {hatBeanstandungen && (
-          <View style={s.tRowSum}>
-            <Text style={s.tLabel}>Betrag oberhalb der DMB-Vergleichswerte</Text>
-            <Text style={s.tValue}>{fmt(result.moegliche_ersparnis)}</Text>
-          </View>
-        )}
+        {/* ZWEITE KORREKTUR AM 11.09.2026, nach dem zweiten Echttest.
+            Die Beschriftung stimmte jetzt, die ZAHL aber immer noch nicht.
+
+            Der Brief führte nur die Versicherungen auf (300,88 € über dem
+            Richtwert), die Summenzeile zeigte trotzdem 456,87 €. Die
+            Differenz von 155,98 € stammte aus Grundsteuer und Müll, die in
+            der Tabelle des Berichts als "Erhöht" stehen, aber die Schwelle
+            für eine Beanstandung nicht erreichen und deshalb im Brief gar
+            nicht vorkommen.
+
+            result.moegliche_ersparnis summiert eben ALLE Überschreitungen,
+            auch die nicht beanstandeten. Für den Bericht ist das richtig,
+            für den Brief nicht: Dort darf nur stehen, was auch dasteht.
+            Genau danach hätte der Vermieter gefragt, und der Mieter hätte
+            die Zahl nicht erklären können.
+
+            Deshalb wird die Summe jetzt aus den Gründen gebildet, die
+            tatsächlich im Brief aufgeführt sind. Jeder Grund trägt dafür
+            seinen eigenen Betrag (Feld "betrag", gesetzt in analyse.js).
+            Fehlt er bei einem Grund, wird die Zeile ganz weggelassen, statt
+            eine unvollständige Summe zu zeigen. */}
+        {hatBeanstandungen && (() => {
+          const gruende = [...gruendeHart, ...gruendeStatistisch];
+          const alleMitBetrag = gruende.every(g => typeof g.betrag === "number" && g.betrag > 0);
+          if (!alleMitBetrag) return null;
+          const summe = gruende.reduce((a, g) => a + g.betrag, 0);
+          return (
+            <View style={s.tRowSum}>
+              <Text style={s.tLabel}>Betrag oberhalb der DMB-Vergleichswerte</Text>
+              <Text style={s.tValue}>{fmt(Math.round(summe * 100) / 100)}</Text>
+            </View>
+          );
+        })()}
         {/* Positionen ohne offiziellen Vergleichswert, siehe Kommentar zu
             offenePositionen oben. Bewusst als Frage formuliert, nicht als
             Vorwurf: Wir wissen nicht, was im Mietvertrag steht. */}

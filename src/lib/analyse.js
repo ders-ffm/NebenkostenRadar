@@ -36,10 +36,113 @@ import { THEME } from "../config/theme.js";
 // Bewusst NICHT "strassenreinigung" (reine Straßenreinigung fällt nicht
 // unter § 35a) und NICHT die "(kombiniert)"-Sammelzeilen, die nicht-
 // begünstigte Anteile enthalten — nur eindeutig zuordenbare Einzelpositionen.
-const STEUERLICH_35A = new Set([
-  "gartenpflege", "hausreinigung", "schornsteinreinigung", "aufzug",
-  "heizung_wartung", "rauchwarnmelder_wartung",
+// AUFGETEILT AM 11.09.2026. Vorher lagen alle Positionen in einem einzigen
+// Set und die PDF-Seite warf sie zu einer Summe zusammen. Das war für den
+// Nutzer wertlos, weil § 35a EStG zwei getrennte Töpfe kennt, die er in der
+// Steuererklärung auch getrennt einträgt und für die unterschiedliche
+// Höchstbeträge gelten:
+//
+//   § 35a Abs. 2 EStG  haushaltsnahe Dienstleistungen   20 %, max. 4.000 €/Jahr
+//   § 35a Abs. 3 EStG  Handwerkerleistungen             20 %, max. 1.200 €/Jahr
+//
+// Die Zuordnung folgt der Art der Tätigkeit: Wiederkehrende Arbeiten, die ein
+// Haushaltsmitglied grundsätzlich auch selbst erledigen könnte, sind
+// Dienstleistungen. Arbeiten, für die ein Handwerksbetrieb oder eine
+// zugelassene Fachkraft nötig ist, sind Handwerkerleistungen.
+//
+// Grenzfall Hauswart: Er macht beides. Die Rechtsprechung und die
+// Finanzverwaltung ordnen die typische Hauswarttätigkeit den haushaltsnahen
+// Dienstleistungen zu; reine Reparaturanteile gehören ohnehin nicht in die
+// Betriebskostenabrechnung (§ 1 Abs. 2 BetrKV) und tauchen hier deshalb
+// nicht auf. Einordnung als Dienstleistung ist damit die sichere Variante.
+//
+// Bewusst NICHT enthalten: "strassenreinigung" (öffentliche Gebühr, keine
+// Leistung im Haushalt) und die "(kombiniert)"-Sammelzeilen, die nicht
+// begünstigte Anteile enthalten.
+const STEUER_DIENSTLEISTUNG = new Set([
+  "gartenpflege", "hausreinigung", "hauswart", "schnee_eis_beseitigung",
 ]);
+const STEUER_HANDWERKER = new Set([
+  "schornsteinreinigung", "aufzug", "heizung_wartung",
+  "rauchwarnmelder_wartung", "gasleitungspruefung",
+]);
+// Bleibt bestehen, damit vorhandener Code unverändert weiterläuft.
+const STEUERLICH_35A = new Set([...STEUER_DIENSTLEISTUNG, ...STEUER_HANDWERKER]);
+
+// ───────────────────────────────────────────────────────────────────────────
+// NICHT BEGÜNSTIGTE POSTEN, ergänzt 11.09.2026 auf Stefans Hinweis:
+// "Die ganzen Steuer-Apps fragen die einzelnen Posten ab wie Müll,
+// Straßenreinigung, etc."
+//
+// Das stimmt, und es macht eine reine Liste der absetzbaren Posten unbrauchbar:
+// Wenn Taxfix nach den Müllgebühren fragt und im Bericht steht nichts dazu,
+// weiß der Kunde nicht, ob er sie vergessen hat oder ob sie nicht zählen.
+//
+// Deshalb bekommt JEDER Posten der Abrechnung eine Einordnung, auch die nicht
+// begünstigten, jeweils mit Begründung. Der Bericht wird damit zum Antwortblatt
+// für die Steuersoftware.
+//
+// Ausgerechnet Stefans zwei Beispiele sind die nicht begünstigten Fälle, und
+// die Abgrenzung ist feiner, als man denkt. BFH, Urteil vom 13.05.2020,
+// VI R 4/18, Leitsatz 1 im Wortlaut:
+//
+//   "Die Reinigung der Fahrbahn einer öffentlichen Straße ist, anders als die
+//    Reinigung des öffentlichen Gehwegs vor dem Haus, nicht als haushaltsnahe
+//    Dienstleistung nach § 35a Abs. 2 EStG begünstigt."
+//
+// Daraus folgt die Trennung: Straßenreinigung (Fahrbahn, kommunale Gebühr)
+// nein, Winterdienst und Gehwegreinigung vor dem Haus ja. Deshalb steht
+// schnee_eis_beseitigung oben bei den Dienstleistungen und strassenreinigung
+// hier unten.
+//
+// Müllgebühren sind nicht begünstigt, weil die eigentliche Leistung, die
+// Entsorgung, außerhalb des Haushalts stattfindet (FG Köln; die Revision kam
+// verspätet beim BFH an, eine höchstrichterliche Entscheidung steht deshalb
+// weiterhin aus). Wer es trotzdem angibt, riskiert nur die Streichung, keine
+// Sanktion. Der Bericht sagt das so.
+const STEUER_NICHT = new Map([
+  ["strassenreinigung", "Reinigung der öffentlichen Fahrbahn, BFH VI R 4/18. Der Winterdienst auf dem Gehweg vor dem Haus zählt dagegen mit."],
+  ["muellbeseitigung", "Die Entsorgung findet außerhalb des Haushalts statt. Bisher nur Finanzgerichte, noch keine BFH-Entscheidung."],
+  ["grundsteuer", "Eine Steuer, keine Dienstleistung."],
+  ["niederschlagswasser", "Kommunale Gebühr, keine Leistung im Haushalt."],
+  ["entwasserung", "Kommunale Gebühr, keine Leistung im Haushalt."],
+  ["kaltwasser", "Lieferung eines Stoffs, keine Dienstleistung."],
+  ["heizkosten_gesamt", "Brennstoff- und Lieferkosten. Nur die Wartung der Anlage zählt, siehe eigene Zeile."],
+  ["warmwasser_gesamt", "Wie Heizkosten: Lieferung, keine Dienstleistung."],
+  ["allgemeinstrom", "Stromlieferung, keine Dienstleistung."],
+  ["feuerversicherung", "Versicherungsprämie, keine Dienstleistung."],
+  ["sturm_hagel_versicherung", "Versicherungsprämie, keine Dienstleistung."],
+  ["leitungswasser_versicherung", "Versicherungsprämie, keine Dienstleistung."],
+  ["haftpflichtversicherung", "Versicherungsprämie, keine Dienstleistung."],
+  ["glasversicherung", "Versicherungsprämie, keine Dienstleistung."],
+  ["kabelanschluss", "Entgelt für einen Anschluss, keine Dienstleistung im Haushalt."],
+  ["gemeinschaftsantenne", "Entgelt für einen Anschluss, keine Dienstleistung im Haushalt."],
+  ["wasserzaehler", "Miete und Eichung eines Geräts, keine Arbeitsleistung im Haushalt."],
+  ["co2_abgabe", "Abgabe auf den Brennstoff, keine Dienstleistung."],
+]);
+
+// Sonderfall mit eigener Antwort: "Sonstige vereinbarte Betriebskosten" nach
+// Nr. 17 BetrKV ist ein Sammelbegriff. Was darunter abgerechnet wurde, steht
+// nur im Mietvertrag. Es kann eine begünstigte Arbeitsleistung sein (etwa
+// Dachrinnenreinigung) oder eine nicht begünstigte Gebühr. Ein pauschales Ja
+// oder Nein wäre in beide Richtungen falsch, deshalb die dritte Antwort.
+// Sie ist wichtig, weil die Steuerprogramme auch nach diesem Posten fragen.
+const STEUER_UNKLAR = new Map([
+  ["sonstiges_vereinbart", "Hängt davon ab, was dein Vermieter darunter abgerechnet hat. Steht im Mietvertrag. Ist es eine Arbeitsleistung am Haus, etwa Dachrinnenreinigung, zählt sie als Handwerkerleistung. Ist es eine Gebühr, zählt sie nicht."],
+]);
+
+// Liefert { art, grund }. art ist "dienstleistung", "handwerker", "nicht"
+// oder null (unbekannt, dann wird die Zeile im Bericht ausgelassen).
+export function steuerArtFuer(key) {
+  if (STEUER_DIENSTLEISTUNG.has(key)) return "dienstleistung";
+  if (STEUER_HANDWERKER.has(key)) return "handwerker";
+  if (STEUER_NICHT.has(key)) return "nicht";
+  if (STEUER_UNKLAR.has(key)) return "unklar";
+  return null;
+}
+export function steuerGrundFuer(key) {
+  return STEUER_NICHT.get(key) || STEUER_UNKLAR.get(key) || "";
+}
 
 // Kein `beispiel`-Feld mehr (bis 13.08.2026 gab es hier graue Platzhalter-
 // Beispielbeträge je Posten, hergeleitet aus den DMB-Richtwerten). Stefans
@@ -320,13 +423,13 @@ export function analysierePosten(w, wohn) {
       hi = "Liegt " + aK + "% über dem DMB-Durchschnitt. Bei verbrauchsabhängigen Kosten ist das ohne Weiteres möglich. Zählerstände mit dem Vorjahr vergleichen und prüfen, ob der Verbrauchsanteil zwischen 50 und 70 Prozent liegt (§ 7 Abs. 1 HeizkostenV).";
     }
     posten_bewertung.push({ posten: "Heizkosten & Warmwasser (kombiniert)", betrag: kombi, richtwert: rwK, abweichung_prozent: aK, status: st, hinweis: hi, paragraf: "§ 2 Nr. 4+5 BetrKV, § 7 HeizkostenV" });
-    if (ww > 0) posten_bewertung.push({ posten: "davon Warmwasserversorgung", betrag: ww, richtwert: 0, abweichung_prozent: 0, status: "ok", hinweis: "Bereits in der Vergleichsrechnung oben enthalten. Muss laut Gesetz separat ausgewiesen sein (§ 8 HeizkostenV).", paragraf: "§ 2 Nr. 5 BetrKV" });
+    if (ww > 0) posten_bewertung.push({ posten: "davon Warmwasserversorgung", betrag: ww, richtwert: 0, abweichung_prozent: 0, status: "ok", hinweis: "Bereits in der Vergleichsrechnung oben enthalten. Muss laut Gesetz separat ausgewiesen sein (§ 8 HeizkostenV).", paragraf: "§ 2 Nr. 5 BetrKV", steuerArt: steuerArtFuer("warmwasser_gesamt"), steuerGrund: steuerGrundFuer("warmwasser_gesamt") });
   }
 
   // CO2-Abgabe
   if (toNum(w.co2_abgabe) > 0) {
     const b = toNum(w.co2_abgabe);
-    posten_bewertung.push({ posten: "CO2-Abgabe", betrag: b, richtwert: 0, abweichung_prozent: 0, status: "pruefen", hinweis: "Vermieter muss 0-95% selbst tragen (10-Stufen-Modell). Energieausweis anfordern.", paragraf: "§ 5 CO2KostAufG" });
+    posten_bewertung.push({ posten: "CO2-Abgabe", betrag: b, richtwert: 0, abweichung_prozent: 0, status: "pruefen", hinweis: "Vermieter muss 0-95% selbst tragen (10-Stufen-Modell). Energieausweis anfordern.", paragraf: "§ 5 CO2KostAufG", steuerArt: steuerArtFuer("co2_abgabe"), steuerGrund: steuerGrundFuer("co2_abgabe") });
     widerspruch.push({ typ: "statistisch", text: "CO2-Abgabe " + fmt(b) + ": Prüfe ob Vermieteranteil korrekt abgezogen wurde (§ 5 CO2KostAufG)." });
   }
 
@@ -336,13 +439,13 @@ export function analysierePosten(w, wohn) {
     let st = "ok", hi = "Nur Betriebskostenanteile umlagefähig. Richtwert (separat abgerechnet): " + fmt(rw) + "/Jahr.";
     if (b > rw * 1.5) {
       st = "sehr_hoch";
-      widerspruch.push({ typ: "statistisch", text: "Hausmeisterkosten " + fmt(b) + " erheblich über Richtwert " + fmt(rw) + "/Jahr für " + flaeche + "m². Aufschlüsselung anfordern." });
+      widerspruch.push({ typ: "statistisch", betrag: Math.max(0, b - rw), text: "Hausmeisterkosten " + fmt(b) + " erheblich über Richtwert " + fmt(rw) + "/Jahr für " + flaeche + "m². Aufschlüsselung anfordern." });
       hi = a + "% über Richtwert! Aufschlüsselung anfordern.";
     } else if (b > rw * 1.3) {
       st = "hoch";
-      widerspruch.push({ typ: "statistisch", text: "Hausmeisterkosten " + fmt(b) + " (" + a + "% über Richtwert). Nachweis anfordern." });
+      widerspruch.push({ typ: "statistisch", betrag: Math.max(0, b - rw), text: "Hausmeisterkosten " + fmt(b) + " (" + a + "% über Richtwert). Nachweis anfordern." });
     }
-    posten_bewertung.push({ posten: "Hauswart (Hausmeister)", betrag: b, richtwert: rw, abweichung_prozent: a, status: st, hinweis: hi, paragraf: "§ 2 Nr. 14 BetrKV", steuerlich_35a: true });
+    posten_bewertung.push({ posten: "Hauswart (Hausmeister)", betrag: b, richtwert: rw, abweichung_prozent: a, status: st, hinweis: hi, paragraf: "§ 2 Nr. 14 BetrKV", steuerlich_35a: true, steuerArt: steuerArtFuer("hauswart"), steuerGrund: steuerGrundFuer("hauswart") });
   }
 
   // Wasser + Abwasser
@@ -397,9 +500,9 @@ export function analysierePosten(w, wohn) {
     // kw/ew verteilt. Gefunden + korrigiert 10.08.2026, siehe CHANGELOG.
     const richtwertKw = rw * (kw / wg);
     const richtwertEw = rw * (ew / wg);
-    if (kw > 0) posten_bewertung.push({ posten: "Wasserversorgung", betrag: kw, richtwert: richtwertKw, abweichung_prozent: a, status: st, hinweis: hi, paragraf: "§ 2 Nr. 2 BetrKV" });
-    if (ew > 0) posten_bewertung.push({ posten: "Entwässerung", betrag: ew, richtwert: richtwertEw, abweichung_prozent: a, status: st, hinweis: hi, paragraf: "§ 2 Nr. 2 BetrKV" });
-    if (nw > 0) posten_bewertung.push({ posten: "Niederschlagswasser", betrag: nw, richtwert: 0, abweichung_prozent: 0, status: "ok", hinweis: "Kommunale Gebühr.", paragraf: "§ 2 Nr. 2 BetrKV" });
+    if (kw > 0) posten_bewertung.push({ posten: "Wasserversorgung", betrag: kw, richtwert: richtwertKw, abweichung_prozent: a, status: st, hinweis: hi, paragraf: "§ 2 Nr. 2 BetrKV", steuerArt: steuerArtFuer("kaltwasser"), steuerGrund: steuerGrundFuer("kaltwasser") });
+    if (ew > 0) posten_bewertung.push({ posten: "Entwässerung", betrag: ew, richtwert: richtwertEw, abweichung_prozent: a, status: st, hinweis: hi, paragraf: "§ 2 Nr. 2 BetrKV", steuerArt: steuerArtFuer("entwasserung"), steuerGrund: steuerGrundFuer("entwasserung") });
+    if (nw > 0) posten_bewertung.push({ posten: "Niederschlagswasser", betrag: nw, richtwert: 0, abweichung_prozent: 0, status: "ok", hinweis: "Kommunale Gebühr.", paragraf: "§ 2 Nr. 2 BetrKV", steuerArt: steuerArtFuer("niederschlagswasser"), steuerGrund: steuerGrundFuer("niederschlagswasser") });
   }
 
   // Straßenreinigung + Schnee-/Eisbeseitigung — DMB weist nur einen KOMBINIERTEN
@@ -415,16 +518,16 @@ export function analysierePosten(w, wohn) {
     const rw = rj(R.strassenreinigung), a = abw(srg, rw);
     let st = "ok", hi = "Richtwert Straßenreinigung inkl. Winterdienst für " + flaeche + "m²: " + fmt(rw) + "/Jahr.";
     const bez = listeText([["Straßenreinigung", sr], ["Schnee-/Eisbeseitigung", se]]);
-    if (srg > rw * 1.8) { st = "sehr_hoch"; widerspruch.push({ typ: "statistisch", text: bez + (sr > 0 && se > 0 ? " (zusammen " + fmt(srg) + ")" : "") + " liegen " + a + "% über dem DMB-Richtwert für Straßenreinigung inkl. Winterdienst. Belege anfordern." }); hi = a + "% über DMB-Richtwert! Belege anfordern."; }
+    if (srg > rw * 1.8) { st = "sehr_hoch"; widerspruch.push({ typ: "statistisch", betrag: Math.max(0, srg - rw), text: bez + (sr > 0 && se > 0 ? " (zusammen " + fmt(srg) + ")" : "") + " liegen " + a + "% über dem DMB-Richtwert für Straßenreinigung inkl. Winterdienst. Belege anfordern." }); hi = a + "% über DMB-Richtwert! Belege anfordern."; }
     else if (srg > rw * 1.4) { st = "hoch"; hi = a + "% über DMB-Richtwert."; }
     if (sr > 0 && se > 0) {
       posten_bewertung.push({ posten: "Straßenreinigung & Winterdienst (kombiniert)", betrag: srg, richtwert: rw, abweichung_prozent: a, status: st, hinweis: hi, paragraf: "§ 2 Nr. 8 BetrKV" });
-      posten_bewertung.push({ posten: "davon Straßenreinigung", betrag: sr, richtwert: 0, abweichung_prozent: 0, status: "ok", hinweis: "Bereits in der Vergleichsrechnung oben enthalten.", paragraf: "§ 2 Nr. 8 BetrKV" });
-      posten_bewertung.push({ posten: "davon Schnee-/Eisbeseitigung", betrag: se, richtwert: 0, abweichung_prozent: 0, status: "ok", hinweis: "Bereits in der Vergleichsrechnung oben enthalten.", paragraf: "§ 2 Nr. 8 BetrKV", steuerlich_35a: true });
+      posten_bewertung.push({ posten: "davon Straßenreinigung", betrag: sr, richtwert: 0, abweichung_prozent: 0, status: "ok", hinweis: "Bereits in der Vergleichsrechnung oben enthalten.", paragraf: "§ 2 Nr. 8 BetrKV", steuerArt: steuerArtFuer("strassenreinigung"), steuerGrund: steuerGrundFuer("strassenreinigung") });
+      posten_bewertung.push({ posten: "davon Schnee-/Eisbeseitigung", betrag: se, richtwert: 0, abweichung_prozent: 0, status: "ok", hinweis: "Bereits in der Vergleichsrechnung oben enthalten.", paragraf: "§ 2 Nr. 8 BetrKV", steuerlich_35a: true, steuerArt: steuerArtFuer("schnee_eis_beseitigung"), steuerGrund: steuerGrundFuer("schnee_eis_beseitigung") });
     } else if (sr > 0) {
       posten_bewertung.push({ posten: "Straßenreinigung", betrag: sr, richtwert: rw, abweichung_prozent: a, status: st, hinweis: hi, paragraf: "§ 2 Nr. 8 BetrKV" });
     } else {
-      posten_bewertung.push({ posten: "Schnee- und Eisbeseitigung", betrag: se, richtwert: rw, abweichung_prozent: a, status: st, hinweis: hi, paragraf: "§ 2 Nr. 8 BetrKV", steuerlich_35a: true });
+      posten_bewertung.push({ posten: "Schnee- und Eisbeseitigung", betrag: se, richtwert: rw, abweichung_prozent: a, status: st, hinweis: hi, paragraf: "§ 2 Nr. 8 BetrKV", steuerlich_35a: true, steuerArt: steuerArtFuer("schnee_eis_beseitigung"), steuerGrund: steuerGrundFuer("schnee_eis_beseitigung") });
     }
   }
 
@@ -451,12 +554,15 @@ export function analysierePosten(w, wohn) {
   if (vg > 0) {
     const rw = rj(R.versicherungen), a = abw(vg, rw);
     let st = "ok", hi = "Richtwert für alle Gebäude-Sachversicherungen zusammen, " + flaeche + "m²: " + fmt(rw) + "/Jahr.";
-    if (vg > rw * 1.8) { st = "sehr_hoch"; widerspruch.push({ typ: "statistisch", text: listeText(vEinzelpositionen) + (vAnzahlBefuellt > 1 ? " (zusammen " + fmt(vg) + ")" : "") + " liegen " + a + "% über dem DMB-Richtwert für Gebäude-Sachversicherungen insgesamt. Versicherungspolicen/Prämiensteigerung anfordern." }); hi = a + "% über DMB-Richtwert (alle Versicherungen zusammen)! Nachweis anfordern."; }
+    if (vg > rw * 1.8) { st = "sehr_hoch"; widerspruch.push({ typ: "statistisch", betrag: Math.max(0, vg - rw), text: listeText(vEinzelpositionen) + (vAnzahlBefuellt > 1 ? " (zusammen " + fmt(vg) + ")" : "") + " liegen " + a + "% über dem DMB-Richtwert für Gebäude-Sachversicherungen insgesamt. Versicherungspolicen/Prämiensteigerung anfordern." }); hi = a + "% über DMB-Richtwert (alle Versicherungen zusammen)! Nachweis anfordern."; }
     else if (vg > rw * 1.4) { st = "hoch"; hi = a + "% über DMB-Richtwert (alle Versicherungen zusammen)."; }
     if (vAnzahlBefuellt > 1) {
       posten_bewertung.push({ posten: "Versicherungen (kombiniert)", betrag: vg, richtwert: rw, abweichung_prozent: a, status: st, hinweis: hi, paragraf: "§ 2 Nr. 13 BetrKV" });
       vEinzelpositionen.forEach(([label, betrag]) => {
-        if (betrag > 0) posten_bewertung.push({ posten: "davon " + label, betrag, richtwert: 0, abweichung_prozent: 0, status: "ok", hinweis: "Bereits in der Vergleichsrechnung oben enthalten.", paragraf: "§ 2 Nr. 13 BetrKV" });
+        // steuerArt fest "nicht": Alle fünf Zeilen sind Versicherungsprämien.
+        // Prämien sind keine Dienstleistung im Haushalt und damit nie nach
+        // § 35a EStG begünstigt, unabhängig von der Versicherungsart.
+        if (betrag > 0) posten_bewertung.push({ posten: "davon " + label, betrag, richtwert: 0, abweichung_prozent: 0, status: "ok", hinweis: "Bereits in der Vergleichsrechnung oben enthalten.", paragraf: "§ 2 Nr. 13 BetrKV", steuerArt: "nicht", steuerGrund: "Versicherungsprämie, keine Dienstleistung." });
       });
     } else {
       vEinzelpositionen.forEach(([label, betrag]) => {
@@ -515,9 +621,9 @@ export function analysierePosten(w, wohn) {
         });
       }
       else if (a > 40) { st = "hoch"; hi = a + "% über DMB-Richtwert. Prüfenswert."; }
-      posten_bewertung.push({ posten: p.label, betrag: b, richtwert: rw, abweichung_prozent: Math.max(0, a), status: st, hinweis: hi, paragraf: para, steuerlich_35a: STEUERLICH_35A.has(p.key) });
+      posten_bewertung.push({ posten: p.label, betrag: b, richtwert: rw, abweichung_prozent: Math.max(0, a), status: st, hinweis: hi, paragraf: para, steuerlich_35a: STEUERLICH_35A.has(p.key), steuerArt: steuerArtFuer(p.key), steuerGrund: steuerGrundFuer(p.key) });
     } else {
-      posten_bewertung.push({ posten: p.label, betrag: b, richtwert: 0, abweichung_prozent: 0, status: "pruefen", hinweis: "Kein offizieller Vergleichswert für diese Position verfügbar. Prüfe ob im Mietvertrag vereinbart und nach § 2 BetrKV zulässig.", paragraf: "§ 2 BetrKV", steuerlich_35a: STEUERLICH_35A.has(p.key) });
+      posten_bewertung.push({ posten: p.label, betrag: b, richtwert: 0, abweichung_prozent: 0, status: "pruefen", hinweis: "Kein offizieller Vergleichswert für diese Position verfügbar. Prüfe ob im Mietvertrag vereinbart und nach § 2 BetrKV zulässig.", paragraf: "§ 2 BetrKV", steuerlich_35a: STEUERLICH_35A.has(p.key), steuerArt: steuerArtFuer(p.key), steuerGrund: steuerGrundFuer(p.key) });
     }
   });
 

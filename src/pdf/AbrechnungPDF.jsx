@@ -100,7 +100,18 @@ export default function AbrechnungPDF({ result, wohnung, seite = 1, seitenGesamt
           <Text style={s.brandText}>NebenkostenRadar</Text>
         </View>
         <View>
-          <Text style={s.metaRight}>Prüfbericht · Seite {seite}/{seitenGesamt}</Text>
+          {/* KORRIGIERT 11.09.2026. Vorher stand hier eine fest gezählte
+              Seitenzahl ("Seite 1/3"), die aus PruefberichtDocument.jsx kam
+              und die Anzahl der ENTHALTENEN DOKUMENTE zählte, nicht die der
+              gedruckten Seiten. Sobald die Postentabelle über eine Seite
+              hinauslief, hatte das PDF vier Seiten und trug trotzdem "1/3"
+              im Kopf. Das fiel im zweiten Echttest auf.
+
+              react-pdf kennt die echte Seitenzahl erst beim Setzen, deshalb
+              muss sie über die render-Funktion kommen, wie im Fußbereich
+              dieser Datei auch. seite/seitenGesamt bleiben als Parameter
+              erhalten, werden hier aber nicht mehr für die Anzeige benutzt. */}
+          <Text style={s.metaRight} render={({ pageNumber, totalPages }) => `Prüfbericht · Seite ${pageNumber} von ${totalPages}`} />
           <Text style={s.metaRight}>{new Date().toLocaleDateString("de-DE")}</Text>
         </View>
       </View>

@@ -65,6 +65,11 @@ function ohneDavon(name) {
 
 export default function SteuerbonusPDF({ result, wohnung, adressen }) {
   const positionen = (result.posten_bewertung || []).filter(p => p.steuerlich_35a && p.betrag > 0);
+  // Alle Posten MIT Einordnung, also auch die nicht begünstigten. Grundlage
+  // der Einzeltabelle weiter unten. Sammelzeilen ("(kombiniert)") tragen
+  // bewusst keine Einordnung, weil sie begünstigte und nicht begünstigte
+  // Anteile mischen; für sie stehen die "davon"-Zeilen in der Liste.
+  const positionenAlle = (result.posten_bewertung || []).filter(p => p.steuerArt && p.betrag > 0);
   const summe = Math.round(positionen.reduce((s2, p) => s2 + p.betrag, 0) * 100) / 100;
   const rechnerischerHinweis = Math.round(summe * PROZENTSATZ * 100) / 100;
   const heute = new Date().toLocaleDateString("de-DE", { day: "numeric", month: "long", year: "numeric" });
@@ -84,40 +89,139 @@ export default function SteuerbonusPDF({ result, wohnung, adressen }) {
           In deiner Abrechnung wurden keine Positionen gefunden, die typischerweise unter § 35a EStG fallen (z. B. Hausmeister, Gartenpflege, Hausreinigung, Winterdienst, Schornsteinfeger, Aufzug- oder Heizungswartung). Das heißt nicht zwingend, dass es nichts Absetzbares gibt, frag im Zweifel direkt bei deinem Vermieter nach.
         </Text>
       ) : (
-        <>
-          <Text style={s.absatz}>
-            Diese Positionen aus deiner Abrechnung können nach § 35a EStG als haushaltsnahe Dienstleistung oder Handwerkerleistung absetzbar sein:
-          </Text>
+        (() => {
+          /* UMGEBAUT AM 11.09.2026 auf Stefans Vorgabe:
+             "Hier nochmal den Vermieter anzuschreiben ist doch unnötig. Hier
+             soll der Kunde nur sehen welche Posten er in seiner
+             Steuererklärung [einträgt] und an welcher Stelle."
 
-          <View style={s.table}>
-            {positionen.map((p, i) => (
-              <View key={i} style={s.tRow}>
-                <Text style={s.tLabel}>{ohneDavon(p.posten)}</Text>
-                <Text style={s.tValue}>{fmt(p.betrag)}</Text>
+             WAS ENTFERNT WURDE: Das zweite Musterschreiben an den Vermieter.
+             Begründung: Der Kunde hat auf der Seite davor bereits ein
+             Schreiben, das Belegeinsicht verlangt. Ein zweites Schreiben in
+             derselben Sache wirkt umständlich und erzeugt Arbeit, die in den
+             allermeisten Fällen unnötig ist, weil viele Abrechnungen den
+             Arbeitskostenanteil ohnehin gesondert ausweisen.
+
+             WAS STATTDESSEN KOMMT: Die beiden Töpfe des § 35a EStG getrennt,
+             mit den Beträgen und dem Ort in der Steuererklärung. Wer ein
+             Steuerprogramm nutzt, wird dort ohnehin nach genau diesen zwei
+             Zahlen gefragt und bekommt die Ermäßigung automatisch berechnet.
+
+             WARUM HIER KEINE ZEILENNUMMER STEHT: Die Formulare haben sich
+             zuletzt 2023 geändert, seitdem gibt es die eigene "Anlage
+             Haushaltsnahe Aufwendungen". Quellen nennen widersprüchliche
+             Zeilennummern, je nachdem, auf welches Jahr sie sich beziehen.
+             Eine falsche Zeilennummer wäre schlimmer als keine, deshalb wird
+             nur das Formular benannt, das seit 2023 stabil so heißt. */
+          const dienst = positionen.filter(p => p.steuerArt === "dienstleistung");
+          const handw  = positionen.filter(p => p.steuerArt === "handwerker");
+          const sumD = dienst.reduce((a, p) => a + p.betrag, 0);
+          const sumH = handw.reduce((a, p) => a + p.betrag, 0);
+          const Block = ({ titel, paragraf, hoechst, liste, summeTopf }) => liste.length === 0 ? null : (
+            <>
+              <Text style={s.anfrageTitel}>{titel}</Text>
+              <Text style={{ fontSize: 8.5, color: C.textDim, marginBottom: 4 }}>
+                {paragraf} · 20 % der Arbeitskosten, höchstens {hoechst} Ermäßigung im Jahr
+              </Text>
+              <View style={s.table}>
+                {liste.map((p, i) => (
+                  <View key={i} style={s.tRow}>
+                    <Text style={s.tLabel}>{ohneDavon(p.posten)}</Text>
+                    <Text style={s.tValue}>{fmt(p.betrag)}</Text>
+                  </View>
+                ))}
+                <View style={s.tRowSum}>
+                  <Text style={s.tLabel}>In die Steuererklärung eintragen</Text>
+                  <Text style={s.tValue}>{fmt(summeTopf)}</Text>
+                </View>
               </View>
-            ))}
-            <View style={s.tRowSum}>
-              <Text style={s.tLabel}>Summe</Text>
-              <Text style={s.tValue}>{fmt(summe)}</Text>
-            </View>
-          </View>
+            </>
+          );
+          return (
+            <>
+              <Text style={s.absatz}>
+                Diese Positionen aus deiner Abrechnung fallen unter § 35a EStG. Das Gesetz kennt zwei
+                getrennte Töpfe mit unterschiedlichen Höchstbeträgen, deshalb stehen sie hier einzeln.
+              </Text>
 
-          <View style={s.hinweisBox}>
-            <Text>
-              Rechnerischer Hinweis: 20 % davon wären {fmt(rechnerischerHinweis)}, als Ausgangswert auf Basis des vollen Betrags oben. Absetzbar ist aber nur der reine Arbeits-, Fahrt- und Maschinenkostenanteil, kein Material (§ 35a Abs. 2/3 EStG), deine Abrechnung weist das meist nicht getrennt aus. Gesetzliche Höchstbeträge: 4.000 €/Jahr für haushaltsnahe Dienstleistungen, 1.200 €/Jahr für Handwerkerleistungen.
-            </Text>
-          </View>
+              <Block titel="Haushaltsnahe Dienstleistungen" paragraf="§ 35a Abs. 2 EStG"
+                hoechst="4.000 €" liste={dienst} summeTopf={sumD} />
+              <Block titel="Handwerkerleistungen" paragraf="§ 35a Abs. 3 EStG"
+                hoechst="1.200 €" liste={handw} summeTopf={sumH} />
 
-          <Text style={s.anfrageTitel}>Anfrage an deinen Vermieter (zum Kopieren und Versenden)</Text>
-          <View style={s.anfrageBox}>
-            <Text>
-              Sehr geehrte Damen und Herren,{"\n\n"}
-              für meine Steuererklärung {wohnung.jahr} bitte ich um eine Aufschlüsselung des reinen Arbeitskostenanteils (ohne Material) für folgende Positionen aus der Betriebskostenabrechnung {wohnung.jahr}: {positionen.map(p => ohneDavon(p.posten) + " (" + fmt(p.betrag) + ")").join(", ")}.{"\n\n"}
-              Eine Bescheinigung gemäß § 35a EStG bzw. nach dem Muster der Anlage 2 zum BMF-Schreiben vom 09.11.2016 genügt.{"\n\n"}
-              Mit freundlichen Grüßen{"\n"}{adressen.mieterName}
-            </Text>
-          </View>
-        </>
+              {/* TABELLE ALLER POSTEN, ergänzt 11.09.2026 auf Stefans Hinweis:
+                  "Posten wie Winterdienst, Rauchmelder etc. werden einzeln
+                  abgefragt, zumindest bei den Apps und Steuerhelfern."
+
+                  Genau deshalb reicht es nicht, nur zwei Summen auszuweisen.
+                  Wenn das Programm nach den Müllgebühren fragt und im Bericht
+                  steht nichts dazu, weiß der Kunde nicht, ob er sie vergessen
+                  hat oder ob sie nicht zählen. Diese Tabelle beantwortet jede
+                  Einzelfrage, auch die nach nicht begünstigten Posten. */}
+              <Text style={s.anfrageTitel}>Jeder Posten einzeln, für die Abfrage im Steuerprogramm</Text>
+              <Text style={{ fontSize: 8.5, color: C.textDim, marginBottom: 4 }}>
+                Programme wie Taxfix, WISO, Check24 oder Elster fragen Posten einzeln ab.
+                Hier steht zu jedem, ob und wohin er gehört.
+              </Text>
+              <View style={s.table}>
+                {positionenAlle.map((p, i) => (
+                  <View key={i} style={s.tRow}>
+                    <Text style={[s.tLabel, { flex: 2 }]}>{ohneDavon(p.posten)}</Text>
+                    <Text style={[s.tValue, { flex: 0.8 }]}>{fmt(p.betrag)}</Text>
+                    <Text style={[s.tValue, { flex: 1.6, textAlign: "right",
+                      color: p.steuerArt === "nicht" ? C.textDim : C.text }]}>
+                      {p.steuerArt === "dienstleistung" ? "haushaltsnahe Dienstleistung"
+                        : p.steuerArt === "handwerker" ? "Handwerkerleistung"
+                        : p.steuerArt === "unklar" ? "kommt darauf an" : "zählt nicht"}
+                    </Text>
+                  </View>
+                ))}
+              </View>
+
+              {positionenAlle.some(p => (p.steuerArt === "nicht" || p.steuerArt === "unklar") && p.steuerGrund) && (
+                <View style={{ marginTop: 2, marginBottom: 8 }}>
+                  {positionenAlle.filter(p => (p.steuerArt === "nicht" || p.steuerArt === "unklar") && p.steuerGrund)
+                    .filter((p, i, arr) => arr.findIndex(q => q.steuerGrund === p.steuerGrund) === i)
+                    .map((p, i) => (
+                      <Text key={i} style={{ fontSize: 7.5, color: C.textDim, lineHeight: 1.4 }}>
+                        {ohneDavon(p.posten)}: {p.steuerGrund}
+                      </Text>
+                    ))}
+                </View>
+              )}
+
+              <Text style={s.anfrageTitel}>Wo das in die Steuererklärung gehört</Text>
+              <View style={s.hinweisBox}>
+                <Text>
+                  Die begünstigten Posten gehören in die <Text style={{ fontFamily: "Poppins", fontWeight: 600 }}>Anlage
+                  Haushaltsnahe Aufwendungen</Text>, getrennt nach den beiden Töpfen oben. Die Ermäßigung
+                  zieht das Finanzamt direkt von deiner Steuerschuld ab, nicht nur vom zu versteuernden
+                  Einkommen. Sie wirkt also voll.
+                  {"\n\n"}
+                  Benutzt du ein Steuerprogramm, trägst du die Posten einzeln ein, so wie das Programm
+                  sie abfragt. Die Einordnung in die richtige Kategorie, die Berechnung der 20 Prozent
+                  und die Prüfung der Höchstbeträge übernimmt es selbst. Selbst rechnen musst du nichts.
+                </Text>
+              </View>
+
+              <Text style={s.anfrageTitel}>Ein Punkt, den du vorher prüfen solltest</Text>
+              <View style={s.hinweisBox}>
+                <Text>
+                  Absetzbar ist nur der reine Arbeits-, Fahrt- und Maschinenkostenanteil, nicht das
+                  Material (§ 35a Abs. 2 und 3 EStG). Die Beträge oben sind die vollen Positionen aus
+                  deiner Abrechnung.
+                  {"\n\n"}
+                  Schau deshalb zuerst in deine Abrechnung: Viele Vermieter und Hausverwaltungen weisen
+                  den Arbeitskostenanteil bereits gesondert aus, oft in einem eigenen Abschnitt mit der
+                  Überschrift „§ 35a EStG“, „haushaltsnahe Dienstleistungen“ oder „Bescheinigung“.
+                  Findest du das, nimm diese Zahlen statt der Beträge oben. Findest du es nicht, kannst
+                  du die Bescheinigung bei deinem Vermieter anfordern; er ist dazu zwar nicht
+                  ausdrücklich verpflichtet, stellt sie aber in der Regel aus.
+                </Text>
+              </View>
+            </>
+          );
+        })()
       )}
 
       <Text style={{ fontSize: 8.5, color: C.textDim }}>{(adressen.mieterOrt || "").trim()}, {heute}</Text>

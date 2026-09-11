@@ -122,6 +122,96 @@ Details, Quellen und die Bewertung Frankreichs in `planung/europa-potenzial-nkr.
 
 ---
 
+## 11.09.2026 (zweiter Durchgang) — Reparaturen bestätigt, Steuerseite umgebaut, zwei weitere Fehler gefunden
+
+Stefan hat mit derselben Abrechnung erneut getestet, inklusive der absichtlich doppelt hochgeladenen Seite.
+
+### Die Reparaturen greifen
+
+| | vorher | jetzt |
+|---|---|---|
+| Erkannte Positionen | 24 | **21** |
+| CO2-Abgabe 12,00 € (erfunden) | im Bericht | **weg** |
+| Entwässerung 25,00 € (erfunden) | im Bericht | **weg** |
+| Gemeinschaftsantenne 78,00 € (erfunden) | im Bericht | **weg** |
+| Wasserversorgung | „Stark erhöht", Doppelberechnung behauptet | **Unauffällig** |
+| Heizkosten | Beanstandung | **Unauffällig** |
+| Beanstandungen im Brief | 6 | **1** |
+
+Der Erklärblock zu Verbrauchsposten steht wie vorgesehen auf Seite 2.
+
+### Neuer Fehler 1: Die Summe im Brief enthielt Positionen, die im Brief nicht vorkamen
+
+Der Brief führte **nur** die Versicherungen auf (300,88 € über dem Richtwert). Die Summenzeile darunter zeigte trotzdem **456,87 €**. Die Differenz von 155,98 € stammte aus Grundsteuer (73,98 €) und Müllbeseitigung (82,00 €). Beide stehen im Bericht als „Erhöht", erreichen aber die Schwelle für eine Beanstandung nicht und tauchen im Brief deshalb gar nicht auf.
+
+Nach Stefans Maßstab („der Vermieter darf zu unseren Aussagen keine Rückfragen haben") ist das der schlimmste Fehlertyp: Der Vermieter fragt, wie die Zahl zustande kommt, und der Mieter kann es nicht erklären.
+
+**Ursache:** Die Zeile benutzte `result.moegliche_ersparnis`, und das summiert alle Überschreitungen, auch die nicht beanstandeten. Für den Bericht richtig, für den Brief falsch.
+
+**Behoben:** Jeder Beanstandungsgrund trägt jetzt seinen eigenen Betrag (`betrag` in `analyse.js`), und der Brief bildet die Summe aus genau den Gründen, die er auch auflistet. Fehlt bei einem Grund der Betrag, entfällt die Summenzeile ganz, statt eine unvollständige Zahl zu zeigen. Das betrifft die Prüfhinweise zu Kabelanschluss und CO2-Abgabe, die keinen Vergleichswert haben und deshalb bewusst keinen Betrag tragen.
+
+Ergebnis im Testfall: **300,88 €**, exakt die eine aufgeführte Position.
+
+### Neuer Fehler 2: „Seite 1/3" bei einem vierseitigen PDF
+
+Der Kopf zählte die enthaltenen Teildokumente (Bericht, Brief, Steuerseite), nicht die gedruckten Seiten. Sobald die Postentabelle über eine Seite hinauslief, hatte das PDF vier Seiten und trug trotzdem „1/3". Jetzt kommt die Zahl über die `render`-Funktion von react-pdf, also aus dem tatsächlichen Satz.
+
+### Steuerseite umgebaut
+
+Stefans Vorgabe: „Der Steuertipp gefällt mir nicht. Hier nochmal den Vermieter anzuschreiben ist doch unnötig. Hier soll der Kunde nur sehen welche Posten er in seiner Steuererklärung [einträgt] und an welcher Stelle."
+
+**Entfernt:** das zweite Musterschreiben an den Vermieter. Der Kunde hat auf der Seite davor bereits ein Schreiben; ein zweites in derselben Sache erzeugt Arbeit, die meist unnötig ist, weil viele Abrechnungen den Arbeitskostenanteil ohnehin gesondert ausweisen.
+
+**Neu: die beiden Töpfe des § 35a EStG getrennt.** Bisher warf der Code alle Positionen in eine Summe. Das war für den Nutzer wertlos, weil das Gesetz zwei Töpfe mit verschiedenen Höchstbeträgen kennt, die auch getrennt eingetragen werden:
+
+| Topf | Vorschrift | Höchstbetrag | im Testfall |
+|---|---|---|---|
+| Haushaltsnahe Dienstleistungen | § 35a Abs. 2 EStG | 4.000 €/Jahr | Hauswart, Schnee, Hausreinigung, Gartenpflege = **341,55 €** |
+| Handwerkerleistungen | § 35a Abs. 3 EStG | 1.200 €/Jahr | Schornsteinreinigung, Rauchwarnmelder = **9,75 €** |
+
+**Neu: wo es hingehört.** Beide Beträge gehören in die *Anlage Haushaltsnahe Aufwendungen*. Dazu der Hinweis, dass Steuerprogramme wie Taxfix, WISO, Check24 oder Elster ohnehin nach genau diesen zwei Zahlen fragen und die 20 Prozent samt Höchstbetragsprüfung selbst rechnen.
+
+**Bewusst ohne Zeilennummer.** Die Formulare haben sich 2023 geändert, seitdem gibt es die eigene Anlage. Quellen nennen widersprüchliche Zeilennummern, je nach Bezugsjahr. Eine falsche Zeilennummer wäre schlimmer als keine.
+
+### Nachtrag am selben Tag: Tabelle mit jedem einzelnen Posten
+
+Stefans Korrektur: „Die ganzen Steuer-Apps fragen die einzelnen Posten ab wie Müll, Straßenreinigung, etc." und danach „Posten wie Winterdienst, Rauchmelder etc. werden einzeln abgefragt, zumindest bei den Apps und Steuerhelfern."
+
+Damit reichen zwei Summen nicht. Fragt Taxfix nach den Müllgebühren und im Bericht steht nichts dazu, weiß der Kunde nicht, ob er sie übersehen hat oder ob sie nicht zählen.
+
+**Neu:** eine Tabelle mit **jedem** Posten der Abrechnung und seiner Einordnung, auch den nicht begünstigten, jeweils mit Begründung. Vier Antworten sind möglich:
+
+| Antwort | Bedeutung |
+|---|---|
+| haushaltsnahe Dienstleistung | § 35a Abs. 2 EStG |
+| Handwerkerleistung | § 35a Abs. 3 EStG |
+| zählt nicht | mit Begründung, siehe unten |
+| kommt darauf an | nur „Sonstige vereinbarte Betriebskosten" |
+
+#### Ausgerechnet Stefans Beispiele sind die nicht begünstigten, und die Abgrenzung ist feiner als gedacht
+
+BFH, Urteil vom 13.05.2020, VI R 4/18, Leitsatz 1 im Wortlaut von bundesfinanzhof.de:
+
+> „Die Reinigung der Fahrbahn einer öffentlichen Straße ist ‑‑anders als die Reinigung des öffentlichen Gehwegs vor dem Haus‑‑ nicht als haushaltsnahe Dienstleistung nach § 35a Abs. 2 EStG begünstigt."
+
+Daraus folgt die Trennung, die jetzt im Code steht: **Straßenreinigung nein, Winterdienst und Gehwegreinigung vor dem Haus ja.** Beide stehen in der Abrechnung oft in einer Zeile und wurden bisher gemeinsam behandelt.
+
+Leitsatz 2 desselben Urteils ist ebenfalls vermerkt: Arbeiten in der Werkstatt des Handwerkers sind nicht nach § 35a Abs. 3 EStG begünstigt.
+
+**Müllgebühren:** nicht begünstigt, weil die eigentliche Leistung außerhalb des Haushalts stattfindet. Bisher nur Finanzgerichte, eine BFH-Entscheidung steht aus (die Revision ging verspätet ein). Der Bericht sagt genau das, statt ein sicheres Nein zu behaupten.
+
+**„Sonstige vereinbarte Betriebskosten"** bekommt bewusst keine Ja-oder-Nein-Antwort. Was darunter abgerechnet wurde, steht nur im Mietvertrag: Dachrinnenreinigung wäre eine Handwerkerleistung, eine Gebühr wäre es nicht. Ein pauschales Urteil wäre in beide Richtungen falsch.
+
+Nur die Sammelzeilen („Heizkosten & Warmwasser (kombiniert)", „Straßenreinigung & Winterdienst (kombiniert)", „Versicherungen (kombiniert)") tragen keine Einordnung. Das ist gewollt, sie mischen begünstigte und nicht begünstigte Anteile; ihre Einzelposten stehen darunter.
+
+**Beibehalten, weil es sonst falsch würde:** der Hinweis, dass nur der Arbeits-, Fahrt- und Maschinenkostenanteil absetzbar ist, nicht das Material, und dass viele Abrechnungen diesen Anteil bereits in einem eigenen Abschnitt ausweisen. Wer den findet, soll diese Zahlen nehmen.
+
+### Zwischenfall bei der Umsetzung
+
+Das Skript, das den Beanstandungsgründen ihre Beträge angehängt hat, setzte `rw` auch dort ein, wo die Variable nicht existiert (Kabelanschluss, CO2-Abgabe). Die Konsistenzprüfung hat das sofort gemeldet: neun Abstürze in 824 Einzelprüfungen. Behoben, danach wieder 950 Prüfungen ohne Verletzung.
+
+---
+
 ## 11.09.2026 — Echttest mit Stefans eigener Abrechnung: drei erfundene Positionen, Verbrauchsposten werden nicht mehr beanstandet
 
 Der wichtigste Eintrag seit Projektbeginn. Stefan hat seine echte Abrechnung (ABG Frankfurt Holding, 80,55 m², Abrechnungsjahr 2025) durch den fertigen Funnel geschickt. Das Ergebnis war unbrauchbar, und die Ursachenanalyse hat zwei grundsätzliche Fehler freigelegt.
