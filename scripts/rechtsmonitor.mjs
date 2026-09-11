@@ -123,38 +123,109 @@ function bereinigeCiteTags(wert) {
   return wert;
 }
 // ── Unsplash: lizenzfreies Titelbild ─────────────────────────────────────────
-// Unsplash-Lizenz: kostenlos, kommerzielle Nutzung erlaubt
-// Pflicht: UTM-Parameter im URL (Attribution)
-// bekannteBilder: Liste bereits verwendeter Bild-URLs — verhindert, dass zwei
-// thematisch ähnliche Artikel zufällig dasselbe Unsplash-Top-Ergebnis bekommen.
+//
+// KOMPLETT ÜBERARBEITET AM 10.09.2026. Vorgabe von Stefan: „Bitte dafür
+// sorgen, dass die Bilder immer einzigartig sind und sich nie wiederholen."
+//
+// In der alten Fassung konnte die Duplikatsperre GAR NICHT GREIFEN. Sie
+// verglich so:
+//     bekannteBilder.some(url => url.includes(foto.id))
+// `foto.id` ist die Unsplash-Foto-ID wie "VZDzvfLnuBw". Die kommt in der
+// Bild-URL aber überhaupt nicht vor — die sieht so aus:
+//     https://images.unsplash.com/photo-1772588627342-5ec373e236d8
+// Der Vergleich war also immer falsch, die Sperre nie aktiv, und es wurde
+// stets das erste Suchergebnis genommen. Genau dadurch teilten sich am
+// 10.09.2026 zweiundzwanzig Artikel acht Bilder.
+//
+// Verglichen wird jetzt über den URL-Bestandteil `photo-...`, der das Bild
+// tatsächlich identifiziert (siehe bildKennung()).
+//
+// DREI WEITERE PROBLEME, die dabei mit behoben wurden:
+//
+// 1. PREMIUM-BILDER. Die Unsplash-Suche liefert auch Unsplash+ Treffer
+//    (`plus.unsplash.com/premium_photo-...`). Die setzen ein kostenpflichtiges
+//    Abo voraus und dürfen hier nicht verwendet werden. Sie werden jetzt
+//    herausgefiltert.
+//
+// 2. FESTE RÜCKFALLBILDER. Ohne API-Schlüssel gab es sechs feste URLs — bei
+//    mehreren Artikeln zum selben Thema also garantiert Dubletten. Jetzt gibt
+//    es einen Pool, aus dem nur noch nicht verwendete Bilder genommen werden.
+//
+// 3. STILLES AUFGEBEN. Fand die Suche kein freies Bild, nahm die alte Fassung
+//    trotzdem `kandidaten[0]` — also womöglich ein Duplikat. Jetzt wird
+//    stattdessen mit breiteren Suchbegriffen nachgefasst, und wenn auch das
+//    nichts bringt, gibt die Funktion null zurück. Der Artikel wird dann
+//    NICHT eingefügt, mit deutlicher Meldung im Log. Lieber ein Artikel
+//    weniger als ein wiederholtes Bild.
+//
+// Unsplash-Lizenz: kostenlos, kommerzielle Nutzung erlaubt.
+// Pflicht laut Lizenz: UTM-Parameter in der URL (Attribution).
+
+// Identität eines Bildes = der Pfadbestandteil "photo-...". Query-Parameter
+// (Breite, Qualität, UTM) gehören nicht dazu, sonst gälten zwei Varianten
+// desselben Bildes als verschieden.
+function bildKennung(url) {
+  const treffer = String(url || '').match(/photo-[0-9a-zA-Z_-]+/);
+  return treffer ? treffer[0] : null;
+}
+
+function istFreieLizenz(url) {
+  return String(url || '').startsWith('https://images.unsplash.com/photo-');
+}
+
+// Rückfallbilder für den Fall, dass kein UNSPLASH_ACCESS_KEY gesetzt ist.
+// Alle am 10.09.2026 geprüft: freie Lizenz, ladbar, und keines davon wird
+// bereits von einem Artikel verwendet. Wer hier ergänzt: bitte vorher gegen
+// die Bilder in src/artikel.js abgleichen.
+const RUECKFALL_BILDER = [
+  'https://images.unsplash.com/photo-1460408037948-b89a5e837b41',
+  'https://images.unsplash.com/photo-1560518883-ce09059eeffa',
+  'https://images.unsplash.com/photo-1721932423849-e9033192b190',
+  'https://images.unsplash.com/photo-1784407272647-2c452493dd9f',
+  'https://images.unsplash.com/photo-1707902665498-a202981fb5ac',
+  'https://images.unsplash.com/photo-1460317442991-0ec209397118',
+  'https://images.unsplash.com/photo-1768158989131-64cbff67f292',
+  'https://images.unsplash.com/photo-1625225230517-7426c1be750c',
+];
+
+async function sucheBild(query, verbraucht) {
+  const res = await fetch(
+    `https://api.unsplash.com/search/photos?query=${encodeURIComponent(query)}&per_page=30&orientation=landscape&content_filter=high`,
+    { headers: { Authorization: `Client-ID ${UNSPLASH_KEY}` } }
+  );
+  if (!res.ok) return null;
+  const data = await res.json();
+  for (const foto of (data.results || [])) {
+    const url = (foto.urls?.raw || foto.urls?.regular || '').split('?')[0];
+    if (!istFreieLizenz(url)) continue;            // kein Unsplash+ Premium
+    const kennung = bildKennung(url);
+    if (!kennung || verbraucht.has(kennung)) continue;
+    return url;
+  }
+  return null;
+}
+
 async function getBild(query, bekannteBilder = []) {
-  const fallbacks = {
-    default:    "https://images.unsplash.com/photo-1450101499163-c8848c66ca85?w=800&q=80",
-    wohnung:    "https://images.unsplash.com/photo-1460472178825-e5240623afd5?w=800&q=80",
-    gericht:    "https://images.unsplash.com/photo-1589829545856-d10d557cf95f?w=800&q=80",
-    dokument:   "https://images.unsplash.com/photo-1568992687947-868a62a9f521?w=800&q=80",
-    heizung:    "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=800&q=80",
-    gebaeude:   "https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=800&q=80",
-  };
-  if (!UNSPLASH_KEY) {
-    const key = Object.keys(fallbacks).find(k => query.toLowerCase().includes(k)) || 'default';
-    return fallbacks[key];
+  const verbraucht = new Set(bekannteBilder.map(bildKennung).filter(Boolean));
+  const fertig = url => `${url}?w=800&q=80&utm_source=nebenkostenradar&utm_medium=referral`;
+
+  if (UNSPLASH_KEY) {
+    // Erst der thematische Begriff, dann zwei breitere Versuche.
+    for (const versuch of [query, `${query} building`, 'apartment building germany']) {
+      try {
+        const gefunden = await sucheBild(versuch, verbraucht);
+        if (gefunden) return fertig(gefunden);
+      } catch { /* nächster Versuch */ }
+    }
   }
-  try {
-    const res = await fetch(
-      `https://api.unsplash.com/search/photos?query=${encodeURIComponent(query)}&per_page=5&orientation=landscape&content_filter=high`,
-      { headers: { Authorization: `Client-ID ${UNSPLASH_KEY}` } }
-    );
-    const data = await res.json();
-    const kandidaten = data.results || [];
-    // Erstes Ergebnis nehmen, dessen Foto-ID noch bei keinem bestehenden Artikel verwendet wird
-    const passendesFoto = kandidaten.find(foto => !bekannteBilder.some(url => url.includes(foto.id)));
-    const foto = passendesFoto || kandidaten[0];
-    // UTM-Parameter Pflicht laut Unsplash Lizenz
-    return foto ? `${foto.urls.regular}&utm_source=nebenkostenradar&utm_medium=referral` : fallbacks.default;
-  } catch {
-    return fallbacks.default;
-  }
+
+  const frei = RUECKFALL_BILDER.find(url => !verbraucht.has(bildKennung(url)));
+  if (frei) return fertig(frei);
+
+  // Bewusst null: Der Aufrufer fügt den Artikel dann nicht ein.
+  console.error(`  ! Kein unverbrauchtes Bild für "${query}" gefunden — Artikel wird übersprungen.`);
+  console.error('    Abhilfe: UNSPLASH_ACCESS_KEY setzen oder RUECKFALL_BILDER in scripts/rechtsmonitor.mjs erweitern.');
+  return null;
 }
 // ── Bestehende Artikel laden (für Duplikat-Prüfung + interne Verlinkung) ─────
 // Dynamischer Import statt Text-Parsing: robuster, da die Datei eine echte
@@ -429,6 +500,13 @@ async function main() {
     try {
       const artikel = await generiereArtikel(thema, id, bestehendeArtikel);
       const bild = await getBild(artikel.unsplash_query || 'apartment building', bekannteBilder);
+      // Ohne eigenes Bild wird der Artikel NICHT angelegt (Vorgabe vom
+      // 10.09.2026: Bilder dürfen sich nie wiederholen). getBild() hat den
+      // Grund bereits ausgegeben.
+      if (!bild) {
+        console.error(`  ! Artikel "${artikel.titel}" nicht eingefügt, weil kein eigenes Bild verfügbar war.`);
+        continue;
+      }
       const eingefuegt = fuegeArtikelEin(artikel, bild);
       if (eingefuegt) {
         bestehendeArtikel.push({ id: artikel.id, titel: artikel.titel, bild, datum: artikel.datum }); // für evtl. weitere Themen im selben Lauf

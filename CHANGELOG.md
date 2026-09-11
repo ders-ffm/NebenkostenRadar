@@ -122,6 +122,81 @@ Details, Quellen und die Bewertung Frankreichs in `planung/europa-potenzial-nkr.
 
 ---
 
+## 10.09.2026 — Bild-Duplikate strukturell verhindert · Indexierung angestoßen
+
+Stefans Vorgabe nach dem Deploy: „Bitte dafür sorgen, dass die Bilder immer einzigartig sind und sich nie wiederholen." Also nicht nur einmal aufräumen, sondern dauerhaft absichern.
+
+### Der eigentliche Grund für die Duplikate: eine Sperre, die nie greifen konnte
+
+`scripts/rechtsmonitor.mjs` hatte längst eine Duplikatsprüfung. Sie verglich so:
+
+```js
+bekannteBilder.some(url => url.includes(foto.id))
+```
+
+`foto.id` ist die Unsplash-Foto-ID, etwa `VZDzvfLnuBw`. In der Bild-URL kommt die aber **überhaupt nicht vor** — die sieht so aus:
+
+```
+https://images.unsplash.com/photo-1772588627342-5ec373e236d8
+```
+
+Der Vergleich war also immer `false`, die Sperre nie aktiv, und es wurde stets das erste Suchergebnis genommen. Genau dadurch teilten sich 22 Artikel acht Bilder. Der Code sah korrekt aus und tat nichts — die unangenehmste Sorte Fehler.
+
+Verglichen wird jetzt über den Pfadbestandteil `photo-…`, der das Bild tatsächlich identifiziert. Query-Parameter (Breite, Qualität, UTM) bleiben außen vor, sonst gälten zwei Varianten desselben Bildes als verschieden.
+
+### Drei weitere Schwachstellen, die dabei mit behoben wurden
+
+1. **Premium-Bilder.** Die Unsplash-Suche liefert auch Unsplash+ Treffer (`plus.unsplash.com/premium_photo-…`). Die setzen ein kostenpflichtiges Abo voraus. Sie werden jetzt herausgefiltert.
+2. **Feste Rückfallbilder.** Ohne API-Schlüssel gab es sechs fest verdrahtete URLs — bei mehreren Artikeln zum selben Thema also garantiert Dubletten. Ersetzt durch einen Pool von acht geprüften Bildern, aus dem nur unverbrauchte genommen werden.
+3. **Stilles Aufgeben.** Fand die Suche kein freies Bild, nahm die alte Fassung trotzdem `kandidaten[0]` — also womöglich ein Duplikat. Jetzt wird mit zwei breiteren Suchbegriffen nachgefasst; bringt auch das nichts, gibt die Funktion `null` zurück und **der Artikel wird nicht eingefügt**, mit deutlicher Meldung im Log. Lieber ein Artikel weniger als ein wiederholtes Bild.
+
+### Zusätzliche Absicherung im Test
+
+Ein repariertes Skript allein genügt nicht — der Fehler war jahrelang unsichtbar. `scripts/seo-check.mjs` prüft jetzt zusätzlich alle Artikelbilder auf: doppelte Verwendung, Unsplash+ Premium-URLs, fehlende oder zu kurze Alt-Texte, und ob die Zahl der `bild`- und `bildAlt`-Einträge übereinstimmt.
+
+Beide neuen Regeln wurden durch Gegenprobe verifiziert:
+
+| Test | Ergebnis |
+|---|---|
+| Normalzustand | 0 Verstöße |
+| Künstlich eingebautes Duplikat | erkannt: „Artikelbild doppelt verwendet: photo-1772588627342-… (Artikel 1 und 2)" |
+| Künstlich eingebautes Premium-Bild | erkannt: „Unsplash+ Premium-Bild — kostenpflichtig, nicht zulässig" |
+| Nach Zurücksetzen | wieder 0 Verstöße |
+
+### Indexierung in der Search Console
+
+Sitemap neu eingereicht (`https://nebenkostenradar.com/sitemap.xml`) — sie stand noch bei 13 erkannten Seiten, enthält jetzt 26.
+
+Einzeln zur Indexierung angemeldet, bis Google das Tageskontingent gesperrt hat („Kontingent überschritten"):
+
+| # | URL | Status vorher |
+|---|---|---|
+| 1 | `/faq` | URL war Google nicht bekannt |
+| 2 | `/` | indexiert, wegen Umbau neu angemeldet |
+| 3 | `/ueber-uns` | indexiert, wegen korrigiertem Canonical neu angemeldet |
+| 4 | `/ratgeber/belegeinsicht-nebenkostenabrechnung-verlangen` | nicht bekannt |
+| 5 | `/ratgeber/umlageschluessel-nebenkostenabrechnung-pruefen` | nicht bekannt |
+| 6 | `/ratgeber/nicht-umlagefaehige-nebenkosten` | nicht bekannt |
+| 7 | `/ratgeber/nebenkosten-nachzahlung-nicht-zahlen` | nicht bekannt |
+| 8 | `/ratgeber/keine-nebenkostenabrechnung-erhalten` | nicht bekannt |
+| 9 | `/ratgeber/nebenkostenabrechnung-formell-unwirksam` | nicht bekannt |
+
+**Noch offen** (Kontingent erschöpft, frühestens am Folgetag möglich): `/ratgeber` sowie die Artikel zu Aufzugskosten, sonstigen Betriebskosten, Gartenpflege, Versicherungen, Leerstand und Abrechnung nach Auszug. Sie stehen alle in der neu eingereichten Sitemap und werden dadurch ohnehin gefunden — die Einzelanmeldung beschleunigt es nur.
+
+Zum Stand: Die Property hatte vor dem Deploy 12 indexierte und 4 nicht indexierte Seiten.
+
+### Live-Kontrolle nach dem Deploy
+
+| Prüfung | Ergebnis |
+|---|---|
+| Alle 29 Seiten live: Canonical, og:url, Titel, twitter:title, og:image | 0 Probleme |
+| `/og-bild.png` erreichbar | Status 200 |
+| Ratgeber-Übersicht | 22 Karten, 22 Bilder, 22 eindeutig, 0 kaputt, 0 Premium |
+| Startseite | Preise korrekt als „9,99 €", „Mieter" fünfmal im Quelltext |
+| Sitemap live | 26 URLs |
+
+---
+
 ## 10.09.2026 — Startseite entschlackt, Zielgruppe Mieter benannt, 22 eigene Artikelbilder
 
 Drei Rückmeldungen von Stefan nach dem Durchsehen: wiederholte Bilder gehen nicht, die Startseite ist zu voll gepackt, und nirgends steht, dass es um die Nebenkostenabrechnung **für Mieter** geht.

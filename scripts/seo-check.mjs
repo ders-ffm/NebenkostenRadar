@@ -127,6 +127,45 @@ function main() {
   // Das Vorschaubild muss auch tatsächlich ausgeliefert werden.
   if (!existsSync(join(DIST, "og-bild.png"))) verstoesse.push("dist/og-bild.png fehlt — og:image zeigt ins Leere");
 
+  // ── Artikelbilder ───────────────────────────────────────────────────────
+  // Vorgabe von Stefan am 10.09.2026: „Bitte dafür sorgen, dass die Bilder
+  // immer einzigartig sind und sich nie wiederholen."
+  //
+  // Der Rechtsmonitor legt monatlich automatisch Artikel an. Seine
+  // Duplikatsperre war jahrelang defekt (sie verglich die Unsplash-Foto-ID
+  // gegen die Bild-URL, in der diese ID gar nicht vorkommt) — deshalb reicht
+  // es nicht, das Skript zu reparieren. Hier wird zusätzlich geprüft, damit
+  // ein Duplikat nicht unbemerkt live gehen kann.
+  //
+  // Verglichen wird der Pfadbestandteil "photo-...", nicht die ganze URL:
+  // Sonst würden zwei Varianten desselben Bildes (andere Breite, anderer
+  // UTM-Parameter) fälschlich als verschieden durchgehen.
+  const artikelPfad = join(ROOT, "src/artikel.js");
+  if (existsSync(artikelPfad)) {
+    const quelle = readFileSync(artikelPfad, "utf8");
+    const bilder = [...quelle.matchAll(/"?bild"?:\s*"([^"]+)"/g)].map(m => m[1]);
+    const altTexte = [...quelle.matchAll(/"?bildAlt"?:\s*"([^"]*)"/g)].map(m => m[1]);
+    const kennungen = bilder.map(u => (u.match(/photo-[0-9a-zA-Z_-]+/) || [u])[0]);
+
+    const gesehen = new Map();
+    kennungen.forEach((k, i) => {
+      if (gesehen.has(k)) verstoesse.push(`Artikelbild doppelt verwendet: ${k} (Artikel ${gesehen.get(k) + 1} und ${i + 1})`);
+      else gesehen.set(k, i);
+    });
+
+    bilder.forEach((u, i) => {
+      if (u.includes("premium_photo") || u.includes("plus.unsplash.com"))
+        verstoesse.push(`Artikel ${i + 1}: Unsplash+ Premium-Bild — kostenpflichtig, nicht zulässig (${u.slice(0, 60)})`);
+    });
+
+    altTexte.forEach((a, i) => {
+      if (!a || a.trim().length < 8) verstoesse.push(`Artikel ${i + 1}: bildAlt fehlt oder ist zu kurz`);
+    });
+
+    if (bilder.length !== altTexte.length)
+      verstoesse.push(`Artikelbilder: ${bilder.length} bild-Einträge, aber ${altTexte.length} bildAlt-Einträge`);
+  }
+
   // FAQPage-Markup gehört genau auf /faq und nirgendwo sonst: strukturierte
   // Daten ohne passenden sichtbaren Inhalt wertet Google ab.
   const faqHtml = lies("/faq");
