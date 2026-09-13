@@ -50,7 +50,11 @@ export default function EuroInput({ label, value, onChange, tip, pflicht, warn }
       <div style={{ flex: 1, minWidth: 0, marginRight: 10, paddingTop: 2 }}>
         <div style={{ fontSize: 13, color: filled ? C.text : C.textMuted, fontWeight: filled ? 500 : 400, fontFamily: THEME.font.body }}>
           {label}
-          {pflicht && <span style={{ color: C.accent, marginLeft: 4, fontSize: 10 }}>✦ Pflicht</span>}
+          {/* GEÄNDERT 13.09.2026: hieß "✦ Pflicht". Es ist keine Pflicht mehr,
+              siehe Begründung bei validate() in Posten.jsx. Der Hinweis bleibt,
+              weil diese Posten bei den meisten Abrechnungen der größte Betrag
+              sind und man sie leicht übersieht. */}
+          {pflicht && <span style={{ color: C.textDim, marginLeft: 4, fontSize: 10 }}>meist der größte Posten</span>}
           {warn && <span style={{ color: "#c0392b", marginLeft: 6, fontSize: 10, fontWeight: 600 }}>⚠ nicht umlagefähig seit 07/2024!</span>}
         </div>
         {tip && <div style={{ fontSize: 10, color: C.textDim, marginTop: 3, lineHeight: 1.4 }}>{tip}</div>}

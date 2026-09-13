@@ -53,8 +53,10 @@ export const THEME = {
   font: {
     heading: "'Poppins', sans-serif",
     body: "'Work Sans', sans-serif",
-    googleFontsUrl:
-      "https://fonts.googleapis.com/css2?family=Poppins:wght@500;600;700&family=Work+Sans:wght@400;500&display=swap",
+    // Kein googleFontsUrl mehr (13.09.2026): Die Schriften kommen aus
+    // public/fonts, siehe ausführliche Begründung in index.html. Die Angabe
+    // wurde nirgends verwendet, hätte aber jederzeit versehentlich wieder
+    // eingebunden werden können.
   },
 
   radius: {

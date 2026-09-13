@@ -28,6 +28,7 @@
 import { readFileSync, existsSync } from "node:fs";
 import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
+import { BUSINESS } from "../src/config/business.js";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const ROOT = join(__dirname, "..");
@@ -217,6 +218,63 @@ async function main() {
     if (pfad === "/faq") continue;
     const html = lies(pfad);
     if (html && html.includes("FAQPage")) verstoesse.push(`${pfad}: FAQPage-Markup gehört hier nicht hin`);
+  }
+
+  // ─────────────────────────────────────────────────────────────────────────
+  // KEINE FREMDEN SERVER OHNE EINWILLIGUNG (13.09.2026)
+  //
+  // Jeder Server, der beim bloßen Seitenaufruf kontaktiert wird, bekommt die
+  // IP-Adresse des Besuchers. Ohne Einwilligung ist das ohne Rechtsgrundlage.
+  // Bei Google Fonts hat das LG München I deshalb Schadensersatz zugesprochen
+  // (Urteil vom 20.01.2022, Az. 3 O 17493/20), seitdem ist es ein verbreiteter
+  // Abmahngrund.
+  //
+  // Geprüft wird das GEBAUTE HTML, nicht die Quelldatei: Nur was am Ende
+  // ausgeliefert wird, zählt. Kommentare werden vorher entfernt, sonst meldet
+  // die Prüfung die Dokumentation der Behebung als Fehler (genau das ist beim
+  // Einbauen passiert).
+  //
+  // GA4 steht bewusst NICHT auf dieser Liste: Das Skript wird erst nach
+  // Einwilligung nachgeladen (siehe CookieBanner.jsx), im ausgelieferten HTML
+  // steht nur der Consent-Stub ohne Abruf.
+  {
+    const verboten = ["fonts.googleapis.com", "fonts.gstatic.com", "images.unsplash.com", "cdn.jsdelivr.net", "unpkg.com"];
+    for (const pfad of ["index.html", "faq/index.html", "ratgeber/index.html"]) {
+      const datei = join(DIST, pfad);
+      if (!existsSync(datei)) continue;
+      const html = readFileSync(datei, "utf8").replace(/<!--[\s\S]*?-->/g, "");
+      for (const server of verboten) {
+        if (html.includes(server)) {
+          verstoesse.push(`${pfad}: Verweis auf ${server} im ausgelieferten HTML. Das überträgt die IP des Besuchers ohne Einwilligung an einen Dritten.`);
+        }
+      }
+    }
+  }
+
+  // ─────────────────────────────────────────────────────────────────────────
+  // PREISE IM JSON-LD MÜSSEN ZU business.js PASSEN (13.09.2026)
+  //
+  // index.html ist statisches HTML und kann business.js nicht importieren. Die
+  // Preise im Angebots-Markup stehen dort deshalb fest eingetippt. Genau daraus
+  // ist schon einmal ein Fehler entstanden: Nach einer Preisänderung standen im
+  // Markup monatelang 7,99 und 9,99, während tatsächlich 9,99 und 12,99
+  // abgerechnet wurden (korrigiert am 13.08.2026).
+  //
+  // Falsche Preise im strukturierten Markup sind keine Kleinigkeit: Google
+  // zeigt sie in den Suchergebnissen an, und ein dort genannter Preis, der an
+  // der Kasse nicht gilt, ist ein Wettbewerbsverstoß.
+  //
+  // Diese Prüfung vergleicht beide Stellen bei jedem Build.
+  {
+    const html = readFileSync(join(ROOT, "index.html"), "utf8");
+    const gefunden = [...html.matchAll(/"price":\s*"([\d.]+)"/g)].map(m => parseFloat(m[1]));
+    const erwartet = [BUSINESS.PREIS_AUSWERTUNG, BUSINESS.PREIS_VOLL];
+    if (gefunden.length !== erwartet.length || gefunden.some((p, i) => p !== erwartet[i])) {
+      verstoesse.push(
+        `index.html: Preise im JSON-LD (${gefunden.join(", ") || "keine"}) weichen von business.js ab (${erwartet.join(", ")}). ` +
+        `Google zeigt diese Preise in den Suchergebnissen an.`
+      );
+    }
   }
 
   // ─────────────────────────────────────────────────────────────────────────

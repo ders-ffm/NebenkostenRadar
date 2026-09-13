@@ -178,8 +178,54 @@
   </script>
 
   <!-- Poppins (Überschriften) + Work Sans (Fließtext) — siehe docs/CI-Referenz.md -->
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@500;600;700&family=Work+Sans:wght@400;500&display=swap" rel="stylesheet" />
+  <!--
+    SCHRIFTEN LOKAL STATT VON GOOGLE, umgestellt am 13.09.2026 im totalen Test.
+
+    WAS FALSCH WAR: Hier standen ein preconnect auf fonts.gstatic.com und ein
+    stylesheet von fonts.googleapis.com. Beides wurde bei JEDEM Seitenaufruf
+    geladen, vor jeder Einwilligung. Dabei übermittelt der Browser zwangsläufig
+    die IP-Adresse des Besuchers an Google.
+
+    WARUM DAS EIN PROBLEM IST: Das LG München I hat mit Urteil vom 20.01.2022
+    (Az. 3 O 17493/20) einem Websitebesucher Schadensersatz zugesprochen, weil
+    eine Seite Google Fonts dynamisch eingebunden hatte. Die IP-Adresse ist ein
+    personenbezogenes Datum, für die Übermittlung fehlt die Rechtsgrundlage,
+    und sie ist vermeidbar, weil sich die Schriften selbst ausliefern lassen.
+    Seitdem ist das ein verbreiteter Abmahngrund.
+
+    Besonders unnötig war es hier, weil die Schriftdateien längst in public/fonts
+    liegen und für die PDF-Erzeugung ohnehin von dort gelesen werden.
+
+    ZUM GEWICHT 700: Poppins-Bold liegt nicht lokal vor. Die Angabe
+    "font-weight: 600 700" beim SemiBold-Schnitt sagt dem Browser, dass diese
+    Datei den Bereich von 600 bis 700 abdeckt. Überschriften mit Gewicht 700
+    werden dadurch minimal weniger fett dargestellt als vorher. Das ist der
+    Preis dafür, keine Besucherdaten mehr an Google zu senden, und er ist
+    niedrig. Wer es exakt haben möchte, legt Poppins-Bold.woff2 nach
+    public/fonts und ergänzt unten einen eigenen @font-face-Block mit
+    font-weight: 700.
+
+    WICHTIG: Hier nie wieder einen Verweis auf fonts.googleapis.com oder
+    fonts.gstatic.com ergänzen. scripts/seo-check.mjs prüft das bei jedem Build.
+  -->
+  <style>
+    @font-face {
+      font-family: "Poppins"; font-style: normal; font-weight: 500; font-display: swap;
+      src: url("/fonts/Poppins-Medium.woff2") format("woff2"), url("/fonts/Poppins-Medium.woff") format("woff");
+    }
+    @font-face {
+      font-family: "Poppins"; font-style: normal; font-weight: 600 700; font-display: swap;
+      src: url("/fonts/Poppins-SemiBold.woff2") format("woff2"), url("/fonts/Poppins-SemiBold.woff") format("woff");
+    }
+    @font-face {
+      font-family: "Work Sans"; font-style: normal; font-weight: 400; font-display: swap;
+      src: url("/fonts/WorkSans-Regular.woff2") format("woff2"), url("/fonts/WorkSans-Regular.woff") format("woff");
+    }
+    @font-face {
+      font-family: "Work Sans"; font-style: normal; font-weight: 500; font-display: swap;
+      src: url("/fonts/WorkSans-Medium.woff2") format("woff2"), url("/fonts/WorkSans-Medium.woff") format("woff");
+    }
+  </style>
 
   <!--
     GA4-Consent-Stub: setzt NUR den Default-Zustand (analytics_storage: denied)

@@ -742,11 +742,47 @@ export function buildResult(w, wohn) {
     // Satz nur bei tatsächlicher Nachzahlung anzuzeigen (echter Bug, 08/2026:
     // der Satz stand vorher immer im Brief, auch bei Guthaben, siehe CHANGELOG).
     saldo,
-    zusammenfassung: hatKritisch
-      ? "Kritisch: " + widerspruch.length + " fehlerhafte Posten (" + fmt(gesamt) + ", " + fmt(proQmJahr) + "/m2/Jahr)." + saldoText
-      : (hatSehrHoch || gesamtZuHoch)
-        ? "Auffällig: " + fmt(proQmJahr) + "/m2/Jahr. DMB-Richtwert: " + fmt(richtwertJahr) + "/m2/Jahr. " + widerspruch.length + " Posten zur Prüfung." + saldoText
-        : "Weitgehend unauffällig: " + fmt(proQmJahr) + "/m2/Jahr (DMB-Richtwert: " + fmt(richtwertJahr) + "/m2/Jahr)." + saldoText,
+    // ─────────────────────────────────────────────────────────────────────
+    // WIDERSPRUCH BESEITIGT, 13.09.2026 im totalen Test gefunden.
+    //
+    // WAS FALSCH WAR: Die Gesamtbewertung (bew, oben) wird auch dann
+    // "auffaellig", wenn Posten den Status "pruefen" haben, also solche ohne
+    // offiziellen Vergleichswert. Der Zusammenfassungstext kannte diesen Fall
+    // nicht und sprang nur bei statistischer Überschreitung um. Ergebnis im
+    // Testfall: Bewertung "auffaellig", daneben der Satz "Weitgehend
+    // unauffällig". Das Dokument widersprach sich selbst.
+    //
+    // ZWEITER FEHLER, der dabei auffiel: Einfach den Text auf "Auffällig"
+    // umzustellen wäre auch falsch gewesen. Im Testfall lagen die Kosten bei
+    // 5,93 €/m²/Jahr gegenüber einem Richtwert von 32,04 €, also weit
+    // darunter. "Auffällig: 5,93/m2/Jahr. DMB-Richtwert: 32,04" hätte niemand
+    // verstanden.
+    //
+    // Die beiden Gründe für "auffaellig" sind eben verschieden:
+    //   a) Die Kosten sind statistisch zu hoch.
+    //   b) Einzelne Posten brauchen einen Blick in den Mietvertrag, weil es
+    //      für sie keinen Vergleichswert gibt. Über die Höhe sagt das nichts.
+    // Der Text unterscheidet das jetzt, und er nennt bei b) ausdrücklich, dass
+    // die Gesamtkosten in Ordnung sind, damit niemand erschrickt.
+    // ─────────────────────────────────────────────────────────────────────
+    zusammenfassung: (() => {
+      const zuPruefen = posten_bewertung.filter(p => ["hoch", "pruefen"].includes(p.status)).length;
+      const lage = proQmJahr > richtwertJahr
+        ? "über dem DMB-Richtwert von " + fmt(richtwertJahr) + "/m2/Jahr"
+        : "unter dem DMB-Richtwert von " + fmt(richtwertJahr) + "/m2/Jahr";
+      if (hatKritisch) {
+        return "Kritisch: " + widerspruch.length + " fehlerhafte Posten (" + fmt(gesamt) + ", " + fmt(proQmJahr) + "/m2/Jahr)." + saldoText;
+      }
+      if (hatSehrHoch || gesamtZuHoch) {
+        return "Auffällig: " + fmt(proQmJahr) + "/m2/Jahr. DMB-Richtwert: " + fmt(richtwertJahr) + "/m2/Jahr. " + widerspruch.length + " Posten zur Prüfung." + saldoText;
+      }
+      if (bew === "auffaellig") {
+        return zuPruefen + (zuPruefen === 1 ? " Posten braucht" : " Posten brauchen") +
+          " deinen Blick in den Mietvertrag. Die Gesamtkosten selbst sind in Ordnung, sie liegen mit " +
+          fmt(proQmJahr) + "/m2/Jahr " + lage + "." + saldoText;
+      }
+      return "Weitgehend unauffällig: " + fmt(proQmJahr) + "/m2/Jahr (DMB-Richtwert: " + fmt(richtwertJahr) + "/m2/Jahr)." + saldoText;
+    })(),
     fehler_anzahl: widerspruch.length,
     moegliche_ersparnis: Math.round(ersparnis * 100) / 100,
     // Aufteilung nach Beweisstärke, siehe Kommentar oben. Für UI/PDF: Nur

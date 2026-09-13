@@ -39,6 +39,32 @@ export default function AGB({ navigateTo }) {
       "Vorzeitiges Erlöschen bei digitalen Inhalten (§ 356 Abs. 5 BGB): Da der Prüfbericht ein digitaler Inhalt ist, der nicht auf einem körperlichen Datenträger geliefert wird, erlischt dein Widerrufsrecht vorzeitig, sobald wir mit der Erstellung und Bereitstellung des PDFs begonnen haben, vorausgesetzt, du hast zuvor ausdrücklich zugestimmt, dass wir vor Ablauf der Widerrufsfrist mit der Ausführung beginnen, und gleichzeitig zur Kenntnis genommen, dass du dadurch dein Widerrufsrecht verlierst, sobald wir mit der Ausführung begonnen haben.",
       "Diese Zustimmung und Kenntnisnahme erteilst du im Bestellprozess durch Aktivierung der entsprechenden Checkbox vor Kaufabschluss. Ohne Aktivierung ist ein Kauf nicht möglich.",
     ]},
+    // ── MUSTER-WIDERRUFSFORMULAR, ergänzt 13.09.2026 im totalen Test ────────
+    //
+    // WAS GEFEHLT HAT: Die Widerrufsbelehrung in § 6 war inhaltlich vollständig
+    // und sauber, aber das Muster-Widerrufsformular fehlte. Nach Art. 246a § 1
+    // Abs. 2 Satz 1 Nr. 1 EGBGB muss der Unternehmer es zur Verfügung stellen,
+    // der Wortlaut steht in Anlage 2 zu dieser Vorschrift.
+    //
+    // Das gilt auch hier, obwohl das Widerrufsrecht nach § 356 Abs. 5 BGB
+    // vorzeitig erlischt: Die Informationspflicht besteht beim Vertragsschluss,
+    // das Erlöschen tritt erst danach ein. Ein Fehlen ist ein formaler Mangel
+    // und abmahnfähig.
+    //
+    // Der Text folgt der Anlage 2 wörtlich, nur die Anbieterdaten sind
+    // eingesetzt. Beim Ändern von Anschrift oder E-Mail bitte auch § 6 oben
+    // und das Impressum angleichen, die Angaben müssen übereinstimmen.
+    { t: "§ 6a Muster-Widerrufsformular", lines: [
+      "Wenn du den Vertrag widerrufen willst, kannst du dieses Formular ausfüllen und zurücksenden. Du musst es nicht benutzen, eine formlose eindeutige Erklärung genügt ebenfalls.",
+      "An: NebenkostenRadar, Stefan Hennig, Ludwigstr. 33-37, 60327 Frankfurt am Main, support@nebenkostenradar.com",
+      "Hiermit widerrufe(n) ich/wir (*) den von mir/uns (*) abgeschlossenen Vertrag über den Kauf der folgenden Waren (*) / die Erbringung der folgenden Dienstleistung (*)",
+      "Bestellt am (*) / erhalten am (*)",
+      "Name des/der Verbraucher(s)",
+      "Anschrift des/der Verbraucher(s)",
+      "Unterschrift des/der Verbraucher(s) (nur bei Mitteilung auf Papier)",
+      "Datum",
+      "(*) Unzutreffendes streichen.",
+    ]},
     { t: "§ 7 Haftungsausschluss", lines: [
       "Der Prüfbericht ersetzt keine Rechtsberatung im Sinne des RDG. Eine Haftung für rechtliche Richtigkeit oder Vollständigkeit der Analyseergebnisse wird ausgeschlossen.",
       "Für rechtssichere Prüfung empfehlen wir den Deutschen Mieterbund oder einen Rechtsanwalt.",

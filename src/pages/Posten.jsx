@@ -133,6 +133,10 @@ export default function Posten({ navigateTo, werte, setWerte, runAnalyse, gesamt
   const summenAbweichung = summenDiff > 1;
   const zuVielErfasst = summenDelta > 1;
 
+  // Große Positionen, die üblicherweise vorkommen. Fehlen sie, gibt es einen
+  // erklärenden Hinweis, aber keine Sperre (siehe validate() weiter unten).
+  const fehlendeGrosspositionen = ALLE_POSTEN.filter(p => p.pflicht && toNum(werte[p.key]) <= 0);
+
   function toggleGruppe(id) {
     setExpandedGruppen(prev => {
       const next = new Set(prev);
@@ -149,10 +153,32 @@ export default function Posten({ navigateTo, werte, setWerte, runAnalyse, gesamt
   // sichtbaren Bereichs. Fix: bei fehlgeschlagener Validierung aktiv nach
   // oben zur Fehlermeldung scrollen, PLUS Kurzhinweis direkt am Button selbst
   // (siehe unten), damit der Nutzer nie ohne sichtbares Feedback dasteht.
+  // HEIZKOSTEN SIND KEINE PFLICHT MEHR, geändert 13.09.2026 im totalen Test.
+  //
+  // GEFUNDEN AN EINEM ECHTEN FALL: Die Abrechnung von Stefans Mutter (Erwin
+  // Schmider GmbH, Oberwolfach) enthält nur drei Posten: Müllgebühren,
+  // sonstige Nebenkosten und Gemeinschaftsantenne. Die Heizkosten rechnet
+  // Brunata separat ab, sie stehen auf einem eigenen Blatt. Das Formular
+  // verweigerte deshalb die Auswertung mit "Pflichtfelder fehlen: Heizkosten,
+  // Warmwasserversorgung". Eine gültige Abrechnung ließ sich nicht prüfen.
+  //
+  // Das betrifft keinen Einzelfall, sondern mehrere verbreitete Konstellationen:
+  //   - Heizkosten werden separat über Brunata, ista, Techem o.ä. abgerechnet
+  //   - Gasetagenheizung, der Mieter hat einen eigenen Versorgungsvertrag
+  //   - Fernwärme, die der Mieter direkt bezieht
+  //   - Warmmiete, Heizkosten sind in der Grundmiete enthalten
+  //
+  // WARUM ES DIE SPERRE ÜBERHAUPT GAB: Heizung ist bei den meisten
+  // Abrechnungen der größte Posten. Wer ihn vergisst, bekommt ein schiefes
+  // Ergebnis. Dieses Anliegen ist berechtigt, eine harte Sperre war dafür aber
+  // das falsche Mittel: Sie hindert genau die Leute am Weiterkommen, bei denen
+  // das Fehlen korrekt ist.
+  //
+  // JETZT: ein sichtbarer Hinweis, der erklärt, wann das Fehlen in Ordnung ist,
+  // und der nicht blockiert. Das Flag `pflicht` in analyse.js bleibt erhalten,
+  // es steuert nur noch diesen Hinweis.
   function validate() {
     const e = {};
-    const pflichtfehlend = ALLE_POSTEN.filter(p => p.pflicht && toNum(werte[p.key]) <= 0);
-    if (pflichtfehlend.length > 0) e.pflicht = "Pflichtfelder fehlen: " + pflichtfehlend.map(p => p.label).join(", ");
     if (filledPosten === 0) e.gesamt = "Mindestens einen Posten eingeben";
     setErrors(e);
     if (Object.keys(e).length > 0) {
@@ -171,7 +197,7 @@ export default function Posten({ navigateTo, werte, setWerte, runAnalyse, gesamt
       </div>
       <div style={{ padding: "14px 20px 0", maxWidth: THEME.layout.formMax, margin: "0 auto", boxSizing: "border-box" }}>
         <h2 style={{ fontFamily: THEME.font.heading, fontSize: 20, fontWeight: 600, margin: "0 0 4px", textAlign: "center" }}>Posten aus deiner Abrechnung</h2>
-        <p style={{ fontSize: 12, color: C.textMuted, margin: "0 0 12px", textAlign: "center" }}>Trage die Beträge so ein wie sie auf der Abrechnung stehen. ✦ = Pflichtfeld.</p>
+        <p style={{ fontSize: 12, color: C.textMuted, margin: "0 0 12px", textAlign: "center" }}>Trage die Beträge so ein wie sie auf der Abrechnung stehen. Was bei dir nicht vorkommt, lässt du leer.</p>
         <div style={{ background: C.surface, border: "1px solid " + (total > 0 ? C.brand : C.border), borderRadius: THEME.radius.md, padding: "11px 16px", marginBottom: 12, display: "flex", justifyContent: "space-between", alignItems: "center" }}>
           <div>
             <div style={{ fontSize: 10, color: C.textMuted, textTransform: "uppercase" }}>Eingegeben</div>
@@ -182,9 +208,25 @@ export default function Posten({ navigateTo, werte, setWerte, runAnalyse, gesamt
             <div style={{ fontFamily: THEME.font.heading, fontSize: 21, fontWeight: 600, color: C.textMuted }}>{filledPosten}</div>
           </div>
         </div>
-        {(errors.pflicht || errors.gesamt) && (
+        {errors.gesamt && (
           <div style={{ background: C.warnBg, borderLeft: "3px solid " + C.warn, borderRadius: THEME.radius.md, padding: "10px 14px", marginBottom: 12, fontSize: 12, color: C.warn }}>
-            {errors.pflicht || errors.gesamt}
+            {errors.gesamt}
+          </div>
+        )}
+
+        {/* Hinweis auf fehlende Heizkosten, siehe ausführliche Begründung bei
+            validate() weiter oben. Bewusst kein Warnton und keine Sperre: In
+            vielen Fällen ist das Fehlen völlig korrekt, und dann darf der
+            Hinweis nicht wie ein Fehler aussehen. */}
+        {fehlendeGrosspositionen.length > 0 && filledPosten > 0 && (
+          <div style={{ background: C.brandBg, borderRadius: THEME.radius.md, padding: "12px 14px", marginBottom: 12, fontSize: 12, color: C.textMuted, lineHeight: 1.65 }}>
+            <span style={{ color: C.text, fontWeight: 600 }}>
+              Kein Eintrag bei {fehlendeGrosspositionen.map(p => p.label).join(" und ")}.
+            </span>{" "}
+            Bei den meisten Abrechnungen ist das der größte Posten, deshalb der Hinweis.
+            Völlig in Ordnung ist es, wenn deine Heizkosten separat abgerechnet werden,
+            etwa über Brunata, ista oder Techem, wenn du eine eigene Gastherme hast oder
+            wenn die Heizung in der Miete enthalten ist. Dann einfach weitermachen.
           </div>
         )}
         <div style={{ marginBottom: 12 }}>
@@ -290,11 +332,6 @@ export default function Posten({ navigateTo, werte, setWerte, runAnalyse, gesamt
       </div>
       <div style={{ position: "fixed", bottom: 0, left: 0, right: 0, background: C.surface, borderTop: "1px solid " + C.border, boxShadow: "0 -4px 20px rgba(0,0,0,0.06)" }}>
         <div style={{ padding: "20px 20px 24px", maxWidth: THEME.layout.formMax, margin: "0 auto", boxSizing: "border-box" }}>
-          {errors.pflicht && (
-            <div style={{ fontSize: 12, color: C.warn, marginBottom: 8, textAlign: "center" }}>
-              ⚠ Pflichtfeld fehlt, wir haben nach oben gescrollt, dort steht welches.
-            </div>
-          )}
           <button
             onClick={() => { if (validate()) runAnalyse(); }}
             style={{ width: "100%", background: filledPosten > 0 ? C.accent : C.border, color: filledPosten > 0 ? C.accentText : C.textDim, border: "none", borderRadius: THEME.radius.lg, padding: "16px", fontSize: 15, fontFamily: THEME.font.heading, fontWeight: 600, cursor: filledPosten > 0 ? "pointer" : "default" }}>
