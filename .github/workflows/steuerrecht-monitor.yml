@@ -1,0 +1,32 @@
+name: Steuerrecht-Monitor
+
+# Prüft monatlich, ob sich § 35a EStG geändert hat, und meldet Abweichungen
+# als GitHub-Issue. Ändert bewusst nichts von selbst, siehe die ausführliche
+# Begründung im Kopf von scripts/steuerrecht-monitor.mjs.
+#
+# Am 3. jedes Monats, damit er sich nicht mit dem Richtwerte-Monitor (1.) und
+# dem Rechtsmonitor überschneidet. Gesetzesänderungen treten ohnehin meist zum
+# Jahreswechsel in Kraft, monatlich ist reichlich.
+
+on:
+  schedule:
+    - cron: "0 7 3 * *"
+  workflow_dispatch: {}      # erlaubt den Start von Hand im Actions-Tab
+
+permissions:
+  issues: write              # zum Anlegen der Meldung
+  contents: read
+
+jobs:
+  pruefen:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - name: Steuerrecht pruefen
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_REPO: ${{ github.repository }}
+        run: node scripts/steuerrecht-monitor.mjs
