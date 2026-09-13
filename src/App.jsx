@@ -207,15 +207,49 @@ export default function App() {
   // Nutzer über einen "Später fortsetzen"-Link (?fortsetzen=…) einer anderen
   // Sitzung, überschreibt der Fetch in der useEffect weiter unten das hier
   // ohnehin gleich wieder.
-  const [wohnung, setWohnung] = useState(() => ladeEntwurf()?.wohnung || { flaeche: "", jahr: String(new Date().getFullYear() - 1), vorauszahlung: "" });
-  const [werte, setWerte] = useState(() => ladeEntwurf()?.werte || {});
+  // ───────────────────────────────────────────────────────────────────────
+  // ENTWURF WIRD NICHT MEHR STILL GELADEN (13.09.2026)
+  //
+  // DER FEHLER, DEN STEFAN GEMELDET HAT: Er hat seine eigene Abrechnung
+  // geprüft und zwei Tage später die seiner Mutter. Das Ergebnis war eine
+  // Mischung aus beiden. Beide Abrechnungen kamen per Upload, er hat nichts
+  // von Hand eingetragen.
+  //
+  // URSACHE, zwei Teile, die zusammenwirkten:
+  //   1. Der Entwurf wurde beim Start STILL geladen, wenn er jünger als
+  //      30 Tage war. Zwei Tage liegen klar darunter. Es gab dazu keinerlei
+  //      Hinweis im Bildschirm, der Nutzer konnte es nicht wissen.
+  //   2. Die Foto-Erkennung mischte ihre Werte in die vorhandenen hinein,
+  //      statt sie zu ersetzen (siehe Wohnung.jsx, dort ebenfalls behoben).
+  //   Positionen, die es in der Abrechnung der Mutter nicht gab, blieben
+  //   dadurch mit den Beträgen aus Stefans eigener Abrechnung stehen.
+  //
+  // Das ist der schwerste Fehlertyp in diesem Produkt: Daten einer Person
+  // landen im Schreiben einer anderen, ohne dass es jemand bemerkt.
+  //
+  // DIE LÖSUNG: Der Entwurf wird geladen, aber NICHT angewendet. Er liegt in
+  // einem eigenen Zustand und der Nutzer entscheidet selbst, ob er fortsetzen
+  // oder neu anfangen will (Hinweisfeld in Wohnung.jsx). Bis er entscheidet,
+  // ist das Formular leer.
+  //
+  // WARUM NICHT EINFACH DIE 30 TAGE VERKÜRZEN: Das hätte den Fall nur
+  // seltener gemacht, nicht beseitigt. Wer zwei Abrechnungen am selben Tag
+  // prüft, wäre weiter betroffen. Und es hätte den eigentlichen Mangel nicht
+  // behoben, nämlich dass etwas ungefragt passiert.
+  //
+  // resetAll() weiter unten löscht den Entwurf ebenfalls, ist aber nur über
+  // einen Knopf auf der Ergebnisseite erreichbar. Wer später neu von der
+  // Startseite beginnt, kommt dort nie vorbei. Deshalb reicht das nicht.
+  const [entwurf, setEntwurf] = useState(() => ladeEntwurf());
+  const [wohnung, setWohnung] = useState({ flaeche: "", jahr: String(new Date().getFullYear() - 1), vorauszahlung: "" });
+  const [werte, setWerte] = useState({});
   // Gesamtsumme laut Abrechnung (08/2026, siehe CHANGELOG.md): vorher reiner
   // lokaler State in Posten.jsx, nur manuell befüllbar. Jetzt hier oben, damit
   // die Foto-/PDF-Erkennung (Wohnung.jsx) sie ebenfalls setzen kann — macht den
   // ohnehin schon vorhandenen Plausibilitäts-Abgleich in Posten.jsx automatisch
   // wirksam, auch wenn die Werte per Foto vorausgefüllt wurden, nicht nur bei
   // manueller Eingabe.
-  const [gesamtsummeAbrechnung, setGesamtsummeAbrechnung] = useState(() => ladeEntwurf()?.gesamtsummeAbrechnung || "");
+  const [gesamtsummeAbrechnung, setGesamtsummeAbrechnung] = useState("");
   // "Später fortsetzen"-Link: /pruefen/wohnung?fortsetzen=<id> (siehe Button in
   // Result.jsx). Lädt den serverseitig gespeicherten Entwurf (api/draft.js)
   // und ERSETZT den lokalen Stand damit — bewusst nur bei explizitem Aufruf
@@ -283,9 +317,26 @@ export default function App() {
     navigateTo("result");
   }
 
+  // Der Nutzer hat sich entschieden, die begonnene Prüfung fortzusetzen.
+  // Erst hier werden die gespeicherten Werte tatsächlich angewendet.
+  function entwurfUebernehmen() {
+    if (!entwurf) return;
+    if (entwurf.wohnung) setWohnung(entwurf.wohnung);
+    if (entwurf.werte) setWerte(entwurf.werte);
+    if (entwurf.gesamtsummeAbrechnung) setGesamtsummeAbrechnung(entwurf.gesamtsummeAbrechnung);
+    setEntwurf(null);
+  }
+
+  // Der Nutzer fängt neu an. Der gespeicherte Stand wird gelöscht, damit er
+  // nicht beim nächsten Laden erneut angeboten wird.
+  function entwurfVerwerfen() {
+    setEntwurf(null);
+    try { localStorage.removeItem(NKR_DRAFT_KEY); } catch { /* siehe Kommentar oben */ }
+  }
+
   function resetAll() {
     navigateTo("welcome");
-    setResult(null); setWerte({}); setGekauft(false); setStufe(null); setGesamtsummeAbrechnung(""); setWiderrufOk(false);
+    setResult(null); setWerte({}); setGekauft(false); setStufe(null); setGesamtsummeAbrechnung(""); setWiderrufOk(false); setEntwurf(null);
     // Zwischengespeicherten Entwurf ebenfalls löschen (siehe Zwischenspeichern-
     // Kommentar weiter oben) — sonst würde eine neue Prüfung auf demselben Gerät
     // beim nächsten Laden versehentlich die alten Werte wieder vorschlagen.
@@ -297,6 +348,7 @@ export default function App() {
     wohnung, setWohnung, werte, setWerte, adressen, setAdressen,
     gesamtsummeAbrechnung, setGesamtsummeAbrechnung,
     result, setResult, runAnalyse, resetAll,
+    entwurf, entwurfUebernehmen, entwurfVerwerfen,
     gekauft, setGekauft, stufe, setStufe,
     marketingOptIn, setMarketingOptIn,
     widerrufOk, setWiderrufOk,

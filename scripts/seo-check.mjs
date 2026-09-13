@@ -219,6 +219,36 @@ async function main() {
     if (html && html.includes("FAQPage")) verstoesse.push(`${pfad}: FAQPage-Markup gehört hier nicht hin`);
   }
 
+  // ─────────────────────────────────────────────────────────────────────────
+  // RÜCKFALLSICHERUNG: Erkannte Werte dürfen nie in die vorhandenen gemischt
+  // werden (13.09.2026).
+  //
+  // Stefan hat seine eigene Abrechnung geprüft und zwei Tage später die seiner
+  // Mutter. Das Ergebnis war eine Mischung aus beiden: Positionen, die es in
+  // der zweiten Abrechnung nicht gab, standen mit den Beträgen der ersten im
+  // Bericht. Ursache war ein Einzeiler in Wohnung.jsx:
+  //
+  //     setWerte(p => ({ ...p, ...data.werte }))
+  //
+  // Das ist die schwerste Fehlerart in diesem Produkt, weil Daten einer Person
+  // im Schreiben einer anderen landen und es niemandem auffällt. Der Einzeiler
+  // sieht harmlos aus und würde beim nächsten Umbau leicht wieder entstehen.
+  // Deshalb diese Prüfung, die nicht das Verhalten testet, sondern das Muster
+  // im Quelltext verbietet.
+  {
+    // Kommentarzeilen ausnehmen: Der Kommentar bei der Korrektur zitiert den
+    // alten Code als Beleg. Ohne diese Filterung meldet die Prüfung genau die
+    // Dokumentation der Behebung als Fehler (beim ersten Lauf passiert).
+    const quelle = readFileSync(join(ROOT, "src/pages/Wohnung.jsx"), "utf8")
+      .split("\n")
+      .filter(z => { const s = z.trim(); return !s.startsWith("//") && !s.startsWith("*") && !s.startsWith("/*"); })
+      .join("\n");
+    const gefaehrlich = /setWerte\s*\(\s*[a-zA-Z]+\s*=>\s*\(\s*\{\s*\.\.\./;
+    if (gefaehrlich.test(quelle)) {
+      verstoesse.push("Wohnung.jsx: Erkannte Werte werden wieder in die vorhandenen gemischt (setWerte(p => ({ ...p, ... }))). Das vermischt zwei Abrechnungen. Richtig ist setWerte(data.werte).");
+    }
+  }
+
   const strich = "─".repeat(64);
   console.log(strich);
   console.log(`Seiten geprüft: ${alle.length} · Verstöße: ${verstoesse.length}`);

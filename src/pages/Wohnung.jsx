@@ -114,7 +114,7 @@ function pdfAufBase64(file) {
   });
 }
 
-export default function Wohnung({ navigateTo, wohnung, setWohnung, werte, setWerte, gesamtsummeAbrechnung, setGesamtsummeAbrechnung, entwurfLadeFehler, setFotoErkannt }) {
+export default function Wohnung({ navigateTo, wohnung, setWohnung, werte, setWerte, gesamtsummeAbrechnung, setGesamtsummeAbrechnung, entwurfLadeFehler, setFotoErkannt, entwurf, entwurfUebernehmen, entwurfVerwerfen }) {
   const C = THEME.color;
   const [errors, setErrors] = useState({});
 
@@ -262,7 +262,27 @@ export default function Wohnung({ navigateTo, wohnung, setWohnung, werte, setWer
         // Tooltip beim Feld unten.
         ...(data.wohnung?.ausstellungsdatumGedruckt && !p.erhaltenAm ? { erhaltenAm: data.wohnung.ausstellungsdatumGedruckt } : {}),
       }));
-      if (setWerte && data.werte) setWerte(p => ({ ...p, ...data.werte }));
+      // ERSETZEN STATT MISCHEN, korrigiert 13.09.2026.
+      //
+      // Vorher stand hier: setWerte(p => ({ ...p, ...data.werte }))
+      //
+      // Das hat die neu erkannten Werte in die vorhandenen HINEINGEMISCHT.
+      // Positionen, die in der neuen Abrechnung gar nicht vorkommen, blieben
+      // mit ihrem alten Betrag stehen. Stefan hat genau das gemeldet: Er
+      // prüfte seine eigene Abrechnung, zwei Tage später die seiner Mutter,
+      // und bekam eine Mischung aus beiden.
+      //
+      // Ein Analyselauf wertet IMMER alle hochgeladenen Dateien gemeinsam aus
+      // (siehe Sammeln der Dateien weiter oben). Sein Ergebnis ist damit das
+      // vollständige Bild dieser einen Abrechnung, und alles, was vorher im
+      // Formular stand, gehört zu einer anderen. Ersetzen ist deshalb richtig.
+      //
+      // WAS DABEI VERLOREN GEHEN KANN: Hat jemand vor dem Upload schon von
+      // Hand Beträge eingetippt, sind die danach weg. Das ist der seltenere
+      // und deutlich harmlosere Fall: Er fällt sofort auf, weil das Feld leer
+      // ist. Ein falsch gefüllter Betrag aus einer fremden Abrechnung fällt
+      // dagegen niemandem auf und landet im Schreiben an den Vermieter.
+      if (setWerte && data.werte) setWerte(data.werte);
       // Gesamtsumme laut Abrechnung (08/2026, siehe CHANGELOG.md): macht den
       // bereits vorhandenen Plausibilitäts-Abgleich in Posten.jsx automatisch
       // wirksam, auch bei per Foto vorausgefüllten Werten — genau der
@@ -324,6 +344,42 @@ export default function Wohnung({ navigateTo, wohnung, setWohnung, werte, setWer
         {entwurfLadeFehler && (
           <div style={{ background: C.warnBg, borderLeft: "3px solid " + C.warn, borderRadius: THEME.radius.md, padding: "10px 14px", marginBottom: 16, fontSize: 12, color: C.warn }}>
             {entwurfLadeFehler}
+          </div>
+        )}
+
+        {/* BEGONNENE PRÜFUNG, Abfrage ergänzt 13.09.2026.
+
+            Vorher wurde ein gespeicherter Stand beim Start STILL geladen,
+            ohne jeden Hinweis. Stefan prüfte seine eigene Abrechnung und zwei
+            Tage später die seiner Mutter und bekam eine Mischung aus beiden.
+            Ausführliche Fehlerbeschreibung in src/App.jsx beim Zustand
+            "entwurf".
+
+            Das Formular bleibt jetzt leer, bis der Nutzer sich entscheidet.
+            Bewusst beide Wege gleichberechtigt anbieten und keinen davon
+            vorauswählen: Nur der Nutzer weiß, ob er dieselbe Abrechnung
+            weiterbearbeitet oder eine neue prüft. */}
+        {entwurf && (
+          <div style={{ background: C.brandBg, border: "1px solid " + C.border, borderRadius: THEME.radius.md, padding: "14px 16px", marginBottom: 20 }}>
+            <div style={{ color: C.text, fontWeight: 600, marginBottom: 4, fontSize: 14, fontFamily: THEME.font.heading }}>
+              Du hast hier schon einmal angefangen
+            </div>
+            <div style={{ fontSize: 13, color: C.textMuted, lineHeight: 1.6, marginBottom: 12 }}>
+              Auf diesem Gerät ist eine begonnene Prüfung gespeichert
+              {entwurf.savedAt ? " vom " + new Date(entwurf.savedAt).toLocaleDateString("de-DE", { day: "numeric", month: "long", year: "numeric" }) : ""}
+              {entwurf.wohnung?.jahr ? ", Abrechnungsjahr " + entwurf.wohnung.jahr : ""}.
+              Möchtest du dort weitermachen oder eine andere Abrechnung prüfen?
+            </div>
+            <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
+              <button type="button" onClick={entwurfUebernehmen}
+                style={{ flex: "1 1 160px", background: C.accent, color: C.accentText, border: "none", borderRadius: THEME.radius.md, padding: "11px 16px", fontSize: 14, fontFamily: THEME.font.heading, fontWeight: 600, cursor: "pointer" }}>
+                Dort weitermachen
+              </button>
+              <button type="button" onClick={entwurfVerwerfen}
+                style={{ flex: "1 1 160px", background: "transparent", color: C.textMuted, border: "1px solid " + C.border, borderRadius: THEME.radius.md, padding: "11px 16px", fontSize: 14, fontFamily: THEME.font.body, cursor: "pointer" }}>
+                Neue Abrechnung prüfen
+              </button>
+            </div>
           </div>
         )}
         <div style={{ background: C.brandBg, borderRadius: THEME.radius.md, padding: "13px 14px", marginBottom: 20, fontSize: 12, color: C.textMuted, lineHeight: 1.75 }}>

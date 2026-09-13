@@ -22,6 +22,7 @@
 import { Page, View, Text, StyleSheet } from "@react-pdf/renderer";
 import { THEME } from "../config/theme.js";
 import { fmt } from "../lib/format.js";
+import { BUSINESS } from "../config/business.js";
 
 const C = THEME.color;
 const s = StyleSheet.create({
@@ -49,7 +50,7 @@ const s = StyleSheet.create({
 // Arbeitskosten, die die Abrechnung meist nicht getrennt ausweist) — daher
 // im Text klar als Obergrenze/Ausgangswert gekennzeichnet, nicht als
 // feststehendes Ergebnis.
-const PROZENTSATZ = 0.2;
+const PROZENTSATZ = BUSINESS.STEUER_35A.SATZ;
 
 // Entfernt das "davon "-Präfix aus Positionsnamen (09.09.2026, Fund aus dem
 // zweiten Testkauf). In der Haupttabelle von AbrechnungPDF.jsx ist "davon
@@ -113,93 +114,112 @@ export default function SteuerbonusPDF({ result, wohnung, adressen }) {
              Zeilennummern, je nachdem, auf welches Jahr sie sich beziehen.
              Eine falsche Zeilennummer wäre schlimmer als keine, deshalb wird
              nur das Formular benannt, das seit 2023 stabil so heißt. */
+          const S35A = BUSINESS.STEUER_35A;
           const dienst = positionen.filter(p => p.steuerArt === "dienstleistung");
           const handw  = positionen.filter(p => p.steuerArt === "handwerker");
           const sumD = dienst.reduce((a, p) => a + p.betrag, 0);
           const sumH = handw.reduce((a, p) => a + p.betrag, 0);
+          // Nur die tatsächlich absetzbaren Posten kommen in die Listen.
+          const absetzbar = positionenAlle.filter(p => p.steuerArt === "dienstleistung" || p.steuerArt === "handwerker");
+          // NICHT ABSETZBARE POSTEN ERSCHEINEN GAR NICHT MEHR, 13.09.2026.
+          // Stefans Vorgabe: "Nur Posten auflisten, die absetzbar sind. Posten,
+          // die gemäß Steuerrecht nicht absetzbar sind, gar nicht listen, auch
+          // nicht extra."
+          //
+          // Zwischenstand war eine Sammelzeile "Nicht absetzbar und deshalb
+          // oben nicht aufgeführt: ...". Die ist ebenfalls weg. Die Seite heißt
+          // "was du absetzen kannst" und beantwortet genau das, nichts sonst.
+          //
+          // Die Einordnung selbst bleibt in src/lib/analyse.js erhalten und
+          // wird weiter gepflegt. Sie entscheidet hier nur noch darüber, was
+          // NICHT gezeigt wird.
+          // Tatsächliche Ermäßigung: 20 % je Topf, gedeckelt auf die
+          // gesetzlichen Höchstbeträge (§ 35a Abs. 2 und 3 EStG). Ohne den
+          // Deckel stünde bei großen Abrechnungen eine Zahl da, die es so
+          // nie gibt.
+          const ermaessigung = Math.round((Math.min(sumD * S35A.SATZ, S35A.HOECHST_DIENSTLEISTUNG) + Math.min(sumH * S35A.SATZ, S35A.HOECHST_HANDWERKER)) * 100) / 100;
           return (
             <>
-              {/* EINE TABELLE STATT DREI, korrigiert 11.09.2026 nach dem ersten
-                  Probedruck. Zwischenstand war: zwei Töpfe-Tabellen, darunter
-                  nochmal eine Tabelle mit allen Posten. Im gedruckten PDF stand
-                  dadurch jeder begünstigte Posten dreimal (Hauswart 3x,
-                  Rauchwarnmelder sogar 4x), und die Seite lief auf zwei Seiten
-                  über. Für den Kunden war nicht erkennbar, welche der Tabellen
-                  er benutzen soll.
+              {/* ZWEI GETRENNTE DARSTELLUNGEN, umgebaut 13.09.2026 auf Stefans
+                  Vorgabe: "In der Steuerauflistung dürfen nur Posten
+                  aufgelistet werden, welche wirklich von der Steuer absetzbar
+                  sind, und zwar in 2 Versionen: einmal die Einzelauflistung
+                  für Steuer-Apps wie Taxfix, und einmal so wie man sie selbst
+                  in die Steuerformulare eingibt. Da ist es zusammengefasst."
 
-                  Jetzt: EINE Tabelle mit allen Posten und ihrer Einordnung,
-                  darunter die beiden Summen. Das erfüllt beide Anforderungen
-                  ohne Dopplung, die Einzelabfrage der Steuerprogramme und den
-                  Überblick über die zwei Töpfe. */}
-              <Text style={s.absatz}>
-                Steuerprogramme wie Taxfix, WISO, Check24 oder Elster fragen die Posten einzeln ab.
-                Hier steht zu jedem, ob er zählt und zu welchem der beiden Töpfe des § 35a EStG er
-                gehört.
+                  Beides stimmt und ist wirklich verschieden:
+                  Steuerprogramme fragen Posten für Posten ab. Das amtliche
+                  Formular (Anlage Haushaltsnahe Aufwendungen) will dagegen je
+                  einen Gesamtbetrag pro Topf.
+
+                  Vorher standen in einer gemeinsamen Tabelle auch alle nicht
+                  absetzbaren Posten mit dem Vermerk "zählt nicht". Bei Stefans
+                  Abrechnung waren das elf von siebzehn Zeilen. Wer abtippt,
+                  muss dann bei jeder Zeile prüfen, ob sie überhaupt gemeint
+                  ist, und genau dabei passieren Fehler.
+
+                  Die nicht absetzbaren Posten sind trotzdem nicht verschwunden,
+                  sie stehen unten als eine Zeile. Damit bleibt die Frage
+                  beantwortet, die sonst offen wäre: Fragt Taxfix nach den
+                  Müllgebühren, findet der Kunde dort, dass sie nicht zählen. */}
+
+              <Text style={s.anfrageTitel}>Version 1: für Steuerprogramme, Posten für Posten</Text>
+              <Text style={{ fontSize: 8.5, color: C.textDim, marginBottom: 6 }}>
+                Taxfix, WISO, Check24 und ähnliche Programme fragen die Posten einzeln ab.
+                Trage sie so ein, wie sie hier stehen. Die Zuordnung und die Berechnung
+                übernimmt das Programm.
               </Text>
-
               <View style={s.table}>
-                {positionenAlle.map((p, i) => (
+                {absetzbar.map((p, i) => (
                   <View key={i} style={s.tRow}>
                     <Text style={[s.tLabel, { flex: 2.1 }]}>{ohneDavon(p.posten)}</Text>
                     <Text style={[s.tValue, { flex: 0.9 }]}>{fmt(p.betrag)}</Text>
-                    <Text style={[s.tValue, { flex: 1.5,
-                      color: (p.steuerArt === "nicht" || p.steuerArt === "unklar") ? C.textDim : C.text }]}>
-                      {p.steuerArt === "dienstleistung" ? "haushaltsnah"
-                        : p.steuerArt === "handwerker" ? "Handwerker"
-                        : p.steuerArt === "unklar" ? "kommt darauf an"
-                        : "zählt nicht"}
+                    <Text style={[s.tValue, { flex: 1.5 }]}>
+                      {p.steuerArt === "dienstleistung" ? "haushaltsnah" : "Handwerker"}
                     </Text>
                   </View>
                 ))}
               </View>
 
-              {/* wrap={false} haelt Ueberschrift, Tabelle und den Satz zu den
-                  20 % zusammen auf einer Seite. Im ersten Probedruck stand der
-                  Satz allein oben auf der Folgeseite, abgerissen von den
-                  Zahlen, auf die er sich bezieht. */}
+              {/* wrap={false} hält Überschrift, Tabelle und Erläuterung
+                  zusammen auf einer Seite. Im Probedruck vom 11.09. stand der
+                  Satz zu den 20 % allein oben auf der Folgeseite, abgerissen
+                  von den Zahlen, auf die er sich bezieht. */}
               <View wrap={false}>
-              <Text style={s.anfrageTitel}>Die beiden Summen für deine Steuererklärung</Text>
-              <View style={s.table}>
-                <View style={s.tRow}>
-                  <Text style={s.tLabel}>Haushaltsnahe Dienstleistungen (§ 35a Abs. 2 EStG)</Text>
-                  <Text style={s.tValue}>{fmt(sumD)}</Text>
+                <Text style={s.anfrageTitel}>Version 2: für das Steuerformular, zusammengefasst</Text>
+                <Text style={{ fontSize: 8.5, color: C.textDim, marginBottom: 6 }}>
+                  Die Anlage Haushaltsnahe Aufwendungen will je einen Gesamtbetrag, nicht die
+                  Einzelposten. Diese beiden Zahlen trägst du dort ein.
+                </Text>
+                <View style={s.table}>
+                  <View style={s.tRow}>
+                    <Text style={s.tLabel}>Haushaltsnahe Dienstleistungen (§ 35a Abs. 2 EStG)</Text>
+                    <Text style={s.tValue}>{fmt(sumD)}</Text>
+                  </View>
+                  <View style={s.tRow}>
+                    <Text style={s.tLabel}>Handwerkerleistungen (§ 35a Abs. 3 EStG)</Text>
+                    <Text style={s.tValue}>{fmt(sumH)}</Text>
+                  </View>
                 </View>
-                <View style={s.tRow}>
-                  <Text style={s.tLabel}>Handwerkerleistungen (§ 35a Abs. 3 EStG)</Text>
-                  <Text style={s.tValue}>{fmt(sumH)}</Text>
-                </View>
-              </View>
-              <Text style={{ fontSize: 8.5, color: C.textDim, marginBottom: 12 }}>
-                Jeweils 20 % davon werden als Ermäßigung angerechnet, höchstens 4.000 € im Jahr bei
-                den Dienstleistungen und 1.200 € bei den Handwerkerleistungen.
-              </Text>
-              </View>
-
-              {positionenAlle.some(p => (p.steuerArt === "nicht" || p.steuerArt === "unklar") && p.steuerGrund) && (
-                <View style={{ marginBottom: 12 }}>
-                  {positionenAlle.filter(p => (p.steuerArt === "nicht" || p.steuerArt === "unklar") && p.steuerGrund)
-                    .filter((p, i, arr) => arr.findIndex(q => q.steuerGrund === p.steuerGrund) === i)
-                    .map((p, i) => (
-                      <Text key={i} style={{ fontSize: 7.5, color: C.textDim, lineHeight: 1.45, marginBottom: 1 }}>
-                        {ohneDavon(p.posten)}: {p.steuerGrund}
-                      </Text>
-                    ))}
-                </View>
-              )}
-
-              <Text style={s.anfrageTitel}>Wo das in die Steuererklärung gehört</Text>
-              <View style={s.hinweisBox}>
-                <Text>
-                  Die begünstigten Posten gehören in die <Text style={{ fontFamily: "Poppins", fontWeight: 600 }}>Anlage
-                  Haushaltsnahe Aufwendungen</Text>. Die Ermäßigung zieht das Finanzamt direkt von deiner
-                  Steuerschuld ab, nicht nur vom zu versteuernden Einkommen. Sie wirkt also voll.
-                  {"\n\n"}
-                  Benutzt du ein Steuerprogramm, trägst du die Posten einzeln ein, so wie das Programm
-                  sie abfragt. Die Einordnung, die Berechnung der 20 Prozent und die Prüfung der
-                  Höchstbeträge übernimmt es selbst. Selbst rechnen musst du nichts.
+                <Text style={{ fontSize: 8.5, color: C.textDim, marginBottom: 12 }}>
+                  Angerechnet werden davon jeweils {Math.round(S35A.SATZ * 100)} %, höchstens {S35A.HOECHST_DIENSTLEISTUNG.toLocaleString("de-DE")} € im Jahr bei den
+                  Dienstleistungen und {S35A.HOECHST_HANDWERKER.toLocaleString("de-DE")} € bei den Handwerkerleistungen.
                 </Text>
               </View>
 
+              {/* GEKÜRZT 13.09.2026: Dieser Block erklärte nochmal, dass Programme
+                  einzeln abfragen und das Formular zusammengefasst will. Genau
+                  das steht seit dem Umbau schon über den beiden Versionen.
+                  Übrig bleibt der eine Punkt, der sonst nirgends steht und den
+                  viele nicht wissen. */}
+              <View style={s.hinweisBox}>
+                <Text>
+                  Gut zu wissen: Die Ermäßigung zieht das Finanzamt <Text style={{ fontFamily: "Poppins", fontWeight: 600 }}>direkt
+                  von deiner Steuerschuld</Text> ab, nicht vom zu versteuernden Einkommen. In deinem Fall
+                  wären das {Math.round(S35A.SATZ * 100)} % von {fmt(sumD)} und {Math.round(S35A.SATZ * 100)} % von {fmt(sumH)}, zusammen {fmt(ermaessigung)}, um
+                  die sich deine Steuer verringert.
+                </Text>
+              </View>
 
               <Text style={s.anfrageTitel}>Ein Punkt, den du vorher prüfen solltest</Text>
               <View style={s.hinweisBox}>

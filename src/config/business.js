@@ -42,6 +42,30 @@ export const BUSINESS = {
   // abgeglichen (Stand 08/2026). Sub-Splits (Versicherung) sind interne
   // Schätzverhältnisse, da DMB hierzu keine Aufschlüsselung veröffentlicht —
   // Summe bewusst auf 100% gesetzt.
+  // ── § 35a EStG, Steuerermäßigung ────────────────────────────────────────
+  // AN EINER STELLE, ergänzt 13.09.2026. Vorher standen 20 %, 4.000 € und
+  // 1.200 € verstreut im PDF-Baustein und in Fließtexten. Ändert der
+  // Gesetzgeber einen Wert, müsste man sie einzeln suchen, und eine übersehene
+  // Stelle würde dem Kunden eine falsche Zahl nennen.
+  //
+  // ÜBERWACHT VON scripts/steuerrecht-monitor.mjs: Das Skript liest § 35a EStG
+  // monatlich bei gesetze-im-internet.de und meldet per GitHub-Issue, wenn die
+  // Werte dort von diesen hier abweichen. Es überschreibt bewusst NICHTS
+  // automatisch, aus demselben Grund wie beim Richtwerte-Monitor: Zahlen, mit
+  // denen Kunden gegenüber Finanzamt oder Vermieter auftreten, brauchen eine
+  // menschliche Freigabe.
+  //
+  // Wortlaut geprüft am 13.09.2026:
+  //   Abs. 2: "um 20 Prozent, höchstens 4 000 Euro"              (Dienstleistungen)
+  //   Abs. 3: "um 20 Prozent ..., höchstens jedoch um 1 200 Euro" (Handwerker)
+  STEUER_35A: {
+    SATZ: 0.20,
+    HOECHST_DIENSTLEISTUNG: 4000,
+    HOECHST_HANDWERKER: 1200,
+    QUELLE: "https://www.gesetze-im-internet.de/estg/__35a.html",
+    GEPRUEFT_AM: "2026-09-13",
+  },
+
   RICHTWERTE: {
     gesamt: 2.67,
     heizung_warmwasser: 1.32,
