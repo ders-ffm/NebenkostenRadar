@@ -2,6 +2,20 @@
 
 Alle wesentlichen Änderungen an diesem Projekt, mit Datum und Begründung. Dient der Nachvollziehbarkeit, damit auch ohne KI-Unterstützung verstanden werden kann, warum etwas so ist, wie es ist.
 
+## 13.09.2026 — Indexierungs-Anmeldung (Rest) nicht durchgeführt: Browser-Zugriff verweigert
+
+Geplanter Task "nkr-restliche-seiten-indexieren" sollte die verbliebenen 7 URLs (6 Ratgeberartikel + `/ratgeber`) in der Google Search Console zur Indexierung anmelden. Der Zugriff auf den Browser (Claude in Chrome) wurde vom System mit "Browser action was not allowed" verweigert — auch nach Neuwahl des verbundenen Browsers. Da dieser Lauf unbeaufsichtigt läuft, konnte keine Freigabe erteilt werden. Es wurde keine einzige URL angemeldet, keine der zuvor eingereichten neun URLs betroffen. Offen bleiben weiterhin:
+
+1. `/ratgeber/aufzugskosten-nebenkostenabrechnung`
+2. `/ratgeber/sonstige-betriebskosten-nr-17-betrkv`
+3. `/ratgeber/leerstand-nebenkosten-wer-zahlt`
+4. `/ratgeber/nebenkostenabrechnung-bei-auszug`
+5. `/ratgeber/gartenpflege-nebenkostenabrechnung`
+6. `/ratgeber/versicherungen-nebenkostenabrechnung`
+7. `/ratgeber`
+
+Nächster Schritt: Task erneut ausführen, während Stefan anwesend ist, um die Chrome-Berechtigung freizugeben — oder die URLs manuell in der Search Console anmelden.
+
 ## 10.09.2026 — V2, V3, V7 umgesetzt · FAQ als eigene Menüseite · Sitemap-Fehler behoben
 
 Stefan hat aus der Maßnahmenliste V1–V8 ausgewählt: V2, V3 und V7 umsetzen, V1 (kostenlose Vorprüfung) vorerst nicht anfassen, V4/V5 zurückstellen.
@@ -119,6 +133,149 @@ Stefans Einwand zur Europa-Recherche: Erweiterung lohne nur in Länder mit einem
 **Erkenntnis für die Strategie:** Deutschland ist nicht zufällig NKRs Markt, sondern fast der einzige große, in dem das Produkt überhaupt existieren *kann*. Die Kombination aus gesetzlichem Umlagekatalog, Abrechnungspflicht, Widerspruchsfrist **und** frei veröffentlichtem bundesweitem Vergleichsdatensatz gibt es sonst nirgends in dieser Vollständigkeit — auch nicht in Österreich oder der Schweiz. Wenn NKR hier nicht verkauft, liegt es nicht am Land.
 
 Details, Quellen und die Bewertung Frankreichs in `planung/europa-potenzial-nkr.md`, Abschnitt 8.
+
+---
+
+## 13.09.2026 — Korrektur einer eigenen Fehldiagnose, plus Steuerrecht-Monitor
+
+### Die Abrechnung der Mutter belegt: die Erkennung hat nichts erfunden
+
+Stefan hat die Abrechnung seiner Mutter nachgereicht (Erwin Schmider GmbH, Oberwolfach, 76 m²). Sie ist sehr einfach aufgebaut und enthält genau drei Positionen:
+
+| Position | Betrag |
+|---|---|
+| Müllgebühren, 1 Person × 3,70 € × 12 | 44,40 € |
+| Sonstige Nebenkosten, 76 m² × 0,36 € × 12 | 328,32 € |
+| Gemeinschaftsantenne, 6,50 € × 12 | 78,00 € |
+| **Summe** | **450,72 €** |
+
+Genau diese drei standen im Prüfbericht, mit exakt diesen Beträgen, und ihre Summe trifft die aufgedruckte Endsumme von 450,72 € auf den Cent. **Die Erkennung hat sauber gearbeitet.**
+
+Daneben standen **18 weitere Positionen aus Stefans eigener Abrechnung**, zusammen 2.952,51 €. Von der Gesamtsumme des Berichts waren damit **87 % fremde Daten**.
+
+### Damit ist meine Diagnose vom 11.09. widerlegt
+
+Am 11.09. hatte ich behauptet, die Foto-Erkennung habe drei Positionen erfunden: CO2-Abgabe 12,00 €, Entwässerung 25,00 € und Gemeinschaftsantenne 78,00 €. Ich hatte das für bewiesen gehalten, weil ihre Summe von 115,00 € exakt der Differenz zur aufgedruckten Endsumme entsprach.
+
+Die Rechnung stimmte, die Schlussfolgerung nicht. Dass die drei Positionen zu viel waren, war richtig. **Woher sie kamen, war falsch.** Sie stammten nicht aus der Erkennung, sondern aus dem Zwischenspeicher einer früheren Sitzung, und zwar über denselben Mechanismus, der jetzt behoben ist.
+
+Der Beleg dafür steht in der Abrechnung der Mutter: Dort taucht **Gemeinschaftsantenne 78,00 €** auf, in beiden fotografierten Jahrgängen. Stefans eigene ABG-Abrechnung kennt diese Position nicht. Die 78,00 € in seinem Bericht vom 11.09. waren also die Antenne seiner Mutter aus einem noch älteren Testlauf.
+
+**Folge für die Bewertung der Erkennung:** Es gibt derzeit keinen belegten Fall, in dem sie einen Betrag erfunden hätte. Der Betragsabgleich gegen die Zeilen-Abschrift (siehe 11.09.) war also eine Sicherung gegen ein Problem, das es so nicht gab. Er bleibt trotzdem drin, weil er in beiden echten Testfällen alle richtigen Werte behalten hat, aber seine Begründung ist eine andere: Er ist Vorsorge, nicht Reparatur.
+
+### Nachtrag: die amtliche Quelle blockt Maschinenzugriffe
+
+Der erste echte Lauf auf GitHub scheiterte mit `fetch failed`. **gesetze-im-internet.de nimmt Anfragen aus Rechenzentren nicht an.** Das passt zu drei unabhängigen Beobachtungen desselben Tages: Der Abruf über das Werkzeug lieferte eine leere Antwort, ein zweiter Browser wurde abgewiesen, und nur ein echter Browser kam durch.
+
+**Umgebaut auf drei Quellen nacheinander:** die amtliche zuerst, danach buzer.de und dejure.org.
+
+**Schutz vor Fehlalarm:** Eine Quelle wird nur verwendet, wenn sich in ihrem Text **alle vier** Kennzahlen finden lassen, also Prozentsatz und Höchstbetrag in Absatz 2 **und** Absatz 3. Liefert eine Quelle nur Bruchstücke, wird sie übersprungen statt halb ausgewertet. Eine halb gelesene Quelle würde eine Änderung melden, die es nicht gibt.
+
+Gegen vier Textformate getestet, darunter Leerzeichen und Punkt als Tausendertrenner sowie ein absichtlich unvollständiger Auszug: drei korrekt gelesen, der unvollständige korrekt übersprungen. Gegenprobe mit künstlich geändertem Höchstbetrag: erkannt.
+
+**Wenn keine Quelle erreichbar ist**, meldet das Skript das jetzt als eigene Issue mit der Liste der Fehlversuche, statt nur abzustürzen. Ein Monitor, der monatelang nichts prüfen kann, ohne dass es jemand merkt, wäre schlimmer als gar keiner.
+
+Der Wortlaut-Fingerabdruck wird zusätzlich je Quelle gespeichert. Wechselt der Monitor auf eine Ausweichquelle, gibt das sonst einen Fehlalarm, weil Portale denselben Paragrafen unterschiedlich formatieren.
+
+### Steuerrecht-Monitor
+
+Stefans Vorgabe: „Sollte sich was im Steuerrecht ändern, muss das natürlich automatisch angepasst werden."
+
+Neu: `scripts/steuerrecht-monitor.mjs`, monatlich per GitHub Actions. Er liest § 35a EStG bei gesetze-im-internet.de und vergleicht mit `BUSINESS.STEUER_35A`:
+
+| geprüft | heute |
+|---|---|
+| Prozentsatz in Abs. 2 und Abs. 3 | 20 % |
+| Höchstbetrag Abs. 2, Dienstleistungen | 4.000 € |
+| Höchstbetrag Abs. 3, Handwerker | 1.200 € |
+| Wortlaut der Absätze 2 und 3 (Fingerabdruck) | unverändert |
+
+Der Wortlaut-Vergleich fängt auch Änderungen ab, die keine Zahl betreffen, etwa eine Neufassung des begünstigten Leistungskreises. Dann wäre die Zuordnung in `analyse.js` zu prüfen.
+
+**Er überschreibt bewusst nichts**, wie der Richtwerte-Monitor auch. Die Zahlen landen in einem Dokument, mit dem Kunden gegenüber dem Finanzamt auftreten; ein Parser-Fehler dürfte dort nie unbemerkt durchrutschen. Automatisch ist die Erkennung, nicht die Änderung.
+
+Die Satzstellung der beiden Absätze ist verschieden („höchstens 4 000 Euro" gegenüber „höchstens jedoch um 1 200 Euro"), das Muster erfasst beide. Gegen den echten Gesetzestext getestet, inklusive Gegenprobe mit künstlich geändertem Höchstbetrag: erkannt.
+
+Nebenbei zusammengeführt: 20 %, 4.000 € und 1.200 € standen verstreut im PDF-Baustein und in Fließtexten. Jetzt stehen sie einmal in `business.js`, und der Monitor hat überhaupt etwas, womit er vergleichen kann.
+
+---
+
+## 13.09.2026 — Steuerseite: nur noch Absetzbares, in zwei Versionen
+
+Stefans Vorgabe: „In der Steuerauflistung dürfen nur Posten aufgelistet werden, welche wirklich von der Steuer absetzbar sind, und zwar in 2 Versionen: einmal die Einzelauflistung für Steuer-Apps wie Taxfix, und einmal so wie man sie selbst in die Steuerformulare eingibt. Da ist es zusammengefasst."
+
+Beides stimmt, und es sind wirklich zwei verschiedene Dinge. Steuerprogramme fragen Posten für Posten ab. Die amtliche Anlage Haushaltsnahe Aufwendungen will je einen Gesamtbetrag pro Topf.
+
+### Was sich geändert hat
+
+Vorher stand alles in einer gemeinsamen Tabelle, auch die nicht absetzbaren Posten mit dem Vermerk „zählt nicht". Bei Stefans Abrechnung waren das **elf von siebzehn Zeilen**. Wer abtippt, muss dann bei jeder Zeile prüfen, ob sie überhaupt gemeint ist, und genau dabei passieren Fehler.
+
+Jetzt zwei klar getrennte Blöcke:
+
+**Version 1, für Steuerprogramme.** Nur die absetzbaren Posten einzeln, mit Kategorie. Im Testfall sechs Zeilen statt siebzehn.
+
+**Version 2, für das Steuerformular.** Die zwei Summen, die in die Anlage gehören.
+
+Die nicht absetzbaren Posten sind nicht verschwunden, sondern zu **einer** Zeile zusammengefasst. Damit bleibt die Frage beantwortet, die sonst offen wäre: Fragt Taxfix nach den Müllgebühren, findet der Kunde dort, dass sie nicht zählen.
+
+Dazu zwei Sonderhinweise, die nur erscheinen, wenn sie zutreffen: die Abgrenzung Straßenreinigung gegen Winterdienst (BFH VI R 4/18) und der Sonderfall „Sonstige vereinbarte Betriebskosten".
+
+### Zwei eigene Fehler beim Umbau, im Probedruck gefunden
+
+**Dopplung:** Der alte Block „Wo das in die Steuererklärung gehört" erklärte nochmal, dass Programme einzeln abfragen und das Formular zusammengefasst will. Genau das steht seit dem Umbau über den beiden Versionen. Gekürzt auf den einen Punkt, der sonst nirgends steht.
+
+**Falscher Satz:** Beim Kürzen entstand „Aus 20 % von 351,30 € werden also keine anteiligen Cent, sondern genau dieser Betrag weniger Steuer." Das „dieser Betrag" bezog sich sprachlich auf die Summe, nicht auf die 20 Prozent, und hätte eine mehr als fünfmal zu hohe Ermäßigung suggeriert. Jetzt steht die Rechnung ausgeschrieben da, mit beiden Töpfen einzeln und dem Ergebnis, und die Berechnung deckelt zusätzlich auf die gesetzlichen Höchstbeträge von 4.000 € und 1.200 €.
+
+---
+
+## 13.09.2026 — Schwerster Fehler bisher: Daten zweier Abrechnungen vermischt
+
+Stefan hat seine eigene Abrechnung geprüft und **zwei Tage später die seiner Mutter**. Beide per Upload, keine Eingabe von Hand. Das Ergebnis war eine Mischung aus beiden.
+
+Das ist die schwerste Fehlerart in diesem Produkt: Daten einer Person landen im Schreiben einer anderen, und niemand bemerkt es. Hier waren es zwei verschiedene Haushalte.
+
+### Zwei Ursachen, die zusammenwirkten
+
+**1. Der Zwischenspeicher wurde still geladen.** `App.jsx` holte einen gespeicherten Entwurf beim Start automatisch ins Formular, sofern er jünger als 30 Tage war. Zwei Tage liegen klar darunter. **Es gab dazu keinerlei Hinweis im Bildschirm**, der Nutzer konnte es nicht wissen.
+
+`resetAll()` löscht den Entwurf zwar, ist aber nur über einen Knopf auf der Ergebnisseite erreichbar. Wer später neu von der Startseite anfängt, kommt dort nie vorbei.
+
+**2. Die Erkennung mischte, statt zu ersetzen.** Ein Einzeiler in `Wohnung.jsx`:
+
+```js
+setWerte(p => ({ ...p, ...data.werte }))
+```
+
+Positionen, die in der neuen Abrechnung vorkamen, wurden korrekt überschrieben. Positionen, die es dort **nicht** gab, blieben mit dem alten Betrag stehen. Genau daraus entsteht eine Mischung statt eines vollständigen Austauschs.
+
+Nachgestellt mit zwei Beispielabrechnungen:
+
+| Posten | Abrechnung A | Abrechnung B | vorher im Bericht | jetzt |
+|---|---|---|---|---|
+| Grundsteuer | 247,97 | 198,40 | 198,40 | 198,40 |
+| Müllbeseitigung | 236,66 | 151,20 | 151,20 | 151,20 |
+| Hauswart | 48,60 | 62,10 | 62,10 | 62,10 |
+| Gartenpflege | 41,40 | nicht vorhanden | **41,40** | entfällt |
+| Schornsteinreinigung | 1,86 | nicht vorhanden | **1,86** | entfällt |
+| Aufzug | 180,00 | nicht vorhanden | **180,00** | entfällt |
+
+Drei fremde Posten über 223,26 € im Bericht, die in der geprüften Abrechnung nicht stehen.
+
+### Behoben
+
+**Der Entwurf wird nicht mehr angewendet, sondern angeboten.** Das Formular bleibt leer, bis der Nutzer entscheidet. Auf dem Wohnungs-Schritt erscheint ein Feld mit Datum und Abrechnungsjahr des gespeicherten Stands und zwei gleichberechtigten Knöpfen: „Dort weitermachen" oder „Neue Abrechnung prüfen". Keiner ist vorausgewählt, weil nur der Nutzer weiß, welcher Fall vorliegt.
+
+Die 30-Tage-Frist zu verkürzen hätte den Fehler nur seltener gemacht, nicht beseitigt. Wer zwei Abrechnungen am selben Tag prüft, wäre weiter betroffen gewesen.
+
+**Die Erkennung ersetzt jetzt.** Ein Analyselauf wertet immer alle hochgeladenen Dateien gemeinsam aus, sein Ergebnis ist also das vollständige Bild dieser einen Abrechnung. Was vorher im Formular stand, gehört zu einer anderen.
+
+Preis dafür: Wer vor dem Upload schon von Hand Beträge eingetippt hat, verliert sie. Das ist der harmlosere Fall, weil ein leeres Feld sofort auffällt. Ein falsch gefüllter Betrag aus einer fremden Abrechnung fällt niemandem auf.
+
+### Rückfallsicherung in der automatischen Prüfung
+
+Der schuldige Einzeiler sieht harmlos aus und würde beim nächsten Umbau leicht wieder entstehen. `scripts/seo-check.mjs` verbietet das Muster deshalb jetzt im Quelltext.
+
+Beim Einbauen lieferte die Prüfung prompt einen Fehlalarm: Sie meldete den **Kommentar**, der den alten Code als Beleg zitiert. Kommentarzeilen werden jetzt ausgenommen. Gegengeprüft in drei Schritten: sauber, Fehler künstlich wieder eingebaut → schlägt an, zurückgesetzt → wieder sauber.
 
 ---
 
