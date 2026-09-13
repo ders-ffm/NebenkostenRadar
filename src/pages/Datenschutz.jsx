@@ -64,7 +64,7 @@ const ABSCHNITTE = [
     "Rechtsgrundlage: Art. 6 Abs. 1 lit. b DSGVO. Datenübermittlung in die USA auf Basis von Standardvertragsklauseln (Art. 46 Abs. 2 lit. c DSGVO). Datenschutzerklärung: stripe.com/de/privacy",
   ]},
   { t: "7. Bildmaterial (Unsplash)", lines: [
-    "Einige Bilder in den Ratgeber-Artikeln werden direkt von Unsplash geladen, wobei deine IP-Adresse übermittelt wird. Rechtsgrundlage: Art. 6 Abs. 1 lit. f DSGVO. Datenschutzerklärung: unsplash.com/privacy",
+    "Die Bilder in den Ratgeber-Artikeln liegen auf unserem eigenen Server und werden von dort ausgeliefert. Es wird dabei keine Verbindung zu einem fremden Anbieter aufgebaut und keine Daten an Dritte übermittelt. Die Bilder stammen ursprünglich von Unsplash und werden unter der Unsplash-Lizenz verwendet.",
   ]},
   { t: "8. E-Mail-Versand (Resend)", lines: [
     "Nach einem Kauf verschicken wir deinen Prüfbericht als PDF-Anhang automatisch an deine E-Mail-Adresse, über den Dienstleister Resend (Resend, Inc., USA). Rechtsgrundlage: Art. 6 Abs. 1 lit. b DSGVO (Vertragserfüllung). Datenübermittlung in die USA auf Basis von Standardvertragsklauseln der EU-Kommission (Art. 46 Abs. 2 lit. c DSGVO).",
