@@ -118,7 +118,10 @@ export default function Result({ navigateTo, result, wohnung, werte, gesamtsumme
 
         <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8, marginBottom: 14 }}>
           {[
-            { l: "Dein €/m²/Jahr", v: fmt(result.pro_qm_gesamt) },
+            // pro_qm_gesamt ist null, wenn die Wohnfläche fehlt (siehe
+            // analyse.js). Dann hier ein Strich statt einer Zahl, die aus
+            // einem Notbehelf entstanden wäre.
+            { l: "Dein €/m²/Jahr", v: result.pro_qm_gesamt == null ? "—" : fmt(result.pro_qm_gesamt) },
             { l: "DMB-Richtwert", v: fmt(result.richtwert_pro_qm_jahr) },
             { l: "Auffälligkeiten", v: result.moegliche_ersparnis > 0 ? fmt(result.moegliche_ersparnis) : "Keine", hi: result.moegliche_ersparnis > 0 },
             { l: "Geprüfte Posten", v: result.posten_bewertung.length },

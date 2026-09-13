@@ -74,6 +74,41 @@ function steuerbonus(result) {
 
 // ── Regeln, die IMMER gelten müssen ──────────────────────────────────────
 const REGELN = [
+  // ── DIE WICHTIGSTE REGEL DES GANZEN PROJEKTS ──────────────────────────
+  //
+  // Ohne Wohnfläche darf NIE eine Beanstandung entstehen. Alle Richtwerte
+  // des Deutschen Mieterbundes gelten pro Quadratmeter. Fehlt die Fläche,
+  // rechnete die Auswertung früher mit einem Notbehelf von 5 m², und dann
+  // liegt jeder normale Posten hunderte Prozent über seinem Richtwert. Im
+  // Live-Test am 13.09.2026 kam dabei "Müllbeseitigung: 2365 % über
+  // DMB-Richtwert! Belege anfordern." bei einem völlig unauffälligen Betrag
+  // von 236,66 € heraus.
+  //
+  // Das ist der schlimmste Fehlertyp, den dieses Produkt haben kann: eine
+  // Falschbeschuldigung gegenüber dem Vermieter, ausgelöst nicht durch eine
+  // falsche Eingabe, sondern durch eine fehlende. Der Kunde merkt nichts,
+  // der Vermieter antwortet mit einer Rechnung, und die Glaubwürdigkeit
+  // aller übrigen Einwände ist dahin.
+  //
+  // Abgesichert ist das inzwischen an drei Stellen: App.jsx lässt den
+  // Posten-Schritt ohne Fläche gar nicht erst zu, analysierePosten() gibt
+  // ohne Fläche keine Bewertung ab, und buildResult() unterdrückt zusätzlich
+  // den Quadratmeter-Vergleich in der Kopfzeile. Diese Regel hier stellt
+  // sicher, dass keine dieser drei Stellen unbemerkt wieder wegfällt.
+  {
+    name: "Ohne Wohnfläche keine einzige Beanstandung",
+    warum: "Aus einer fehlenden Fläche würden sonst 5 m², und jeder normale Posten läge hunderte Prozent über dem Richtwert. Falschbeschuldigung des Vermieters.",
+    pruef: (r) => {
+      if ((r.fehler_anzahl || 0) > 0) return { grund: r.fehler_anzahl + " Widerspruchsgründe trotz fehlender Wohnfläche" };
+      if ((r.moegliche_ersparnis || 0) > 0) return { grund: "Rückforderung " + r.moegliche_ersparnis + " trotz fehlender Wohnfläche" };
+      if (r.pro_qm_gesamt != null) return { grund: "€/m²-Wert " + r.pro_qm_gesamt + " trotz fehlender Wohnfläche" };
+      const bewertet = (r.posten_bewertung || []).filter(p => p.status !== "pruefen");
+      if (bewertet.length > 0) return { grund: "bewertete Posten trotz fehlender Wohnfläche: " + bewertet.map(p => p.posten + "=" + p.status).join(", ") };
+      if (/m2\/Jahr|m²\/Jahr/.test(r.zusammenfassung || "")) return { grund: "Zusammenfassung nennt einen Quadratmeterwert: " + r.zusammenfassung };
+      return true;
+    },
+    nurWenn: (r, f) => !(Number(String(f.wohnung.flaeche).replace(",", ".")) >= 5),
+  },
   {
     name: "Brief ist nie inhaltlich leer",
     warum: "Ein Musterbrief ohne eine einzige Zeile ist das, wofür der Kunde 12,99 € zahlt.",
@@ -182,6 +217,19 @@ const W = (flaeche, jahr, vorauszahlung, extra = {}) => ({ flaeche, jahr, voraus
 const faelle = [];
 const add = (name, werte, wohnung) => faelle.push({ name, werte, wohnung });
 
+// 0. FEHLENDE WOHNFLÄCHE.
+//
+// Erreichbar, weil jeder Schritt eine eigene, frei aufrufbare URL hat: per
+// Lesezeichen, alter Link oder Zurück-Button landet man auf dem
+// Posten-Schritt, ohne je eine Fläche eingetragen zu haben. App.jsx
+// unterbindet das inzwischen, diese Fälle sichern die Rechenschicht selbst
+// ab. Siehe die erste Regel oben.
+add("Wohnfläche fehlt ganz", { muellbeseitigung: "236.66", heizkosten_gesamt: "700", kabelanschluss: "60" }, W("", "2025", "900"));
+add("Wohnfläche ist null", { muellbeseitigung: "236.66", grundsteuer: "248" }, W("0", "2025", "0"));
+add("Wohnfläche unsinnig klein", { muellbeseitigung: "236.66", gartenpflege: "900" }, W("3", "2025", "1200"));
+add("Wohnfläche fehlt, dazu Heizkostenangaben", { heizkosten_gesamt: "700.81", warmwasser_gesamt: "461.75" },
+  W("", "2025", "1200", { heizGrundkosten: "140.16", heizVerbrauchskosten: "560.65", hkVerbrauchErfasst: "nein" }));
+
 // 1. Grenzfälle der Eingabemenge
 add("gar nichts eingegeben", {}, W("75", "2024", "0"));
 add("nur Pflichtfelder, unauffällig", { heizkosten_gesamt: "800", warmwasser_gesamt: "300" }, W("75", "2024", "1200"));
@@ -280,7 +328,11 @@ for (const f of faelle) {
   const b = brief(r);
   const k = kopfzeile(r);
   for (const regel of REGELN) {
-    if (regel.nurWenn && !regel.nurWenn(r)) continue;
+    // `f` mit übergeben (13.09.2026): Manche Regeln müssen nicht nur das
+    // Ergebnis kennen, sondern auch die EINGABE, aus der es entstanden ist.
+    // Die Wohnflächen-Regel gilt zum Beispiel nur für Fälle ohne Fläche, und
+    // die Fläche steht nur in f.wohnung, nicht mehr im Ergebnis.
+    if (regel.nurWenn && !regel.nurWenn(r, f)) continue;
     geprueft++;
     const res = regel.pruef(r, b, k);
     if (res !== true) {

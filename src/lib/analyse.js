@@ -408,7 +408,50 @@ function verbrauchsanteil(grund, verbrauchswert) {
 
 export function analysierePosten(w, wohn) {
   const R = BUSINESS.RICHTWERTE;
-  const flaeche = Math.max(toNum(wohn.flaeche), 5);
+
+  // ───────────────────────────────────────────────────────────────────────
+  // ZWEITE SICHERUNG GEGEN DIE FEHLENDE WOHNFLÄCHE (13.09.2026)
+  //
+  // Die Zeile darunter hieß früher nur `Math.max(toNum(wohn.flaeche), 5)`.
+  // Der Mindestwert 5 stand dort, damit nie durch null geteilt wird. Das
+  // löst das Rechenproblem, erzeugt aber ein viel schlimmeres inhaltliches:
+  // Aus einer FEHLENDEN Wohnfläche werden stillschweigend 5 m², und dann
+  // liegt jeder normale Posten hunderte Prozent über seinem Richtwert. Im
+  // Live-Test kam so "Müllbeseitigung: 2365 % über DMB-Richtwert! Belege
+  // anfordern." bei einem völlig unauffälligen Betrag heraus.
+  //
+  // App.jsx lässt den Posten-Schritt inzwischen gar nicht mehr ohne
+  // Wohnfläche zu. Diese Prüfung hier ist die zweite Linie: Sollte der Wert
+  // auf einem anderen Weg doch einmal fehlen, etwa aus einem alten
+  // gespeicherten Entwurf oder über die Bestellhistorie, darf daraus keine
+  // Beanstandung werden.
+  //
+  // Wir geben dann ein ehrliches Ergebnis zurück statt eines falschen: die
+  // Beträge werden gelistet, aber nichts wird bewertet, und der Grund steht
+  // dabei. Lieber "können wir nicht beurteilen" als eine erfundene Zahl.
+  const flaecheRoh = toNum(wohn.flaeche);
+  if (flaecheRoh < 5) {
+    return {
+      posten_bewertung: ALLE_POSTEN
+        .filter(p => toNum(w[p.key]) > 0)
+        .map(p => ({
+          posten: p.label,
+          betrag: toNum(w[p.key]),
+          richtwert: 0,
+          abweichung_prozent: 0,
+          status: "pruefen",
+          hinweis: "Ohne deine Wohnfläche lässt sich diese Position nicht mit dem DMB-Richtwert vergleichen, denn alle Vergleichswerte gelten pro Quadratmeter. Trage die Wohnfläche nach, dann bewerten wir die Position.",
+          paragraf: "§ 2 BetrKV",
+          steuerArt: steuerArtFuer(p.key),
+          steuerGrund: steuerGrundFuer(p.key),
+        })),
+      widerspruch: [],
+      heizBefunde: [],
+      kuerzungBetrag: 0,
+    };
+  }
+
+  const flaeche = Math.max(flaecheRoh, 5);
   const rj = m => m * flaeche * 12; // Monatsrichtwert -> Jahresrichtwert für die Wohnfläche
 
   // widerspruch: Array von { text, typ }. "typ" unterscheidet zwei grund-
@@ -946,7 +989,14 @@ export function buildResult(w, wohn) {
   const hatKritisch = posten_bewertung.some(p => p.status === "nicht_umlagefaehig") || heizHart;
   const hatSehrHoch = posten_bewertung.some(p => p.status === "sehr_hoch");
   const hatHoch = posten_bewertung.some(p => ["hoch", "pruefen"].includes(p.status));
-  const gesamtZuHoch = proQmJahr > richtwertJahr * 1.25;
+  // Ohne plausible Wohnfläche darf der Quadratmetervergleich NIRGENDS
+  // stattfinden, auch nicht in der Kopfzeile. analysierePosten() liefert in
+  // dem Fall schon keine Beanstandungen mehr (siehe dort), die Zeile
+  // "Auffällig: 199,49/m2/Jahr" stand danach aber trotzdem noch im Ergebnis,
+  // weil proQmJahr hier oben getrennt berechnet wird. Im Test gefunden,
+  // unmittelbar nach dem Einbau der ersten Sicherung.
+  const flaechePlausibel = toNum(wohn.flaeche) >= 5;
+  const gesamtZuHoch = flaechePlausibel && proQmJahr > richtwertJahr * 1.25;
   const bew = hatKritisch ? "kritisch" : (hatSehrHoch || gesamtZuHoch || heizForm || widerspruch.length > 1) ? "auffaellig" : hatHoch ? "auffaellig" : "ok";
 
   // WICHTIG (gefunden 10.08.2026 durch Stefans Plausibilitätsfrage, siehe CHANGELOG):
@@ -1018,6 +1068,13 @@ export function buildResult(w, wohn) {
     zusammenfassung: (() => {
       const zuPruefen = posten_bewertung.filter(p => ["hoch", "pruefen"].includes(p.status)).length;
       const postenKritisch = posten_bewertung.some(p => p.status === "nicht_umlagefaehig");
+      // Fehlt die Wohnfläche, kann und darf hier gar keine Einordnung stehen.
+      // Der Text sagt stattdessen, was fehlt und was es bringt, es
+      // nachzutragen.
+      if (!flaechePlausibel) {
+        return "Deine Wohnfläche fehlt, deshalb können wir die Kosten nicht mit dem DMB-Richtwert vergleichen. Alle Vergleichswerte gelten pro Quadratmeter. "
+          + "Erfasst sind bisher " + fmt(gesamt) + ". Trage die Wohnfläche nach, dann bewerten wir jede Position." + saldoText;
+      }
       const lage = proQmJahr > richtwertJahr
         ? "über dem DMB-Richtwert von " + fmt(richtwertJahr) + "/m2/Jahr"
         : "unter dem DMB-Richtwert von " + fmt(richtwertJahr) + "/m2/Jahr";
@@ -1070,7 +1127,11 @@ export function buildResult(w, wohn) {
     // Schätzung auf Basis von Durchschnittswerten.
     ersparnis_hart: Math.round(ersparnisHart * 100) / 100,
     ersparnis_statistisch: ersparnisStatistisch,
-    pro_qm_gesamt: parseFloat(proQmJahr.toFixed(2)),
+    // null statt einer Zahl, wenn die Wohnfläche fehlt. Sonst stünde in der
+    // Kennzahlen-Kachel auf der Ergebnisseite und im PDF ein Wert, der aus
+    // dem 5-m²-Notbehelf entstanden ist und mit der Wohnung nichts zu tun
+    // hat. Result.jsx und AbrechnungPDF.jsx zeigen dann einen Strich.
+    pro_qm_gesamt: flaechePlausibel ? parseFloat(proQmJahr.toFixed(2)) : null,
     richtwert_pro_qm_jahr: richtwertJahr,
     posten_bewertung,
     // Formale Prüfung der Heizkostenabrechnung (§§ 7, 8, 12 HeizkostenV).

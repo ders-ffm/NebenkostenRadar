@@ -15,6 +15,11 @@ import { ARTIKEL } from "./artikel.js";
 import { IS_DEMO } from "./config/business.js";
 import { buildResult, ALLE_POSTEN } from "./lib/analyse.js";
 import { toNum } from "./lib/format.js";
+// Nur für die Voraussetzungs-Anzeige weiter unten. THEME wird ohnehin von
+// jeder Seite geladen, der Import kostet hier nichts zusätzlich, verhindert
+// aber fest eingetippte Farbwerte, die beim nächsten Design-Wechsel
+// übersehen würden.
+import { THEME } from "./config/theme.js";
 
 import CookieBanner from "./components/layout/CookieBanner.jsx";
 import NachladeFehler from "./components/layout/NachladeFehler.jsx";
@@ -357,7 +362,73 @@ export default function App() {
     fotoErkannt, setFotoErkannt,
   };
 
+  // ───────────────────────────────────────────────────────────────────────
+  // VORAUSSETZUNGEN JE SCHRITT (13.09.2026)
+  //
+  // GEFUNDEN IM LIVE-TEST: Jeder Schritt hat eine eigene URL, und die URLs
+  // sind frei aufrufbar. Wer /pruefen/posten direkt öffnet, per Lesezeichen,
+  // über einen alten Link oder mit dem Zurück-Button, überspringt den
+  // Wohnungs-Schritt. Die Wohnfläche ist dann leer.
+  //
+  // WARUM DAS SCHLIMM IST: analysierePosten() rechnet alle Richtwerte auf die
+  // Wohnfläche um und setzt dabei einen Mindestwert von 5 m² ein, damit nie
+  // durch null geteilt wird. Aus einer leeren Fläche werden also 5 m², und
+  // dann liegt jeder normale Posten hunderte Prozent über dem Richtwert. Im
+  // Test stand im Ergebnis wörtlich "Müllbeseitigung: 2365 % über
+  // DMB-Richtwert! Belege anfordern." bei einem völlig unauffälligen Betrag
+  // von 236,66 €.
+  //
+  // Das ist der schlimmste Fehlertyp dieses Produkts: eine Falschbeschuldigung
+  // gegenüber dem Vermieter, ausgelöst nicht durch eine falsche Eingabe,
+  // sondern durch eine FEHLENDE. Der Kunde merkt nichts, der Vermieter
+  // antwortet mit einer Rechnung, und die Glaubwürdigkeit aller übrigen
+  // Einwände ist weg.
+  //
+  // DIE LÖSUNG IST BEWUSST ALLGEMEIN GEHALTEN. Nicht dieser eine Fall wird
+  // geflickt, sondern die Klasse: Kein Schritt rechnet mehr, bevor seine
+  // Voraussetzungen da sind. Ein neuer Schritt mit Voraussetzungen bekommt
+  // hier eine Zeile, mehr nicht.
+  //
+  // WARUM EINE MELDUNG UND KEINE STILLE WEITERLEITUNG: Ein Sprung ohne
+  // Erklärung wirkt wie ein Fehler der Seite. Der Nutzer soll lesen, warum er
+  // nicht da ist, wo er hinwollte. Das ist dieselbe Linie wie beim
+  // Entwurfs-Hinweis: nichts passiert ungefragt.
+  //
+  // "result" steht bewusst NICHT in dieser Liste. Result.jsx bringt für den
+  // Fall schon eine eigene, ausführlichere Anzeige mit.
+  const VORAUSSETZUNGEN = {
+    posten: {
+      erfuellt: () => toNum(wohnung.flaeche) >= 5,
+      zurueckZu: "wohnung",
+      knopf: "Zu den Angaben zur Wohnung",
+      titel: "Uns fehlt noch deine Wohnfläche",
+      text: "Alle Vergleichswerte beziehen sich auf Quadratmeter. Ohne deine Wohnfläche könnten wir Posten als zu hoch ausweisen, die völlig in Ordnung sind. Das wollen wir dir und deinem Vermieter ersparen.",
+    },
+    adressen: {
+      erfuellt: () => !!result && !!stufe,
+      zurueckZu: result ? "result" : "wohnung",
+      knopf: result ? "Zurück zum Ergebnis" : "Prüfung starten",
+      titel: "Hier geht es erst nach der Auswertung weiter",
+      text: "Auf dieser Seite wird der Kauf vorbereitet. Dafür muss vorher eine Auswertung erstellt und eine der beiden Ausführungen gewählt sein.",
+    },
+  };
+
   function renderPage() {
+    const v = VORAUSSETZUNGEN[step];
+    if (v && !v.erfuellt()) {
+      return (
+        <div style={{ fontFamily: THEME.font.body, background: THEME.color.bg, color: THEME.color.text, minHeight: "100vh", display: "flex", alignItems: "center", justifyContent: "center", padding: 24 }}>
+          <div style={{ maxWidth: 420, textAlign: "center" }}>
+            <h2 style={{ fontFamily: THEME.font.heading, fontSize: 19, fontWeight: 600, margin: "0 0 10px" }}>{v.titel}</h2>
+            <p style={{ fontSize: 14, lineHeight: 1.65, color: THEME.color.textMuted, margin: "0 0 20px" }}>{v.text}</p>
+            <button onClick={() => navigateTo(v.zurueckZu)}
+              style={{ background: THEME.color.accent, color: THEME.color.accentText, border: "none", borderRadius: THEME.radius.lg, padding: "14px 28px", fontSize: 15, fontFamily: THEME.font.heading, fontWeight: 600, cursor: "pointer" }}>
+              {v.knopf}
+            </button>
+          </div>
+        </div>
+      );
+    }
     if (step === "welcome") return <Welcome {...pageProps} />;
     if (step === "wohnung") return <Wohnung {...pageProps} />;
     if (step === "posten") return <Posten {...pageProps} />;
