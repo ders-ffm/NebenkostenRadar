@@ -90,9 +90,22 @@ export const FAQ_STARTSEITE = [
       "Weil diese Kosten nach deinem tatsächlichen Verbrauch abgerechnet werden und jeder Haushalt anders verbraucht. Die Vergleichswerte des Deutschen Mieterbundes sind Durchschnitte pro Quadratmeter. Wie viel Wasser und Wärme verbraucht wird, hängt aber an der Personenzahl, am Verhalten und am Zustand des Gebäudes, nicht an der Wohnfläche. Ein Vierpersonenhaushalt auf 70 Quadratmetern liegt zwangsläufig über dem Durchschnitt, ohne dass die Abrechnung einen Fehler hätte. Würden wir das trotzdem beanstanden, bekämst du vom Vermieter zu Recht die Antwort, dass die Zähler eben diesen Verbrauch anzeigen, und das würde deine berechtigten Einwände unglaubwürdig machen. Wir weisen diese Posten deshalb aus und ordnen sie ein, erheben aber keine Einwendung allein wegen ihrer Höhe.",
   },
   {
+    // ÜBERARBEITET 13.09.2026 (Task #104). Vorher stand hier eine Aufzählung
+    // von Rechten, die wir gar nicht geprüft haben, plus die 3 Prozent für
+    // fehlende fernablesbare Zähler ohne den entscheidenden Zusatz, dass die
+    // Nachrüstfrist erst am 31.12.2026 endet. Beides ist jetzt korrigiert:
+    // Die Prüfung gibt es wirklich, und behauptet wird nur, was auch gilt.
     frage: "Heißt das, bei Heizkosten kann man gar nichts prüfen?",
     antwort:
-      "Nein, im Gegenteil. Nicht prüfbar ist die Höhe deines Verbrauchs, sehr wohl prüfbar ist die Art der Abrechnung, und das sind die stärksten Rechte, die Mieter überhaupt haben. Erstens muss der Vermieter mindestens 50 und höchstens 70 Prozent der Heizkosten nach dem erfassten Verbrauch verteilen (§ 7 Abs. 1 HeizkostenV). Zweitens darfst du deinen Anteil um 15 Prozent kürzen, wenn überhaupt nicht verbrauchsabhängig abgerechnet wurde (§ 12 Abs. 1 Satz 1 HeizkostenV). Drittens gilt eine Kürzung um 3 Prozent, wenn keine fernablesbaren Zähler installiert sind oder die vorgeschriebenen Verbrauchsinformationen fehlen (§ 12 Abs. 1 Sätze 2 und 3 HeizkostenV). Das sind feste Vorgaben mit klarer Rechtsfolge, über die sich nicht streiten lässt, anders als über eine statistische Abweichung. Genau solche Punkte nehmen wir in das Schreiben auf.",
+      "Nein, im Gegenteil. Nicht prüfbar ist die Höhe deines Verbrauchs, sehr wohl prüfbar ist die Art der Abrechnung, und das sind die stärksten Rechte, die Mieter überhaupt haben. Wir prüfen drei Dinge, wenn du uns die Zahlen deiner Heizkostenabrechnung gibst. Erstens den Verbrauchsanteil: Der Vermieter muss mindestens 50 und höchstens 70 Prozent der Heizkosten nach dem erfassten Verbrauch verteilen (§ 7 Abs. 1 Satz 1 HeizkostenV), für Warmwasser gilt dasselbe (§ 8 Abs. 1 HeizkostenV). Wir rechnen dir aus, wo deine Abrechnung liegt. Zweitens, ob überhaupt nach Verbrauch abgerechnet wurde: Wenn nicht, darfst du deinen Anteil um 15 Prozent kürzen (§ 12 Abs. 1 Satz 1 HeizkostenV). Drittens den vorgeschriebenen Vergleich mit dem Vorjahr, der seit dem Abrechnungsjahr 2022 zwingend als Grafik beiliegen muss (§ 6a Abs. 3 Nr. 5 HeizkostenV). Fehlt er, sind es 3 Prozent (§ 12 Abs. 1 Satz 3 HeizkostenV). Das sind feste Vorgaben mit klarer Rechtsfolge, über die sich nicht streiten lässt, anders als über eine statistische Abweichung. Genau solche Punkte nehmen wir in das Schreiben auf.",
+  },
+  {
+    // Bewusst selbst angesprochen: Es gibt eine vierte Kürzungsmöglichkeit,
+    // die wir NICHT prüfen. Wer sie anderswo liest und bei uns nicht findet,
+    // soll den Grund erfahren, statt einen Mangel zu vermuten.
+    frage: "Warum prüft ihr die 3 Prozent für fehlende fernablesbare Zähler nicht?",
+    antwort:
+      "Weil sie für die meisten Abrechnungen noch gar nicht greift und wir dich nicht mit einer Forderung zum Vermieter schicken, die er in einem Satz abräumt. § 12 Abs. 1 Satz 2 HeizkostenV gibt ein Kürzungsrecht von 3 Prozent, wenn keine fernablesbare Ausstattung installiert ist. Für bereits vorhandene Geräte läuft die Frist zum Nachrüsten aber erst am 31. Dezember 2026 ab (§ 5 Abs. 3 HeizkostenV). Bis dahin gilt das Kürzungsrecht nur für Geräte, die nach dem 1. Dezember 2021 neu eingebaut wurden, und dieses Einbaudatum kennt kaum ein Mieter. Wir müssten also raten. Ab dem Abrechnungsjahr 2027 ist die Lage eindeutig, dann nehmen wir die Prüfung auf. Die 3 Prozent für den fehlenden Vorjahresvergleich prüfen wir dagegen schon heute, weil sich das an deiner Abrechnung eindeutig sehen lässt.",
   },
   {
     frage: "Wann nennt ihr einen Posten überhaupt auffällig?",

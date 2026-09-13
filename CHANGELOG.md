@@ -2,6 +2,62 @@
 
 Alle wesentlichen Änderungen an diesem Projekt, mit Datum und Begründung. Dient der Nachvollziehbarkeit, damit auch ohne KI-Unterstützung verstanden werden kann, warum etwas so ist, wie es ist.
 
+## 13.09.2026 — Heizkostenabrechnung wird jetzt wirklich geprüft (§§ 7, 8, 12 HeizkostenV)
+
+Seit dem 11.09.2026 beanstandet die Auswertung Heizung, Warmwasser und Wasser nicht mehr wegen ihrer Höhe. Das war fachlich richtig, hat aber eine Lücke hinterlassen: Der Prüfbericht sagte dem Kunden wörtlich, prüfbar sei das Verhältnis von Grund- zu Verbrauchsanteil, und prüfte es dann nirgends. Wir haben etwas versprochen und nicht geliefert.
+
+Das ist jetzt behoben, und es ist der stärkste Teil des Produkts geworden: Die Heizkostenverordnung stellt **formale** Anforderungen an die Art der Abrechnung. Die gelten unabhängig davon, wie viel jemand verbraucht, und der Vermieter kann ihnen nicht mit "jeder verbraucht eben anders" begegnen.
+
+### Was geprüft wird
+
+Primärquelle: gesetze-im-internet.de, abgerufen am 13.09.2026.
+
+| Prüfung | Norm | Folge |
+|---|---|---|
+| Verbrauchsanteil Heizkosten zwischen 50 und 70 Prozent | § 7 Abs. 1 S. 1 | Abrechnung fehlerhaft, Korrektur verlangen |
+| Verbrauchsanteil Warmwasser zwischen 50 und 70 Prozent | § 8 Abs. 1 | dasselbe |
+| Gar keine verbrauchsabhängige Abrechnung | § 12 Abs. 1 S. 1 | 15 Prozent Kürzung, beziffert |
+| Kein grafischer Vorjahresvergleich | § 12 Abs. 1 S. 3 i.V.m. § 6a Abs. 3 Nr. 5 | 3 Prozent Kürzung, beziffert |
+
+### Was bewusst NICHT geprüft wird
+
+§ 12 Abs. 1 S. 2, die 3 Prozent für fehlende fernablesbare Zähler. Die Frist zum Nachrüsten vorhandener Geräte läuft nach § 5 Abs. 3 erst am 31.12.2026 ab. Bis dahin greift die Kürzung nur bei Geräten, die nach dem 01.12.2021 neu eingebaut wurden, und dieses Datum kennt kein Mieter. Wir würden eine Forderung erheben, die der Vermieter mit einem Satz abräumt.
+
+Ab Abrechnungsjahr 2027 ist die Lage eindeutig. Die Konstante `HKV_NACHRUEST_FRIST` in `analyse.js` steht schon dafür bereit, die Erweiterung ist dann eine Zahländerung und keine Suche im Text. In der FAQ steht eine eigene Frage, die erklärt, warum diese Kürzung bei uns fehlt.
+
+### Wo die Angaben herkommen
+
+Neuer, zugeklappter und ausdrücklich freiwilliger Block "Heizkostenabrechnung zusätzlich prüfen" im Posten-Schritt: vier Beträge (Grund- und Verbrauchskosten für Heizung und Warmwasser) und zwei Ja-Nein-Fragen. Alles überspringbar. Die zweite Frage erscheint nur, wenn überhaupt nach Verbrauch abgerechnet wurde, weil § 6a Abs. 3 daran anknüpft und zwei Kürzungen nebeneinander angreifbar wären.
+
+Die Felder liegen in `wohnung`, nicht in `werte`. `werte` enthält ausschließlich Kostenposten und wird an mehreren Stellen aufsummiert, ein Grundkostenanteil dort hätte die Heizkosten doppelt gezählt. Über `wohnung` laufen Zwischenspeicherung, Später-fortsetzen-Link und `api/save-report.js` ohne eine einzige weitere Änderung mit.
+
+### Drei Fehler, die erst der eigene Testlauf gezeigt hat
+
+1. **"von € 1.162,56 € 174,38"** — zwei Beträge unmittelbar nebeneinander, unlesbar. Die Satzkonstruktion war falsch gebaut. Jetzt ein vollständiger Satz mit dem Betrag am Ende.
+2. **"0 Posten brauchen deinen Blick in den Mietvertrag"** bei einem eindeutigen § 7-Verstoß. Derselbe Selbstwiderspruch wie im totalen Test zwei Tage zuvor: Die Gesamtbewertung kannte einen neuen Grund, der Zusammenfassungstext nicht. Der Text hat jetzt für jeden Grund einen eigenen Zweig, und der Zähler wird nie mehr blind ausgegeben.
+3. **"ein gesetzliches Kürzungsrecht von € 0,00"**, wenn die Heizkosten selbst nicht eingetragen waren. Der Betrag erscheint jetzt nur noch, wenn er berechnet werden konnte.
+
+Ein vierter Fehler kam aus `npm run probedruck`: "Beanstandung: Verbrauchsanteil Heizkosten: 80,0 Prozent" mit zwei Doppelpunkten im selben Satz. Genau der Fehlertyp, für den das Skript gebaut wurde. `pdf-probedruck.mjs` enthält jetzt selbst Heizkostenangaben, sonst bliebe der neue Abschnitt ungedruckt und damit ungeprüft.
+
+### Überschrift im Musterbrief geändert
+
+Sie hieß "Eindeutig nicht umlagefähig". Solange dort nur Kabelanschluss und Verwaltungskosten standen, stimmte das. Jetzt stehen darunter auch Punkte, bei denen die Kosten sehr wohl umlagefähig sind und nur falsch verteilt wurden. Ein Vermieter, der oben "nicht umlagefähig" liest und darunter einen Verteilerschlüssel findet, hat sofort einen Einwand gegen das ganze Schreiben. Neu: "Rechtlich eindeutige Beanstandungen".
+
+### Geänderte Dateien
+
+`src/lib/analyse.js`, `src/pages/Posten.jsx`, `src/pages/Result.jsx`, `src/pdf/AbrechnungPDF.jsx`, `src/pdf/BriefPDF.jsx`, `src/config/faq.js`, `scripts/pdf-probedruck.mjs`
+
+## 13.09.2026 — Artikelbilder liegen auf dem eigenen Server
+
+`scripts/bilder-lokal-holen.mjs` ist gelaufen. Alle 22 Bilder liegen unter `public/artikelbilder/`, `src/artikel.js` zeigt auf die lokalen Pfade, Abschnitt 7 der Datenschutzerklärung wurde automatisch nachgezogen. Damit ist Befund 6 aus dem totalen Test erledigt: Beim Aufruf einer Ratgeberseite geht keine IP-Adresse mehr an Unsplash.
+
+Zwei Hindernisse auf dem Weg, beide nicht im Code:
+
+1. **`EPERM: uv_cwd`** — macOS verweigerte dem Terminal den Zugriff auf iCloud Drive. Gelöst über Systemeinstellungen, Datenschutz und Sicherheit, Festplattenvollzugriff für Terminal, danach Terminal mit `Cmd + Q` beenden und neu öffnen.
+2. **`MODULE_NOT_FOUND` für `@rollup/rollup-darwin-arm64`** — verursacht durch ein `npm install`, das in der Linux-Umgebung der KI gelaufen ist und seine Dateien in den geteilten iCloud-Ordner geschrieben hat. Rollup und esbuild haben je Betriebssystem eine eigene kompilierte Datei, installiert waren nur die für Linux. Gelöst durch ein `npm install` auf dem Mac.
+
+Konsequenz für künftige Arbeit: In der Sandbox wird nicht mehr in `node_modules` des geteilten Ordners geschrieben. Gebaut und getestet wird dort in einer Kopie unter `/tmp`.
+
 ## 13.09.2026 — Indexierungs-Anmeldung (Rest) nicht durchgeführt: Browser-Zugriff verweigert
 
 Geplanter Task "nkr-restliche-seiten-indexieren" sollte die verbliebenen 7 URLs (6 Ratgeberartikel + `/ratgeber`) in der Google Search Console zur Indexierung anmelden. Der Zugriff auf den Browser (Claude in Chrome) wurde vom System mit "Browser action was not allowed" verweigert — auch nach Neuwahl des verbundenen Browsers. Da dieser Lauf unbeaufsichtigt läuft, konnte keine Freigabe erteilt werden. Es wurde keine einzige URL angemeldet, keine der zuvor eingereichten neun URLs betroffen. Offen bleiben weiterhin:

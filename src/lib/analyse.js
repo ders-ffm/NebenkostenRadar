@@ -306,6 +306,106 @@ function listeText(paare) {
   return teile.slice(0, -1).join(", ") + " und " + teile[teile.length - 1];
 }
 
+// ───────────────────────────────────────────────────────────────────────────
+// HEIZKOSTENVERORDNUNG: die formalen Prüfungen (13.09.2026, Task #104)
+//
+// WARUM ES DIESEN BLOCK GIBT: Seit dem 11.09.2026 beanstandet die Auswertung
+// Heizung, Warmwasser und Wasser nicht mehr wegen ihrer Höhe, weil das
+// verbrauchsabhängige Kosten sind und jeder anders verbraucht. Das war
+// fachlich richtig, hat aber eine Lücke hinterlassen: Der Bericht sagte dem
+// Kunden wörtlich, prüfbar sei das Verhältnis von Grund- zu Verbrauchsanteil,
+// und prüfte es dann nirgends. Wir haben etwas versprochen und nicht geliefert.
+//
+// Genau hier liegt aber der stärkste Teil des ganzen Produkts. Die
+// Heizkostenverordnung stellt FORMALE Anforderungen an die Art der Abrechnung.
+// Die sind unabhängig davon, wie viel jemand verbraucht, und der Vermieter
+// kann ihnen nicht mit "jeder verbraucht eben anders" begegnen. Es ist reine
+// Rechnung gegen klaren Verordnungstext.
+//
+// GEPRÜFT WIRD (Primärquelle gesetze-im-internet.de, abgerufen 13.09.2026):
+//
+//   § 7 Abs. 1 S. 1  Von den Heizkosten sind mindestens 50 und höchstens 70
+//                    Prozent nach erfasstem Verbrauch zu verteilen.
+//   § 8 Abs. 1       Dasselbe für die Warmwasserkosten.
+//   § 12 Abs. 1 S. 1 Wird entgegen der Verordnung gar nicht verbrauchsabhängig
+//                    abgerechnet, darf der Nutzer seinen Anteil um 15 Prozent
+//                    kürzen.
+//   § 12 Abs. 1 S. 3 Teilt der Eigentümer die Informationen nach § 6a nicht
+//                    oder nicht vollständig mit, sind es 3 Prozent. Dazu
+//                    gehört nach § 6a Abs. 3 Nr. 5 zwingend ein GRAFISCHER
+//                    Vergleich des witterungsbereinigten Verbrauchs mit dem
+//                    vorherigen Abrechnungszeitraum. Der fehlt sehr häufig.
+//
+// BEWUSST NICHT GEPRÜFT wird § 12 Abs. 1 S. 2, die 3 Prozent für fehlende
+// fernablesbare Zähler. Die Frist zum Nachrüsten vorhandener Geräte läuft
+// nach § 5 Abs. 3 erst am 31.12.2026 ab. Bis dahin greift die Kürzung nur bei
+// Geräten, die nach dem 01.12.2021 NEU eingebaut wurden, und dieses Datum
+// kennt kein Mieter. Wir würden eine Forderung erheben, die der Vermieter mit
+// einem Satz abräumt. Ab Abrechnungsjahr 2027 gehört die Prüfung hier rein,
+// dann ist sie sauber; siehe Konstante HKV_NACHRUEST_FRIST weiter unten.
+//
+// GRENZEN, die im Text auch benannt werden:
+//   - § 7 Abs. 1 S. 2 verlangt bei bestimmten Altbauten sogar zwingend 70
+//     Prozent. Ob ein Gebäude darunter fällt, können wir aus den Eingaben
+//     nicht erkennen, deshalb prüfen wir nur den Rahmen 50 bis 70 und
+//     behaupten nichts darüber hinaus.
+//   - § 12 Abs. 1 S. 4 nimmt Wohnungseigentümer gegenüber ihrer Gemeinschaft
+//     vom Kürzungsrecht aus. Unsere Kunden sind Mieter, der Hinweis steht
+//     trotzdem im Bericht.
+//   - Die Verordnung gilt nach § 1 nur bei zentraler Anlage oder
+//     Wärmelieferung. Wer eine eigene Gastherme hat, füllt diesen Teil
+//     schlicht nicht aus und bekommt dann auch keinen Befund.
+// ───────────────────────────────────────────────────────────────────────────
+
+// Ab diesem Abrechnungsjahr greift § 12 Abs. 1 S. 2 (fehlende fernablesbare
+// Ausstattung) ohne die Einbaudatums-Frage, weil die Nachrüstfrist des
+// § 5 Abs. 3 am 31.12.2026 endet. Steht hier als Konstante, damit die
+// Erweiterung später eine Zahländerung ist und keine Suche im Text.
+export const HKV_NACHRUEST_FRIST = 2027;
+
+// Ab diesem Abrechnungsjahr gelten die Informationspflichten des § 6a. Die
+// Vorschrift gilt für Abrechnungszeiträume, die ab dem 01.12.2021 beginnen,
+// bei Kalenderjahr-Abrechnung also ab dem Jahr 2022.
+export const HKV_INFOPFLICHT_AB = 2022;
+
+// Toleranz in Prozentpunkten beim 50-bis-70-Vergleich.
+//
+// WARUM ÜBERHAUPT EINE TOLERANZ: Wir rechnen aus zwei auf volle Cent
+// gerundeten Beträgen zurück auf einen Prozentsatz. Eine Abrechnung, die
+// sauber mit 70 Prozent verteilt, kann dadurch rechnerisch bei 70,03 landen.
+// Ohne Toleranz würden wir dem Vermieter einen Verstoß vorwerfen, den es nicht
+// gibt, und das ist der teuerste Fehler, den dieses Produkt machen kann.
+//
+// WARUM 0,5 UND NICHT MEHR: Echte Verstöße sehen nicht so aus. Wer den
+// falschen Schlüssel verwendet, landet bei 80 zu 20 oder 40 zu 60, also
+// zweistellig daneben. Eine halbe Prozentpunkt-Toleranz kostet uns damit
+// keinen einzigen echten Befund und schützt vor jedem Rundungsartefakt.
+const HKV_ANTEIL_TOLERANZ = 0.5;
+
+// Rechnet aus Grund- und Verbrauchskosten den Verbrauchsanteil aus und sagt,
+// ob er im vorgeschriebenen Rahmen liegt. Gibt null zurück, wenn nicht beide
+// Werte vorliegen: Ein leeres Feld ist keine Null, sondern eine fehlende
+// Angabe, und daraus darf kein Befund entstehen.
+//
+// Der Rückgabewert funktioniert mit Beträgen genauso wie mit Prozentzahlen,
+// weil nur das Verhältnis der beiden Zahlen zueinander zählt. Manche
+// Abrechnungen drucken nur das eine, manche nur das andere.
+function verbrauchsanteil(grund, verbrauchswert) {
+  const g = toNum(grund), v = toNum(verbrauchswert);
+  if (g <= 0 || v <= 0) return null;
+  const summe = g + v;
+  const prozent = (v / summe) * 100;
+  return {
+    grund: g,
+    verbrauch: v,
+    summe,
+    prozent,
+    text: prozent.toFixed(1).replace(".", ",") + " Prozent",
+    zuNiedrig: prozent < 50 - HKV_ANTEIL_TOLERANZ,
+    zuHoch: prozent > 70 + HKV_ANTEIL_TOLERANZ,
+  };
+}
+
 export function analysierePosten(w, wohn) {
   const R = BUSINESS.RICHTWERTE;
   const flaeche = Math.max(toNum(wohn.flaeche), 5);
@@ -424,6 +524,138 @@ export function analysierePosten(w, wohn) {
     }
     posten_bewertung.push({ posten: "Heizkosten & Warmwasser (kombiniert)", betrag: kombi, richtwert: rwK, abweichung_prozent: aK, status: st, hinweis: hi, paragraf: "§ 2 Nr. 4+5 BetrKV, § 7 HeizkostenV" });
     if (ww > 0) posten_bewertung.push({ posten: "davon Warmwasserversorgung", betrag: ww, richtwert: 0, abweichung_prozent: 0, status: "ok", hinweis: "Bereits in der Vergleichsrechnung oben enthalten. Muss laut Gesetz separat ausgewiesen sein (§ 8 HeizkostenV).", paragraf: "§ 2 Nr. 5 BetrKV", steuerArt: steuerArtFuer("warmwasser_gesamt"), steuerGrund: steuerGrundFuer("warmwasser_gesamt") });
+  }
+
+  // ─────────────────────────────────────────────────────────────────────────
+  // FORMALE PRÜFUNG DER HEIZKOSTENABRECHNUNG
+  //
+  // Ausführliche Begründung und Quellen siehe Kopfkommentar bei
+  // verbrauchsanteil() weiter oben.
+  //
+  // Diese Befunde landen BEWUSST NICHT in posten_bewertung. Die Tabelle dort
+  // beantwortet die Frage "ist dieser Betrag der Höhe nach in Ordnung", hier
+  // geht es dagegen um die Art der Abrechnung. Beides in eine Tabelle zu
+  // mischen hätte zwei Nachteile: Die Beträge (etwa die Grundkosten) würden
+  // neben den ohnehin schon gelisteten Heizkosten stehen und wie eine
+  // Doppelzählung aussehen, und die Rückforderungssumme würde stillschweigend
+  // mit Zahlen gespeist, die eine ganz andere Bedeutung haben. Deshalb ein
+  // eigener Abschnitt im Bericht, mit eigener Überschrift.
+  // ─────────────────────────────────────────────────────────────────────────
+  const heizBefunde = [];
+  let kuerzungBetrag = 0;
+  const hkBasis = heiz + ww;           // eigener Anteil an Wärme und Warmwasser
+  const hkJahr = parseInt(wohn.jahr, 10);
+  // Formulierungshilfe für den Kürzungsbetrag.
+  //
+  // KORRIGIERT NOCH VOR DER AUSLIEFERUNG, gefunden im eigenen Testlauf: Die
+  // erste Fassung setzte zwei Beträge unmittelbar nebeneinander und ergab
+  // "von € 1.162,56 € 174,38". Das ist unlesbar. Jetzt ein vollständiger Satz
+  // aus einer Hand, mit dem Betrag am Satzende.
+  //
+  // Ohne erfasste Heiz- und Warmwasserkosten lässt sich die Kürzung nicht
+  // beziffern. Das Recht besteht trotzdem und wird dann ohne Zahl benannt.
+  // Lieber ein Recht ohne Betrag als ein erfundener Betrag.
+  const kuerzungSatz = (prozent, betrag) => hkBasis > 0
+    ? "Deine Heiz- und Warmwasserkosten betragen " + fmt(hkBasis) + ", " + prozent + " Prozent davon sind " + fmt(betrag) + "."
+    : "Wie hoch die Kürzung ausfällt, können wir hier nicht ausrechnen, weil du deine Heiz- und Warmwasserkosten nicht eingetragen hast. Nimm den Betrag, der auf deiner Abrechnung für Wärme und Warmwasser auf dich entfällt, und ziehe " + prozent + " Prozent davon ab.";
+
+  for (const p of [
+    { a: verbrauchsanteil(wohn.heizGrundkosten, wohn.heizVerbrauchskosten), was: "Heizkosten", norm: "§ 7 Abs. 1 Satz 1 HeizkostenV" },
+    { a: verbrauchsanteil(wohn.wwGrundkosten, wohn.wwVerbrauchskosten), was: "Warmwasserkosten", norm: "§ 8 Abs. 1 HeizkostenV" },
+  ]) {
+    if (!p.a) continue;
+    const a = p.a;
+    if (a.zuNiedrig || a.zuHoch) {
+      heizBefunde.push({
+        titel: "Verbrauchsanteil " + p.was + ", " + a.text,
+        norm: p.norm,
+        status: "verstoss",
+        schwere: "form",
+        text: "Von deinen " + p.was + " entfallen " + fmt(a.grund) + " auf die Grundkosten und " + fmt(a.verbrauch)
+          + " auf die Verbrauchskosten, zusammen " + fmt(a.summe) + ". Der Verbrauchsanteil beträgt damit " + a.text + ". "
+          + p.norm + " schreibt mindestens 50 und höchstens 70 Prozent vor. Der Anteil ist "
+          + (a.zuNiedrig ? "zu niedrig" : "zu hoch")
+          + ", die Abrechnung ist in diesem Punkt fehlerhaft und muss korrigiert werden. Wie viel Geld die Korrektur dir bringt, "
+          + "hängt davon ab, ob du mehr oder weniger geheizt hast als der Durchschnitt im Haus. Deshalb steht hier bewusst kein Betrag.",
+      });
+      widerspruch.push({
+        typ: "hart",
+        text: "Verbrauchsanteil bei den " + p.was + ": Nach der Abrechnung entfallen " + fmt(a.grund) + " auf die Grundkosten und "
+          + fmt(a.verbrauch) + " auf die Verbrauchskosten. Der Verbrauchsanteil beträgt damit " + a.text + ". "
+          + p.norm + " schreibt zwingend mindestens 50 und höchstens 70 Prozent vor. Ich bitte um eine korrigierte Abrechnung.",
+      });
+    } else {
+      heizBefunde.push({
+        titel: "Verbrauchsanteil " + p.was + ", " + a.text,
+        norm: p.norm,
+        status: "ok",
+        text: "Grundkosten " + fmt(a.grund) + ", Verbrauchskosten " + fmt(a.verbrauch) + ". Der Verbrauchsanteil liegt damit "
+          + "im vorgeschriebenen Rahmen von 50 bis 70 Prozent (" + p.norm + "). In diesem Punkt ist die Abrechnung korrekt.",
+      });
+    }
+  }
+
+  // § 12 Abs. 1 Satz 1: gar keine verbrauchsabhängige Abrechnung, 15 Prozent.
+  //
+  // Die Angabe kommt vom Kunden, nicht aus einer Messung von uns. Deshalb ist
+  // der Text im Brief bewusst als eigene Feststellung des Mieters formuliert
+  // ("Meine Abrechnung weist keinen ... aus") und nicht als unser Prüfergebnis.
+  if (wohn.hkVerbrauchErfasst === "nein") {
+    const betrag = Math.round(hkBasis * 0.15 * 100) / 100;
+    kuerzungBetrag += betrag;
+    heizBefunde.push({
+      titel: "Keine verbrauchsabhängige Abrechnung, 15 Prozent Kürzungsrecht",
+      norm: "§ 12 Abs. 1 Satz 1 HeizkostenV",
+      status: "verstoss",
+      schwere: "hart",
+      betrag,
+      text: "Du hast angegeben, dass auf deiner Abrechnung kein Zählerstand und kein Verbrauchswert für deine Wohnung steht. "
+        + "Dann wurde nicht verbrauchsabhängig abgerechnet, und du darfst deinen Anteil an den Heiz- und Warmwasserkosten "
+        + "um 15 Prozent kürzen (§ 12 Abs. 1 Satz 1 HeizkostenV). " + kuerzungSatz(15, betrag)
+        + " Das Recht besteht unabhängig davon, ob der Vermieter einen Grund für das Fehlen nennt. "
+        + "Eine Ausnahme gilt nur für Wohnungseigentümer gegenüber ihrer Eigentümergemeinschaft (§ 12 Abs. 1 Satz 4).",
+    });
+    widerspruch.push({
+      typ: "hart",
+      betrag: betrag > 0 ? betrag : undefined,
+      text: "Meine Abrechnung weist für meine Wohnung keinen erfassten Verbrauch aus. Die Kosten der Versorgung mit Wärme und Warmwasser "
+        + "wurden damit nicht verbrauchsabhängig abgerechnet. Nach § 12 Abs. 1 Satz 1 HeizkostenV kürze ich den auf mich entfallenden Anteil "
+        + "um 15 Prozent" + (betrag > 0 ? " (" + fmt(betrag) + ")" : "") + ".",
+    });
+  }
+
+  // § 12 Abs. 1 Satz 3 in Verbindung mit § 6a Abs. 3 Nr. 5: fehlende
+  // Pflichtangaben, 3 Prozent.
+  //
+  // Zwei Bedingungen, beide notwendig:
+  //   1. Das Abrechnungsjahr muss ab 2022 liegen (§ 6a gilt für Zeiträume ab
+  //      dem 01.12.2021, bei Kalenderjahren also ab 2022).
+  //   2. Es muss überhaupt verbrauchsabhängig abgerechnet worden sein. § 6a
+  //      Abs. 3 knüpft ausdrücklich daran an. Wurde gar nicht nach Verbrauch
+  //      abgerechnet, greift schon die 15-Prozent-Kürzung oben, und beides
+  //      nebeneinander zu fordern wäre angreifbar.
+  if (wohn.hkVorjahresvergleich === "nein" && wohn.hkVerbrauchErfasst === "ja" && hkJahr >= HKV_INFOPFLICHT_AB) {
+    const betrag = Math.round(hkBasis * 0.03 * 100) / 100;
+    kuerzungBetrag += betrag;
+    heizBefunde.push({
+      titel: "Fehlender Vorjahresvergleich, 3 Prozent Kürzungsrecht",
+      norm: "§ 12 Abs. 1 Satz 3 in Verbindung mit § 6a Abs. 3 Nr. 5 HeizkostenV",
+      status: "verstoss",
+      schwere: "hart",
+      betrag,
+      text: "Du hast angegeben, dass deiner Abrechnung kein grafischer Vergleich deines Verbrauchs mit dem Vorjahr beiliegt. "
+        + "Dieser Vergleich ist seit dem Abrechnungsjahr " + HKV_INFOPFLICHT_AB + " zwingend vorgeschrieben, und zwar ausdrücklich "
+        + "in grafischer Form und witterungsbereinigt (§ 6a Abs. 3 Nr. 5 HeizkostenV). Fehlt er, darfst du deinen Anteil um "
+        + "3 Prozent kürzen (§ 12 Abs. 1 Satz 3 HeizkostenV). " + kuerzungSatz(3, betrag)
+        + " Eine reine Zahlenangabe zum Vorjahr genügt nicht, die Verordnung verlangt eine Grafik.",
+    });
+    widerspruch.push({
+      typ: "hart",
+      betrag: betrag > 0 ? betrag : undefined,
+      text: "Meiner Abrechnung liegt kein grafischer Vergleich meines witterungsbereinigten Verbrauchs mit dem vorherigen Abrechnungszeitraum bei. "
+        + "Dieser ist nach § 6a Abs. 3 Nr. 5 HeizkostenV zwingend vorgeschrieben. Nach § 12 Abs. 1 Satz 3 HeizkostenV kürze ich den auf mich "
+        + "entfallenden Anteil deshalb um 3 Prozent" + (betrag > 0 ? " (" + fmt(betrag) + ")" : "") + ".",
+    });
   }
 
   // CO2-Abgabe
@@ -627,7 +859,7 @@ export function analysierePosten(w, wohn) {
     }
   });
 
-  return { posten_bewertung, widerspruch };
+  return { posten_bewertung, widerspruch, heizBefunde, kuerzungBetrag };
 }
 
 export function buildResult(w, wohn) {
@@ -650,7 +882,7 @@ export function buildResult(w, wohn) {
   const vorauszahlung = toNum(wohn.vorauszahlung);
   const saldo = vorauszahlung > 0 ? gesamt - vorauszahlung : null;
 
-  const { posten_bewertung, widerspruch } = analysierePosten(w, wohn);
+  const { posten_bewertung, widerspruch, heizBefunde, kuerzungBetrag } = analysierePosten(w, wohn);
 
   // Abrechnungsfrist des Vermieters (§ 556 Abs. 3 Satz 2 BGB) — neu 10.08.2026,
   // siehe CHANGELOG, Stefans Wunsch. Der Vermieter muss innerhalb von 12
@@ -697,11 +929,25 @@ export function buildResult(w, wohn) {
     }
   }
 
-  const hatKritisch = posten_bewertung.some(p => p.status === "nicht_umlagefaehig");
+  // GESAMTBEWERTUNG, ergänzt um die Heizkostenbefunde (13.09.2026, Task #104).
+  //
+  // Die beiden Arten von Heizkostenbefund wirken unterschiedlich stark, und
+  // das ist Absicht:
+  //   schwere "hart" — ein Kürzungsrecht nach § 12 mit konkretem Betrag. Das
+  //                    ist ein Rechtsverstoß mit unmittelbarer Geldfolge und
+  //                    wiegt so schwer wie eine nicht umlagefähige Position.
+  //   schwere "form" — ein falscher Verteilerschlüssel nach § 7 oder § 8. Die
+  //                    Abrechnung ist fehlerhaft und muss korrigiert werden,
+  //                    ob dabei Geld für den Mieter herausspringt, hängt aber
+  //                    an seinem eigenen Verbrauch. Deshalb "auffaellig" und
+  //                    nicht "kritisch": Wir behaupten nur, was wir wissen.
+  const heizHart = heizBefunde.some(b => b.status === "verstoss" && b.schwere === "hart");
+  const heizForm = heizBefunde.some(b => b.status === "verstoss" && b.schwere === "form");
+  const hatKritisch = posten_bewertung.some(p => p.status === "nicht_umlagefaehig") || heizHart;
   const hatSehrHoch = posten_bewertung.some(p => p.status === "sehr_hoch");
   const hatHoch = posten_bewertung.some(p => ["hoch", "pruefen"].includes(p.status));
   const gesamtZuHoch = proQmJahr > richtwertJahr * 1.25;
-  const bew = hatKritisch ? "kritisch" : (hatSehrHoch || gesamtZuHoch || widerspruch.length > 1) ? "auffaellig" : hatHoch ? "auffaellig" : "ok";
+  const bew = hatKritisch ? "kritisch" : (hatSehrHoch || gesamtZuHoch || heizForm || widerspruch.length > 1) ? "auffaellig" : hatHoch ? "auffaellig" : "ok";
 
   // WICHTIG (gefunden 10.08.2026 durch Stefans Plausibilitätsfrage, siehe CHANGELOG):
   // Die Bedingung "betrag > richtwert" allein reicht NICHT — sie greift auch bei
@@ -713,11 +959,15 @@ export function buildResult(w, wohn) {
   // "hoch"/"sehr_hoch"/"nicht_umlagefaehig" geflaggte Positionen dürfen zur
   // Rückforderung beitragen, sonst ist die Zahl nicht mehr durch die sichtbaren
   // Status-Markierungen gedeckt.
+  // kuerzungBetrag (Heizkosten, § 12 HeizkostenV) kommt oben drauf. Er stammt
+  // nicht aus posten_bewertung, weil die Kürzung kein einzelner Posten ist,
+  // sondern ein prozentualer Abschlag auf die Heiz- und Warmwasserkosten.
+  // Siehe den Abschnitt "Formale Prüfung der Heizkostenabrechnung" oben.
   const ersparnis = posten_bewertung.reduce((s, p) => {
     if (p.status === "nicht_umlagefaehig") return s + p.betrag;
     if (p.status !== "ok" && p.richtwert > 0 && p.betrag > p.richtwert) return s + (p.betrag - p.richtwert);
     return s;
-  }, 0);
+  }, 0) + kuerzungBetrag;
 
   // Aufteilung nach Beweisstärke (10.08.2026, siehe CHANGELOG): "hart" = aus
   // den Eingabedaten allein beweisbar (aktuell: status "nicht_umlagefaehig",
@@ -726,7 +976,7 @@ export function buildResult(w, wohn) {
   // zieht sich auch durch widerspruch[].typ (siehe analysierePosten oben) und
   // wird in BriefPDF.jsx/Result.jsx/AbrechnungPDF.jsx verwendet, um nicht mehr
   // Sicherheit zu suggerieren, als die Methode tatsächlich hergibt.
-  const ersparnisHart = posten_bewertung.reduce((s, p) => p.status === "nicht_umlagefaehig" ? s + p.betrag : s, 0);
+  const ersparnisHart = posten_bewertung.reduce((s, p) => p.status === "nicht_umlagefaehig" ? s + p.betrag : s, 0) + kuerzungBetrag;
   const ersparnisStatistisch = Math.round((ersparnis - ersparnisHart) * 100) / 100;
   const widerspruchHart = widerspruch.filter(g => g.typ === "hart");
   const widerspruchStatistisch = widerspruch.filter(g => g.typ !== "hart");
@@ -767,19 +1017,49 @@ export function buildResult(w, wohn) {
     // ─────────────────────────────────────────────────────────────────────
     zusammenfassung: (() => {
       const zuPruefen = posten_bewertung.filter(p => ["hoch", "pruefen"].includes(p.status)).length;
+      const postenKritisch = posten_bewertung.some(p => p.status === "nicht_umlagefaehig");
       const lage = proQmJahr > richtwertJahr
         ? "über dem DMB-Richtwert von " + fmt(richtwertJahr) + "/m2/Jahr"
         : "unter dem DMB-Richtwert von " + fmt(richtwertJahr) + "/m2/Jahr";
+      // ZWEITE RUNDE DESSELBEN FEHLERS, 13.09.2026 im eigenen Testlauf
+      // gefunden. Nach dem Einbau der Heizkostenprüfung konnte die
+      // Gesamtbewertung erneut auf Gründe umspringen, die dieser Text nicht
+      // kannte. Ergebnis im Test: "0 Posten brauchen deinen Blick in den
+      // Mietvertrag" bei einem eindeutigen Verstoß gegen § 7 HeizkostenV.
+      //
+      // Damit das nicht ein drittes Mal passiert, ist die Reihenfolge hier
+      // jetzt dieselbe wie bei der Berechnung von `bew` weiter oben, und der
+      // Zähler zuPruefen wird nie mehr blind ausgegeben. Wer künftig einen
+      // neuen Grund für "auffaellig" oder "kritisch" ergänzt, muss hier einen
+      // passenden Zweig hinzufügen. scripts/pdf-konsistenz-test.mjs prüft das
+      // Zusammenspiel über alle Eingabekonstellationen.
+      // Der Betrag darf hier nur auftauchen, wenn er auch berechnet werden
+      // konnte. Wer seine Heiz- und Warmwasserkosten nicht eingetragen hat,
+      // bekam sonst "ein gesetzliches Kürzungsrecht von € 0,00" zu lesen, was
+      // das Gegenteil dessen aussagt, was gemeint ist. Im Testlauf gefunden.
+      if (heizHart && !postenKritisch) {
+        return "Deine Heizkostenabrechnung verletzt die Heizkostenverordnung. Daraus folgt ein gesetzliches Kürzungsrecht"
+          + (kuerzungBetrag > 0 ? " von " + fmt(kuerzungBetrag) : "")
+          + ", das du selbst geltend machen kannst. Einzelheiten im Abschnitt zur Heizkostenabrechnung." + saldoText;
+      }
       if (hatKritisch) {
-        return "Kritisch: " + widerspruch.length + " fehlerhafte Posten (" + fmt(gesamt) + ", " + fmt(proQmJahr) + "/m2/Jahr)." + saldoText;
+        return "Kritisch: " + widerspruch.length + (widerspruch.length === 1 ? " fehlerhafter Punkt (" : " fehlerhafte Punkte (") + fmt(gesamt) + ", " + fmt(proQmJahr) + "/m2/Jahr)." + saldoText;
       }
       if (hatSehrHoch || gesamtZuHoch) {
         return "Auffällig: " + fmt(proQmJahr) + "/m2/Jahr. DMB-Richtwert: " + fmt(richtwertJahr) + "/m2/Jahr. " + widerspruch.length + " Posten zur Prüfung." + saldoText;
       }
-      if (bew === "auffaellig") {
+      if (heizForm) {
+        return "Deine Heizkostenabrechnung verteilt die Kosten nicht im vorgeschriebenen Verhältnis. Der Vermieter muss sie korrigieren. "
+          + "Die Gesamtkosten selbst sind in Ordnung, sie liegen mit " + fmt(proQmJahr) + "/m2/Jahr " + lage + "." + saldoText;
+      }
+      if (bew === "auffaellig" && zuPruefen > 0) {
         return zuPruefen + (zuPruefen === 1 ? " Posten braucht" : " Posten brauchen") +
           " deinen Blick in den Mietvertrag. Die Gesamtkosten selbst sind in Ordnung, sie liegen mit " +
           fmt(proQmJahr) + "/m2/Jahr " + lage + "." + saldoText;
+      }
+      if (bew === "auffaellig") {
+        return "Mehrere Punkte solltest du nachprüfen. Die Gesamtkosten selbst sind in Ordnung, sie liegen mit "
+          + fmt(proQmJahr) + "/m2/Jahr " + lage + "." + saldoText;
       }
       return "Weitgehend unauffällig: " + fmt(proQmJahr) + "/m2/Jahr (DMB-Richtwert: " + fmt(richtwertJahr) + "/m2/Jahr)." + saldoText;
     })(),
@@ -793,6 +1073,13 @@ export function buildResult(w, wohn) {
     pro_qm_gesamt: parseFloat(proQmJahr.toFixed(2)),
     richtwert_pro_qm_jahr: richtwertJahr,
     posten_bewertung,
+    // Formale Prüfung der Heizkostenabrechnung (§§ 7, 8, 12 HeizkostenV).
+    // Eigener Abschnitt statt Tabellenzeilen, Begründung siehe analysierePosten.
+    // Leeres Array, wenn der Kunde die freiwilligen Angaben nicht gemacht hat.
+    // Darauf verlassen sich Result.jsx und AbrechnungPDF.jsx: Sie zeigen den
+    // Abschnitt nur, wenn er Inhalt hat, und sonst den Einladungstext.
+    heiz_befunde: heizBefunde,
+    heiz_kuerzung: Math.round(kuerzungBetrag * 100) / 100,
     widerspruchsgruende: widerspruch,
     widerspruchsgruende_hart: widerspruchHart,
     widerspruchsgruende_statistisch: widerspruchStatistisch,

@@ -20,11 +20,57 @@ function normalisiere(s) {
   return (s || "").toLowerCase();
 }
 
-export default function Posten({ navigateTo, werte, setWerte, runAnalyse, gesamtsummeAbrechnung, setGesamtsummeAbrechnung, fotoErkannt = 0 }) {
+// Eine Frage mit den drei Antworten Ja, Nein und Weiß nicht.
+//
+// WARUM DREI UND NICHT ZWEI: "Weiß nicht" ist hier die ehrlichste und
+// häufigste Antwort, etwa wenn die Heizkosten auf einem separaten Blatt von
+// Brunata stehen, das gerade nicht zur Hand ist. Ohne diese Möglichkeit
+// würden Leute raten, und aus einem geratenen "Nein" würde eine Forderung
+// an den Vermieter, die sich nicht halten lässt. Nur "ja" und "nein" lösen
+// deshalb überhaupt eine Prüfung aus, alles andere bleibt folgenlos.
+function JaNeinFrage({ frage, hilfe, wert, onChange }) {
+  const C = THEME.color;
+  const OPTIONEN = [
+    { wert: "ja", label: "Ja" },
+    { wert: "nein", label: "Nein" },
+    { wert: "unbekannt", label: "Weiß nicht" },
+  ];
+  return (
+    <div style={{ padding: "10px 12px", marginBottom: 6, background: wert && wert !== "unbekannt" ? C.brandBg : C.bg, border: "1.5px solid " + (wert && wert !== "unbekannt" ? C.brand + "66" : C.border), borderRadius: THEME.radius.md }}>
+      <div style={{ fontSize: 13, color: C.text, fontFamily: THEME.font.body, lineHeight: 1.45 }}>{frage}</div>
+      {hilfe && <div style={{ fontSize: 10, color: C.textDim, marginTop: 3, lineHeight: 1.45 }}>{hilfe}</div>}
+      <div style={{ display: "flex", gap: 6, marginTop: 8 }}>
+        {OPTIONEN.map(o => {
+          const aktiv = wert === o.wert;
+          return (
+            <button key={o.wert} type="button" onClick={() => onChange(aktiv ? "" : o.wert)}
+              style={{
+                flex: 1, padding: "8px 4px", fontSize: 12.5, fontFamily: THEME.font.body,
+                fontWeight: aktiv ? 600 : 400, cursor: "pointer",
+                background: aktiv ? C.brand : C.surface,
+                color: aktiv ? "#fff" : C.textMuted,
+                border: "1px solid " + (aktiv ? C.brand : C.border),
+                borderRadius: 7,
+              }}>
+              {o.label}
+            </button>
+          );
+        })}
+      </div>
+    </div>
+  );
+}
+
+export default function Posten({ navigateTo, werte, setWerte, wohnung, setWohnung, runAnalyse, gesamtsummeAbrechnung, setGesamtsummeAbrechnung, fotoErkannt = 0 }) {
   const C = THEME.color;
   const [errors, setErrors] = useState({});
   const [suche, setSuche] = useState("");
   const [expandedGruppen, setExpandedGruppen] = useState(() => new Set());
+  // Der Heizkostenblock ist zugeklappt, solange nichts darin ausgefüllt ist.
+  // Er ist freiwillig, und ein aufgeklappter Block mit sechs weiteren Feldern
+  // würde das Formular für alle länger machen, auch für die Mehrheit, die ihre
+  // Heizkostenabrechnung gar nicht zur Hand hat.
+  const [heizOffen, setHeizOffen] = useState(false);
 
   // KOMPAKTE BESTÄTIGUNG NACH FOTO-UPLOAD (09.09.2026, siehe CHANGELOG).
   //
@@ -55,6 +101,24 @@ export default function Posten({ navigateTo, werte, setWerte, runAnalyse, gesamt
   // Seit 08/2026 in App.jsx gehoben (siehe CHANGELOG.md), damit die Foto-/
   // PDF-Erkennung in Wohnung.jsx diesen Wert ebenfalls automatisch setzen kann.
   const setPosten = (k, v) => setWerte(p => ({ ...p, [k]: v }));
+
+  // Die Angaben zur Heizkostenabrechnung liegen bewusst in `wohnung`, nicht in
+  // `werte`. `werte` enthält ausschließlich Kostenposten und wird an mehreren
+  // Stellen aufsummiert (Gesamtsumme, Abgleich mit der Abrechnung, Analyse).
+  // Ein Grundkostenanteil dort hinein würde in genau diese Summen laufen und
+  // die Heizkosten doppelt zählen. `wohnung` ist dagegen schon heute der Ort
+  // für Angaben ÜBER die Abrechnung (Fläche, Jahr, Vorauszahlung, Erhaltsdatum)
+  // und wird ohne weiteres Zutun zwischengespeichert und an buildResult
+  // übergeben.
+  const setHeiz = (k, v) => setWohnung(p => ({ ...p, [k]: v }));
+  const heizFelder = ["heizGrundkosten", "heizVerbrauchskosten", "wwGrundkosten", "wwVerbrauchskosten"];
+  const heizAngaben = heizFelder.filter(k => toNum(wohnung[k]) > 0).length
+    + (["ja", "nein"].includes(wohnung.hkVerbrauchErfasst) ? 1 : 0)
+    + (["ja", "nein"].includes(wohnung.hkVorjahresvergleich) ? 1 : 0);
+  // Aufgeklappt lassen, sobald etwas drinsteht. Sonst würde der Block beim
+  // Zurückkommen aus dem Ergebnis wieder zuklappen und die Eingaben sähen aus
+  // wie verloren.
+  const heizSichtbar = heizOffen || heizAngaben > 0;
 
   // co2_abgabe bewusst ausgeschlossen, analog zu `gesamt` in analyse.js
   // (siehe dortiger Kommentar vom 12.08.2026): CO2-Kosten sind strukturell
@@ -329,6 +393,102 @@ export default function Posten({ navigateTo, werte, setWerte, runAnalyse, gesamt
             </div>
           );
         })}
+
+        {/* ────────────────────────────────────────────────────────────────
+            FREIWILLIGE ANGABEN ZUR HEIZKOSTENABRECHNUNG (13.09.2026)
+
+            WARUM DIESER BLOCK EXISTIERT: Die Höhe der Heizkosten können wir
+            nicht beanstanden, weil sie vom Verbrauch abhängt. Die ART der
+            Abrechnung können wir dagegen sehr wohl prüfen, und zwar hart:
+            Die Heizkostenverordnung schreibt einen Verbrauchsanteil zwischen
+            50 und 70 Prozent vor und gibt bei Verstößen ein beziffertes
+            Kürzungsrecht. Das ist der einzige Teil des Berichts, bei dem der
+            Vermieter nicht "jeder verbraucht eben anders" antworten kann.
+
+            WARUM ZUGEKLAPPT UND FREIWILLIG: Die Angaben stehen bei den
+            meisten Mietern auf einem SEPARATEN Blatt von Brunata, ista oder
+            Techem, das beim Ausfüllen oft nicht danebenliegt. Ein Pflichtfeld
+            hätte denselben Effekt wie die alte Heizkosten-Sperre, die wir am
+            selben Tag entfernt haben: Es hält Leute auf, bei denen das Fehlen
+            völlig in Ordnung ist.
+
+            WARUM DIE FELDER IN EURO: Grund- und Verbrauchskosten stehen auf
+            jeder Heizkostenabrechnung als Betrag. Wer nur Prozentzahlen
+            findet, kann auch die eintragen, das Ergebnis ist dasselbe, weil
+            nur das Verhältnis der beiden Zahlen zählt. Steht so im Hinweis.
+            ──────────────────────────────────────────────────────────────── */}
+        {!sucheAktiv && (
+          <div style={{ marginTop: 6, marginBottom: 18 }}>
+            {!heizSichtbar ? (
+              <button onClick={() => setHeizOffen(true)}
+                style={{ width: "100%", textAlign: "left", background: C.surface, border: "1px dashed " + C.border, borderRadius: THEME.radius.md, padding: "13px 14px", cursor: "pointer", fontFamily: THEME.font.body }}>
+                <div style={{ fontSize: 13.5, fontWeight: 600, color: C.text, marginBottom: 3 }}>
+                  + Heizkostenabrechnung zusätzlich prüfen
+                </div>
+                <div style={{ fontSize: 11.5, color: C.textMuted, lineHeight: 1.55 }}>
+                  Freiwillig, dauert eine Minute. Hier prüfen wir nicht die Höhe, sondern ob
+                  der Vermieter richtig verteilt hat. Das ist der Teil, den er nicht mit dem
+                  Verbrauch erklären kann. Du brauchst dafür deine Heizkostenabrechnung,
+                  oft ein eigenes Blatt von Brunata, ista oder Techem.
+                </div>
+              </button>
+            ) : (
+              <>
+                <div style={{ display: "flex", alignItems: "baseline", gap: 8, padding: "0 2px", marginBottom: 6 }}>
+                  <span style={{ fontSize: 15 }}>📐</span>
+                  <div style={{ fontSize: 12, fontWeight: 700, color: C.text, textTransform: "uppercase", letterSpacing: "0.03em" }}>Heizkostenabrechnung</div>
+                  <div style={{ fontSize: 10, color: C.textDim }}>§§ 7, 8, 12 HeizkostenV</div>
+                  <div style={{ marginLeft: "auto", fontSize: 10, color: C.textDim }}>freiwillig</div>
+                </div>
+                <div style={{ background: C.surface, border: "1px solid " + (heizAngaben > 0 ? C.brand : C.border), borderRadius: THEME.radius.md, padding: "12px 12px 10px" }}>
+                  <div style={{ fontSize: 11.5, color: C.textMuted, lineHeight: 1.6, marginBottom: 10 }}>
+                    Der Vermieter muss mindestens 50 und höchstens 70 Prozent der Heizkosten nach
+                    deinem gemessenen Verbrauch verteilen. Der Rest geht nach Wohnfläche. Hält er
+                    das nicht ein, ist die Abrechnung fehlerhaft, unabhängig davon, wie viel du
+                    verbraucht hast. Die beiden Zahlen stehen auf deiner Heizkostenabrechnung
+                    meist als "Grundkosten" und "Verbrauchskosten". Falls dort nur Prozentzahlen
+                    stehen, trag die Prozentzahlen ein, das Ergebnis ist dasselbe.
+                  </div>
+                  <div style={{ fontSize: 11, fontWeight: 600, color: C.textMuted, textTransform: "uppercase", letterSpacing: "0.04em", margin: "4px 2px 6px" }}>Heizung</div>
+                  <EuroInput label="Grundkosten Heizung" value={wohnung.heizGrundkosten}
+                    tip="Der nach Wohnfläche verteilte Teil. Oft als 'Grundkosten' oder 'Festkosten' bezeichnet."
+                    onChange={v => setHeiz("heizGrundkosten", v)} />
+                  <EuroInput label="Verbrauchskosten Heizung" value={wohnung.heizVerbrauchskosten}
+                    tip="Der nach deinem gemessenen Verbrauch verteilte Teil."
+                    onChange={v => setHeiz("heizVerbrauchskosten", v)} />
+                  <div style={{ fontSize: 11, fontWeight: 600, color: C.textMuted, textTransform: "uppercase", letterSpacing: "0.04em", margin: "10px 2px 6px" }}>Warmwasser</div>
+                  <EuroInput label="Grundkosten Warmwasser" value={wohnung.wwGrundkosten}
+                    tip="Nur ausfüllen, wenn deine Abrechnung Warmwasser getrennt aufteilt. Für Warmwasser gilt dieselbe Regel (§ 8 Abs. 1 HeizkostenV)."
+                    onChange={v => setHeiz("wwGrundkosten", v)} />
+                  <EuroInput label="Verbrauchskosten Warmwasser" value={wohnung.wwVerbrauchskosten}
+                    tip="Der nach deinem gemessenen Warmwasserverbrauch verteilte Teil."
+                    onChange={v => setHeiz("wwVerbrauchskosten", v)} />
+                  <div style={{ fontSize: 11, fontWeight: 600, color: C.textMuted, textTransform: "uppercase", letterSpacing: "0.04em", margin: "12px 2px 6px" }}>Zwei kurze Fragen</div>
+                  <JaNeinFrage
+                    frage="Steht auf der Abrechnung ein Zählerstand oder ein Verbrauchswert für deine Wohnung?"
+                    hilfe="Zum Beispiel Einheiten am Heizkostenverteiler, Kilowattstunden oder Kubikmeter Warmwasser. Wurde gar nichts gemessen, darfst du 15 Prozent kürzen (§ 12 Abs. 1 Satz 1 HeizkostenV)."
+                    wert={wohnung.hkVerbrauchErfasst}
+                    onChange={v => setHeiz("hkVerbrauchErfasst", v)} />
+                  {/* Die zweite Frage erscheint erst, wenn überhaupt nach
+                      Verbrauch abgerechnet wurde. § 6a Abs. 3 knüpft
+                      ausdrücklich daran an, und zwei Kürzungen nebeneinander
+                      zu fordern wäre angreifbar. */}
+                  {wohnung.hkVerbrauchErfasst === "ja" && (
+                    <JaNeinFrage
+                      frage="Liegt der Abrechnung eine Grafik bei, die deinen Verbrauch mit dem Vorjahr vergleicht?"
+                      hilfe="Gemeint ist eine echte Abbildung, meist ein Balkendiagramm. Reine Zahlen genügen nicht. Fehlt sie, darfst du 3 Prozent kürzen (§ 6a Abs. 3 Nr. 5 und § 12 Abs. 1 Satz 3 HeizkostenV)."
+                      wert={wohnung.hkVorjahresvergleich}
+                      onChange={v => setHeiz("hkVorjahresvergleich", v)} />
+                  )}
+                  <div style={{ fontSize: 10, color: C.textDim, lineHeight: 1.5, marginTop: 8 }}>
+                    Gilt nur bei einer zentralen Heizungsanlage oder bei Fernwärme (§ 1 HeizkostenV).
+                    Mit eigener Gastherme lässt du diesen Teil leer.
+                  </div>
+                </div>
+              </>
+            )}
+          </div>
+        )}
       </div>
       <div style={{ position: "fixed", bottom: 0, left: 0, right: 0, background: C.surface, borderTop: "1px solid " + C.border, boxShadow: "0 -4px 20px rgba(0,0,0,0.06)" }}>
         <div style={{ padding: "20px 20px 24px", maxWidth: THEME.layout.formMax, margin: "0 auto", boxSizing: "border-box" }}>

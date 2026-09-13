@@ -153,7 +153,17 @@ export default function BriefPDF({ result, wohnung, adressen }) {
       <View style={zeigtListe ? s.table : { marginBottom: 4 }}>
         {gruendeHart.length > 0 && (
           <>
-            <Text style={s.gruppenTitel}>Eindeutig nicht umlagefähig</Text>
+            {/* UMBENANNT 13.09.2026 (Task #104). Die Überschrift hieß
+                "Eindeutig nicht umlagefähig". Solange hier nur Kabelanschluss
+                und Verwaltungskosten standen, stimmte das. Seit die
+                Heizkostenprüfung dazugekommen ist, stehen unter derselben
+                Überschrift auch Punkte, bei denen die Kosten sehr wohl
+                umlagefähig sind und nur falsch verteilt wurden oder ein
+                gesetzliches Kürzungsrecht auslösen. Ein Vermieter, der oben
+                "nicht umlagefähig" liest und darunter einen Verteilerschlüssel
+                findet, hat sofort einen Einwand gegen das ganze Schreiben.
+                Die neue Überschrift trägt alle drei Fälle. */}
+            <Text style={s.gruppenTitel}>Rechtlich eindeutige Beanstandungen</Text>
             {gruendeHart.map((g, i) => (
               <View key={"h" + i} style={s.tRow}>
                 <Text style={s.tLabel}>{i + 1}. {g.text}</Text>

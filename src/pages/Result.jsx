@@ -26,6 +26,10 @@ export default function Result({ navigateTo, result, wohnung, werte, gesamtsumme
   // (Wohnung/Posten/Gesamtsumme) serverseitig 30 Tage abrufbar bleibt. Rein
   // clientseitiges Zwischenspeichern (localStorage) läuft zusätzlich und
   // automatisch, unabhängig davon — siehe App.jsx.
+  // Ältere Ergebnisse (aus einem serverseitig gespeicherten Entwurf oder aus
+  // der Bestellhistorie) kennen das Feld noch nicht. Fehlt es, verhält sich
+  // die Seite wie bei "keine Angaben gemacht" statt abzustürzen.
+  const heizBefunde = Array.isArray(result?.heiz_befunde) ? result.heiz_befunde : [];
   const [fortsetzenStatus, setFortsetzenStatus] = useState("idle"); // idle | speichert | fertig | fehler
   const [fortsetzenLink, setFortsetzenLink] = useState("");
   const [linkKopiert, setLinkKopiert] = useState(false);
@@ -143,6 +147,61 @@ export default function Result({ navigateTo, result, wohnung, werte, gesamtsumme
             </div>
           ))}
         </div>
+
+        {/* ────────────────────────────────────────────────────────────────
+            HEIZKOSTENABRECHNUNG, formale Prüfung (13.09.2026, Task #104)
+
+            Zwei Zustände, beide wichtig:
+
+            MIT BEFUND: Die Überschriften werden gezeigt, der ausformulierte
+            Befund und der Musterbrieftext stehen im PDF. Das ist dieselbe
+            Linie wie bei der Positions-Vorschau darüber, die auch nur drei
+            von allen Positionen zeigt.
+
+            OHNE BEFUND: Der Kunde hat die freiwilligen Angaben übersprungen.
+            Hier steht dann die Einladung, sie nachzuholen, mit direktem Weg
+            zurück. Das ist der wertvollste Teil der ganzen Prüfung, und wer
+            ihn beim ersten Durchgang überspringt, soll ihn nicht dauerhaft
+            verpassen. Zurückgehen kostet nichts, alle Eingaben bleiben
+            erhalten.
+            ──────────────────────────────────────────────────────────────── */}
+        {heizBefunde.length > 0 ? (
+          <div style={{ background: C.surface, border: "1px solid " + C.border, borderRadius: THEME.radius.md, marginBottom: 14, overflow: "hidden" }}>
+            <div style={{ padding: "11px 16px", borderBottom: "1px solid " + C.border, fontSize: 11, fontWeight: 700, color: C.textMuted, textTransform: "uppercase" }}>
+              Heizkostenabrechnung, formale Prüfung
+            </div>
+            {heizBefunde.map((b, i, arr) => (
+              <div key={i} style={{ display: "flex", alignItems: "flex-start", padding: "11px 16px", borderBottom: i < arr.length - 1 ? "1px solid " + C.border : "none" }}>
+                <div style={{ flex: 1 }}>
+                  <div style={{ fontSize: 13, fontWeight: 600 }}>{b.titel}</div>
+                  <div style={{ fontSize: 11, color: C.textMuted, marginTop: 2, lineHeight: 1.4 }}>{b.norm}</div>
+                </div>
+                <div style={{ textAlign: "right", marginLeft: 10 }}>
+                  {b.betrag > 0 && <div style={{ fontSize: 13, fontWeight: 700 }}>{fmt(b.betrag)}</div>}
+                  <div style={{ fontSize: 10, fontWeight: 600, marginTop: 2, color: b.status === "verstoss" ? C.critical : C.ok }}>
+                    {b.status === "verstoss" ? "✗ Beanstandung" : "✓ Korrekt"}
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        ) : (
+          <div style={{ background: C.brandBg, borderRadius: THEME.radius.md, padding: "13px 16px", marginBottom: 14 }}>
+            <div style={{ fontSize: 13, fontWeight: 600, color: C.text, marginBottom: 4 }}>
+              Heizkostenabrechnung noch nicht geprüft
+            </div>
+            <div style={{ fontSize: 11.5, color: C.textMuted, lineHeight: 1.6, marginBottom: 8 }}>
+              Bei der Höhe der Heizkosten kann der Vermieter immer auf deinen Verbrauch verweisen.
+              Bei der Verteilung nicht: Mindestens 50 und höchstens 70 Prozent müssen nach gemessenem
+              Verbrauch abgerechnet werden. Dafür brauchen wir zwei Zahlen von deiner
+              Heizkostenabrechnung, meist ein eigenes Blatt von Brunata, ista oder Techem.
+            </div>
+            <button onClick={() => navigateTo("posten")}
+              style={{ background: "none", border: "none", color: C.brand, fontSize: 12.5, fontWeight: 600, cursor: "pointer", padding: 0, fontFamily: THEME.font.body, textDecoration: "underline" }}>
+              Angaben nachtragen, deine Eingaben bleiben erhalten
+            </button>
+          </div>
+        )}
 
         {/* Bewusst andere Rahmung, wenn nichts gefunden wurde (08/2026, siehe
             CHANGELOG.md): "gesamtbewertung: ok" bedeutet laut buildResult()

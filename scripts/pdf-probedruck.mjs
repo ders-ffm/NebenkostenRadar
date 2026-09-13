@@ -60,7 +60,18 @@ const werte = {
   allgemeinstrom: "33.86", schornsteinreinigung: "1.86",
   rauchwarnmelder_wartung: "7.89", sonstiges_vereinbart: "12.67",
 };
-const wohnung = { flaeche: "80.55", jahr: "2025", vorauszahlung: "3360.00" };
+// Die Angaben zur Heizkostenabrechnung sind bewusst so gewählt, dass BEIDE
+// Ausgänge im Bericht gedruckt werden: ein Verstoß (Heizung mit 80 Prozent
+// Verbrauchsanteil, zulässig sind höchstens 70) und ein korrekter Fall
+// (Warmwasser mit 70 Prozent). Zusätzlich der fehlende Vorjahresvergleich,
+// damit auch die bezifferte Kürzung nach § 12 Abs. 1 Satz 3 im Satz landet.
+// Ohne diese Werte bliebe der ganze Abschnitt ungedruckt und damit ungeprüft.
+const wohnung = {
+  flaeche: "80.55", jahr: "2025", vorauszahlung: "3360.00",
+  heizGrundkosten: "140.16", heizVerbrauchskosten: "560.65",
+  wwGrundkosten: "138.53", wwVerbrauchskosten: "323.22",
+  hkVerbrauchErfasst: "ja", hkVorjahresvergleich: "nein",
+};
 const adressen = {
   mieterName: "Max Mustermann", mieterStrasse: "Musterweg 1",
   mieterPlz: "60439", mieterOrt: "Frankfurt am Main",

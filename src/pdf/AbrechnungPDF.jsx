@@ -124,6 +124,11 @@ export default function AbrechnungPDF({ result, wohnung, seite = 1, seitenGesamt
   const auffaelligeAnzahl = result.posten_bewertung.filter(p => p.status !== "ok" && p.status !== "pruefen").length;
   const nichtBewertbarAnzahl = result.posten_bewertung.filter(p => p.status === "pruefen").length;
   const gesamtAnzahl = result.posten_bewertung.length;
+  // Ältere gespeicherte Berichte kennen das Feld noch nicht. Ein fehlendes
+  // Feld darf keinen Absturz erzeugen, sondern muss sich verhalten wie "keine
+  // Angaben gemacht". Betrifft Wiederherstellungen aus api/draft.js und aus
+  // der Bestellhistorie im Konto.
+  const heizBefunde = Array.isArray(result.heiz_befunde) ? result.heiz_befunde : [];
   const kopfRechts =
     auffaelligeAnzahl > 0
       ? auffaelligeAnzahl + " von " + gesamtAnzahl + " Positionen\nauffällig"
@@ -204,6 +209,49 @@ export default function AbrechnungPDF({ result, wohnung, seite = 1, seitenGesamt
         </Text>
       ))}
 
+      {/* ────────────────────────────────────────────────────────────────────
+          FORMALE PRÜFUNG DER HEIZKOSTENABRECHNUNG (13.09.2026, Task #104)
+
+          Eigener Abschnitt statt Zeilen in der Postentabelle. Die Tabelle
+          beantwortet die Frage "ist dieser Betrag der Höhe nach in Ordnung",
+          hier geht es um die Art der Abrechnung. Zusammengemischt hätten die
+          Grundkosten neben den ohnehin gelisteten Heizkosten gestanden und
+          wie eine Doppelzählung ausgesehen.
+
+          Erscheint nur, wenn der Kunde die freiwilligen Angaben gemacht hat.
+          Sonst greift der Einladungstext im Block darunter.
+          ──────────────────────────────────────────────────────────────────── */}
+      {heizBefunde.length > 0 && (
+        <View style={{ marginTop: 4, marginBottom: 10 }} wrap={false}>
+          <Text style={{ fontFamily: "Poppins", fontWeight: 600, fontSize: 11, marginBottom: 2 }}>
+            Formale Prüfung der Heizkostenabrechnung
+          </Text>
+          <Text style={{ fontSize: 8, color: C.textDim, marginBottom: 7, lineHeight: 1.5 }}>
+            Hier geht es nicht um die Höhe deiner Heizkosten, sondern darum, ob der Vermieter sie
+            richtig verteilt hat. Diese Vorgaben stehen in der Heizkostenverordnung und gelten
+            unabhängig davon, wie viel du verbraucht hast.
+          </Text>
+          {heizBefunde.map((b, i) => (
+            <View key={i} style={{
+              borderLeft: "2pt solid " + (b.status === "verstoss" ? C.critical : C.brand),
+              backgroundColor: C.bg, borderRadius: 4, padding: "8pt 10pt", marginBottom: 6,
+            }}>
+              <Text style={{ fontFamily: "Poppins", fontWeight: 600, fontSize: 9, marginBottom: 3, color: b.status === "verstoss" ? C.critical : C.text }}>
+                {b.status === "verstoss" ? "Beanstandung: " : "In Ordnung: "}{b.titel}
+              </Text>
+              <Text style={{ fontSize: 8, color: C.textMuted, lineHeight: 1.5 }}>{b.text}</Text>
+            </View>
+          ))}
+          {result.heiz_kuerzung > 0 && (
+            <Text style={{ fontSize: 8, color: C.text, lineHeight: 1.5, marginTop: 2 }}>
+              Summe der Kürzungsrechte aus der Heizkostenverordnung: {fmt(result.heiz_kuerzung)}. Dieser Betrag
+              ist oben im Prüfergebnis bereits enthalten. Du kürzt ihn selbst von deinem Anteil, du musst ihn
+              nicht beim Vermieter beantragen. Teile ihm die Kürzung schriftlich mit und nenne die Vorschrift.
+            </Text>
+          )}
+        </View>
+      )}
+
       {/* ERKLÄRUNG ZU VERBRAUCHSPOSTEN, ergänzt 11.09.2026 auf Stefans Vorgabe.
 
           WARUM DIESER BLOCK IM BERICHT STEHEN MUSS: Seit die Prüfung Heizung,
@@ -232,14 +280,30 @@ export default function AbrechnungPDF({ result, wohnung, seite = 1, seitenGesamt
             Wohnfläche. Eine Abweichung nach oben ist deshalb kein Nachweis für einen Abrechnungsfehler,
             und eine Beanstandung allein wegen der Höhe würde deine übrigen Einwände schwächen.
           </Text>
-          <Text style={{ fontSize: 8, lineHeight: 1.5, marginTop: 5 }}>
-            Prüfbar ist dagegen die Art der Abrechnung, und das sind starke Rechte: Der Vermieter muss
-            mindestens 50 und höchstens 70 Prozent der Heizkosten nach erfasstem Verbrauch verteilen
-            (§ 7 Abs. 1 HeizkostenV). Wird gar nicht verbrauchsabhängig abgerechnet, darfst du deinen
-            Anteil um 15 Prozent kürzen (§ 12 Abs. 1 Satz 1 HeizkostenV). Fehlen fernablesbare Zähler
-            oder die vorgeschriebenen Verbrauchsinformationen, sind es 3 Prozent
-            (§ 12 Abs. 1 Sätze 2 und 3 HeizkostenV).
-          </Text>
+          {/* GEÄNDERT 13.09.2026: Hier stand bisher eine Aufzählung der Rechte
+              aus der Heizkostenverordnung, die nirgends geprüft wurden. Der
+              Bericht hat also etwas versprochen und nicht geliefert. Seit
+              heute gibt es die Prüfung wirklich, deshalb verweist der Text
+              jetzt entweder auf den Befund oben oder erklärt, wie man ihn
+              bekommt. */}
+          {heizBefunde.length > 0 ? (
+            <Text style={{ fontSize: 8, lineHeight: 1.5, marginTop: 5 }}>
+              Prüfbar ist dagegen die Art der Abrechnung, und genau das haben wir getan. Das Ergebnis
+              steht weiter oben im Abschnitt "Formale Prüfung der Heizkostenabrechnung".
+            </Text>
+          ) : (
+            <Text style={{ fontSize: 8, lineHeight: 1.5, marginTop: 5 }}>
+              Prüfbar ist dagegen die Art der Abrechnung, und das sind starke Rechte: Der Vermieter muss
+              mindestens 50 und höchstens 70 Prozent der Heizkosten nach erfasstem Verbrauch verteilen
+              (§ 7 Abs. 1 HeizkostenV). Wird gar nicht verbrauchsabhängig abgerechnet, darfst du deinen
+              Anteil um 15 Prozent kürzen (§ 12 Abs. 1 Satz 1 HeizkostenV). Fehlt der vorgeschriebene
+              grafische Vergleich mit dem Vorjahr, sind es 3 Prozent (§ 6a Abs. 3 Nr. 5 und
+              § 12 Abs. 1 Satz 3 HeizkostenV). Dafür brauchen wir zwei Zahlen von deiner
+              Heizkostenabrechnung. Du kannst die Prüfung jederzeit kostenlos nachholen: Gehe auf
+              nebenkostenradar.com zurück in den Schritt "Posten" und öffne dort den Block
+              "Heizkostenabrechnung zusätzlich prüfen".
+            </Text>
+          )}
           <Text style={{ fontSize: 8, lineHeight: 1.5, marginTop: 5 }}>
             Was du selbst tun kannst: Vergleiche die Zählerstände mit dem Vorjahr. Als grobe
             Orientierung gelten etwa 45 Kubikmeter Wasser pro Person und Jahr. Erscheint dir der

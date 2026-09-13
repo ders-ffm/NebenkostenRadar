@@ -13,6 +13,8 @@ npm run check        Build, 29 Seiten, 950 Konsistenzprüfungen, 31 Betragseinga
 npm run probedruck   erzeugt das fertige PDF und prüft es auf Satzfehler
 ```
 
+Beides läuft auf Stefans Mac. Die KI baut in einer Kopie unter `/tmp`, nicht im iCloud-Ordner. Grund: `npm install` schreibt plattformabhängige Dateien, und ein Lauf in der Linux-Sandbox macht den Ordner auf dem Mac unbrauchbar (13.09.2026 passiert, siehe CHANGELOG).
+
 Zusätzlich von Hand:
 
 - Preise in `business.js` gegen alle fest eingetippten Stellen, besonders das JSON-LD in `index.html`
@@ -85,7 +87,9 @@ Die Widerrufsbelehrung war inhaltlich vollständig, aber das Formular nach Anlag
 
 Alle 22 Artikelseiten laden ihr Titelbild von `images.unsplash.com`, damit geht die IP jedes Lesers an Unsplash. Die Datenschutzerklärung stützt das auf berechtigtes Interesse, was vertretbar, aber schwach ist: Genau dieses Argument hat das LG München bei Google Fonts verworfen, weil die Übermittlung vermeidbar ist.
 
-`scripts/bilder-lokal-holen.mjs` holt die Bilder auf den eigenen Server und zieht die Datenschutzerklärung mit nach. **Muss auf Stefans Rechner laufen**, der Sandkasten hat kein Internet.
+`scripts/bilder-lokal-holen.mjs` holt die Bilder auf den eigenen Server und zieht die Datenschutzerklärung mit nach.
+
+**Erledigt am 13.09.2026.** Alle 22 Bilder liegen unter `public/artikelbilder/`, keine einzige Unsplash-URL mehr in `src/artikel.js`, Abschnitt 7 der Datenschutzerklärung nachgezogen. Zwei Hindernisse auf dem Weg, beide außerhalb des Codes, siehe CHANGELOG: fehlender Festplattenvollzugriff für das Terminal und plattformfremde `node_modules` aus der Sandbox.
 
 ---
 
