@@ -177,6 +177,26 @@ Gegen vier Textformate getestet, darunter Leerzeichen und Punkt als Tausendertre
 
 Der Wortlaut-Fingerabdruck wird zusätzlich je Quelle gespeichert. Wechselt der Monitor auf eine Ausweichquelle, gibt das sonst einen Fehlalarm, weil Portale denselben Paragrafen unterschiedlich formatieren.
 
+### Läuft, und zwar über die zweite Quelle
+
+Der Lauf nach dem Umbau war erfolgreich:
+
+```
+Quelle verwendet: buzer.de
+§ 35a EStG unverändert.
+  Satz:                          20 %
+  Höchstbetrag Dienstleistungen: 4.000 Euro
+  Höchstbetrag Handwerker:       1.200 Euro
+```
+
+Damit ist bestätigt: Die amtliche Quelle bleibt für Rechenzentren gesperrt, die erste Ausweichquelle trägt. Genau dafür war die Liste gedacht.
+
+**Fingerabdruck-Datei angelegt** (`scripts/steuerrecht-stand.json`, `e7a29d6085248c63` für buzer.de). GitHub startet jeden Lauf mit einer frischen Kopie, die dort erzeugte Datei ist also sofort wieder weg. Sie musste deshalb von Hand ins Repo.
+
+Der Wert wurde über den Browser aus derselben Seite berechnet, mit Zeichen für Zeichen derselben Verarbeitung wie im Skript. Gegenprobe: Die daraus gelesenen Werte (20 %, 4.000, 1.200) stimmen mit dem überein, was der GitHub-Lauf gemeldet hat.
+
+Zusätzlich geprüft, ob im erfassten Textbereich etwas Wechselndes steht, etwa ein Abrufdatum oder eine Sitzungskennung. Das hätte jeden Monat einen Fehlalarm ausgelöst. Ergebnis: nur Gesetzestext, 1.192 Zeichen, nichts Dynamisches.
+
 ### Steuerrecht-Monitor
 
 Stefans Vorgabe: „Sollte sich was im Steuerrecht ändern, muss das natürlich automatisch angepasst werden."
