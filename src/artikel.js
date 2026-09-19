@@ -1143,18 +1143,58 @@ export const ARTIKEL = [
     },
     {
       id: "betriebskostenspiegel-2024",
-      titelKurz: "Betriebskostenspiegel: was ist normal?",
-      titel: "DMB Betriebskostenspiegel 2024: Was ist normal?",
-      teaser: "Der Deutsche Mieterbund veröffentlicht jährlich Durchschnittswerte für alle Nebenkostenarten. Hier erfahren Sie, was für Ihre Wohnungsgröße normal ist und wann Ihre Abrechnung zu teuer ist.",
-      datum: "Juni 2026",
+      // WICHTIG: Dieses Feld, nicht "titel", landet im <title> der Seite und
+      // damit in der Google-Trefferliste (siehe artikelTitel() in
+      // src/config/seo.js). Beim Ändern der Jahreszahl am 19.09.2026 hätte
+      // ich das beinahe übersehen und nur die Überschrift im Artikel
+      // angefasst, die für die Suche nichts bringt. Gefunden, weil ich das
+      // gebaute HTML nachgesehen habe.
+      //
+      // LÄNGE: Der Zusatz " | NebenkostenRadar" (19 Zeichen) kommt automatisch
+      // dazu, bei einer Obergrenze von 60 bleiben also 41 Zeichen. Mein erster
+      // Versuch "Betriebskostenspiegel 2026: was ist normal?" hatte 43 und ist
+      // von scripts/seo-check.mjs mit "Titel 62 Zeichen (max 60)" abgelehnt
+      // worden. Gut so, denn Google hätte ihn abgeschnitten.
+      //
+      // Die jetzige Fassung hat 37 Zeichen und bringt beide Begriffe unter,
+      // auf die es ankommt: die gesuchte Jahreszahl und "Mieter". Die Frage
+      // "was ist normal" steht weiterhin in der H1 und in der Beschreibung,
+      // dort gibt es keine Längenbegrenzung.
+      titelKurz: "Betriebskostenspiegel 2026 für Mieter",
+      // JAHRESZAHL IM TITEL GEÄNDERT 19.09.2026, siehe
+      // planung/sichtbarkeit-umsetzung.md Abschnitt 1.
+      //
+      // Vorher: "DMB Betriebskostenspiegel 2024: Was ist normal?" Sachlich
+      // richtig, denn die Zahlen des Mieterbunds stammen aus dem
+      // Abrechnungsjahr 2024. Nur sucht danach niemand. Ein Mieter mit der
+      // Abrechnung auf dem Tisch tippt das laufende Jahr ein. Alle drei
+      // Wettbewerber, die für das Thema ranken, machen das auch so:
+      // mein-nebenkostenrechner.de, nebenkostenpro.de und
+      // nebenkosten-verstehen.de führen sämtlich "2026" im Titel.
+      //
+      // Die URL bleibt bewusst unverändert. Sie trägt die Platzierung, die
+      // wir heute haben, und ein Wechsel ohne Weiterleitung würde sie
+      // verlieren. Das ist ein eigener Schritt, erst wenn messbar ist, ob
+      // diese Änderung hier gewirkt hat.
+      //
+      // Dass die Daten aus 2024 stammen, steht weiterhin im ersten Absatz und
+      // in der Tabelle. Der Titel verspricht Aktualität, der Text liefert die
+      // Einordnung. Beides muss so bleiben.
+      titel: "Betriebskostenspiegel 2026: was ist normal? Aktuelle DMB-Zahlen",
+      teaser: "Der Deutsche Mieterbund veröffentlicht jährlich Durchschnittswerte für alle Nebenkostenarten. Die aktuellen Zahlen stammen aus dem Abrechnungsjahr 2024. Hier erfahren Sie, was für Ihre Wohnungsgröße normal ist und wann Ihre Abrechnung zu teuer ist.",
+      datum: "September 2026",
       lesezeit: "5 Min.",
       bild: "/artikelbilder/betriebskostenspiegel-2024.jpg",
       bildAlt: "Diagramme und Auswertungen auf einem Bildschirm",
       kategorie: "Richtwerte",
-      keywords: ["Betriebskostenspiegel 2024", "DMB Richtwerte", "Nebenkosten Durchschnitt"],
+      keywords: ["Betriebskostenspiegel 2026", "Betriebskostenspiegel 2024", "DMB Richtwerte", "Nebenkosten Durchschnitt 2026"],
       inhalt: [
-        { typ: "intro", text: "Der Deutsche Mieterbund (DMB) veröffentlicht jährlich den Betriebskostenspiegel: eine Auswertung realer Nebenkostenabrechnungen in Deutschland. Er zeigt Durchschnittswerte und Höchstwerte für alle umlagefähigen Kostenarten pro Quadratmeter und Monat." },
-        { typ: "h2", text: "Die wichtigsten Richtwerte 2024 im Überblick" },
+        // Der erste Absatz stellt sofort klar, aus welchem Jahr die Zahlen
+        // stammen. Der Titel nennt das laufende Jahr, weil danach gesucht
+        // wird; hier steht, worauf die Zahlen beruhen. Ohne diesen Satz wäre
+        // die Überschrift irreführend, und das wollen wir nicht.
+        { typ: "intro", text: "Der Deutsche Mieterbund (DMB) veröffentlicht jährlich den Betriebskostenspiegel: eine Auswertung realer Nebenkostenabrechnungen in Deutschland. Er zeigt Durchschnittswerte und Höchstwerte für alle umlagefähigen Kostenarten pro Quadratmeter und Monat. Die aktuell gültige Ausgabe wurde im Dezember 2025 veröffentlicht und wertet Abrechnungen des Jahres 2024 aus. Sie ist damit der Maßstab, an dem Sie eine Abrechnung messen, die Sie 2026 erhalten." },
+        { typ: "h2", text: "Die wichtigsten Richtwerte im Überblick" },
         { typ: "richtwerte" },
         { typ: "hinweis", text: "Liegt Ihre Abrechnung deutlich über dem Durchschnitt, lohnt sich eine genauere Prüfung. Wichtig: Eine Abweichung nach oben ist ein Anlass zur Nachfrage, kein Beweis für einen Fehler, warum, erklärt der Abschnitt zu den Grenzen weiter unten." },
         { typ: "h2", text: "Wie nutze ich die Richtwerte?" },
