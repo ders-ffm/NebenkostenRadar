@@ -402,9 +402,56 @@ Wenn dadurch einzelne Beträge unsicher sind, nimm sie NICHT in "werte" auf. Wen
       }),
     });
 
+    // ───────────────────────────────────────────────────────────────────────
+    // FEHLER NACH URSACHE TRENNEN (19.09.2026)
+    //
+    // WARUM: Bis heute wurde jeder Fehler von Anthropic in dieselbe Meldung
+    // gegossen, "überlastet oder nicht erreichbar". Am 19.09. war die
+    // Foto-Erkennung mehrere Stunden tot, weil nach dem Tausch des
+    // API-Schlüssels ein ungültiger in Vercel stand. Der Kunde las
+    // "überlastet" und hätte es ewig erneut versucht, und im Protokoll stand
+    // dasselbe. Erkennbar war es nur an der Antwortzeit: 0,7 Sekunden statt
+    // der üblichen zehn bis sechzig.
+    //
+    // Die drei Fälle sind grundverschieden und brauchen verschiedene
+    // Reaktionen:
+    //   401/403 → unser Schlüssel ist kaputt. Erneut versuchen hilft nie,
+    //             das muss Stefan beheben. Der Kunde soll auf die manuelle
+    //             Eingabe ausweichen statt zu warten.
+    //   429     → zu viele Anfragen. Erneut versuchen hilft, nur später.
+    //   5xx     → tatsächlich Störung bei Anthropic. Erneut versuchen hilft.
+    //
+    // Der Kunde bekommt weiterhin keine technischen Einzelheiten zu sehen,
+    // nur einen Rat, der zu seiner Lage passt. Die Einzelheiten stehen im
+    // Vercel-Protokoll, und zwar so, dass man sie beim Suchen findet.
+    // ───────────────────────────────────────────────────────────────────────
     if (!aiRes.ok) {
       const errText = await aiRes.text();
-      console.error("Anthropic API Fehler:", aiRes.status, errText);
+      const istSchluesselFehler = aiRes.status === 401 || aiRes.status === 403;
+      const istUeberlastung = aiRes.status === 429;
+
+      console.error(
+        istSchluesselFehler
+          ? "KONFIGURATIONSFEHLER: Anthropic lehnt den API-Schlüssel ab (" + aiRes.status + "). " +
+            "ANTHROPIC_API_KEY in Vercel prüfen, Haken bei Production, danach neu ausrollen."
+          : "Anthropic API Fehler:",
+        aiRes.status,
+        errText
+      );
+
+      if (istSchluesselFehler) {
+        // 503 statt 502: Der Dienst ist nicht vorübergehend gestört, sondern
+        // bei uns falsch konfiguriert. So lässt sich der Fall später in den
+        // Protokollen sauber von echten Störungen trennen.
+        return res.status(503).json({
+          error: "Die automatische Erkennung ist gerade nicht verfügbar. Bitte trage die Beträge von Hand ein, das dauert nur wenige Minuten. Wir kümmern uns darum.",
+        });
+      }
+      if (istUeberlastung) {
+        return res.status(429).json({
+          error: "Gerade sind sehr viele Prüfungen gleichzeitig unterwegs. Bitte in ein bis zwei Minuten noch einmal versuchen.",
+        });
+      }
       return res.status(502).json({ error: "Die Erkennung war überlastet oder nicht erreichbar. Bitte erneut versuchen." });
     }
 
