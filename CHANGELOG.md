@@ -2,6 +2,32 @@
 
 Alle wesentlichen Änderungen an diesem Projekt, mit Datum und Begründung. Dient der Nachvollziehbarkeit, damit auch ohne KI-Unterstützung verstanden werden kann, warum etwas so ist, wie es ist.
 
+## 19.09.2026 — Funnel-Test: Kasse funktioniert, zwei Verkaufsbremsen behoben
+
+Anlass: weiterhin keine Käufe. Erste Frage war deshalb, ob der Kaufweg überhaupt funktioniert. Kompletter Durchlauf live auf nebenkostenradar.com mit Stefans echter Abrechnung (ABG Frankfurt, 80,55 m², 2025).
+
+**Die Kasse ist in Ordnung.** Startseite, Wohnungsdaten, acht Posten, Auswertung, Stufenwahl, Widerrufs-Checkbox, E-Mail, und Stripe Checkout öffnet. Kein Abbruch, keine Fehlermeldung. Das Ausbleiben der Käufe liegt also nicht an einem kaputten Funnel, sondern davor: an der Sichtbarkeit. Search Console vom 11.09.: 992 Impressionen, 34 Klicks, durchschnittliche Position 38,6.
+
+Zwei echte Funde gab es trotzdem.
+
+### Das Ergebnis überlebte kein Neuladen (schwerwiegend)
+
+Wer auf der Ergebnisseite die Seite neu lud, sah "Kein Ergebnis vorhanden." und einen Knopf "Neu starten". Die gesamte Auswertung war weg, obwohl die Eingaben noch im Browser lagen.
+
+Das ist die Seite, auf der bezahlt wird, und genau dort wird ständig neu geladen, ohne dass der Nutzer es beabsichtigt: iOS verwirft Safari-Tabs, sobald man kurz in eine andere App wechselt, um in der Abrechnung nachzusehen. Handy sperren und aufwecken reicht oft. Dazu der versehentliche Wischer nach unten. Wer dann "Neu starten" liest, kauft nicht.
+
+Behoben: Beim Start der Analyse werden die Eingaben in den `sessionStorage` gelegt, fehlt beim Laden das Ergebnis, wird es daraus neu berechnet. Das geht sofort, weil `buildResult()` eine reine Rechnung ohne Serverzugriff ist.
+
+`sessionStorage` und bewusst nicht `localStorage`: Er gehört genau einem Tab und wird beim Schließen geleert. Damit kann sich nicht wiederholen, was am 13.09. passiert ist, als sich zwei verschiedene Abrechnungen vermischt haben. `resetAll()` und "Neue Abrechnung prüfen" löschen ihn zusätzlich.
+
+### Doppeltes Eurozeichen auf dem Kaufknopf
+
+Auf dem Knopf stand live "Weiter · 12,99 € €". `euro()` bringt das Zeichen schon mit, im JSX stand noch eins dahinter. Kleinigkeit, aber ausgerechnet auf dem empfindlichsten Element der Seite.
+
+### Geänderte Dateien
+
+`src/App.jsx`, `src/pages/Result.jsx`
+
 ## 13.09.2026 — Heizkostenabrechnung wird jetzt wirklich geprüft (§§ 7, 8, 12 HeizkostenV)
 
 Seit dem 11.09.2026 beanstandet die Auswertung Heizung, Warmwasser und Wasser nicht mehr wegen ihrer Höhe. Das war fachlich richtig, hat aber eine Lücke hinterlassen: Der Prüfbericht sagte dem Kunden wörtlich, prüfbar sei das Verhältnis von Grund- zu Verbrauchsanteil, und prüfte es dann nirgends. Wir haben etwas versprochen und nicht geliefert.

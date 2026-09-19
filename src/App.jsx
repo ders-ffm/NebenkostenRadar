@@ -312,8 +312,57 @@ export default function App() {
     } catch { /* z.B. Safari privater Modus ohne localStorage: kein Blocker, Entwurf bleibt dann nur im Speicher */ }
   }, [wohnung, werte, gesamtsummeAbrechnung, gekauft]);
 
+  // ───────────────────────────────────────────────────────────────────────
+  // DAS ERGEBNIS ÜBERLEBT EIN NEULADEN (19.09.2026)
+  //
+  // GEFUNDEN IM FUNNEL-TEST: Wer auf der Ergebnisseite die Seite neu lädt,
+  // sah "Kein Ergebnis vorhanden." und einen Knopf "Neu starten". Die
+  // komplette Auswertung war weg, obwohl die Eingaben noch im Browser lagen.
+  //
+  // WARUM DAS TEUER IST: Die Ergebnisseite ist die Seite, auf der bezahlt
+  // wird. Genau dort passiert Neuladen aber ständig, ohne dass der Nutzer es
+  // absichtlich tut: iOS wirft Safari-Tabs weg, sobald man kurz in eine
+  // andere App wechselt, um in der Abrechnung nachzusehen. Handy sperren und
+  // wieder aufwecken reicht oft schon. Dazu der versehentliche Wischer nach
+  // unten, der auf dem Handy ein Neuladen auslöst. Wer dann "Neu starten"
+  // liest, kauft nicht, sondern geht.
+  //
+  // DIE LÖSUNG: Beim Start der Analyse werden die Eingaben in den
+  // sessionStorage gelegt. Fehlt beim Laden der Ergebnisseite das Ergebnis,
+  // wird es daraus neu berechnet. Das geht sofort und ohne Serverzugriff,
+  // weil buildResult() eine reine Rechnung ist.
+  //
+  // WARUM sessionStorage UND NICHT localStorage: Der sessionStorage gehört
+  // genau einem Tab und wird beim Schließen geleert. Damit kann nicht
+  // passieren, was am 13.09. passiert ist, als sich zwei verschiedene
+  // Abrechnungen vermischt haben. Ein wiederhergestelltes Ergebnis stammt
+  // immer aus derselben Sitzung im selben Tab. Der localStorage-Entwurf
+  // bleibt davon unberührt und wird weiterhin nie ungefragt angewendet.
+  const NKR_LAUF_KEY = "nkr-lauf";
+
+  useEffect(() => {
+    if (result) return;
+    if (!["result", "adressen"].includes(step)) return;
+    try {
+      const roh = sessionStorage.getItem(NKR_LAUF_KEY);
+      if (!roh) return;
+      const d = JSON.parse(roh);
+      if (!d?.wohnung || !d?.werte) return;
+      setWohnung(d.wohnung);
+      setWerte(d.werte);
+      if (d.gesamtsummeAbrechnung) setGesamtsummeAbrechnung(d.gesamtsummeAbrechnung);
+      setResult(buildResult(d.werte, d.wohnung));
+      // Der Entwurfs-Hinweis wäre jetzt sinnlos: Wir sind mitten in einer
+      // laufenden Prüfung, nicht am Anfang einer neuen.
+      setEntwurf(null);
+    } catch { /* Safari privater Modus: dann bleibt es beim bisherigen Verhalten */ }
+  }, [step]); // eslint-disable-line react-hooks/exhaustive-deps
+
   async function runAnalyse() {
     navigateTo("loading");
+    try {
+      sessionStorage.setItem(NKR_LAUF_KEY, JSON.stringify({ wohnung, werte, gesamtsummeAbrechnung }));
+    } catch { /* siehe Kommentar oben */ }
     const ergebnis = buildResult(werte, wohnung);
     // Kurze künstliche Verzögerung für den Prüf-Fortschritt (siehe Loading.jsx) —
     // die Analyse selbst ist regelbasiert und läuft sofort, ohne externen Aufruf.
@@ -337,6 +386,12 @@ export default function App() {
   function entwurfVerwerfen() {
     setEntwurf(null);
     try { localStorage.removeItem(NKR_DRAFT_KEY); } catch { /* siehe Kommentar oben */ }
+    // Auch den Wiederherstellungs-Stand der laufenden Sitzung löschen. Wer
+    // "Neue Abrechnung prüfen" wählt, sagt damit ausdrücklich, dass er eine
+    // ANDERE Abrechnung meint. Bliebe der alte Lauf liegen, könnte er beim
+    // Aufruf der Ergebnisseite wieder auftauchen, und wir hätten den
+    // Vermischungsfehler vom 13.09.2026 in klein wieder da.
+    try { sessionStorage.removeItem(NKR_LAUF_KEY); } catch { /* siehe Kommentar oben */ }
   }
 
   function resetAll() {
@@ -346,6 +401,8 @@ export default function App() {
     // Kommentar weiter oben) — sonst würde eine neue Prüfung auf demselben Gerät
     // beim nächsten Laden versehentlich die alten Werte wieder vorschlagen.
     try { localStorage.removeItem(NKR_DRAFT_KEY); } catch { /* siehe Kommentar oben */ }
+    // Ebenso den Wiederherstellungs-Stand, siehe entwurfVerwerfen().
+    try { sessionStorage.removeItem(NKR_LAUF_KEY); } catch { /* siehe Kommentar oben */ }
   }
 
   const pageProps = {

@@ -318,7 +318,11 @@ export default function Result({ navigateTo, result, wohnung, werte, gesamtsumme
           </div>
 
           <Btn onClick={weiterZumKauf} disabled={!widerrufOk}>
-            Weiter · {gewaehlteStufe === "voll" ? euro(BUSINESS.PREIS_VOLL) : euro(BUSINESS.PREIS_AUSWERTUNG)} €
+            {/* Das "€" am Ende stand hier doppelt: euro() bringt das Zeichen
+                schon mit, auf dem Knopf stand live "Weiter · 12,99 € €".
+                Ausgerechnet auf dem Kaufknopf, dem empfindlichsten Element
+                der ganzen Seite. Gefunden im Funnel-Test am 19.09.2026. */}
+            Weiter · {gewaehlteStufe === "voll" ? euro(BUSINESS.PREIS_VOLL) : euro(BUSINESS.PREIS_AUSWERTUNG)}
           </Btn>
           {!widerrufOk && <div style={{ textAlign: "center", fontSize: 11, color: C.warn, marginTop: 6 }}>⚠ Bitte zuerst die Checkbox oben bestätigen</div>}
 
