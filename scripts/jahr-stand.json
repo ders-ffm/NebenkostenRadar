@@ -1,0 +1,5 @@
+{
+  "jahr": 2026,
+  "gebaut": "2026-09-19",
+  "zweck": "Loest den jaehrlichen Vercel-Build aus, damit {JAHR} in den vorgerenderten Seiten mitwandert. Siehe .github/workflows/jahreswechsel.yml"
+}

@@ -52,6 +52,24 @@ Umsetzung: neue URL `/ratgeber/betriebskostenspiegel`, dazu eine dauerhafte Weit
 
 Stufe 2 erst machen, wenn Stufe 1 in der Search Console sichtbar gewirkt hat. Zwei Änderungen gleichzeitig, und du weißt hinterher nicht, welche geholfen hat.
 
+### Die Jahreszahl wandert von selbst mit (ergänzt 19.09.2026)
+
+Stefans Einwand: Eine fest eingetippte Jahreszahl ist ab dem 1. Januar falsch, und daran denkt niemand. Stimmt. Deshalb steht in `src/artikel.js` jetzt der Platzhalter `{JAHR}` statt einer Zahl, aufgelöst am Dateiende in einem Durchgang über alle Texte.
+
+**Nur dort, wo „das laufende Jahr" gemeint ist.** „Grundsteuerreform 2026" und „BGH-Urteile 2026" bleiben fest eingetippt, weil sie tatsächliche Ereignisse bezeichnen. Würden die mitwandern, stünde dort irgendwann etwas Falsches. Die Faustregel steht als Kommentar in der Datei.
+
+Geprüft durch einen Testlauf mit auf 2027 vorgestellter Uhr:
+
+| | heute | simuliert 2027 |
+|---|---|---|
+| Betriebskostenspiegel | 2026 | **2027** |
+| Grundsteuerreform | 2026 | 2026 |
+| BGH-Urteile | 2026 | 2026 |
+
+**Zwei Dinge waren dafür nötig, nicht eins.** Im Browser wird der Platzhalter bei jedem Seitenaufruf aufgelöst, dort stimmt es immer. Google liest aber die vorgerenderten Dateien aus dem Build, und gebaut wird nur, wenn etwas ins Repository kommt. Deshalb gibt es `.github/workflows/jahreswechsel.yml`: Der Workflow läuft am 2. Januar, schreibt das neue Jahr in `scripts/jahr-stand.json`, committet und löst damit den Vercel-Build aus. Anschließend legt er ein GitHub-Issue mit den betroffenen URLs an, weil die Neuindexierung in der Search Console von Hand angestoßen werden muss.
+
+Die Liste der betroffenen Seiten holt sich der Workflow aus `ARTIKEL_MIT_JAHR`, also aus den Daten selbst. Kommt später ein zweiter Artikel mit `{JAHR}` dazu, steht er automatisch mit im Issue.
+
 ### Dasselbe prüfen bei den übrigen Artikeln
 
 Vier Artikel tragen schon 2026 im Namen, der Rest ist jahresneutral. Nur dieser eine Artikel hängt an einer veralteten Jahreszahl, und ausgerechnet das ist der, für den du am besten rankst.

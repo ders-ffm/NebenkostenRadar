@@ -11,7 +11,30 @@
 // wurden die schwächeren Kopien entfernt (u.a. zwei mit kaputten <cite>-Tags
 // aus der Websuche im sichtbaren Text). Der Root-Cause-Fix ist in
 // scripts/rechtsmonitor.mjs umgesetzt (deterministische ID-Vergabe).
-export const ARTIKEL = [
+// ───────────────────────────────────────────────────────────────────────────
+// PLATZHALTER {JAHR}, eingeführt 19.09.2026 auf Stefans Hinweis
+//
+// DAS PROBLEM: Der Artikel zum Betriebskostenspiegel trägt das laufende Jahr
+// im Titel, weil Mieter danach suchen. Fest eingetippt wäre er ab dem
+// 1. Januar falsch und jemand müsste jedes Jahr daran denken. Genau das
+// passiert erfahrungsgemäß nicht.
+//
+// DIE LÖSUNG: Wo "das laufende Jahr" gemeint ist, steht {JAHR}. Die Ersetzung
+// passiert ganz unten in dieser Datei, in einem Durchgang über alle Texte.
+// Alle anderen Jahreszahlen bleiben fest eingetippt, und das ist Absicht:
+// "Grundsteuerreform 2026" und "BGH-Urteile 2026" bezeichnen tatsächliche
+// Ereignisse. Würden die mitwandern, stünde dort irgendwann etwas Falsches.
+//
+// FAUSTREGEL BEIM SCHREIBEN NEUER ARTIKEL:
+//   Meint die Jahreszahl "jetzt gerade"?        -> {JAHR}
+//   Meint sie ein bestimmtes Jahr oder Ereignis? -> Zahl ausschreiben
+//
+// WICHTIG ZUR WIRKUNG: Im Browser wird {JAHR} bei jedem Seitenaufruf ersetzt,
+// dort stimmt es also immer. Google liest aber die vorgerenderten Dateien aus
+// dem Build. Damit die Jahreszahl dort mitwandert, muss einmal im Jahr neu
+// gebaut werden. Das erledigt .github/workflows/jahreswechsel.yml.
+// ───────────────────────────────────────────────────────────────────────────
+const ARTIKEL_ROH = [
     {
       id: "grundsteuerreform-2026-auswirkungen-auf-die-nebenkostenabrechnung",
       titelKurz: "Grundsteuerreform 2026 in der Abrechnung",
@@ -1160,7 +1183,7 @@ export const ARTIKEL = [
       // auf die es ankommt: die gesuchte Jahreszahl und "Mieter". Die Frage
       // "was ist normal" steht weiterhin in der H1 und in der Beschreibung,
       // dort gibt es keine Längenbegrenzung.
-      titelKurz: "Betriebskostenspiegel 2026 für Mieter",
+      titelKurz: "Betriebskostenspiegel {JAHR} für Mieter",
       // JAHRESZAHL IM TITEL GEÄNDERT 19.09.2026, siehe
       // planung/sichtbarkeit-umsetzung.md Abschnitt 1.
       //
@@ -1180,20 +1203,20 @@ export const ARTIKEL = [
       // Dass die Daten aus 2024 stammen, steht weiterhin im ersten Absatz und
       // in der Tabelle. Der Titel verspricht Aktualität, der Text liefert die
       // Einordnung. Beides muss so bleiben.
-      titel: "Betriebskostenspiegel 2026: was ist normal? Aktuelle DMB-Zahlen",
+      titel: "Betriebskostenspiegel {JAHR}: was ist normal? Aktuelle DMB-Zahlen",
       teaser: "Der Deutsche Mieterbund veröffentlicht jährlich Durchschnittswerte für alle Nebenkostenarten. Die aktuellen Zahlen stammen aus dem Abrechnungsjahr 2024. Hier erfahren Sie, was für Ihre Wohnungsgröße normal ist und wann Ihre Abrechnung zu teuer ist.",
       datum: "September 2026",
       lesezeit: "5 Min.",
       bild: "/artikelbilder/betriebskostenspiegel-2024.jpg",
       bildAlt: "Diagramme und Auswertungen auf einem Bildschirm",
       kategorie: "Richtwerte",
-      keywords: ["Betriebskostenspiegel 2026", "Betriebskostenspiegel 2024", "DMB Richtwerte", "Nebenkosten Durchschnitt 2026"],
+      keywords: ["Betriebskostenspiegel {JAHR}", "Betriebskostenspiegel 2024", "DMB Richtwerte", "Nebenkosten Durchschnitt {JAHR}"],
       inhalt: [
         // Der erste Absatz stellt sofort klar, aus welchem Jahr die Zahlen
         // stammen. Der Titel nennt das laufende Jahr, weil danach gesucht
         // wird; hier steht, worauf die Zahlen beruhen. Ohne diesen Satz wäre
         // die Überschrift irreführend, und das wollen wir nicht.
-        { typ: "intro", text: "Der Deutsche Mieterbund (DMB) veröffentlicht jährlich den Betriebskostenspiegel: eine Auswertung realer Nebenkostenabrechnungen in Deutschland. Er zeigt Durchschnittswerte und Höchstwerte für alle umlagefähigen Kostenarten pro Quadratmeter und Monat. Die aktuell gültige Ausgabe wurde im Dezember 2025 veröffentlicht und wertet Abrechnungen des Jahres 2024 aus. Sie ist damit der Maßstab, an dem Sie eine Abrechnung messen, die Sie 2026 erhalten." },
+        { typ: "intro", text: "Der Deutsche Mieterbund (DMB) veröffentlicht jährlich den Betriebskostenspiegel: eine Auswertung realer Nebenkostenabrechnungen in Deutschland. Er zeigt Durchschnittswerte und Höchstwerte für alle umlagefähigen Kostenarten pro Quadratmeter und Monat. Die aktuell gültige Ausgabe wurde im Dezember 2025 veröffentlicht und wertet Abrechnungen des Jahres 2024 aus. Sie ist damit der Maßstab, an dem Sie eine Abrechnung messen, die Sie {JAHR} erhalten." },
         { typ: "h2", text: "Die wichtigsten Richtwerte im Überblick" },
         { typ: "richtwerte" },
         { typ: "hinweis", text: "Liegt Ihre Abrechnung deutlich über dem Durchschnitt, lohnt sich eine genauere Prüfung. Wichtig: Eine Abweichung nach oben ist ein Anlass zur Nachfrage, kein Beweis für einen Fehler, warum, erklärt der Abschnitt zu den Grenzen weiter unten." },
@@ -1669,4 +1692,34 @@ export const ARTIKEL = [
         { typ: "cta", text: "NebenkostenRadar prüft neben den Beträgen auch, ob Zeitraum und Fristen stimmen und weist fehlende Angaben aus." },
       ],
     },
-  ];
+];
+
+// Ersetzt {JAHR} in allen Texten durch das laufende Kalenderjahr.
+//
+// Rekursiv über Strings, Arrays und Objekte, damit auch Überschriften und
+// Absätze tief im "inhalt"-Array erfasst werden und niemand daran denken muss,
+// diese Funktion zu erweitern, wenn ein Artikel ein neues Feld bekommt.
+//
+// Wird beim Laden des Moduls genau einmal ausgeführt, also im Browser beim
+// Seitenaufruf und in scripts/prerender.mjs beim Bauen.
+const AKTUELLES_JAHR = String(new Date().getFullYear());
+
+function jahrEinsetzen(wert) {
+  if (typeof wert === "string") return wert.split("{JAHR}").join(AKTUELLES_JAHR);
+  if (Array.isArray(wert)) return wert.map(jahrEinsetzen);
+  if (wert && typeof wert === "object") {
+    const neu = {};
+    for (const k of Object.keys(wert)) neu[k] = jahrEinsetzen(wert[k]);
+    return neu;
+  }
+  return wert;
+}
+
+export const ARTIKEL = ARTIKEL_ROH.map(jahrEinsetzen);
+
+// Welche Artikel hängen am laufenden Jahr? Braucht der Jahreswechsel-Workflow,
+// um hinterher gezielt die Neuindexierung dieser Seiten anzustoßen, statt
+// blind alle 22 einzureichen.
+export const ARTIKEL_MIT_JAHR = ARTIKEL_ROH
+  .filter(a => JSON.stringify(a).includes("{JAHR}"))
+  .map(a => a.id);
