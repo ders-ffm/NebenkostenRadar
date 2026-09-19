@@ -2,6 +2,48 @@
 
 Alle wesentlichen Änderungen an diesem Projekt, mit Datum und Begründung. Dient der Nachvollziehbarkeit, damit auch ohne KI-Unterstützung verstanden werden kann, warum etwas so ist, wie es ist.
 
+## 19.09.2026 — Fehlalarm zur Foto-Erkennung, und was daraus bleibt
+
+**Die Foto-Erkennung war nie kaputt.** Der Fehler lag im Testaufbau der KI, nicht im Produkt. Das hat Stefan einen Schlüsseltausch, zwei Deployments und eine Log-Suche gekostet. Damit sich das nicht wiederholt, steht der Hergang hier vollständig.
+
+### Was passiert ist
+
+Zur Prüfung, ob der neu eingesetzte `ANTHROPIC_API_KEY` funktioniert, wurde `/api/analyse-foto` direkt aufgerufen, mit einem im Browser erzeugten Testbild:
+
+```js
+canvas.toDataURL('image/png')   // <- der Fehler
+```
+
+`api/analyse-foto.js` meldet Anthropic in Zeile 355 aber fest `media_type: "image/jpeg"`. Anthropic vergleicht diese Angabe mit den tatsächlichen Bytes, findet ein PNG und antwortet mit **400**. Im Log stand „Anthropic API Fehler: 400".
+
+### Der Denkfehler
+
+Aus einer Antwortzeit von 0,7 Sekunden wurde auf einen ungültigen Schlüssel geschlossen. Die Zeit stimmte, die Schlussfolgerung nicht: Ein ungültiger Schlüssel ergibt **401**, nicht 400. Der Statuscode lag von Anfang an vor und wurde zugunsten einer Vermutung übergangen.
+
+### Warum der Client nicht betroffen ist
+
+`src/pages/Wohnung.jsx` wandelt in Zeile 97 **jedes** Bild vor dem Senden in JPEG um (`canvas.toDataURL("image/jpeg", quality)`). Ein iPhone-Screenshot, der immer PNG ist, kommt also als JPEG beim Server an. Die feste Angabe im Server ist dadurch korrekt. Kunden waren nie betroffen.
+
+### Regel für künftige Tests
+
+Wer `/api/analyse-foto` von Hand aufruft, muss **JPEG** schicken. Ein PNG erzeugt einen 400er, der wie ein Serverfehler aussieht, aber keiner ist. Am besten gar nicht direkt aufrufen, sondern über das Formular gehen, dann greift die Umwandlung.
+
+### Gegenprobe, mit der die Entwarnung belegt ist
+
+Derselbe Aufruf mit `toDataURL('image/jpeg', 0.92)`:
+
+```
+Status 200 · 6,7 Sekunden
+muellbeseitigung 236,66 · grundsteuer 247,97 · hausreinigung 232,66
+Jahr 2025 erkannt, fehlende Angaben korrekt als Hinweis ausgegeben
+```
+
+### Was trotzdem bleibt
+
+1. **Der Schlüsseltausch war richtig.** Der alte Schlüssel war über `/api/messages` monatelang erreichbar und ist jetzt widerrufen. Das musste ohnehin passieren.
+2. **Die neue Fehlerbehandlung bleibt sinnvoll.** Sie hat zwar diesen Fall nicht verhindert, aber sie trennt jetzt 401, 429 und den Rest. Beim nächsten Mal steht im Log „KONFIGURATIONSFEHLER" statt einer nichtssagenden Sammelmeldung.
+3. **Eine Lücke in der Fehlerbehandlung ist geblieben:** Der 400er fällt weiterhin in den Rest-Zweig und erzeugt die Meldung „überlastet oder nicht erreichbar". Das ist bei einem Formatfehler irreführend. Offen als Kleinpunkt.
+
 ## 19.09.2026 — Vollständiger Abgleich Repository gegen Arbeitsordner
 
 Anlass: Nach dem Löschen von `dist` einmal alles durchsehen. Ergebnis: ein Sicherheitsproblem, vier verlorene Dateien und mehrere Karteileichen.
