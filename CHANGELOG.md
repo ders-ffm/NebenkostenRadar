@@ -2,6 +2,48 @@
 
 Alle wesentlichen Änderungen an diesem Projekt, mit Datum und Begründung. Dient der Nachvollziehbarkeit, damit auch ohne KI-Unterstützung verstanden werden kann, warum etwas so ist, wie es ist.
 
+## 19.09.2026 — Vollständiger Abgleich Repository gegen Arbeitsordner
+
+Anlass: Nach dem Löschen von `dist` einmal alles durchsehen. Ergebnis: ein Sicherheitsproblem, vier verlorene Dateien und mehrere Karteileichen.
+
+### 1. `/api/messages` ist ein offener Zugang zur Anthropic-Schnittstelle (dringend)
+
+Die Datei leitet beliebige POST-Anfragen an `api.anthropic.com` weiter und hängt Stefans `ANTHROPIC_API_KEY` an. Sie hat **keine Anmeldung, keine Begrenzung der Aufrufzahl, keine Einschränkung auf ein Modell**, und der Anfragekörper geht bis 5 MB unverändert durch, mit aktivierter Websuche.
+
+Der CORS-Block darin schützt nicht. CORS ist eine Browserregel: Sie verhindert, dass eine fremde Website die **Antwort** lesen kann. Sie verhindert nicht, dass die Anfrage ausgeführt und abgerechnet wird, und für Aufrufe außerhalb eines Browsers, also curl oder ein Skript, gilt sie überhaupt nicht.
+
+Aufgerufen wird die Datei von niemandem, null Verweise im gesamten Quelltext. Der CHANGELOG vom 08/2026 hatte sie schon als verwaist markiert und ausdrücklich „nicht ohne Rückfrage entfernt" vermerkt. Die Rückfrage ist hiermit beantwortet.
+
+Live geprüft, ohne Kosten zu verursachen: `GET /api/messages` antwortet mit `405 Method not allowed`, ein erfundener Pfad mit `404`. Die Funktion ist also tatsächlich ausgeliefert.
+
+**Muss gelöscht werden. Zusätzlich sollte der Anthropic-Schlüssel getauscht werden**, weil nicht feststellbar ist, ob der Endpunkt jemals gefunden und benutzt wurde.
+
+### 2. Vier Dateien fehlten im Arbeitsordner
+
+Sie lagen nur im Repository, nicht bei Stefan. Aufgefallen beim Zählen: 36 Dateien in `public/` im Repository gegen 32 lokal.
+
+| Datei | Bedeutung |
+|---|---|
+| `public/robots.txt` | steuert Suchmaschinen, enthält den Verweis auf die Sitemap |
+| `public/favicon.svg` | das Symbol im Browsertab |
+| `public/logo-email.png` | Logo in den versendeten E-Mails |
+| `public/inter.css` | Schrifteinbindung |
+
+Gefährlich war das noch nicht, weil der Ordner-Upload über die GitHub-Weboberfläche nur hinzufügt und überschreibt, aber nichts löscht. Die Dateien haben also überlebt. Ein Umstieg auf ein echtes Git-Programm hätte sie dagegen sofort entfernt.
+
+Alle vier aus dem Repository zurückgeholt und im Arbeitsordner abgelegt. `npm run check` bestätigt, dass sie jetzt im Build landen.
+
+### 3. Karteileichen
+
+- `api/verify-payment.js`: prüft eine Stripe-Sitzung auf Bezahlung, wird von niemandem aufgerufen. Die Absicherung des Downloads läuft über `get-report` mit der Sitzungskennung.
+- `ANLEITUNG-UPLOAD.md`: 15.030 Zeichen, inhaltlich der Vorgänger von `HOCHLADEN.md`. Zwei Anleitungen zum selben Thema, von denen eine veraltet ist, sind schlechter als eine.
+
+Beide betreffen nur Ordnung, kein laufendes Risiko.
+
+### 4. Warum das zählt: das Funktionslimit
+
+Vercel begrenzt die Zahl der Serverless-Funktionen. Genau daran ist im August schon einmal ein Deploy gescheitert, damals gelöst durch das Zusammenlegen von `save-draft.js` und `get-draft.js`. Im Repository liegen aktuell **zwölf** Dateien in `api/`. Nach dem Entfernen von `messages.js` und `verify-payment.js` sind es zehn, also wieder Luft für zwei neue.
+
 ## 19.09.2026 — Funnel-Test: Kasse funktioniert, zwei Verkaufsbremsen behoben
 
 Anlass: weiterhin keine Käufe. Erste Frage war deshalb, ob der Kaufweg überhaupt funktioniert. Kompletter Durchlauf live auf nebenkostenradar.com mit Stefans echter Abrechnung (ABG Frankfurt, 80,55 m², 2025).
