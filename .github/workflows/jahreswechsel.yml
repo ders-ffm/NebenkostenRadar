@@ -1,0 +1,107 @@
+ Jahreswechsel: sorgt dafür, dass die Jahreszahl in Titeln mitwandert.
+#
+# WARUM ES DIESEN WORKFLOW GIBT (19.09.2026, Stefans Hinweis):
+# Der Artikel zum Betriebskostenspiegel trägt das laufende Jahr im Titel, weil
+# Mieter danach suchen. In src/artikel.js steht dafür der Platzhalter {JAHR},
+# der beim Laden durch das aktuelle Kalenderjahr ersetzt wird.
+#
+# Im Browser stimmt das dadurch immer. Google liest aber nicht die
+# React-Anwendung, sondern die vorgerenderten HTML-Dateien aus dem Build. Die
+# entstehen nur, wenn gebaut wird, und gebaut wird nur, wenn jemand etwas ins
+# Repository schiebt. Ohne diesen Workflow stünde ab dem 1. Januar in der
+# Google-Trefferliste weiter die alte Jahreszahl, möglicherweise monatelang.
+#
+# WAS ER TUT: Am 2. Januar schreibt er das aktuelle Jahr in
+# scripts/jahr-stand.json und committet die Datei. Dieser Commit löst bei
+# Vercel automatisch einen neuen Build aus, und damit werden alle
+# vorgerenderten Seiten mit der neuen Jahreszahl erzeugt.
+#
+# Danach legt er ein GitHub Issue an, in dem die betroffenen Seiten stehen.
+# Die Neuindexierung muss in der Search Console von Hand angestoßen werden,
+# dafür gibt es keinen Weg über eine offene Schnittstelle ohne zusätzliche
+# Zugangsdaten. Das Issue nennt die genauen URLs, es sind wenige.
+#
+# WARUM DER 2. UND NICHT DER 1. JANUAR: Am 1. laufen schon der Rechtsmonitor
+# und der Richtwerte-Monitor. Zwei Builds am selben Tag bringen nichts, und
+# getrennte Tage machen im Nachhinein erkennbar, welcher Lauf was bewirkt hat.
+#
+# Braucht keine zusätzlichen Secrets.
+# ─────────────────────────────────────────────────────────────────────────
+name: Jahreswechsel
+
+on:
+  schedule:
+    - cron: "0 5 2 1 *" # jährlich am 2. Januar um 05:00 UTC
+  workflow_dispatch: {} # manueller Start zum Testen (Actions-Tab → "Run workflow")
+
+permissions:
+  contents: write
+  issues: write
+
+jobs:
+  jahr-aktualisieren:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+
+      # Die betroffenen Artikel aus der Datenquelle selbst holen, statt sie
+      # hier noch einmal aufzuschreiben. Kommt später ein zweiter Artikel mit
+      # {JAHR} dazu, steht er automatisch mit im Issue.
+      - name: Betroffene Seiten ermitteln
+        id: seiten
+        run: |
+          node --input-type=module -e "
+            const m = await import('./src/artikel.js');
+            const urls = m.ARTIKEL_MIT_JAHR.map(id => 'https://nebenkostenradar.com/ratgeber/' + id);
+            console.log(urls.join('\n'));
+          " > seiten.txt
+          echo "anzahl=$(wc -l < seiten.txt)" >> "$GITHUB_OUTPUT"
+          {
+            echo "liste<<ENDE"
+            sed 's/^/- /' seiten.txt
+            echo "ENDE"
+          } >> "$GITHUB_OUTPUT"
+
+      # Eine Datei mit dem aktuellen Jahr schreiben und committen. Der Inhalt
+      # ist Nebensache, entscheidend ist der Commit: Er löst den Vercel-Build
+      # aus, in dem {JAHR} neu aufgelöst wird.
+      - name: Jahresstand schreiben und committen
+        run: |
+          JAHR=$(date -u +%Y)
+          printf '{\n  "jahr": %s,\n  "gebaut": "%s",\n  "zweck": "Loest den jaehrlichen Vercel-Build aus, damit {JAHR} in den vorgerenderten Seiten mitwandert. Siehe .github/workflows/jahreswechsel.yml"\n}\n' \
+            "$JAHR" "$(date -u +%Y-%m-%d)" > scripts/jahr-stand.json
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add scripts/jahr-stand.json
+          git commit -m "Jahreswechsel auf $JAHR: Neubau ausloesen" || echo "Keine Aenderung, kein Commit noetig"
+          git push
+
+      - name: Erinnerung zur Neuindexierung anlegen
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const jahr = new Date().getUTCFullYear();
+            const liste = `${{ steps.seiten.outputs.liste }}`;
+            await github.rest.issues.create({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              title: `Jahreswechsel ${jahr}: Neuindexierung in der Search Console anstoßen`,
+              body: [
+                `Der Build für ${jahr} wurde ausgelöst. Die Titel tragen jetzt die neue Jahreszahl.`,
+                ``,
+                `Damit Google das zeitnah sieht, bitte in der Search Console für jede dieser Seiten`,
+                `die URL-Prüfung aufrufen und "Indexierung beantragen" klicken:`,
+                ``,
+                liste,
+                ``,
+                `Ohne diesen Schritt dauert es oft Wochen, bis der neue Titel in der Trefferliste steht.`,
+                `Mit dem Antrag meist ein bis drei Tage.`,
+                ``,
+                `Danach gegenprüfen, dass auf der Seite wirklich ${jahr} steht, nicht mehr ${jahr - 1}.`,
+                `Hintergrund: planung/sichtbarkeit-umsetzung.md, Abschnitt 1.`,
+              ].join("\n"),
+            });
