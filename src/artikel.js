@@ -792,7 +792,7 @@ const ARTIKEL_ROH = [
       id: "heizkostenabrechnung-vermieterfehler-2026-leitfaden",
       titelKurz: "Heizkostenabrechnung: typische Fehler",
       titel: "Heizkostenabrechnung 2026: Die häufigsten Fehler der Vermieter und wie Sie als Mieter reagieren",
-      teaser: "Fast jede zweite Heizkostenabrechnung enthält Fehler, die Mieter bares Geld kosten. Dieser Leitfaden zeigt die typischen Stolperfallen 2026 und erklärt, wie Sie Ihre Abrechnung Schritt für Schritt prüfen.",
+      teaser: "Nach Schätzung des Deutschen Mieterbunds enthält ein erheblicher Teil der Heizkostenabrechnungen Fehler, die Mieter bares Geld kosten. Dieser Leitfaden zeigt die typischen Stolperfallen 2026 und erklärt, wie Sie Ihre Abrechnung Schritt für Schritt prüfen.",
       datum: "Juli 2026",
       lesezeit: "8 Min.",
       bild: "/artikelbilder/heizkostenabrechnung-vermieterfehler-2026-leitfaden.jpg",
@@ -810,7 +810,7 @@ const ARTIKEL_ROH = [
         },
         {
                 "typ": "text",
-                "text": "Die Zahlen schwanken je nach Quelle, doch der Trend ist eindeutig: Ein sehr großer Teil der Abrechnungen weist Mängel auf. Verbraucherschützer sprechen konservativ von jeder zweiten Abrechnung, andere Auswertungen kommen sogar auf deutlich höhere Fehlerquoten. Wichtig für Sie: Nicht jeder Fehler ist böswillig, oft entstehen Ungenauigkeiten schlicht durch die komplizierte Rechtslage, die sich in den letzten Jahren durch CO2-Kostenaufteilung, neue Zählerpflichten und Änderungen bei den Nebenkosten spürbar verschärft hat."
+                "text": "Verlässliche, unabhängig geprüfte Statistiken dazu gibt es nicht. Der Deutsche Mieterbund schätzt, dass etwa jede zweite Abrechnung Fehler enthält, eine veröffentlichte Methodik zu dieser Zahl gibt es allerdings nicht. Wichtig für Sie: Nicht jeder Fehler ist böswillig, oft entstehen Ungenauigkeiten schlicht durch die komplizierte Rechtslage, die sich in den letzten Jahren durch CO2-Kostenaufteilung, neue Zählerpflichten und Änderungen bei den Nebenkosten spürbar verschärft hat."
         },
         {
                 "typ": "h2",
