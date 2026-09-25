@@ -35,6 +35,121 @@
 // gebaut werden. Das erledigt .github/workflows/jahreswechsel.yml.
 // ───────────────────────────────────────────────────────────────────────────
 const ARTIKEL_ROH = [
+    // ─────────────────────────────────────────────────────────────────────
+    // ZIELSEITE "Nebenkostenabrechnung prüfen lassen", angelegt 25.09.2026.
+    //
+    // WARUM: Das ist die Suchanfrage mit der klarsten Kaufabsicht. Laut Search
+    // Console stand die Startseite dafür auf Position 87. Alle Seiten, die für
+    // diese Anfrage auf Seite 1 stehen, haben eine eigene ausführliche Seite
+    // zu genau dieser Frage (Stand 25.09.2026 geprüft). NebenkostenRadar hatte
+    // keine.
+    //
+    // INHALTLICHE LINIE: ehrlicher Vergleich aller Wege, auch der, bei denen
+    // man uns nicht braucht. Keine Wettbewerber namentlich, nur Kategorien
+    // (vergleichende Werbung, § 6 UWG).
+    //
+    // ALLE ZAHLEN AM 25.09.2026 GEPRÜFT:
+    //   Mieterverein Dresden 96 €/Jahr + 15 € Aufnahme (mieterverein-dresden.de)
+    //   Mieterverein München 120 €/Jahr + 15 € Aufnahme, Mindestdauer 2 Jahre,
+    //     Rechtsschutz nach 3 Monaten Wartezeit (mieterverein-muenchen.de)
+    //   Anwalt, Erstberatung Verbraucher max. 190 € netto = 226,10 € brutto
+    //     (§ 34 Abs. 1 RVG)
+    //   Rechtsschutz meist 3 Monate Wartezeit (finanztip.de)
+    //   Automatisierte Online-Berichte 9,90 € bis 19,90 €, Expertenprüfung
+    //     ab 49 €, mit Rechtsschutz teils kostenlos (Anbieterseiten)
+    //
+    // PREISE VON NEBENKOSTENRADAR stehen hier als Text, weil diese Datei reine
+    // Daten enthält. Bei einer Preisänderung in src/config/business.js hier
+    // im Abschnitt "Was NebenkostenRadar prüft" mitziehen.
+    // ─────────────────────────────────────────────────────────────────────
+    {
+      id: "nebenkostenabrechnung-pruefen-lassen",
+      titelKurz: "Nebenkostenabrechnung prüfen lassen {JAHR}",
+      titel: "Nebenkostenabrechnung prüfen lassen {JAHR}: alle Wege, Kosten und Fristen im Vergleich",
+      teaser: "Mieterverein, Anwalt, Rechtsschutz oder online: Was es kostet, wie schnell es geht und welcher Weg zu Ihrer Nebenkostenabrechnung passt. Mit allen Fristen und einer Anleitung zum Selbstprüfen.",
+      datum: "September 2026",
+      lesezeit: "7 Min.",
+      bild: "/artikelbilder/nebenkostenabrechnung-pruefen-lassen.svg",
+      bildAlt: "Nebenkostenabrechnung mit geprüften Positionen und Lupe",
+      kategorie: "Mietrecht",
+      keywords: ["Nebenkostenabrechnung prüfen lassen", "Nebenkostenabrechnung prüfen", "Nebenkostenabrechnung online prüfen", "Nebenkostenabrechnung prüfen lassen Kosten", "Nebenkostenabrechnung kostenlos prüfen lassen", "Betriebskostenabrechnung prüfen lassen"],
+      inhalt: [
+        { typ: "intro", text: "Die Nebenkostenabrechnung ist da, und die Nachzahlung wirkt zu hoch? Dann stellt sich die Frage, ob und von wem Sie die Abrechnung prüfen lassen. Die Wege unterscheiden sich deutlich bei Kosten, Dauer und dem, was Sie am Ende in der Hand haben. Dieser Ratgeber vergleicht alle Möglichkeiten, nennt die Fristen, die Sie nicht verpassen dürfen, und zeigt, was Sie vorab selbst prüfen können." },
+
+        { typ: "h2", text: "Die Wege im Überblick" },
+        { typ: "tabelle", zeilen: [
+          ["Weg", "Kosten", "Dauer"],
+          ["Selbst prüfen", "kostenlos", "eigene Zeit"],
+          ["Automatisierte Online-Prüfung", "Vorschau kostenlos, Bericht etwa 10 bis 20 €", "sofort"],
+          ["Prüfung durch Fachleute online", "ab etwa 50 €, mit Rechtsschutz teils kostenlos", "einige Tage"],
+          ["Mieterverein", "z. B. 96 bis 120 € im Jahr, dazu Aufnahmegebühr", "je nach Termin"],
+          ["Anwalt", "Erstberatung bis 226,10 € inkl. USt", "je nach Termin"],
+        ]},
+        { typ: "hinweis", text: "Stand der Preisangaben: September 2026, geprüft auf den Seiten der Anbieter und Vereine. Beiträge und Preise ändern sich, maßgeblich ist immer das aktuelle Angebot." },
+
+        { typ: "h2", text: "Selbst prüfen: was Sie ohne Hilfe klären können" },
+        { typ: "text", text: "Einige Punkte lassen sich ohne Fachwissen prüfen, weil es um Daten und Zahlen geht, die auf der Abrechnung selbst stehen. Gehen Sie diese Liste durch, bevor Sie Geld für eine Prüfung ausgeben." },
+        { typ: "schritte", items: [
+          "Zugang und Frist: Die Abrechnung muss Ihnen spätestens zwölf Monate nach Ende des Abrechnungszeitraums zugehen (§ 556 Abs. 3 Satz 2 BGB). Endet der Zeitraum am 31. Dezember, muss sie bis zum 31. Dezember des Folgejahres bei Ihnen sein. Kommt sie später, kann der Vermieter eine Nachzahlung in der Regel nicht mehr verlangen.",
+          "Wohnfläche: Vergleichen Sie die Fläche in der Abrechnung mit der im Mietvertrag. Eine falsche Fläche wirkt sich auf alle Positionen aus, die nach Fläche verteilt werden.",
+          "Vorauszahlungen: Stimmen die angerechneten Abschläge mit dem überein, was Sie tatsächlich überwiesen haben?",
+          "Nicht umlagefähige Kosten: Verwaltungskosten, Instandhaltung und Reparaturen gehören nicht in die Abrechnung (§ 1 Abs. 2 BetrKV). Der Kabelanschluss ist seit dem 1. Juli 2024 grundsätzlich nicht mehr umlagefähig.",
+          "Heizkosten: Mindestens 50 und höchstens 70 Prozent der Heizkosten müssen nach Verbrauch verteilt werden (§ 7 Abs. 1 HeizkostenV).",
+          "Auffällig hohe Posten: Vergleichen Sie einzelne Positionen mit dem Betriebskostenspiegel des Deutschen Mieterbundes. Eine Abweichung nach oben ist ein Anlass, Belege anzufordern, aber noch kein Beweis für einen Fehler.",
+        ]},
+        { typ: "verweis", ziel: "nicht-umlagefaehige-nebenkosten", text: "Welche Kosten Ihr Vermieter nicht umlegen darf, steht mit allen Rechtsgrundlagen im Ratgeber zu nicht umlagefähigen Nebenkosten." },
+        { typ: "verweis", ziel: "betriebskostenspiegel-2024", text: "Die Durchschnittswerte für jede Kostenart finden Sie im Ratgeber zum Betriebskostenspiegel {JAHR}." },
+
+        { typ: "h2", text: "Online prüfen lassen" },
+        { typ: "text", text: "Online-Dienste gibt es in zwei Formen. Automatisierte Prüfungen gleichen Ihre Angaben mit Richtwerten und Rechtsvorschriften ab und liefern sofort ein Ergebnis, meist mit kostenloser Vorschau und einem Bericht für etwa 10 bis 20 Euro. Bei anderen Anbietern sehen sich Fachleute die Abrechnung an. Das dauert einige Tage und kostet ab etwa 50 Euro. Mit einer Rechtsschutzversicherung übernimmt bei manchen Anbietern die Versicherung die Kosten." },
+        { typ: "text", text: "Der Unterschied liegt in der Tiefe. Eine automatisierte Prüfung erkennt, was sich aus den Zahlen und den Vorschriften ablesen lässt: nicht umlagefähige Posten, eine falsche Verteilung der Heizkosten, verpasste Fristen, ungewöhnlich hohe Beträge. Belege einsehen, den Mietvertrag auslegen oder Sie gegenüber dem Vermieter vertreten kann sie nicht." },
+
+        { typ: "h2", text: "Mieterverein" },
+        { typ: "text", text: "Ein Mieterverein berät seine Mitglieder persönlich und tritt auf Wunsch auch gegenüber dem Vermieter auf. Die Beratung ist im Mitgliedsbeitrag enthalten. Zwei Beispiele, Stand September 2026: Der Mieterverein Dresden verlangt 96 Euro im Jahr, der Mieterverein München 120 Euro, jeweils zuzüglich einer einmaligen Aufnahmegebühr von 15 Euro. In München beträgt die Mindestmitgliedschaft zwei Jahre." },
+        { typ: "text", text: "Wichtig, wenn es eilt: Der Rechtsschutz, den viele Vereine mit der Mitgliedschaft anbieten, greift oft erst nach einer Wartezeit, in München nach drei Monaten ab Beginn der Mitgliedschaft. Für einen Streit um eine Abrechnung, die Sie schon erhalten haben, hilft er deshalb meist nicht. Ab wann die Beratung selbst möglich ist, fragen Sie am besten beim Eintritt nach." },
+
+        { typ: "h2", text: "Anwalt" },
+        { typ: "text", text: "Ein Anwalt für Mietrecht bewertet Ihren Einzelfall umfassend, auch mit Blick auf den Mietvertrag und frühere Abrechnungen. Ohne besondere Vereinbarung darf er Verbrauchern für ein erstes Beratungsgespräch höchstens 190 Euro berechnen, mit Umsatzsteuer also 226,10 Euro (§ 34 Abs. 1 RVG). Jede weitere Tätigkeit, etwa ein Schreiben an den Vermieter, kostet zusätzlich." },
+        { typ: "text", text: "Das lohnt sich vor allem bei hohen Beträgen, wenn der Vermieter auf Einwände nicht reagiert oder ein Rechtsstreit droht. Bei einer Nachzahlung von wenigen hundert Euro übersteigen die Kosten schnell den möglichen Ertrag, sofern keine Rechtsschutzversicherung zahlt." },
+
+        { typ: "h2", text: "Rechtsschutzversicherung" },
+        { typ: "text", text: "Haben Sie eine Rechtsschutzversicherung mit Mietrechtsschutz, übernimmt sie die Kosten für einen Anwalt und bei manchen Anbietern auch für eine Prüfung durch Fachleute. Meist gilt eine Wartezeit von drei Monaten ab Vertragsbeginn. Wer die Versicherung erst abschließt, wenn die Abrechnung schon da ist, ist für diesen Fall in der Regel nicht geschützt." },
+
+        { typ: "h2", text: "Verbraucherzentrale" },
+        { typ: "text", text: "Die Verbraucherzentralen bieten eine Energieberatung an, die sich auch Heizkosten und Verbrauch in der Nebenkostenabrechnung ansieht. Eine mietrechtliche Prüfung der gesamten Abrechnung gehört nicht in jedem Bundesland zum Angebot. Fragen Sie am besten vorher bei der Verbraucherzentrale Ihres Landes nach." },
+
+        { typ: "h2", text: "Welcher Weg passt zu Ihnen?" },
+        { typ: "liste", items: [
+          "Sie wollen wissen, ob überhaupt etwas auffällig ist: selbst prüfen oder eine automatisierte Online-Prüfung. Beides geht schnell und kostet wenig oder nichts.",
+          "Sie haben Zweifel an einzelnen Posten: Belegeinsicht verlangen. Das Recht darauf haben Sie ohne Begründung (§ 259 BGB).",
+          "Der Vermieter reagiert nicht, oder es geht um viel Geld: Mieterverein oder Anwalt. Haben Sie eine Rechtsschutzversicherung, melden Sie den Fall zuerst dort.",
+          "Die Frist läuft bald ab: Erheben Sie Ihre Einwendungen rechtzeitig schriftlich und so konkret wie möglich, auch wenn noch nicht jede Frage geklärt ist.",
+        ]},
+        { typ: "verweis", ziel: "belegeinsicht-nebenkostenabrechnung-verlangen", text: "Wie Sie Belegeinsicht verlangen und was der Vermieter Ihnen zeigen muss, erklärt der Ratgeber zur Belegeinsicht." },
+
+        { typ: "h2", text: "Die Fristen, die Sie kennen müssen" },
+        { typ: "liste", items: [
+          "Abrechnungsfrist für den Vermieter: zwölf Monate nach Ende des Abrechnungszeitraums (§ 556 Abs. 3 Satz 2 BGB).",
+          "Einwendungsfrist für Sie: zwölf Monate nach Zugang der Abrechnung (§ 556 Abs. 3 Satz 5 BGB). Danach können Sie Fehler grundsätzlich nicht mehr geltend machen.",
+          "Nachzahlung: Zahlen Sie im Zweifel unter Vorbehalt. Dann bleibt Ihr Rückforderungsanspruch erhalten, und Sie geraten nicht in Zahlungsverzug.",
+        ]},
+        { typ: "verweis", ziel: "betriebskostenabrechnung-fristen-und-verjaehrung-2026", text: "Alle Fristen mit Ausnahmen und Beispielen stehen im Ratgeber zu Fristen und Verjährung." },
+        { typ: "verweis", ziel: "widerspruch-nebenkostenabrechnung", text: "Wie ein Widerspruch gegen die Nebenkostenabrechnung aufgebaut sein muss, zeigt der Widerspruchs-Ratgeber." },
+
+        { typ: "h2", text: "Häufige Fragen" },
+        { typ: "liste", items: [
+          "Was kostet es, die Nebenkostenabrechnung prüfen zu lassen? Von kostenlos, wenn Sie selbst prüfen oder eine Online-Vorschau nutzen, über etwa 10 bis 20 Euro für einen automatisierten Bericht und ab etwa 50 Euro für Fachleute online bis zu 226,10 Euro für eine anwaltliche Erstberatung.",
+          "Kann ich die Nebenkostenabrechnung kostenlos prüfen lassen? Selbst prüfen und kostenlose Online-Vorschauen kosten nichts. Mit Rechtsschutzversicherung übernehmen manche Dienste die Prüfung ohne Zuzahlung. Als Mitglied eines Mietervereins ist die Beratung im Beitrag enthalten.",
+          "Wie lange habe ich Zeit, Einwände zu erheben? Zwölf Monate ab Zugang der Abrechnung.",
+          "Muss ich die Nachzahlung zahlen, während ich prüfen lasse? Ja, im Zweifel unter Vorbehalt. Wer gar nicht zahlt, riskiert Verzugszinsen, auch wenn der Einwand später Erfolg hat.",
+        ]},
+
+        { typ: "h2", text: "Was NebenkostenRadar prüft und was nicht" },
+        { typ: "text", text: "NebenkostenRadar ist eine automatisierte Prüfung. Sie geben die Posten Ihrer Abrechnung ein oder laden ein Foto hoch. Jeder Posten wird mit dem Betriebskostenspiegel des Deutschen Mieterbundes verglichen und auf Umlagefähigkeit nach § 2 BetrKV geprüft, dazu kommen die Heizkostenverordnung, die Aufteilung der CO₂-Abgabe und die Fristen. Die Basisanalyse ist kostenlos und ohne Registrierung. Der Bericht als PDF kostet einmalig 9,99 Euro, mit Musterbrief an den Vermieter 12,99 Euro." },
+        { typ: "text", text: "Was NebenkostenRadar nicht leistet: Belege einsehen, Ihren Mietvertrag auslegen oder Sie vertreten. Im Bericht trennen wir klar zwischen Posten, die rechtlich nicht umgelegt werden dürfen, und Posten, die nur statistisch auffällig sind. Bei hohen Beträgen oder einem Streit ist ein Mieterverein oder ein Anwalt der richtige nächste Schritt." },
+        { typ: "cta", text: "Prüfen Sie Ihre Nebenkostenabrechnung jetzt kostenlos. Das Ergebnis sehen Sie sofort, bezahlen müssen Sie nur, wenn Sie den Bericht als PDF möchten." },
+      ],
+    },
     {
       id: "grundsteuerreform-2026-auswirkungen-auf-die-nebenkostenabrechnung",
       titelKurz: "Grundsteuerreform 2026 in der Abrechnung",
@@ -1128,6 +1243,7 @@ const ARTIKEL_ROH = [
           "Vorbehalt für weitere Einwände nach Belegeinsicht",
           "Bitte um schriftliche Stellungnahme",
         ]},
+        { typ: "verweis", ziel: "nebenkostenabrechnung-pruefen-lassen", text: "Sie überlegen, Ihre Nebenkostenabrechnung prüfen zu lassen? Mieterverein, Anwalt, Rechtsschutz und Online-Prüfung im Vergleich, mit Kosten und Dauer." },
         { typ: "cta", text: "NebenkostenRadar erstellt den Widerspruchsbrief automatisch, mit allen Rechtsgrundlagen, auf Basis Ihrer konkreten Abrechnung." },
         { typ: "h2", text: "Häufige Fehler beim Widerspruch und wie Sie sie vermeiden" },
         { typ: "liste", items: [
@@ -1268,6 +1384,7 @@ const ARTIKEL_ROH = [
 
         { typ: "verweis", ziel: "widerspruch-nebenkostenabrechnung", text: "Liegt Ihre Abrechnung deutlich über dem Durchschnitt? Der Widerspruchs-Ratgeber zeigt Fristen und den korrekten Ablauf." },
         { typ: "verweis", ziel: "betriebskostenabrechnung-fristen-und-verjaehrung-2026", text: "Wie lange Ihr Vermieter für die Abrechnung Zeit hat und bis wann Sie widersprechen können, erklärt der Ratgeber zu Fristen und Verjährung." },
+        { typ: "verweis", ziel: "nebenkostenabrechnung-pruefen-lassen", text: "Ihre Abrechnung liegt deutlich über dem Durchschnitt und Sie möchten sie prüfen lassen? Alle Wege mit Kosten und Fristen im Vergleich." },
         { typ: "cta", text: "NebenkostenRadar macht diesen Vergleich automatisch für jeden Posten Ihrer Abrechnung und sagt Ihnen dazu, wo eine Abweichung erklärbar ist und wo nicht." },
       ],
     },
