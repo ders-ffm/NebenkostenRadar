@@ -4,6 +4,33 @@
 # den GitHub-Actions-Workflows (.github/workflows/*.yml) zuverlässig funktioniert.
 node_modules/
 
+# ── iCloud-Ausschluss (11.09.2026) ──────────────────────────────────────────
+# PROBLEM: Dieses Projekt liegt in iCloud Drive. node_modules hatte 193 MB in
+# 5.867 Dateien, die alle synchronisiert wurden. iCloud legt dabei bei jedem
+# Konflikt Kopien mit " 2" am Ende an. Am 11.09.2026 sind dadurch 16 solcher
+# Kopien im dist-Ordner entstanden, und "npm run build" brach ab mit
+# "ENOTEMPTY: directory not empty".
+#
+# LÖSUNG: iCloud überspringt alles, dessen Name auf .nosync endet. Da die
+# Ordner aber weiterhin node_modules und dist heißen müssen, liegen die echten
+# Daten jetzt in node_modules.nosync bzw. dist.nosync, und daneben steht eine
+# Verknüpfung mit dem alten Namen:
+#
+#   node_modules -> node_modules.nosync
+#   dist         -> dist.nosync
+#
+# Für npm, Vite und alle Skripte ändert sich dadurch nichts.
+#
+# WENN DIE VERKNÜPFUNG EINMAL FEHLT (etwa nach einem Umzug des Ordners):
+#   mv node_modules node_modules.nosync && ln -s node_modules.nosync node_modules
+# Oder einfach "npm install" laufen lassen und die zwei Zeilen danach wiederholen.
+#
+# HINWEIS: Das .nosync-Verhalten ist von Apple nicht dokumentiert. Es
+# funktioniert seit Jahren, könnte aber mit einem macOS-Update wegfallen.
+# Tauchen wieder Ordner mit " 2" am Ende auf, ist genau das passiert.
+node_modules.nosync/
+dist.nosync/
+
 # Build-Ausgabe, ebenfalls reproduzierbar (npm run build)
 dist/
 
@@ -13,3 +40,4 @@ dist/
 
 # Editor-/OS-Artefakte
 .DS_Store
+.probedruck.mjs
