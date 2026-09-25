@@ -36,7 +36,7 @@ import { BEISPIEL_QM, BEISPIEL_POSTEN, BEISPIEL_ANZAHL, BEISPIEL_UNZULAESSIG_SUM
 import Nav from "../components/layout/Nav.jsx";
 import LegalFooter from "../components/layout/LegalFooter.jsx";
 
-export default function Welcome({ navigateTo, IS_DEMO }) {
+export default function Welcome({ navigateTo, navigateToArtikel, IS_DEMO }) {
   const C = THEME.color;
   const PAGE_MAX = THEME.layout.pageMax;
   const abschnitt = { padding: "40px 24px", borderBottom: "1px solid " + C.border, maxWidth: PAGE_MAX, margin: "0 auto", boxSizing: "border-box" };
@@ -238,7 +238,7 @@ export default function Welcome({ navigateTo, IS_DEMO }) {
           Kostenlos starten. Preis später wählen
         </button>
         <p style={{ fontSize: 12, color: C.textDim, marginTop: 10 }}>
-          Einmalig, kein Abo. <a href="/faq" onClick={e => { e.preventDefault(); navigateTo("faq"); }} style={{ color: C.brand, fontWeight: 600 }}>Was kosten die Alternativen?</a>
+          Einmalig, kein Abo. <a href="/ratgeber/nebenkostenabrechnung-pruefen-lassen" onClick={e => { e.preventDefault(); navigateToArtikel("nebenkostenabrechnung-pruefen-lassen"); }} style={{ color: C.brand, fontWeight: 600 }}>Nebenkostenabrechnung prüfen lassen: was kosten die Alternativen?</a>
         </p>
       </div>
 
