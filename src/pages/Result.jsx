@@ -135,7 +135,7 @@ export default function Result({ navigateTo, result, wohnung, werte, gesamtsumme
 
         <div style={{ background: C.surface, border: "1px solid " + C.border, borderRadius: THEME.radius.md, marginBottom: 14, overflow: "hidden" }}>
           <div style={{ padding: "11px 16px", borderBottom: "1px solid " + C.border, fontSize: 11, fontWeight: 700, color: C.textMuted, textTransform: "uppercase" }}>
-            Positions-Vorschau (3 von {result.posten_bewertung.length})
+            Positions-Vorschau ({Math.min(3, result.posten_bewertung.length)} von {result.posten_bewertung.length})
           </div>
           {result.posten_bewertung.slice(0, 3).map((p, i, arr) => (
             <div key={i} style={{ display: "flex", alignItems: "flex-start", padding: "11px 16px", borderBottom: i < arr.length - 1 ? "1px solid " + C.border : "none" }}>
