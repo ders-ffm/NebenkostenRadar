@@ -164,6 +164,58 @@ Der Pitch-Text selbst steht unverändert in `q4-sichtbarkeit.md`, Abschnitt 3. E
 
 ---
 
+## 3a. Versandfertiges Anschreiben an die Verbraucherzentrale Hessen
+
+Empfängerin: **Ute Bitter**, Teamleitung Kommunikation, presse@verbraucherzentrale-hessen.de, 069 972010-31. Am 19.09.2026 auf verbraucherzentrale-hessen.de/presse geprüft.
+
+### Warum dieses Anschreiben anders ist als der Redaktions-Pitch
+
+Eine Verbraucherzentrale ist keine Redaktion. Sie sucht keine Geschichten, sie hat einen Beratungsauftrag. Der Hebel ist deshalb nicht „hier ist ein interessanter Befund", sondern: **Sie empfiehlt den Betriebskostenspiegel selbst, und ihre Ratsuchenden können ihn missverstehen.** Das betrifft unmittelbar ihre eigene Arbeit.
+
+Zweiter Unterschied: Der Absender verkauft ein Konkurrenzprodukt zur kostenlosen Mietrechtsberatung. Das muss im ersten Absatz stehen, nicht im letzten. Wer es verschweigt und dabei ertappt wird, ist dauerhaft verbrannt.
+
+### Der Text
+
+Betreff: **Hinweis zum Betriebskostenspiegel: zwei Fallstricke für Ratsuchende**
+
+> Sehr geehrte Frau Bitter,
+>
+> ich betreibe NebenkostenRadar, ein kostenpflichtiges Online-Werkzeug zur Prüfung von Nebenkostenabrechnungen. Ich schreibe Ihnen nicht, um dafür zu werben, sondern weil mir bei der Arbeit daran zwei Dinge aufgefallen sind, die Ihre Ratsuchenden betreffen.
+>
+> Der Betriebskostenspiegel des Deutschen Mieterbundes ist der einzige bundesweit verfügbare Vergleichsmaßstab für Mieter, und er wird breit zur Selbstprüfung empfohlen. Zwei seiner Eigenschaften werden dabei selten mitgenannt.
+>
+> **Erstens ist er ein bundesweiter Durchschnitt ohne regionale Aufschlüsselung.** In Frankfurt liegt fast jede Abrechnung darüber, in strukturschwachen Regionen fast jede darunter. Beides sagt über die Richtigkeit der Abrechnung nichts aus. Wer den Spiegel wörtlich nimmt, beanstandet in teuren Städten zu viel und in günstigen Regionen zu wenig.
+>
+> **Zweitens werden verbrauchsabhängige Kosten pro Quadratmeter angegeben.** Wasser und Heizung hängen aber an der Personenzahl, nicht an der Wohnfläche. Ein Beispiel aus einer echten Frankfurter Abrechnung: 80,55 Quadratmeter, 113,64 Kubikmeter Wasser im Jahr. Das entspricht bei etwa 45 Kubikmetern pro Person einem Zweieinhalb-Personen-Haushalt, also einem völlig normalen Verbrauch. Gegen den Richtwert von 0,29 Euro je Quadratmeter und Monat gerechnet, erscheinen die 514,76 Euro dieser Abrechnung trotzdem als 84 Prozent über dem Durchschnitt.
+>
+> Ein Mieter, der daraufhin Einspruch erhebt, bekommt vom Vermieter zu Recht die Antwort, dass die Zähler eben diesen Verbrauch anzeigen. Das kostet ihn Glaubwürdigkeit für die Punkte, bei denen er tatsächlich recht hat.
+>
+> Falls das für Ihre Beratung oder eine Veröffentlichung nützlich ist, stelle ich Ihnen die Zahlen und die Primärquellen gern zur Verfügung, selbstverständlich auch ohne dass mein Angebot vorkommt. Wenn es für Sie nicht relevant ist, ignorieren Sie diese Mail bitte einfach, ich hake nicht nach.
+>
+> Mit freundlichen Grüßen
+> Stefan Hennig
+> NebenkostenRadar, Ludwigstr. 33-37, 60327 Frankfurt am Main
+> nebenkostenradar.com
+
+### Belegbarkeit der genannten Zahlen
+
+Nichts davon ist geschätzt. Wer nachfragt, bekommt:
+
+| Angabe | Herkunft |
+|---|---|
+| 2,67 €/m²/Monat gesamt, 0,29 € für Wasser und Abwasser | DMB-Betriebskostenspiegel, veröffentlicht 18.12.2025, Abrechnungsjahr 2024 |
+| 80,55 m², 514,76 €, 113,64 m³ | reale Abrechnung, ABG Frankfurt, Abrechnungsjahr 2025 |
+| 45 m³ pro Person und Jahr | gängiger Orientierungswert, im Anschreiben bewusst als „etwa" gekennzeichnet |
+| 84 Prozent | 514,76 geteilt durch (0,29 × 80,55 × 12) = 280,31, nachgerechnet am 19.09.2026 |
+
+### Was vor dem Absenden zu klären ist
+
+Die Abrechnung stammt aus Stefans eigenem Haushalt. Wird daraus ein veröffentlichtes Beispiel, steht implizit sein Wasserverbrauch in der Zeitung. Das ist unproblematisch, sollte ihm aber bewusst sein. Alternativ lassen sich dieselben Verhältnisse mit gerundeten Werten darstellen, das kostet etwas Überzeugungskraft.
+
+### Erwartung
+
+Verbraucherzentralen antworten oft gar nicht, und wenn, dann nach Wochen. Kein Nachfassen, so steht es auch im Text. Der Wert liegt nicht in dieser einen Mail, sondern darin, bei einer späteren Veröffentlichung zum Thema als Hinweisgeber bekannt zu sein.
+
 ## 4. Reihenfolge, nach Aufwand und Ertrag
 
 | # | Was | Aufwand | Erwarteter Ertrag |
