@@ -2,6 +2,32 @@
 
 Alle wesentlichen Änderungen an diesem Projekt, mit Datum und Begründung. Dient der Nachvollziehbarkeit, damit auch ohne KI-Unterstützung verstanden werden kann, warum etwas so ist, wie es ist.
 
+## 25.09.2026 — Zielseite „Nebenkostenabrechnung prüfen lassen" und Grundsatz zu Ausgaben
+
+### Grundsatzentscheidung von Stefan
+
+**Wachstum ausschließlich organisch.** Geld wird nur noch ausgegeben, wenn unterm Strich mindestens 50 % Marge bleiben. Damit sind Google Ads und bezahlte Affiliate-Netzwerke beim heutigen Preis ausgeschlossen (Rechnung in `planung/q4-sichtbarkeit.md`, Abschnitt 1). Ein eigenes Partnerprogramm über Stripe-Codes wurde besprochen und vorerst nicht verfolgt.
+
+### Warum diese Seite
+
+„Nebenkostenabrechnung prüfen lassen" ist die Suchanfrage mit der klarsten Kaufabsicht. Die Startseite stand dafür laut Search Console auf Position 87 (Zeitraum 24.06. bis 23.09.2026). Für das bloße Wort „Nebenkostenabrechnung" tauchte die Seite in drei Monaten kein einziges Mal auf. Am 25.09.2026 geprüft: Alle Treffer auf Seite 1 haben eine eigene, ausführliche Seite zu genau dieser Frage. NebenkostenRadar hatte keine.
+
+### Was neu ist
+
+- Neuer Artikel `/ratgeber/nebenkostenabrechnung-pruefen-lassen`, ganz vorn in `src/artikel.js`. Titel in der Trefferliste: „Nebenkostenabrechnung prüfen lassen 2026 | NebenkostenRadar" (59 Zeichen, Jahr über `{JAHR}`). Inhalt: ehrlicher Vergleich aller Wege (selbst, online automatisiert, online durch Fachleute, Mieterverein, Anwalt, Rechtsschutz, Verbraucherzentrale), Tabelle mit Kosten und Dauer, Checkliste zum Selbstprüfen, Fristen, häufige Fragen, Einordnung was NebenkostenRadar prüft und was nicht. Wettbewerber werden nicht namentlich genannt, nur Kategorien.
+- Alle Zahlen am 25.09.2026 an der Quelle geprüft, Fundstellen im Kommentar über dem Artikel.
+- **Preise von NebenkostenRadar stehen im Artikeltext** (9,99 € und 12,99 €). Bei einer Preisänderung in `src/config/business.js` dort mitziehen.
+- Interne Verweise auf die neue Seite: von der Startseite (React und vorgerenderte Fassung, Link „Nebenkostenabrechnung prüfen lassen: was kosten die Alternativen?", vorher auf `/faq`), aus dem Widerspruchs-Ratgeber und aus dem Betriebskostenspiegel-Artikel, den beiden Ratgeberseiten mit den meisten Impressionen.
+- Titelbild `public/artikelbilder/nebenkostenabrechnung-pruefen-lassen.svg` selbst gezeichnet, als SVG (Farben aus `theme.js`). Kein Fremdbild, also keine Lizenzfrage und kein Abruf bei Unsplash. Bewusst SVG statt JPG: Es ist Text, lässt sich deshalb ohne Umweg über ein Bildprogramm pflegen und hochladen und ist auf jedem Bildschirm scharf. Die Schrift im Bild fällt auf Helvetica oder Arial zurück, weil ein Bild keine Webschriften der Seite lädt. Das Vorschaubild für soziale Netzwerke (`og-bild.png`) ist davon nicht betroffen.
+
+### Geprüft
+
+`npm run check`: 30 Seiten ohne SEO-Verstoß, 72 PDF-Konstellationen ohne Verletzung, 31 Betragseingaben ohne Abweichung. Die vorgerenderte Seite enthält Tabelle, Checkliste und alle Absätze als Text, Canonical und Sitemap-Eintrag stimmen.
+
+### Erwartung, ehrlich
+
+Eine neue Seite auf einer jungen Domain ohne Verweise von außen steht nicht in wenigen Tagen auf Seite 1. Sie ist die Voraussetzung dafür, dass es überhaupt geht. Den Ausschlag geben die Verweise von anderen Seiten (Widget, Presse). Messen: in der Search Console die Seite `/ratgeber/nebenkostenabrechnung-pruefen-lassen` und die Anfragen „nebenkostenabrechnung prüfen lassen" und „nebenkostenabrechnung prüfen".
+
 ## 25.09.2026 — Testkauf bestanden, Abgleich Repository gegen Arbeitsordner, zwei Anzeigefehler behoben
 
 **Der Testkauf vom 25.09.2026 ist durchgelaufen:** Zahlung, Rückkehr auf die Download-Seite, PDF mit Auswertung, Musterbrief und Steuerseite. Alle Richtwerte im PDF nachgerechnet (81 m², DMB-Werte × 12 × Fläche), alle stimmen auf den Cent.
