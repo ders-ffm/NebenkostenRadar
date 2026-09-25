@@ -196,7 +196,7 @@ export default function AbrechnungPDF({ result, wohnung, seite = 1, seitenGesamt
           <View key={i} style={s.tRow}>
             <Text style={s.colPosten}>{p.posten}</Text>
             <Text style={s.colBetrag}>{fmt(p.betrag)}</Text>
-            <Text style={s.colRicht}>{p.richtwert > 0 ? fmt(p.richtwert) : ", "}</Text>
+            <Text style={s.colRicht}>{p.richtwert > 0 ? fmt(p.richtwert) : ""}</Text>
             <Text style={[s.colStatus, { color: STATUS_COLOR[p.status] }]}>{STATUS_LABEL[p.status] || p.status}</Text>
           </View>
         ))}
