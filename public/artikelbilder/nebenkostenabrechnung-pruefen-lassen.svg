@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="800" height="533" viewBox="0 0 1600 1066" role="img" aria-label="Nebenkostenabrechnung mit geprüften Positionen und Lupe">
+  <defs>
+    <filter id="schatten" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur stdDeviation="18"/>
+    </filter>
+  </defs>
+  <rect width="1600" height="1066" fill="#F3ECDC"/>
+  <ellipse cx="1480" cy="160" rx="360" ry="426" fill="#EAF4EE"/>
+  <ellipse cx="80" cy="997" rx="272" ry="336" fill="#ECE2CC"/>
+  <rect x="484" y="215" width="660" height="750" rx="26" fill="#2E2A22" opacity="0.22" filter="url(#schatten)"/>
+  <rect x="470" y="193" width="660" height="750" rx="26" fill="#FFFFFF"/>
+  <rect x="520" y="245" width="46" height="46" rx="12" fill="#3D7A5C"/>
+  <circle cx="543" cy="268" r="15" fill="none" stroke="#FFFFFF" stroke-width="3"/>
+  <circle cx="543" cy="268" r="7" fill="none" stroke="#FFFFFF" stroke-width="3"/>
+  <g font-family="'Work Sans', 'Helvetica Neue', Helvetica, Arial, sans-serif" fill="#2E2A22">
+    <text x="586" y="280" font-family="Poppins, 'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="34" font-weight="600">Nebenkostenabrechnung</text>
+    <text x="586" y="309" font-size="19" font-weight="500" fill="#6B6152">Abrechnungszeitraum 01.01. bis 31.12.</text>
+    <line x1="520" y1="343" x2="1080" y2="343" stroke="#E3D9C6" stroke-width="2"/>
+    <rect x="504" y="599" width="592" height="64" rx="12" fill="#FDF0EE"/>
+    <text x="530" y="402" font-size="24">Grundsteuer</text>
+    <text x="530" y="480" font-size="24">Wasser und Abwasser</text>
+    <text x="530" y="558" font-size="24">Hausmeister</text>
+    <text x="530" y="636" font-size="24">Verwaltungskosten</text>
+    <text x="530" y="714" font-size="24">Gebäudeversicherung</text>
+    <text x="530" y="792" font-size="24">Heizkosten</text>
+    <g font-size="24" font-weight="500" text-anchor="end">
+      <text x="965" y="402">174,96 €</text>
+      <text x="965" y="480">281,88 €</text>
+      <text x="965" y="558">204,12 €</text>
+      <text x="965" y="636">96,00 €</text>
+      <text x="965" y="714">301,32 €</text>
+      <text x="965" y="792">1.283,04 €</text>
+      <text x="965" y="896">2.341,32 €</text>
+    </g>
+    <line x1="520" y1="849" x2="1080" y2="849" stroke="#E3D9C6" stroke-width="2"/>
+    <text x="530" y="896" font-size="24" font-weight="500">Summe</text>
+  </g>
+  <g stroke-width="4" stroke-linecap="round" stroke-linejoin="round" fill="none">
+    <circle cx="1046" cy="396" r="17" fill="#EAF4EE" stroke="none"/>
+    <polyline points="1038,396 1044,403 1055,389" stroke="#3D7A5C"/>
+    <circle cx="1046" cy="474" r="17" fill="#EAF4EE" stroke="none"/>
+    <polyline points="1038,474 1044,481 1055,467" stroke="#3D7A5C"/>
+    <circle cx="1046" cy="552" r="17" fill="#EAF4EE" stroke="none"/>
+    <polyline points="1038,552 1044,559 1055,545" stroke="#3D7A5C"/>
+    <circle cx="1046" cy="630" r="17" fill="#B5502C" stroke="none"/>
+    <path d="M1039,623 L1053,637 M1039,637 L1053,623" stroke="#FFFFFF"/>
+    <circle cx="1046" cy="708" r="17" fill="#EAF4EE" stroke="none"/>
+    <polyline points="1038,708 1044,715 1055,701" stroke="#3D7A5C"/>
+    <circle cx="1046" cy="786" r="17" fill="#EAF4EE" stroke="none"/>
+    <polyline points="1038,786 1044,793 1055,779" stroke="#3D7A5C"/>
+  </g>
+  <line x1="1084" y1="669" x2="1197" y2="782" stroke="#2E2A22" stroke-width="24"/>
+  <circle cx="1046" cy="630" r="54" fill="#FFFFFF" fill-opacity="0.16" stroke="#2E2A22" stroke-width="12"/>
+</svg>
