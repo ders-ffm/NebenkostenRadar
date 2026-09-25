@@ -2,6 +2,37 @@
 
 Alle wesentlichen Änderungen an diesem Projekt, mit Datum und Begründung. Dient der Nachvollziehbarkeit, damit auch ohne KI-Unterstützung verstanden werden kann, warum etwas so ist, wie es ist.
 
+## 25.09.2026 — Testkauf bestanden, Abgleich Repository gegen Arbeitsordner, zwei Anzeigefehler behoben
+
+**Der Testkauf vom 25.09.2026 ist durchgelaufen:** Zahlung, Rückkehr auf die Download-Seite, PDF mit Auswertung, Musterbrief und Steuerseite. Alle Richtwerte im PDF nachgerechnet (81 m², DMB-Werte × 12 × Fläche), alle stimmen auf den Cent.
+
+### Warum Änderungen vom 22.09. nicht online waren
+
+Der Arbeitsordner in iCloud ist kein Git-Checkout. Änderungen gelangen nur ins Repository, wenn sie über die GitHub-Weboberfläche hochgeladen werden. Zwei Korrekturen vom 22.09. (Quellenangabe zur „jede zweite Abrechnung"-Zahl) lagen deshalb nur lokal. Aufgefallen, weil die Live-Seite im Vorschaubild-Text noch die alte Formulierung zeigte.
+
+Vollständiger Abgleich am 25.09.2026: Git-Prüfsumme jeder Datei lokal gegen den Stand `8b520d2` im Repository verglichen. Ergebnis:
+
+| Datei | Befund | Maßnahme |
+|---|---|---|
+| `index.html` | lokal neuer (Vorschaubild-Text ohne unbelegte 50-%-Aussage) | hochgeladen |
+| `src/artikel.js` | lokal neuer (Heizkosten-Artikel: Zahl als DMB-Schätzung ausgewiesen) | hochgeladen |
+| `src/pages/Result.jsx` | lokal neuer (siehe unten) | hochgeladen |
+| `src/pdf/AbrechnungPDF.jsx` | lokal neuer (siehe unten) | hochgeladen |
+| `planung/sichtbarkeit-umsetzung.md` | lokal neuer (Abschnitt 3a, Anschreiben Verbraucherzentrale) | hochgeladen |
+| `.github/workflows/jahreswechsel.yml` | Repository neuer, lokal nur eine zusätzliche Trennlinie im Kommentar | nichts zu tun |
+| `.gitignore` | lokal ausführlicher (iCloud-Abschnitt mit `.nosync`) | keine Wirkung auf den Deploy, beim nächsten Mal mitnehmen |
+
+Vor dem Hochladen wurde für jede der vier Programmdateien bestätigt, dass sie exakt dem Repository-Stand plus den beabsichtigten Änderungen entspricht (gleiche Prüfsumme). Insbesondere `src/artikel.js` enthält alle Bot-Commits, es wurde nichts überschrieben. `npm run check` lief vorher sauber: 29 Seiten ohne SEO-Fehler, 72 PDF-Konstellationen ohne Verletzung, 31 Betragseingaben ohne Abweichung. `npm run probedruck` meldet keine Satzfehler.
+
+### Behobene Anzeigefehler
+
+1. **Leere Richtwert-Zelle zeigte ein Komma.** In der Positionstabelle des PDFs stand bei Posten ohne Vergleichswert ein einzelnes „,". Betroffen war jeder Bericht mit „davon Warmwasserversorgung" oder „Sonstige Betriebskosten". Ursache: Der frühere Platzhalter (ein Gedankenstrich) war beim Entfernen aller Gedankenstriche durch „, " ersetzt worden. Jetzt bleibt die Zelle leer. Ein Gedankenstrich kommt nicht in Frage, `pdf-probedruck` lehnt ihn nach Stefans Vorgabe ab.
+2. **„Positions-Vorschau (3 von 2)".** Auf der Ergebnisseite war die 3 fest eingetragen. Bei weniger als drei Posten stand dort ein unmöglicher Wert. Jetzt das Minimum aus 3 und der tatsächlichen Zahl.
+
+### Fehlalarm: Ligaturen im PDF
+
+Beim Auslesen des Testkauf-PDFs mit einem Werkzeug der KI fehlten Buchstaben („Betref", „Unaufällig"). Gegenprobe mit `pdftotext` und `pdf.js`, sowohl am echten Testkauf-PDF als auch am Probedruck: Die Textebene ist korrekt, Zeichen für Zeichen „ff", „fl", „fi". Kein Fehler im Produkt, nichts geändert.
+
 ## 19.09.2026 — Fehlalarm zur Foto-Erkennung, und was daraus bleibt
 
 **Die Foto-Erkennung war nie kaputt.** Der Fehler lag im Testaufbau der KI, nicht im Produkt. Das hat Stefan einen Schlüsseltausch, zwei Deployments und eine Log-Suche gekostet. Damit sich das nicht wiederholt, steht der Hergang hier vollständig.
