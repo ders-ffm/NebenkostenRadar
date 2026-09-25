@@ -375,7 +375,7 @@ function startseiteInhalt() {
       <li>Im Paket „Auswertung + Brief“ zusätzlich ein Hinweis auf steuerlich absetzbare Positionen nach § 35a EStG.</li>
     </ul>
     <h2>Was es kostet</h2>
-    <p>Die Basisanalyse ist kostenlos und ohne Registrierung. Die Auswertung als PDF kostet einmalig ${preisA} €, mit Musterbrief und Steuer-Bonus ${preisV} €. Kein Abo.</p>
+    <p>Die Basisanalyse ist kostenlos und ohne Registrierung. Die Auswertung als PDF kostet einmalig ${preisA} €, mit Musterbrief und Steuer-Bonus ${preisV} €. Kein Abo. <a href="/ratgeber/nebenkostenabrechnung-pruefen-lassen">Nebenkostenabrechnung prüfen lassen: was kosten die Alternativen?</a></p>
     <h2>Worauf die Prüfung beruht</h2>
     <p>Grundlage sind der Betriebskostenspiegel des Deutschen Mieterbundes für das Abrechnungsjahr ${escapeHtml(BUSINESS.RICHTWERTE_JAHR)}, § 2 der Betriebskostenverordnung, die Heizkostenverordnung, das CO₂-Kostenaufteilungsgesetz und § 35a EStG. Der Betriebskostenspiegel ist ein bundesweiter Durchschnitt ohne regionale Aufschlüsselung: Eine Abweichung nach oben ist ein Anlass zur Nachfrage, kein Nachweis eines Fehlers.</p>
     <p><a href="/pruefen/wohnung">Kostenlos prüfen</a> · <a href="/ratgeber">Ratgeber</a> · <a href="/faq">Häufige Fragen</a> · <a href="/ueber-uns">Über uns</a></p>
