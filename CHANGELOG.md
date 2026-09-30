@@ -2,6 +2,32 @@
 
 Alle wesentlichen Änderungen an diesem Projekt, mit Datum und Begründung. Dient der Nachvollziehbarkeit, damit auch ohne KI-Unterstützung verstanden werden kann, warum etwas so ist, wie es ist.
 
+## 30.09.2026 — GEO: Organization-Schema ergänzt, Ratgeber-Audit ohne Befund
+
+### Anlass
+
+ChatGPT hat NebenkostenRadar bei einem Testkauf-Query korrekt genannt (Name, Preise, Funktionen), mit einem selbst angehängten `?utm_source=chatgpt.com`. Kein Beleg für echten Nutzer-Traffic, aber Anlass zu prüfen, was sich für generative Suchsysteme (ChatGPT, Google AI Overviews, Perplexity) gezielt verbessern lässt, zusätzlich zu klassischem SEO.
+
+### Audit vor der Umsetzung, zwei Befunde
+
+1. **`index.html` enthielt nur ein WebApplication-Schema mit zwei Offers, keine Organization-Entität.** Bestätigt durch Auszählen der `@type`-Vorkommen vor der Änderung.
+2. **Alle 23 Ratgeber-Artikel in `src/artikel.js` beginnen bereits mit einem `typ: "intro"`-Block**, einem direkten, 2-4 Sätze langen Antwort-Absatz auf die vermutete Suchfrage. Das ist geprüft, nicht angenommen: für jeden Artikel wurde die erste `inhalt`-Zeile ausgelesen. Die ursprünglich vermutete Lücke ("Direktantwort-Absatz ergänzen") bestand nicht — hier ist keine weitere Arbeit nötig.
+
+### Was geändert wurde
+
+- Neuer, separater `Organization`-JSON-LD-Block in `index.html` (`@id: https://nebenkostenradar.com/#organisation`): Name, URL, Logo (`logo-email.png`), E-Mail, Gründer, Postadresse — wortgleich mit Impressum.jsx und AGB.jsx, bewusst keine abweichenden Angaben.
+- Das bestehende `WebApplication`-Schema um `description`, `operatingSystem` und `inLanguage` ergänzt und per `provider`-Referenz mit der neuen Organization verknüpft.
+- Bewusst **kein** `Product`-Schema zusätzlich zu `WebApplication` angelegt: beide gleichzeitig für dasselbe Angebot gilt als Duplizierung derselben Entität und wurde vermieden.
+- Bewusst **keine** `aggregateRating` ergänzt: Es gibt noch keine echten, vorzeigbaren Bewertungen (Trustpilot-Profil steht laut Plan erst in Woche 9-11 an). Erfundene oder verfrühte Bewertungsdaten in Schema.org verstoßen gegen Googles Richtlinien und wären unbelegt.
+
+### Offener Punkt
+
+`logo-email.png` ist 96×96 Pixel. Google empfiehlt für das `logo`-Feld mindestens 112×112. Funktioniert, ist aber unterhalb der Empfehlung — bei Gelegenheit ein größeres quadratisches Logo nachreichen.
+
+### Geprüft
+
+Beide JSON-LD-Blöcke nach der Änderung mit `json.loads()` auf syntaktische Gültigkeit geprüft, Commit direkt über die GitHub-Weboberfläche.
+
 ## 25.09.2026 — Zielseite „Nebenkostenabrechnung prüfen lassen" und Grundsatz zu Ausgaben
 
 ### Grundsatzentscheidung von Stefan
