@@ -249,17 +249,52 @@
     (7,99 €/9,99 €) gefunden und auf die aktuellen 9,99 €/12,99 € korrigiert, 
     derselbe Fehler wie zuvor in Datenschutz.jsx, siehe CHANGELOG.md.
   -->
+  <!--
+    Organization- und erweitertes WebApplication-Schema (30.09.2026).
+
+    WOFÜR: Bislang gab es nur die WebApplication mit den beiden Preisen, aber
+    keine eigene Organization-Entität. KI-Suchsysteme (ChatGPT, Google AI
+    Overviews, Perplexity) und Googles Knowledge Graph stützen sich auf klare,
+    konsistente Entitätsangaben (Name, Anbieter, Kontakt), nicht nur auf den
+    Fließtext. Die Organization-Angaben stimmen bewusst wörtlich mit dem
+    Impressum (Impressum.jsx) und der AGB (AGB.jsx) überein - abweichende
+    Angaben zwischen Schema und sichtbarem Text wirken für Suchsysteme wie ein
+    Warnsignal, nicht wie ein Vorteil.
+  -->
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
     "@type": "WebApplication",
     "name": "NebenkostenRadar",
     "url": "https://nebenkostenradar.com",
+    "description": "Nebenkostenabrechnung kostenlos prüfen: NebenkostenRadar vergleicht jeden Posten mit dem DMB-Betriebskostenspiegel, erkennt Fehler und erstellt ein PDF mit Mustertext. Sofort, ohne Registrierung.",
     "applicationCategory": "FinanceApplication",
+    "operatingSystem": "Web",
+    "inLanguage": "de-DE",
     "offers": [
       { "@type": "Offer", "price": "9.99", "priceCurrency": "EUR", "name": "Auswertung" },
       { "@type": "Offer", "price": "12.99", "priceCurrency": "EUR", "name": "Auswertung + Brief" }
-    ]
+    ],
+    "provider": { "@id": "https://nebenkostenradar.com/#organisation" }
+  }
+  </script>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Organization",
+    "@id": "https://nebenkostenradar.com/#organisation",
+    "name": "NebenkostenRadar",
+    "url": "https://nebenkostenradar.com",
+    "logo": "https://nebenkostenradar.com/logo-email.png",
+    "email": "support@nebenkostenradar.com",
+    "founder": { "@type": "Person", "name": "Stefan Hennig" },
+    "address": {
+      "@type": "PostalAddress",
+      "streetAddress": "Ludwigstr. 33-37",
+      "postalCode": "60327",
+      "addressLocality": "Frankfurt am Main",
+      "addressCountry": "DE"
+    }
   }
   </script>
 </head>
