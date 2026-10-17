@@ -18,6 +18,9 @@
 // etwas ändert — siehe CHANGELOG.md für die Historie.
 // ─────────────────────────────────────────────────────────────────────────
 import { THEME } from "../config/theme.js";
+// Fußzeile auch auf den Rechtsseiten (17.10.2026): Dort steht der Link
+// "Cookie-Einstellungen" zum Widerruf der Einwilligung (Art. 7 Abs. 3 DSGVO).
+import LegalFooter from "../components/layout/LegalFooter.jsx";
 import { euro } from "../lib/format.js";
 import { BUSINESS } from "../config/business.js";
 import BrandAnschrift from "../components/layout/BrandAnschrift.jsx";
@@ -53,7 +56,7 @@ const ABSCHNITTE = [
     "Deine E-Mail-Adresse und dein Vorname werden dafür separat in unserer Kaufhistorie hinterlegt, bis die Mail verschickt wurde oder du widerrufst.",
   ]},
   { t: "4. Cookies und Webanalyse", lines: [
-    "Diese Website verwendet Google Analytics (Google Ireland Ltd., Gordon House, Barrow Street, Dublin 4, Irland) ausschließlich nach deiner ausdrücklichen Einwilligung (§ 25 Abs. 1 TDDDG, Art. 6 Abs. 1 lit. a DSGVO): das Skript wird technisch erst nach deiner Zustimmung geladen. Du kannst die Einwilligung im Cookie-Banner ablehnen. Technisch notwendige Cookies sind gemäß § 25 Abs. 2 TDDDG ohne Einwilligung zulässig.",
+    "Diese Website verwendet Google Analytics (Google Ireland Ltd., Gordon House, Barrow Street, Dublin 4, Irland) ausschließlich nach deiner ausdrücklichen Einwilligung (§ 25 Abs. 1 TDDDG, Art. 6 Abs. 1 lit. a DSGVO): das Skript wird technisch erst nach deiner Zustimmung geladen. Du kannst die Einwilligung im Cookie-Banner ablehnen und eine erteilte Einwilligung jederzeit über den Link „Cookie-Einstellungen“ unten auf jeder Seite widerrufen; dabei werden die Analytics-Cookies gelöscht (Art. 7 Abs. 3 DSGVO). Technisch notwendige Cookies sind gemäß § 25 Abs. 2 TDDDG ohne Einwilligung zulässig.",
     "Google Analytics Datenschutzerklärung: policies.google.com/privacy",
   ]},
   { t: "5. Hosting (Vercel)", lines: [
@@ -79,7 +82,9 @@ const ABSCHNITTE = [
     "Du hast das Recht, dich bei einer Datenschutz-Aufsichtsbehörde zu beschweren. Zuständig für Hessen: Der Hessische Beauftragte für Datenschutz und Informationsfreiheit, Postfach 3163, 65021 Wiesbaden.",
   ]},
   { t: "11. Aktualität", lines: [
-    "Diese Datenschutzerklärung gilt ab " + new Date().toLocaleDateString("de-DE") + ".",
+    // Festes Datum (17.10.2026) statt "heute": siehe AGB.jsx. Bei inhaltlicher
+    // Änderung anpassen. 17.10.2026: Abschnitt Cookie-Widerruf ergänzt.
+    "Diese Datenschutzerklärung gilt ab 17.10.2026.",
   ]},
 ];
 
@@ -102,6 +107,7 @@ export default function Datenschutz({ navigateTo }) {
           </div>
         ))}
       </div>
+      <LegalFooter navigateTo={navigateTo} />
     </div>
   );
 }
