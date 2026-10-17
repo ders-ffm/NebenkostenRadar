@@ -62,7 +62,9 @@ export default function Download({ navigateTo }) {
       .then(r => { if (!r.ok) throw new Error("nicht gefunden"); return r.json(); })
       .then(d => {
         const result = buildResult(d.werte, d.wohnung);
-        setDaten({ ...d, result });
+        // stripeSession wird für den Mailversand gebraucht: send-email.js
+        // prüft die Zahlung seit 17.10.2026 selbst bei Stripe.
+        setDaten({ ...d, result, stripeSession: sessionId });
         // Formular mit dem vorbefüllen, was schon da ist (bei Altbestellungen
         // aus der Zeit vor dem Umbau sind die Felder bereits vollständig).
         setAdressEntwurf({
@@ -141,13 +143,13 @@ export default function Download({ navigateTo }) {
         await fetch("/api/send-email", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
+          // Seit 17.10.2026 nur noch Stripe-Session + PDF: Empfänger, Stufe
+          // und Vorname liest send-email.js selbst aus der Datenbank, damit
+          // niemand sie im Request fälschen kann (siehe dort).
           body: JSON.stringify({
-            sessionId: daten.sessionId,
-            email: daten.email,
+            stripeSession: daten.stripeSession,
             pdfBase64,
             pdfFilename: "Nebenkosten-Pruefbericht_" + daten.wohnung.jahr + ".pdf",
-            stufe: daten.stufe,
-            vorname: (daten.adressen?.mieterName || "").trim().split(/\s+/)[0] || "",
           }),
         });
       } catch (e) {

@@ -33,6 +33,12 @@ export default async function handler(req, res) {
   // sie nicht kennt, kann keine fremde Zeile überschreiben. Gleiches
   // Sicherheitsmodell wie beim Entwurfs-Link (api/draft.js). Überschrieben
   // wird ausschließlich das Feld "adressen", nichts Zahlungsrelevantes.
+  //
+  // ERGÄNZT 17.10.2026: Die E-Mail-Adresse in "adressen" lässt sich über
+  // diesen Weg NICHT mehr ändern. Sie ist seit der Sicherheitskorrektur der
+  // einzige Empfänger in send-email.js; wer sie nachträglich umschreiben
+  // könnte, könnte den Bericht an eine fremde Adresse schicken lassen. Die
+  // gespeicherte Adresse wird deshalb immer beibehalten.
   // ───────────────────────────────────────────────────────────────────────
   if (req.method === "PATCH") {
     const { sessionId, adressen } = req.body || {};
@@ -40,6 +46,14 @@ export default async function handler(req, res) {
       return res.status(400).json({ error: "Fehlende Parameter" });
     }
     try {
+      const altRes = await fetch(
+        supabaseUrl + "/rest/v1/nkr_reports?session_id=eq." + encodeURIComponent(sessionId) + "&select=adressen",
+        { headers: { apikey: supabaseKey, Authorization: "Bearer " + supabaseKey } }
+      );
+      if (!altRes.ok) return res.status(500).json({ error: "Speichern fehlgeschlagen" });
+      const altRows = await altRes.json();
+      if (!altRows.length) return res.status(404).json({ error: "Nicht gefunden" });
+      const neueAdressen = { ...adressen, email: altRows[0].adressen?.email || "" };
       const patchRes = await fetch(
         supabaseUrl + "/rest/v1/nkr_reports?session_id=eq." + encodeURIComponent(sessionId),
         {
@@ -50,7 +64,7 @@ export default async function handler(req, res) {
             "Content-Type": "application/json",
             Prefer: "return=minimal",
           },
-          body: JSON.stringify({ adressen }),
+          body: JSON.stringify({ adressen: neueAdressen }),
         }
       );
       if (!patchRes.ok) {

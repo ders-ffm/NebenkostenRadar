@@ -5,6 +5,9 @@
 // ─────────────────────────────────────────────────────────────────────────
 import { useState, useEffect } from "react";
 import { THEME } from "../../config/theme.js";
+// Echte Links statt Buttons (17.10.2026), siehe Verweis.jsx.
+import Verweis from "../ui/Verweis.jsx";
+import { pfadFuer } from "../../config/routen.js";
 
 export default function Nav({ activeStep, navigateTo }) {
   const C = THEME.color;
@@ -28,7 +31,7 @@ export default function Nav({ activeStep, navigateTo }) {
   ];
 
   const logo = (
-    <div style={{ display: "flex", alignItems: "center", gap: 12, cursor: "pointer" }} onClick={() => { setMobileOpen(false); navigateTo("welcome"); }}>
+    <Verweis href="/" aria-label="NebenkostenRadar Startseite" onNavigate={() => { setMobileOpen(false); navigateTo("welcome"); }} style={{ display: "flex", alignItems: "center", gap: 12, cursor: "pointer" }}>
       <div style={{ width: 42, height: 42, borderRadius: 10, background: C.brand, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
         <svg width="24" height="24" viewBox="0 0 18 18" fill="none">
           <circle cx="9" cy="9" r="7" stroke="white" strokeWidth="2"/>
@@ -42,15 +45,15 @@ export default function Nav({ activeStep, navigateTo }) {
         </div>
         <div style={{ fontSize: 10, color: C.textMuted, fontWeight: 500 }}>Nebenkosten prüfen, für Mieter</div>
       </div>
-    </div>
+    </Verweis>
   );
 
   const ctaButton = (onClickExtra) => (
-    <button
-      onClick={() => { onClickExtra && onClickExtra(); navigateTo("wohnung"); }}
-      style={{ background: C.accent, border: "none", borderRadius: THEME.radius.sm, padding: "10px 18px", fontSize: 13, fontFamily: THEME.font.heading, fontWeight: 600, color: C.accentText, cursor: "pointer" }}>
+    <Verweis href={pfadFuer("wohnung")}
+      onNavigate={() => { onClickExtra && onClickExtra(); navigateTo("wohnung"); }}
+      style={{ display: "inline-block", background: C.accent, border: "none", borderRadius: THEME.radius.sm, padding: "10px 18px", fontSize: 13, fontFamily: THEME.font.heading, fontWeight: 600, color: C.accentText, cursor: "pointer" }}>
       Kostenlos prüfen
-    </button>
+    </Verweis>
   );
 
   if (isMobile) {
@@ -70,11 +73,11 @@ export default function Nav({ activeStep, navigateTo }) {
         {mobileOpen && (
           <div style={{ borderTop: "1px solid " + C.border, padding: "10px 0 16px", display: "flex", flexDirection: "column", gap: 2 }}>
             {items.map(item => (
-              <button key={item.label}
-                onClick={() => { setMobileOpen(false); navigateTo(item.target); }}
-                style={{ background: "none", border: "none", textAlign: "left", padding: "12px 6px", fontSize: 15, fontFamily: THEME.font.body, color: activeStep === item.target ? C.brand : C.text, fontWeight: activeStep === item.target ? 600 : 400, cursor: "pointer" }}>
+              <Verweis key={item.label} href={pfadFuer(item.target)}
+                onNavigate={() => { setMobileOpen(false); navigateTo(item.target); }}
+                style={{ display: "block", textAlign: "left", padding: "12px 6px", fontSize: 15, fontFamily: THEME.font.body, color: activeStep === item.target ? C.brand : C.text, fontWeight: activeStep === item.target ? 600 : 400, cursor: "pointer" }}>
                 {item.label}
-              </button>
+              </Verweis>
             ))}
             <div style={{ marginTop: 8 }}>{ctaButton(() => setMobileOpen(false))}</div>
           </div>
@@ -89,11 +92,11 @@ export default function Nav({ activeStep, navigateTo }) {
         {logo}
         <div style={{ display: "flex", alignItems: "center", gap: 2 }}>
           {items.map(item => (
-            <button key={item.label}
-              onClick={() => navigateTo(item.target)}
-              style={{ background: "none", border: "none", padding: "6px 10px", fontSize: 13, fontFamily: THEME.font.body, color: activeStep === item.target ? C.brand : C.textMuted, fontWeight: activeStep === item.target ? 600 : 400, cursor: "pointer", borderRadius: 6 }}>
+            <Verweis key={item.label} href={pfadFuer(item.target)}
+              onNavigate={() => navigateTo(item.target)}
+              style={{ padding: "6px 10px", fontSize: 13, fontFamily: THEME.font.body, color: activeStep === item.target ? C.brand : C.textMuted, fontWeight: activeStep === item.target ? 600 : 400, cursor: "pointer", borderRadius: 6 }}>
               {item.label}
-            </button>
+            </Verweis>
           ))}
           <div style={{ marginLeft: 6 }}>{ctaButton()}</div>
         </div>

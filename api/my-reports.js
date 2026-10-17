@@ -9,6 +9,15 @@
 // Erst die von Supabase bestätigte E-Mail-Adresse wird für die Abfrage
 // verwendet.
 //
+// NUR BEZAHLTE BERICHTE (17.10.2026, siehe CHANGELOG.md):
+// nkr_reports bekommt seine Zeile schon VOR der Zahlung (Adressen.jsx →
+// save-report.js, danach Weiterleitung zu Stripe). Wer den Checkout
+// abbrach und sich danach mit derselben E-Mail anmeldete, sah den Bericht
+// trotzdem im Kundenkonto ("gekauft am …") und konnte das volle PDF samt
+// Musterbrief kostenlos herunterladen. Jetzt werden nur Zeilen
+// zurückgegeben, zu denen der Stripe-Webhook (webhook.js, signaturgeprüft)
+// einen Kauf in nkr_purchases protokolliert hat.
+//
 // Aufruf: GET /api/my-reports, Header "Authorization: Bearer <access_token>"
 //
 // Benötigt SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY (bereits vorhanden).
@@ -47,9 +56,21 @@ export default async function handler(req, res) {
     if (!reportsRes.ok) return res.status(500).json({ error: "Datenbankfehler" });
     const rows = await reportsRes.json();
 
-    return res.status(200).json({ email, berichte: rows });
+    // 3. Nur Berichte mit protokolliertem Kauf (siehe Kopfkommentar)
+    let bezahlt = new Set();
+    if (rows.length) {
+      const ids = rows.map(r => '"' + String(r.session_id).replace(/"/g, "") + '"').join(",");
+      const kaufRes = await fetch(
+        supabaseUrl + "/rest/v1/nkr_purchases?select=session_id&session_id=in.(" + encodeURIComponent(ids) + ")",
+        { headers: { apikey: supabaseKey, Authorization: "Bearer " + supabaseKey } }
+      );
+      if (!kaufRes.ok) return res.status(500).json({ error: "Datenbankfehler" });
+      bezahlt = new Set((await kaufRes.json()).map(k => k.session_id));
+    }
+
+    return res.status(200).json({ email, berichte: rows.filter(r => bezahlt.has(r.session_id)) });
   } catch (err) {
     console.error("my-reports Fehler:", err.message);
-    return res.status(500).json({ error: err.message });
+    return res.status(500).json({ error: "Interner Fehler" });
   }
 }

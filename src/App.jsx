@@ -71,27 +71,12 @@ import Ratgeber from "./pages/Ratgeber.jsx";
 import Artikel from "./pages/Artikel.jsx";
 import UeberUns from "./pages/UeberUns.jsx";
 import FAQ from "./pages/FAQ.jsx";
+import Werkzeug from "./pages/Werkzeug.jsx";
 import { BASIS_URL, OG_BILD, NICHT_INDEXIEREN, seoFuer, artikelTitel, artikelBeschreibung } from "./config/seo.js";
 
-// URL <-> Seiten-Name. Jeder Eintrag hier bekommt eine echte, eigene URL.
-const ROUTES = {
-  "/": "welcome",
-  "/pruefen/wohnung": "wohnung",
-  "/pruefen/posten": "posten",
-  "/pruefen/ergebnis": "result",
-  "/pruefen/absender": "adressen",
-  "/pruefen/download": "download",
-  "/pruefen/konto": "konto",
-  "/login": "login",
-  "/danke": "danke",
-  "/impressum": "impressum",
-  "/agb": "agb",
-  "/datenschutz": "datenschutz",
-  "/ratgeber": "ratgeber",
-  "/ueber-uns": "ueberuns",
-  "/faq": "faq",
-};
-const STEP_ZU_PFAD = Object.fromEntries(Object.entries(ROUTES).map(([pfad, step]) => [step, pfad]));
+// URL <-> Seiten-Name. Seit 17.10.2026 in src/config/routen.js, weil auch
+// die echten Links (components/ui/Verweis.jsx) die Pfade brauchen.
+import { ROUTES, STEP_ZU_PFAD } from "./config/routen.js";
 
 function pfadZuStep(pfad) {
   if (pfad.startsWith("/ratgeber/")) return "artikel";
@@ -174,7 +159,11 @@ export default function App() {
     // und sonst wieder entfernt — sonst bliebe ein einmal gesetztes noindex
     // beim Weiterklicken auf einer indexierbaren Seite stehen.
     const vorhanden = document.querySelector('meta[name="robots"]');
-    if (NICHT_INDEXIEREN.includes(step)) {
+    // Unbekannter Artikel-Pfad (17.10.2026): React zeigt "Artikel nicht
+    // gefunden", die Seite darf aber nicht als eigene URL in den Index —
+    // sonst entsteht ein "Soft-404" (Status 200 ohne Inhalt).
+    const artikelFehlt = step === "artikel" && !ARTIKEL.some(a => a.id === ratgeberArtikel);
+    if (NICHT_INDEXIEREN.includes(step) || artikelFehlt) {
       const el = vorhanden || document.head.appendChild(Object.assign(document.createElement("meta"), { name: "robots" }));
       el.setAttribute("content", "noindex, follow");
     } else if (vorhanden) {
@@ -503,6 +492,7 @@ export default function App() {
     if (step === "ratgeber") return <Ratgeber {...pageProps} />;
     if (step === "artikel") return <Artikel {...pageProps} />;
     if (step === "ueberuns") return <UeberUns {...pageProps} />;
+    if (step.startsWith("werkzeug-")) return <Werkzeug step={step} {...pageProps} />;
     return null;
   }
 

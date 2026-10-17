@@ -56,6 +56,7 @@ import { BUSINESS } from "../src/config/business.js";
 // HTML und die im Browser gesetzten Meta-Tags nicht mehr auseinanderlaufen —
 // genau das war der Fehler, der /faq und /ratgeber ihre Titel gekostet hat.
 import { seoFuer, artikelTitel, artikelBeschreibung } from "../src/config/seo.js";
+import { WERKZEUGE } from "../src/config/werkzeuge.js";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const ROOT = join(__dirname, "..");
@@ -280,13 +281,26 @@ function buildArticleHtml(template, artikel, artikelById) {
 
   let html = setzeMeta(template, { url, title, description, ogTyp: "article" });
 
+  // ARTICLE-SCHEMA IM <head> (17.10.2026, Befund aus dem Gesamttest):
+  // Der Block stand bisher in #root. React ersetzt #root beim Start komplett
+  // (createRoot), dadurch war das Schema in der gerenderten Seite, die
+  // Google auswertet, verschwunden. Im <head> fasst React nichts an.
+  // Zugleich ergänzt: absolute Bild-URL (relative URLs sind im Schema
+  // unzulässig), Datum, Autor/Herausgeber als Verweis auf die Organization
+  // aus index.html (@id), mainEntityOfPage.
+  const datumIso = lastmodAus(artikel.datum);
   const artikelJsonLd = {
     "@context": "https://schema.org",
     "@type": "Article",
     headline: artikel.titel,
     description: artikel.teaser,
     url,
-    image: artikel.bild,
+    mainEntityOfPage: url,
+    image: artikel.bild && artikel.bild.startsWith("/") ? BASE + artikel.bild : artikel.bild,
+    inLanguage: "de-DE",
+    author: { "@id": BASE + "/#organisation" },
+    publisher: { "@id": BASE + "/#organisation" },
+    ...(datumIso ? { datePublished: datumIso, dateModified: datumIso } : {}),
   };
 
   const inhaltHtml = (artikel.inhalt || []).map(b => renderBlock(b, artikelById)).join("\n");
@@ -297,9 +311,10 @@ function buildArticleHtml(template, artikel, artikelById) {
       <p>${escapeHtml(artikel.kategorie)} · ${escapeHtml(artikel.datum)} · ${escapeHtml(artikel.lesezeit)}</p>
       <h1>${escapeHtml(artikel.titel)}</h1>
       ${inhaltHtml}
+      <p>Kostenlose Werkzeuge: ${WERKZEUGE.map(w => `<a href="${w.pfad}">${escapeHtml(w.menue)}</a>`).join(" · ")}</p>
     </article>
-    <script type="application/ld+json">${JSON.stringify(artikelJsonLd)}</script>
   `;
+  html = html.replace("</head>", `<script type="application/ld+json">${JSON.stringify(artikelJsonLd).replace(/</g, "\\u003c")}</script>\n</head>`);
 
   // Sichtbaren Inhalt in #root einfügen — React (main.jsx, createRoot)
   // ersetzt das beim Laden im Browser vollständig durch die interaktive
@@ -379,7 +394,39 @@ function startseiteInhalt() {
     <h2>Worauf die Prüfung beruht</h2>
     <p>Grundlage sind der Betriebskostenspiegel des Deutschen Mieterbundes für das Abrechnungsjahr ${escapeHtml(BUSINESS.RICHTWERTE_JAHR)}, § 2 der Betriebskostenverordnung, die Heizkostenverordnung, das CO₂-Kostenaufteilungsgesetz und § 35a EStG. Der Betriebskostenspiegel ist ein bundesweiter Durchschnitt ohne regionale Aufschlüsselung: Eine Abweichung nach oben ist ein Anlass zur Nachfrage, kein Nachweis eines Fehlers.</p>
     <p><a href="/pruefen/wohnung">Kostenlos prüfen</a> · <a href="/ratgeber">Ratgeber</a> · <a href="/faq">Häufige Fragen</a> · <a href="/ueber-uns">Über uns</a></p>
+    <p>Kostenlose Werkzeuge: <a href="/nebenkostenabrechnung-pruefen">Nebenkostenabrechnung online prüfen</a> · <a href="/fristenrechner-nebenkostenabrechnung">Fristenrechner</a> · <a href="/heizkosten-kuerzen-3-prozent">Heizkosten-Kürzungs-Check</a></p>
   `;
+}
+
+// ───────────────────────────────────────────────────────────────────────────
+// Werkzeug-Seiten (17.10.2026). Inhalt und FAQ aus src/config/werkzeuge.js,
+// dieselbe Quelle wie src/pages/Werkzeug.jsx. FAQPage-Markup aus denselben
+// Fragen, die sichtbar auf der Seite stehen (Bedingung von Google).
+// Die Rechner selbst brauchen JavaScript; im vorgerenderten Text steht
+// deshalb ein Hinweis plus die gesetzliche Regel in Textform.
+// ───────────────────────────────────────────────────────────────────────────
+function buildWerkzeugHtml(template, w, artikelById) {
+  const url = `${BASE}${w.pfad}`;
+  let html = setzeMeta(template, { url, title: w.seoTitel, description: w.seoBeschreibung });
+  html = html.replace("</head>", baueFaqJsonLd(w.faq) + "\n</head>");
+  const teile = [];
+  teile.push(`<h1>${escapeHtml(w.titel)}</h1>`);
+  teile.push(`<p>${escapeHtml(w.intro)}</p>`);
+  teile.push(`<p><a href="/pruefen/wohnung">Abrechnung hochladen und kostenlos prüfen</a></p>`);
+  for (const a of w.abschnitte) {
+    teile.push(`<h2>${escapeHtml(a.h2)}</h2>`);
+    if (a.text) teile.push(`<p>${escapeHtml(a.text())}</p>`);
+    if (a.liste) teile.push(`<ol>${a.liste.map(t => `<li>${escapeHtml(t)}</li>`).join("")}</ol>`);
+    if (a.schritte) teile.push(`<ol>${a.schritte.map(t => `<li>${escapeHtml(t)}</li>`).join("")}</ol>`);
+    if (a.verweis && artikelById.get(a.verweis)) {
+      const z = artikelById.get(a.verweis);
+      teile.push(`<p><a href="/ratgeber/${z.id}">Ratgeber: ${escapeHtml(z.titelKurz || z.titel)}</a></p>`);
+    }
+  }
+  teile.push(`<h2>Häufige Fragen</h2>`);
+  for (const f of w.faq) teile.push(`<h3>${escapeHtml(f.frage)}</h3><p>${escapeHtml(f.antwort)}</p>`);
+  teile.push(`<p>Weitere kostenlose Werkzeuge: ${WERKZEUGE.filter(x => x.step !== w.step).map(x => `<a href="${x.pfad}">${escapeHtml(x.menue)}</a>`).join(" · ")} · <a href="/ratgeber">Ratgeber</a></p>`);
+  return setzeInhalt(html, teile.join("\n"));
 }
 
 function ueberUnsInhalt() {
@@ -475,6 +522,10 @@ function buildFaqHtml(template, faqListe) {
 // ───────────────────────────────────────────────────────────────────────────
 const STATISCHE_SEITEN = [
   { pfad: "/", changefreq: "weekly", priority: "1.0" },
+  // Werkzeug-Seiten (17.10.2026), siehe src/config/werkzeuge.js
+  { pfad: "/nebenkostenabrechnung-pruefen", changefreq: "monthly", priority: "0.9" },
+  { pfad: "/fristenrechner-nebenkostenabrechnung", changefreq: "monthly", priority: "0.8" },
+  { pfad: "/heizkosten-kuerzen-3-prozent", changefreq: "monthly", priority: "0.8" },
   { pfad: "/ratgeber", changefreq: "monthly", priority: "0.8" },
   { pfad: "/faq", changefreq: "monthly", priority: "0.7" },
   { pfad: "/ueber-uns", changefreq: "yearly", priority: "0.5" },
@@ -560,6 +611,13 @@ async function main() {
     buildEinfacheSeiteHtml(template, { pfad: "/", step: "welcome", inhalt: startseiteInhalt() }));
   console.log("  ✓ / (Startseite mit statischem Text)");
 
+  for (const w of WERKZEUGE) {
+    const dir = join(DIST, w.pfad.slice(1));
+    mkdirSync(dir, { recursive: true });
+    writeFileSync(join(dir, "index.html"), buildWerkzeugHtml(template, w, artikelById));
+    console.log(`  ✓ ${w.pfad} (Werkzeug, inkl. FAQPage-Markup)`);
+  }
+
   const ueberUnsDir = join(DIST, "ueber-uns");
   mkdirSync(ueberUnsDir, { recursive: true });
   writeFileSync(join(ueberUnsDir, "index.html"),
@@ -584,15 +642,52 @@ async function main() {
     console.log(`  ✓ ${pfad}`);
   }
 
+  // ECHTE 404-SEITE (17.10.2026, Befund aus dem Gesamttest):
+  // vercel.json leitete jede Adresse unter /ratgeber/… auf index.html um.
+  // Eine erfundene oder vertippte Adresse lieferte deshalb Status 200 mit
+  // dem Startseiten-HTML und canonical "/" — ein "Soft-404". Google meldete
+  // bereits eine solche Tippfehler-URL in der Search Console. Die Rewrites
+  // für Artikel sind entfernt (alle Artikel liegen hier als statische Datei
+  // vor); für alles Unbekannte liefert Vercel jetzt dist/404.html mit
+  // Status 404 aus. noindex zusätzlich, falls sie doch einmal mit 200
+  // ausgeliefert würde.
+  writeFileSync(join(DIST, "404.html"), (() => {
+    let html = setzeMeta(template, {
+      url: `${BASE}/404`,
+      title: "Seite nicht gefunden | NebenkostenRadar",
+      description: "Diese Seite gibt es nicht. Zur Startseite oder zum Ratgeber von NebenkostenRadar.",
+      noindex: true,
+    });
+    // Kein React auf der 404-Seite: Die App würde die unbekannte Adresse
+    // sonst als Startseite anzeigen. Deshalb Skript-Tags entfernen und die
+    // Seite rein statisch halten.
+    html = html.replace(/<script type="module"[^>]*><\/script>/g, "")
+               .replace(/<link rel="modulepreload"[^>]*>/g, "")
+               .replace(/<link rel="canonical"[^>]*>/, "");
+    const links = ARTIKEL.slice(0, 8).map(a => `<li><a href="/ratgeber/${a.id}">${escapeHtml(a.titel)}</a></li>`).join("");
+    return setzeInhalt(html, `
+      <h1>Seite nicht gefunden</h1>
+      <p>Diese Adresse gibt es auf nebenkostenradar.com nicht, vielleicht ein Tippfehler im Link.</p>
+      <p><a href="/">Zur Startseite und Nebenkostenabrechnung kostenlos prüfen</a> · <a href="/ratgeber">Alle Ratgeber-Artikel</a> · <a href="/faq">Häufige Fragen</a></p>
+      <h2>Beliebte Artikel</h2>
+      <ul>${links}</ul>
+    `);
+  })());
+  console.log("  ✓ /404.html");
+
   schreibeSitemap(ARTIKEL);
   schreibeWidget();
   console.log("Vorrendern abgeschlossen.");
 }
 
 main().catch(e => {
-  // Bewusst NICHT den ganzen Build abbrechen (process.exit(1)) — eine
-  // fehlerhafte Vorrender-Ausgabe darf niemals die eigentliche App-
-  // Auslieferung verhindern. Nur laut loggen, damit es im Vercel-Build-Log
-  // auffällt.
-  console.error("Vorrendern fehlgeschlagen (Build läuft trotzdem weiter):", e.message);
+  // GEÄNDERT 17.10.2026: Ein Fehler hier bricht jetzt den Build ab.
+  // Vorher lief der Build weiter, damit die App trotzdem ausgeliefert wird —
+  // das war richtig, solange vercel.json jede /ratgeber/…-Adresse auf
+  // index.html umgeleitet hat. Diese Umleitung ist entfernt (sie erzeugte
+  // Soft-404s, siehe CHANGELOG). Ohne vorgerenderte Dateien wären jetzt alle
+  // Artikel 404. Bricht der Build ab, bleibt bei Vercel einfach die letzte
+  // funktionierende Version online — der sicherere Fehlerfall.
+  console.error("Vorrendern fehlgeschlagen, Build wird abgebrochen:", e.message);
+  process.exit(1);
 });

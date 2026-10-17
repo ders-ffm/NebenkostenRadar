@@ -1,41 +1,155 @@
 {
+  "redirects": [
+    {
+      "source": "/(.*)",
+      "has": [
+        {
+          "type": "host",
+          "value": "www.nebenkostenradar.com"
+        }
+      ],
+      "destination": "https://nebenkostenradar.com/$1",
+      "permanent": true
+    }
+  ],
   "rewrites": [
-    { "source": "/admin",           "destination": "/index.html" },
-    { "source": "/admin/(.*)",      "destination": "/index.html" },
-    { "source": "/danke",           "destination": "/index.html" },
-    { "source": "/ratgeber",        "destination": "/index.html" },
-    { "source": "/ratgeber/(.*)",   "destination": "/index.html" },
-    { "source": "/ueber-uns",       "destination": "/index.html" },
-    { "source": "/faq",             "destination": "/index.html" },
-    { "source": "/pruefen/wohnung", "destination": "/index.html" },
-    { "source": "/pruefen/posten",  "destination": "/index.html" },
-    { "source": "/pruefen/ergebnis","destination": "/index.html" },
-    { "source": "/pruefen/absender","destination": "/index.html" },
-    { "source": "/pruefen/download","destination": "/index.html" },
-    { "source": "/pruefen/konto",   "destination": "/index.html" },
-    { "source": "/login",           "destination": "/index.html" },
-    { "source": "/impressum",       "destination": "/index.html" },
-    { "source": "/agb",             "destination": "/index.html" },
-    { "source": "/datenschutz",     "destination": "/index.html" }
+    {
+      "source": "/admin",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/admin/(.*)",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/danke",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/pruefen/wohnung",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/pruefen/posten",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/pruefen/ergebnis",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/pruefen/absender",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/pruefen/download",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/pruefen/konto",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/login",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/ratgeber",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/ueber-uns",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/faq",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/impressum",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/agb",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/datenschutz",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/nebenkostenabrechnung-pruefen",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/fristenrechner-nebenkostenabrechnung",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/heizkosten-kuerzen-3-prozent",
+      "destination": "/index.html"
+    }
   ],
   "headers": [
     {
-      "source": "/api/(.*)",
+      "source": "/(.*)",
       "headers": [
-        { "key": "X-Content-Type-Options", "value": "nosniff" },
-        { "key": "X-Frame-Options",        "value": "DENY" },
-        { "key": "Referrer-Policy",        "value": "strict-origin-when-cross-origin" }
+        {
+          "key": "X-Content-Type-Options",
+          "value": "nosniff"
+        },
+        {
+          "key": "X-Frame-Options",
+          "value": "DENY"
+        },
+        {
+          "key": "Referrer-Policy",
+          "value": "strict-origin-when-cross-origin"
+        },
+        {
+          "key": "Permissions-Policy",
+          "value": "camera=(), microphone=(), geolocation=(), payment=()"
+        },
+        {
+          "key": "Content-Security-Policy",
+          "value": "frame-ancestors 'none'; base-uri 'self'; object-src 'none'"
+        }
+      ]
+    },
+    {
+      "source": "/assets/(.*)",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=31536000, immutable"
+        }
       ]
     },
     {
       "source": "/admin",
       "headers": [
-        { "key": "X-Robots-Tag", "value": "noindex, nofollow" }
+        {
+          "key": "X-Robots-Tag",
+          "value": "noindex, nofollow"
+        }
+      ]
+    },
+    {
+      "source": "/admin/(.*)",
+      "headers": [
+        {
+          "key": "X-Robots-Tag",
+          "value": "noindex, nofollow"
+        }
       ]
     }
   ],
   "functions": {
-    "api/admin-auth.js":  { "maxDuration": 5  },
-    "api/analyse-foto.js": { "maxDuration": 180 }
+    "api/admin-auth.js": {
+      "maxDuration": 5
+    },
+    "api/analyse-foto.js": {
+      "maxDuration": 180
+    }
   }
 }

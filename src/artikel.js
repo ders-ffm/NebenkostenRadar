@@ -64,6 +64,7 @@ const ARTIKEL_ROH = [
     // ─────────────────────────────────────────────────────────────────────
     {
       id: "nebenkostenabrechnung-pruefen-lassen",
+      metaBeschreibung: "Mieterverein, Anwalt, Rechtsschutz oder online: Was es kostet, wie schnell es geht und welcher Weg zu Ihrer Nebenkostenabrechnung passt.",
       titelKurz: "Nebenkostenabrechnung prüfen lassen {JAHR}",
       titel: "Nebenkostenabrechnung prüfen lassen {JAHR}: alle Wege, Kosten und Fristen im Vergleich",
       teaser: "Mieterverein, Anwalt, Rechtsschutz oder online: Was es kostet, wie schnell es geht und welcher Weg zu Ihrer Nebenkostenabrechnung passt. Mit allen Fristen und einer Anleitung zum Selbstprüfen.",
@@ -321,6 +322,8 @@ const ARTIKEL_ROH = [
     },
     {
       id: "hausmeisterkosten-in-der-nebenkostenabrechnung-was-ist-umlagefaehig",
+      seoTitel: "Hausmeisterkosten: Diese Anteile müssen Sie nicht zahlen",
+      metaBeschreibung: "Reparaturen und Verwaltung erledigt der Hausmeister oft nebenbei, umlegen darf der Vermieter aber nur die Betriebskosten-Anteile. So trennen Sie richtig.",
       titelKurz: "Hausmeisterkosten: was ist umlagefähig?",
       titel: "Hausmeisterkosten in der Nebenkostenabrechnung 2026: Was ist umlagefähig und was nicht?",
       teaser: "Hausmeisterkosten zählen zu den häufigsten Streitpunkten in der Nebenkostenabrechnung, weil Vermieter oft Verwaltungs- und Reparaturarbeiten mit einrechnen, die Mieter gar nicht zahlen müssen. Dieser Ratgeber zeigt, welche Tätigkeiten wirklich umlagefähig sind und wie Sie typische Fehler in Ihrer Abrechnung erkennen.",
@@ -781,6 +784,8 @@ const ARTIKEL_ROH = [
     },
     {
       id: "betriebskostenabrechnung-fristen-und-verjaehrung-2026",
+      seoTitel: "Nebenkostenabrechnung: alle Fristen 2026 im Überblick",
+      metaBeschreibung: "Abrechnung 2025 muss bis 31.12.2026 da sein. Wie lange Sie widersprechen können und wann Nachforderungen verjähren, mit kostenlosem Fristenrechner.",
       titelKurz: "Fristen und Verjährung 2026",
       titel: "Betriebskostenabrechnung 2026: Fristen und Verjährung: was Mieter wissen müssen",
       teaser: "Wann muss der Vermieter abrechnen, wie lange können Sie widersprechen und ab wann sind Nachforderungen verjährt? Der komplette Überblick über alle Fristen rund um die Betriebskostenabrechnung 2026.",
@@ -905,6 +910,8 @@ const ARTIKEL_ROH = [
     },
     {
       id: "heizkostenabrechnung-vermieterfehler-2026-leitfaden",
+      seoTitel: "Heizkostenabrechnung: 6 Fehler, die Mieter Geld kosten",
+      metaBeschreibung: "Verpasste Frist, falscher Verteilerschlüssel, CO₂-Kosten voll umgelegt: 6 typische Fehler in der Heizkostenabrechnung und wie Sie darauf reagieren.",
       titelKurz: "Heizkostenabrechnung: typische Fehler",
       titel: "Heizkostenabrechnung 2026: Die häufigsten Fehler der Vermieter und wie Sie als Mieter reagieren",
       teaser: "Nach Schätzung des Deutschen Mieterbunds enthält ein erheblicher Teil der Heizkostenabrechnungen Fehler, die Mieter bares Geld kosten. Dieser Leitfaden zeigt die typischen Stolperfallen 2026 und erklärt, wie Sie Ihre Abrechnung Schritt für Schritt prüfen.",
@@ -1059,6 +1066,7 @@ const ARTIKEL_ROH = [
     },
     {
       id: "bgh-urteile-mietrecht-nebenkosten-2026",
+      metaBeschreibung: "Von der Wirtschaftlichkeit der Kosten bis zur Grundsteuer: Was der Bundesgerichtshof 2026 zur Betriebskostenabrechnung entschieden hat.",
       titelKurz: "BGH-Urteile zu Nebenkosten 2026",
       titel: "Aktuelle BGH-Urteile Mietrecht Nebenkosten 2026: Das müssen Mieter wissen",
       teaser: "Der Bundesgerichtshof hat 2026 mehrere wichtige Entscheidungen zur Betriebskostenabrechnung getroffen, von der Wirtschaftlichkeit der Kosten bis zur Grundsteuer. Wir erklären dir verständlich, was sich geändert hat und wie du davon profitierst.",
@@ -1198,6 +1206,8 @@ const ARTIKEL_ROH = [
     },
     {
       id: "widerspruch-nebenkostenabrechnung",
+      seoTitel: "Widerspruch Nebenkostenabrechnung: Frist, Muster, Anleitung",
+      metaBeschreibung: "Bis wann Sie widersprechen müssen, was in den Brief gehört und wie Sie Schritt für Schritt vorgehen. Mit allen Fristen nach § 556 BGB.",
       titelKurz: "Widerspruch Nebenkostenabrechnung",
       titel: "Widerspruch Nebenkostenabrechnung 2026: Frist, Muster & Anleitung",
       teaser: "12 Monate Zeit, aber nur 30 Tage für die Nachzahlung, viele Mieter verwechseln diese Fristen. Was Sie jetzt wissen müssen.",
@@ -1282,6 +1292,8 @@ const ARTIKEL_ROH = [
     },
     {
       id: "betriebskostenspiegel-2024",
+      seoTitel: "Betriebskostenspiegel 2026: alle DMB-Werte je Kostenart",
+      metaBeschreibung: "2,67 € pro m² und Monat im Schnitt: die aktuellen DMB-Werte für alle Nebenkostenarten (Abrechnungsjahr 2024), mit Tabelle und Rechenbeispiel für 75 m².",
       // WICHTIG: Dieses Feld, nicht "titel", landet im <title> der Seite und
       // damit in der Google-Trefferliste (siehe artikelTitel() in
       // src/config/seo.js). Beim Ändern der Jahreszahl am 19.09.2026 hätte
@@ -1412,6 +1424,8 @@ const ARTIKEL_ROH = [
     // ─────────────────────────────────────────────────────────────────────
     {
       id: "umlageschluessel-nebenkostenabrechnung-pruefen",
+      seoTitel: "Umlageschlüssel prüfen: Fläche, Personen oder Verbrauch?",
+      metaBeschreibung: "Der Umlageschlüssel entscheidet mit, wie viel Sie zahlen. Was im Mietvertrag stehen muss, was ohne Vereinbarung gilt und wann er geändert werden darf.",
       titelKurz: "Umlageschlüssel prüfen",
       titel: "Umlageschlüssel in der Nebenkostenabrechnung prüfen: Welcher Maßstab gilt?",
       teaser: "Wohnfläche, Personenzahl oder Verbrauch: der Umlageschlüssel entscheidet mit darüber, wie viel Sie zahlen. Was im Mietvertrag stehen muss, was ohne Vereinbarung gilt und wann Ihr Vermieter den Schlüssel ändern darf.",
@@ -1450,6 +1464,7 @@ const ARTIKEL_ROH = [
     },
     {
       id: "belegeinsicht-nebenkostenabrechnung-verlangen",
+      metaBeschreibung: "Sie dürfen alle Originalbelege einsehen und die Nachzahlung bis dahin zurückhalten. Rechtsgrundlage, Ablauf und was der Vermieter nicht verlangen darf.",
       titelKurz: "Belegeinsicht verlangen",
       titel: "Belegeinsicht bei der Nebenkostenabrechnung verlangen: So gehen Sie vor",
       teaser: "Sie dürfen alle Originalbelege zu Ihrer Abrechnung einsehen und die Nachzahlung bis dahin zurückhalten. Rechtsgrundlage, Ablauf und was der Vermieter Ihnen nicht abverlangen darf.",
@@ -1483,6 +1498,8 @@ const ARTIKEL_ROH = [
     },
     {
       id: "nebenkosten-nachzahlung-nicht-zahlen",
+      seoTitel: "Nebenkosten-Nachzahlung nicht zahlen? Was Sie dürfen",
+      metaBeschreibung: "Wann Sie eine Nachzahlung zurückhalten dürfen, warum Zahlung unter Vorbehalt meist der bessere Weg ist und ab wann eine Kündigung droht.",
       titelKurz: "Nachzahlung nicht zahlen?",
       titel: "Nebenkosten-Nachzahlung nicht zahlen: Wann Sie dürfen und wann es riskant wird",
       teaser: "Eine hohe Nachforderung ist noch kein Grund, die Zahlung zu verweigern. Wann ein Zurückbehaltungsrecht besteht, warum die Zahlung unter Vorbehalt fast immer der bessere Weg ist und ab wann eine Kündigung droht.",
@@ -1552,6 +1569,7 @@ const ARTIKEL_ROH = [
     },
     {
       id: "nicht-umlagefaehige-nebenkosten",
+      metaBeschreibung: "Verwaltung, Reparaturen, Rücklagen: Diese Posten haben in keiner Nebenkostenabrechnung etwas zu suchen, egal was im Mietvertrag steht.",
       titelKurz: "Nicht umlagefähige Nebenkosten",
       titel: "Nicht umlagefähige Nebenkosten: Was Ihr Vermieter nicht abrechnen darf",
       teaser: "Verwaltungskosten, Reparaturen, Rücklagen: Es gibt Positionen, die in keiner Nebenkostenabrechnung etwas zu suchen haben, unabhängig davon, was im Mietvertrag steht. Die vollständige Übersicht mit Rechtsgrundlage.",
@@ -1587,6 +1605,7 @@ const ARTIKEL_ROH = [
     },
     {
       id: "sonstige-betriebskosten-nr-17-betrkv",
+      metaBeschreibung: "Der Auffangposten für alles, was sonst nirgends passt. Umlagefähig ist er nur unter einer klaren Bedingung, und die erfüllen viele Mietverträge nicht.",
       titelKurz: "Sonstige Betriebskosten (§ 2 Nr. 17)",
       titel: "„Sonstige Betriebskosten“ (§ 2 Nr. 17 BetrKV): Wann sie zulässig sind",
       teaser: "Der Auffangposten ist der häufigste Sammelplatz für Kosten, die nirgends sonst hineinpassen. Umlagefähig ist er nur unter einer klaren Bedingung und die erfüllen viele Mietverträge nicht.",
@@ -1624,6 +1643,7 @@ const ARTIKEL_ROH = [
     },
     {
       id: "aufzugskosten-nebenkostenabrechnung",
+      metaBeschreibung: "Ja, sagt der BGH. Es gibt aber eine Ausnahme, die viele nicht kennen, und eine klare Grenze zwischen umlagefähigem Betrieb und Reparatur.",
       titelKurz: "Aufzugskosten: zahlt das Erdgeschoss?",
       titel: "Aufzugskosten in der Nebenkostenabrechnung: Muss auch das Erdgeschoss zahlen?",
       teaser: "Ja: der Bundesgerichtshof hat das entschieden. Es gibt aber eine Ausnahme, die viele nicht kennen, und eine klare Grenze zwischen umlagefähigem Betrieb und nicht umlagefähiger Reparatur.",
@@ -1653,6 +1673,7 @@ const ARTIKEL_ROH = [
     },
     {
       id: "gartenpflege-nebenkostenabrechnung",
+      metaBeschreibung: "Rasenmähen ja, neue Bäume nein: Wo die Grenze zwischen Pflege und Neuanlage verläuft und was Sie zahlen müssen, auch ohne eigenen Gartenzugang.",
       titelKurz: "Gartenpflege in der Abrechnung",
       titel: "Gartenpflege in der Nebenkostenabrechnung: Was umlagefähig ist",
       teaser: "Rasenmähen ja, neue Bäume nein: Bei der Gartenpflege verläuft die Grenze zwischen laufender Pflege und einmaliger Neuanlage. Was das für Ihre Abrechnung bedeutet, auch ohne eigenen Gartenzugang.",
@@ -1712,6 +1733,7 @@ const ARTIKEL_ROH = [
     },
     {
       id: "leerstand-nebenkosten-wer-zahlt",
+      metaBeschreibung: "Nicht die verbliebenen Mieter: Laut BGH trägt der Vermieter die Betriebskosten leerstehender Wohnungen selbst und darf den Schlüssel dafür nicht ändern.",
       titelKurz: "Leerstand: wer zahlt die Nebenkosten?",
       titel: "Leerstand und Nebenkosten: Wer zahlt für leerstehende Wohnungen?",
       teaser: "Nicht die verbliebenen Mieter. Der Bundesgerichtshof hat klargestellt, dass der Vermieter die auf leerstehende Wohnungen entfallenden Betriebskosten selbst trägt und den Verteilerschlüssel dafür nicht ändern darf.",
@@ -1742,6 +1764,7 @@ const ARTIKEL_ROH = [
     },
     {
       id: "nebenkostenabrechnung-bei-auszug",
+      metaBeschreibung: "Auch nach dem Auszug kommt noch eine Abrechnung, und der Vermieter hat länger Zeit, als viele denken. Was gilt, wenn er deshalb die Kaution einbehält.",
       titelKurz: "Nebenkostenabrechnung nach Auszug",
       titel: "Nebenkostenabrechnung nach dem Auszug: Fristen, Kaution und Rückforderung",
       teaser: "Auch nach dem Auszug bekommen Sie noch eine Abrechnung und der Vermieter hat dafür deutlich länger Zeit, als die meisten annehmen. Was gilt, wenn er die Kaution deshalb einbehält.",
@@ -1774,6 +1797,7 @@ const ARTIKEL_ROH = [
     },
     {
       id: "nebenkostenabrechnung-formell-unwirksam",
+      metaBeschreibung: "Fehlt eine der vier Mindestangaben, ist die ganze Abrechnung angreifbar, egal ob die Zahlen stimmen. So prüfen Sie die Form in fünf Minuten.",
       titelKurz: "Abrechnung formell unwirksam?",
       titel: "Nebenkostenabrechnung formell unwirksam: Diese vier Angaben müssen drinstehen",
       teaser: "Bevor Sie einzelne Beträge prüfen, lohnt der Blick auf die Form. Fehlt eine der vier Mindestangaben, ist die Abrechnung insgesamt angreifbar, unabhängig davon, ob die Zahlen stimmen.",

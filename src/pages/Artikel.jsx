@@ -4,6 +4,9 @@
 import { THEME } from "../config/theme.js";
 import { ARTIKEL } from "../artikel.js";
 import { BUSINESS } from "../config/business.js";
+// Echte Links statt div/button (17.10.2026), siehe Verweis.jsx.
+import Verweis from "../components/ui/Verweis.jsx";
+import { WERKZEUGE } from "../config/werkzeuge.js";
 import Nav from "../components/layout/Nav.jsx";
 import LegalFooter from "../components/layout/LegalFooter.jsx";
 
@@ -45,13 +48,25 @@ export default function Artikel({ navigateTo, navigateToArtikel, ratgeberArtikel
   const C = THEME.color;
   const PAGE_MAX = THEME.layout.pageMax;
   const artikel = ARTIKEL.find(a => a.id === ratgeberArtikel);
-  if (!artikel) return <div style={{ fontFamily: THEME.font.body, padding: 40 }}><p>Artikel nicht gefunden.</p></div>;
+  // Unbekannter Pfad (17.10.2026): Seit vercel.json die Artikel-Rewrites
+  // nicht mehr hat, liefert Vercel für unbekannte /ratgeber/…-Adressen beim
+  // ersten Aufruf eine echte 404-Seite. Diese Anzeige greift nur noch bei
+  // Navigation innerhalb der App; App.jsx setzt dann noindex.
+  if (!artikel) return (
+    <div style={{ fontFamily: THEME.font.body, background: C.bg, color: C.text, minHeight: "100vh" }}>
+      <Nav activeStep="ratgeber" navigateTo={navigateTo} />
+      <div style={{ maxWidth: PAGE_MAX, margin: "0 auto", padding: "40px 20px" }}>
+        <h1 style={{ fontFamily: THEME.font.heading, fontSize: 22, fontWeight: 600 }}>Artikel nicht gefunden</h1>
+        <p style={{ fontSize: 14, color: C.textMuted, lineHeight: 1.7 }}>Diesen Artikel gibt es nicht (mehr). Alle Artikel findest du im <Verweis href="/ratgeber" onNavigate={() => navigateTo("ratgeber")} style={{ color: C.brand, textDecoration: "underline" }}>Ratgeber</Verweis>.</p>
+      </div>
+    </div>
+  );
 
   return (
     <div style={{ fontFamily: THEME.font.body, background: C.bg, color: C.text, minHeight: "100vh" }}>
       <Nav activeStep="ratgeber" navigateTo={navigateTo} />
       <div style={{ maxWidth: PAGE_MAX, margin: "0 auto", padding: "24px 20px 60px" }}>
-        <button onClick={() => navigateTo("ratgeber")} style={{ background: "none", border: "none", color: C.textMuted, cursor: "pointer", fontSize: 13, padding: "0 0 20px" }}>← Ratgeber</button>
+        <Verweis href="/ratgeber" onNavigate={() => navigateTo("ratgeber")} style={{ display: "inline-block", color: C.textMuted, cursor: "pointer", fontSize: 13, padding: "0 0 20px" }}>← Ratgeber</Verweis>
         <img src={artikel.bild} alt={artikel.bildAlt} style={{ width: "100%", height: 220, objectFit: "cover", borderRadius: THEME.radius.lg, marginBottom: 24 }} />
         <div style={{ display: "flex", gap: 10, alignItems: "center", marginBottom: 12 }}>
           <span style={{ background: C.brandBg, color: C.brand, fontSize: 10, fontWeight: 700, padding: "3px 10px", borderRadius: 4 }}>{artikel.kategorie}</span>
@@ -166,36 +181,51 @@ export default function Artikel({ navigateTo, navigateToArtikel, ratgeberArtikel
             const ziel = ARTIKEL.find(a => a.id === block.ziel);
             if (!ziel) return null;
             return (
-              <div key={i} onClick={() => navigateToArtikel(ziel.id)}
+              <Verweis key={i} href={"/ratgeber/" + ziel.id} onNavigate={() => navigateToArtikel(ziel.id)}
                 style={{ display: "flex", gap: 12, alignItems: "center", background: C.accentBg, borderLeft: "3px solid " + C.accent, borderRadius: THEME.radius.sm, padding: "14px 16px", margin: "0 0 20px", cursor: "pointer" }}>
                 <div style={{ flex: 1 }}>
                   <div style={{ fontSize: 10, color: C.accent, fontWeight: 700, textTransform: "uppercase", marginBottom: 3 }}>Weiterführender Artikel</div>
                   <div style={{ fontSize: 13, color: C.text, lineHeight: 1.5 }}>{block.text}</div>
                 </div>
                 <span style={{ color: C.accent, fontSize: 16 }}>→</span>
-              </div>
+              </Verweis>
             );
           }
           if (block.typ === "cta") return (
             <div key={i} style={{ background: C.brand, borderRadius: THEME.radius.md, padding: "18px 20px", margin: "24px 0", textAlign: "center" }}>
               <p style={{ color: "#fff", fontSize: 14, margin: "0 0 12px", lineHeight: 1.6 }}>{block.text}</p>
-              <button onClick={() => navigateTo("wohnung")} style={{ background: "#fff", border: "none", borderRadius: 6, padding: "10px 24px", fontSize: 14, fontFamily: THEME.font.heading, fontWeight: 600, color: C.brand, cursor: "pointer" }}>Kostenlos prüfen →</button>
+              <Verweis href="/pruefen/wohnung" onNavigate={() => navigateTo("wohnung")} style={{ display: "inline-block", background: "#fff", borderRadius: 6, padding: "10px 24px", fontSize: 14, fontFamily: THEME.font.heading, fontWeight: 600, color: C.brand, cursor: "pointer" }}>Kostenlos prüfen →</Verweis>
             </div>
           );
           return null;
         })}
 
+        {/* Kostenlose Werkzeuge (17.10.2026): interne Verlinkung von jedem
+            Artikel auf die drei Werkzeug-Seiten, siehe werkzeuge.js. */}
+        <div style={{ borderTop: "1px solid " + C.border, paddingTop: 24, marginTop: 32 }}>
+          <div style={{ fontSize: 13, fontWeight: 700, color: C.text, marginBottom: 12, textTransform: "uppercase" }}>Kostenlose Werkzeuge</div>
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))", gap: 10 }}>
+            {WERKZEUGE.map(w => (
+              <Verweis key={w.step} href={w.pfad} onNavigate={() => navigateTo(w.step)}
+                style={{ display: "block", padding: "12px 14px", border: "1px solid " + C.border, borderRadius: THEME.radius.sm }}>
+                <div style={{ fontSize: 13, fontWeight: 600, color: C.brand, marginBottom: 2 }}>{w.menue} →</div>
+                <div style={{ fontSize: 11.5, color: C.textDim }}>{w.kurz}</div>
+              </Verweis>
+            ))}
+          </div>
+        </div>
+
         <div style={{ borderTop: "1px solid " + C.border, paddingTop: 24, marginTop: 32 }}>
           <div style={{ fontSize: 13, fontWeight: 700, color: C.text, marginBottom: 16, textTransform: "uppercase" }}>Weitere Artikel</div>
           {ARTIKEL.filter(a => a.id !== artikel.id).map(a => (
-            <div key={a.id} onClick={() => navigateToArtikel(a.id)}
+            <Verweis key={a.id} href={"/ratgeber/" + a.id} onNavigate={() => navigateToArtikel(a.id)}
               style={{ display: "flex", gap: 12, marginBottom: 12, cursor: "pointer", padding: 10, borderRadius: THEME.radius.sm, border: "1px solid " + C.border }}>
               <img src={a.bild} alt={a.bildAlt} style={{ width: 64, height: 64, objectFit: "cover", borderRadius: 6, flexShrink: 0 }} loading="lazy" />
               <div>
                 <div style={{ fontSize: 13, fontWeight: 600, color: C.text, lineHeight: 1.4, marginBottom: 4 }}>{a.titel}</div>
                 <div style={{ fontSize: 11, color: C.textDim }}>{a.datum} · {a.lesezeit}</div>
               </div>
-            </div>
+            </Verweis>
           ))}
         </div>
       </div>
