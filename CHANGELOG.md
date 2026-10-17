@@ -2,6 +2,14 @@
 
 Alle wesentlichen Änderungen an diesem Projekt, mit Datum und Begründung. Dient der Nachvollziehbarkeit, damit auch ohne KI-Unterstützung verstanden werden kann, warum etwas so ist, wie es ist.
 
+## 17.10.2026 — VORSCHAU (nicht live): Startseite entschlackt, Menü mit Untermenüs
+
+Nur auf dem Branch `startseite-vorschau`, Freigabe durch Stefan steht aus.
+
+- **Menü mit Untermenüs** (`Nav.jsx`): „Prüfen ▾“ (die drei Werkzeuge), „Ratgeber ▾“ (Alle Artikel + fünf meistgesuchte Themen laut Search Console), FAQ, Über uns. Mobil als gegliederte Liste. Alle Links stehen als echtes `<a href>` immer im DOM (nur eingeklappt) — übliches Menü, kein versteckter Text.
+- **Startseite** (`Welcome.jsx`): H1-Zeile 2 „kostenlos online prüfen“ statt „in 3 Schritten prüfen“ (Suchbegriffe sichtbar im Text). Block „Mehr erfahren“ entfällt (steht jetzt im Menü). Beispielergebnis eingeklappt. Preisblock nennt beide Briefe der 12,99-€-Stufe ausdrücklich (Widerspruch + Belegeinsicht nach § 259 BGB). Badge ohne doppeltes „Für Mieter“. Vorgerenderter Text in `prerender.mjs` angeglichen.
+- **Versteckter Text (weiße Schrift auf weißem Grund) bewusst NICHT umgesetzt:** Verstößt gegen Googles Spam-Richtlinien („Hidden text“) und kann zu einer manuellen Maßnahme bis zur Entfernung aus dem Index führen. Siehe auch den Kommentar zu `.vorab` in `index.html`.
+
 ## 17.10.2026 — Suchergebnis-Snippets: neue Titel und Beschreibungen für 17 Artikel
 
 ### Anlass
