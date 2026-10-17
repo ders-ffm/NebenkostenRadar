@@ -17,7 +17,23 @@
 //
 // Benötigt Umgebungsvariable STRIPE_SECRET_KEY (im Vercel-Dashboard unter
 // Environment Variables eintragen, NIEMALS im Code).
+//
+// ERGÄNZT 17.10.2026 (siehe CHANGELOG.md): Die Stufe ("auswertung"/"voll")
+// stammt aus dem Browser (save-report.js) und wurde hier ungeprüft
+// zurückgegeben. Wer vor dem Speichern "voll" setzte, aber über den
+// 9,99-€-Link bezahlte, bekam den Musterbrief zum kleinen Preis. Jetzt wird
+// die Stufe gegen den tatsächlich bezahlten Betrag geprüft.
 // ─────────────────────────────────────────────────────────────────────────
+
+// Siehe gleichnamige Funktion in send-email.js (dort ausführlich erklärt).
+// ÄNDERN SICH DIE PREISE, MUSS DIESE GRENZE MIT.
+const STUFE_VOLL_AB_CENT = 1149;
+function stufeLautZahlung(gespeicherteStufe, session) {
+  if (gespeicherteStufe !== "voll") return "auswertung";
+  const betrag = Number(session.amount_subtotal ?? session.amount_total ?? 0);
+  return betrag >= STUFE_VOLL_AB_CENT ? "voll" : "auswertung";
+}
+
 export default async function handler(req, res) {
   res.setHeader("Access-Control-Allow-Origin", "https://nebenkostenradar.com");
   if (req.method !== "GET") return res.status(405).end();
@@ -33,7 +49,7 @@ export default async function handler(req, res) {
 
   try {
     // 1. Zahlung bei Stripe verifizieren
-    const stripeRes = await fetch("https://api.stripe.com/v1/checkout/sessions/" + stripeSessionId, {
+    const stripeRes = await fetch("https://api.stripe.com/v1/checkout/sessions/" + encodeURIComponent(stripeSessionId), {
       headers: { Authorization: "Bearer " + stripeKey },
     });
     if (!stripeRes.ok) return res.status(404).json({ error: "Session nicht gefunden" });
@@ -65,7 +81,7 @@ export default async function handler(req, res) {
       werte: row.werte,
       wohnung: row.wohnung,
       adressen: row.adressen,
-      stufe: row.stufe,
+      stufe: stufeLautZahlung(row.stufe, session),
       // Eigene, per Doppel-Eingabe geprüfte E-Mail-Adresse (siehe Adressen.jsx) —
       // zuverlässiger als die von Stripe, die nicht gegengeprüft wird.
       email: row.adressen?.email || null,
@@ -73,6 +89,7 @@ export default async function handler(req, res) {
     });
   } catch (err) {
     console.error("get-report Fehler:", err.message);
-    return res.status(500).json({ error: err.message });
+    // Keine internen Fehlertexte nach außen geben (17.10.2026).
+    return res.status(500).json({ error: "Interner Fehler" });
   }
 }
