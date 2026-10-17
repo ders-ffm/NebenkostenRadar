@@ -1,83 +1,19 @@
 // ─────────────────────────────────────────────────────────────────────────
 // AGB.jsx — URL: "/agb". Angepasst an 2-Stufen-Preismodell und PDF-Auslieferung.
+// 17.10.2026: Text ausgelagert nach src/config/vertrag.js (wird auch für die
+// Vertragsbestätigungs-Mail nach dem Kauf gebraucht, § 312f BGB).
 // ─────────────────────────────────────────────────────────────────────────
 import { THEME } from "../config/theme.js";
 // Fußzeile auch auf den Rechtsseiten (17.10.2026): Dort steht der Link
 // "Cookie-Einstellungen" zum Widerruf der Einwilligung (Art. 7 Abs. 3 DSGVO).
 import LegalFooter from "../components/layout/LegalFooter.jsx";
-import { euro } from "../lib/format.js";
-import { BUSINESS } from "../config/business.js";
+import { agbAbschnitte, AGB_STAND } from "../config/vertrag.js";
 
 export default function AGB({ navigateTo }) {
   const C = THEME.color;
-  const ABSCHNITTE = [
-    { t: "§ 1 Geltungsbereich", lines: [
-      "Diese AGB gelten für alle Käufe digitaler Inhalte über nebenkostenradar.com.",
-      "Anbieter: NebenkostenRadar (nebenkostenradar.com), Inhaber: Stefan Hennig, Ludwigstr. 33-37, 60327 Frankfurt am Main, support@nebenkostenradar.com",
-    ]},
-    { t: "§ 2 Vertragsgegenstand", lines: [
-      "Gegenstand ist die einmalige Erstellung und Zusendung eines digitalen PDF-Prüfberichts zur Nebenkostenabrechnung, in zwei Ausführungen:",
-      "Auswertung (" + euro(BUSINESS.PREIS_AUSWERTUNG) + "): 1-seitiges PDF mit vollständiger Positionsübersicht, Richtwerten und Begründungen.",
-      "Auswertung + Brief (" + euro(BUSINESS.PREIS_VOLL) + "): zusätzlich eine 2. PDF-Seite mit versandfertigem Musterbrief an den Vermieter sowie eine 3. PDF-Seite mit einem unverbindlichen Hinweis zu möglicherweise steuerlich absetzbaren Positionen nach § 35a EStG inkl. Anfrage-Vorlage an den Vermieter (reine Rechenhilfe, keine Steuerberatung).",
-      "Zur Erleichterung der Eingabe kann optional ein Foto- oder PDF-Upload genutzt werden, der Kostenpositionen automatisiert vorausfüllt. Die vollständige manuelle Eingabe steht davon unabhängig immer zur Verfügung und ist nicht Voraussetzung für den Kauf.",
-    ]},
-    { t: "§ 3 Vertragsschluss und Vertragsspeicherung", lines: [
-      "Der Vertrag kommt mit Abschluss der Zahlung über Stripe zustande.",
-      "Mit Klick auf 'Jetzt kaufen' und Abschluss der Zahlung erklärt der Käufer sein verbindliches Angebot.",
-      "Vertragssprache: Deutsch.",
-    ]},
-    { t: "§ 4 Preise und Zahlung", lines: [
-      "Die Preise betragen " + euro(BUSINESS.PREIS_AUSWERTUNG) + " bzw. " + euro(BUSINESS.PREIS_VOLL) + ". Stefan Hennig ist Kleinunternehmer gemäß § 19 UStG; es wird keine Umsatzsteuer ausgewiesen.",
-      "Zahlung über Stripe Payments Europe, Ltd. Einmalzahlung: kein Abo, keine Folgekosten.",
-      "Nach jeder Zahlung erhältst du automatisch einen Zahlungsbeleg per E-Mail. Auf Anfrage stellen wir gerne eine Rechnung aus: support@nebenkostenradar.com",
-    ]},
-    { t: "§ 5 Lieferung und Zugang", lines: [
-      "Das PDF wird nach erfolgreicher Zahlung automatisch zum Download bereitgestellt und zusätzlich per E-Mail zugesandt.",
-      "Es handelt sich um einen einmaligen Kauf: kein Abonnement, kein Dauerschuldverhältnis.",
-    ]},
-    { t: "§ 6 Widerrufsrecht", lines: [
-      "Verbrauchern steht grundsätzlich ein gesetzliches Widerrufsrecht zu: Du hast das Recht, binnen vierzehn Tagen ohne Angabe von Gründen diesen Vertrag zu widerrufen. Die Widerrufsfrist beträgt vierzehn Tage ab dem Tag des Vertragsschlusses.",
-      "Um dein Widerrufsrecht auszuüben, musst du uns (NebenkostenRadar, Stefan Hennig, Ludwigstr. 33-37, 60327 Frankfurt am Main, support@nebenkostenradar.com) mittels einer eindeutigen Erklärung (z. B. per E-Mail) über deinen Entschluss, diesen Vertrag zu widerrufen, informieren. Eine bestimmte Form ist dafür nicht vorgeschrieben. Zur Wahrung der Widerrufsfrist reicht es aus, dass du die Mitteilung über die Ausübung des Widerrufsrechts vor Ablauf der Widerrufsfrist absendest.",
-      "Folgen des Widerrufs: Im Falle eines wirksamen Widerrufs erstatten wir dir alle bereits erhaltenen Zahlungen unverzüglich, spätestens binnen 14 Tagen ab dem Tag, an dem deine Widerrufserklärung bei uns eingegangen ist. Für die Rückzahlung verwenden wir dasselbe Zahlungsmittel, das du bei der ursprünglichen Zahlung genutzt hast, sofern nicht ausdrücklich etwas anderes vereinbart wurde; es werden dir dafür keine zusätzlichen Entgelte berechnet.",
-      "Vorzeitiges Erlöschen bei digitalen Inhalten (§ 356 Abs. 5 BGB): Da der Prüfbericht ein digitaler Inhalt ist, der nicht auf einem körperlichen Datenträger geliefert wird, erlischt dein Widerrufsrecht vorzeitig, sobald wir mit der Erstellung und Bereitstellung des PDFs begonnen haben, vorausgesetzt, du hast zuvor ausdrücklich zugestimmt, dass wir vor Ablauf der Widerrufsfrist mit der Ausführung beginnen, und gleichzeitig zur Kenntnis genommen, dass du dadurch dein Widerrufsrecht verlierst, sobald wir mit der Ausführung begonnen haben.",
-      "Diese Zustimmung und Kenntnisnahme erteilst du im Bestellprozess durch Aktivierung der entsprechenden Checkbox vor Kaufabschluss. Ohne Aktivierung ist ein Kauf nicht möglich.",
-    ]},
-    // ── MUSTER-WIDERRUFSFORMULAR, ergänzt 13.09.2026 im totalen Test ────────
-    //
-    // WAS GEFEHLT HAT: Die Widerrufsbelehrung in § 6 war inhaltlich vollständig
-    // und sauber, aber das Muster-Widerrufsformular fehlte. Nach Art. 246a § 1
-    // Abs. 2 Satz 1 Nr. 1 EGBGB muss der Unternehmer es zur Verfügung stellen,
-    // der Wortlaut steht in Anlage 2 zu dieser Vorschrift.
-    //
-    // Das gilt auch hier, obwohl das Widerrufsrecht nach § 356 Abs. 5 BGB
-    // vorzeitig erlischt: Die Informationspflicht besteht beim Vertragsschluss,
-    // das Erlöschen tritt erst danach ein. Ein Fehlen ist ein formaler Mangel
-    // und abmahnfähig.
-    //
-    // Der Text folgt der Anlage 2 wörtlich, nur die Anbieterdaten sind
-    // eingesetzt. Beim Ändern von Anschrift oder E-Mail bitte auch § 6 oben
-    // und das Impressum angleichen, die Angaben müssen übereinstimmen.
-    { t: "§ 6a Muster-Widerrufsformular", lines: [
-      "Wenn du den Vertrag widerrufen willst, kannst du dieses Formular ausfüllen und zurücksenden. Du musst es nicht benutzen, eine formlose eindeutige Erklärung genügt ebenfalls.",
-      "An: NebenkostenRadar, Stefan Hennig, Ludwigstr. 33-37, 60327 Frankfurt am Main, support@nebenkostenradar.com",
-      "Hiermit widerrufe(n) ich/wir (*) den von mir/uns (*) abgeschlossenen Vertrag über den Kauf der folgenden Waren (*) / die Erbringung der folgenden Dienstleistung (*)",
-      "Bestellt am (*) / erhalten am (*)",
-      "Name des/der Verbraucher(s)",
-      "Anschrift des/der Verbraucher(s)",
-      "Unterschrift des/der Verbraucher(s) (nur bei Mitteilung auf Papier)",
-      "Datum",
-      "(*) Unzutreffendes streichen.",
-    ]},
-    { t: "§ 7 Haftungsausschluss", lines: [
-      "Der Prüfbericht ersetzt keine Rechtsberatung im Sinne des RDG. Eine Haftung für rechtliche Richtigkeit oder Vollständigkeit der Analyseergebnisse wird ausgeschlossen.",
-      "Für rechtssichere Prüfung empfehlen wir den Deutschen Mieterbund oder einen Rechtsanwalt.",
-      "Die optionale automatische Foto-/PDF-Erkennung ist eine Ausfüllhilfe und ersetzt nicht die eigene Prüfung der Angaben durch den Käufer. Erkannte Werte werden vor dem Kauf im Formular angezeigt und müssen vom Käufer bestätigt bzw. korrigiert werden; für Fehler oder Auslassungen der automatischen Erkennung selbst wird keine Haftung übernommen.",
-    ]},
-    { t: "§ 8 Schlussbestimmungen", lines: [
-      "Es gilt deutsches Recht. Gerichtsstand ist Frankfurt am Main, sofern gesetzlich zulässig.",
-      "Sollten einzelne Bestimmungen unwirksam sein, bleibt die Wirksamkeit der übrigen unberührt.",
-    ]},
-  ];
+  // Inhalt seit 17.10.2026 aus src/config/vertrag.js (eine Quelle für
+  // Webseite UND Vertragsbestätigungs-Mail, siehe dort).
+  const ABSCHNITTE = agbAbschnitte();
 
   return (
     <div style={{ fontFamily: THEME.font.body, background: C.bg, color: C.text, minHeight: "100vh" }}>
@@ -95,7 +31,7 @@ export default function AGB({ navigateTo }) {
         <div style={{ fontSize: 11, color: C.textDim, marginTop: 16 }}>{/* Festes Datum (17.10.2026): Vorher stand hier immer das heutige Datum,
             dadurch war nie erkennbar, welche Fassung ein Kunde akzeptiert hat.
             Bei jeder inhaltlichen Änderung der AGB hier mit anpassen. */}
-        Stand: 13.09.2026 · Stefan Hennig, Frankfurt am Main</div>
+        Stand: {AGB_STAND} · Stefan Hennig, Frankfurt am Main</div>
       </div>
       <LegalFooter navigateTo={navigateTo} />
     </div>
