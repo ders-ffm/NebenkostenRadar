@@ -210,14 +210,27 @@ async function main() {
       verstoesse.push(`Artikelbilder: ${bilder.length} bild-Einträge, aber ${altTexte.length} bildAlt-Einträge`);
   }
 
-  // FAQPage-Markup gehört genau auf /faq und nirgendwo sonst: strukturierte
-  // Daten ohne passenden sichtbaren Inhalt wertet Google ab.
+  // FAQPage-Markup gehört nur auf Seiten, auf denen die Fragen auch sichtbar
+  // stehen: strukturierte Daten ohne passenden sichtbaren Inhalt wertet
+  // Google ab. Erlaubt sind /faq und (seit 17.10.2026) die Werkzeug-Seiten
+  // mit eigenem Fragenblock. Für diese wird zusätzlich geprüft, dass jede
+  // Frage aus dem Markup auch im sichtbaren Text vorkommt.
+  const { WERKZEUGE } = await import("../src/config/werkzeuge.js");
+  const FAQ_ERLAUBT = new Set(["/faq", ...WERKZEUGE.map(w => w.pfad)]);
   const faqHtml = lies("/faq");
   if (!faqHtml || !faqHtml.includes("FAQPage")) verstoesse.push("/faq: FAQPage-Markup fehlt");
   for (const pfad of alle) {
-    if (pfad === "/faq") continue;
     const html = lies(pfad);
-    if (html && html.includes("FAQPage")) verstoesse.push(`${pfad}: FAQPage-Markup gehört hier nicht hin`);
+    if (!html || !html.includes("FAQPage")) continue;
+    if (!FAQ_ERLAUBT.has(pfad)) { verstoesse.push(`${pfad}: FAQPage-Markup gehört hier nicht hin`); continue; }
+    const w = WERKZEUGE.find(x => x.pfad === pfad);
+    if (w) {
+      const sichtbar = html.split('<div id="root">')[1] || "";
+      for (const f of w.faq) {
+        const esc = f.frage.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
+        if (!sichtbar.includes(esc)) verstoesse.push(`${pfad}: FAQ-Frage nicht sichtbar: ${f.frage}`);
+      }
+    }
   }
 
   // ─────────────────────────────────────────────────────────────────────────
