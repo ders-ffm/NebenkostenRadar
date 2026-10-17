@@ -57,12 +57,12 @@ export const WERKZEUGE = [
         schritte: [
           "Abrechnung als Foto oder PDF hochladen. Die Posten werden automatisch erkannt, du bestätigst sie kurz.",
           "Kostenlose Basisanalyse: Für jeden Posten siehst du, ob er zulässig ist und wie er im Vergleich liegt. Ohne Konto, ohne Zahlung.",
-          "Wenn du willst: Auswertung als PDF oder zusätzlich die fertigen Briefe an deinen Vermieter.",
+          "Wenn du willst: Auswertung als PDF oder zusätzlich den fertigen Brief an deinen Vermieter.",
         ],
       },
       {
         h2: "Was es kostet",
-        text: () => `Die Basisanalyse ist kostenlos. Die Auswertung aller Posten als PDF kostet einmalig ${euro(BUSINESS.PREIS_AUSWERTUNG)}. Für ${euro(BUSINESS.PREIS_VOLL)} bekommst du zusätzlich zwei fertige Schreiben: den Widerspruch mit allen Beanstandungen und die Aufforderung zur Belegeinsicht nach § 259 BGB, dazu einen Hinweis auf steuerlich absetzbare Posten (§ 35a EStG). Kein Abo, keine Registrierung.`,
+        text: () => `Die Basisanalyse ist kostenlos. Die Auswertung aller Posten als PDF kostet einmalig ${euro(BUSINESS.PREIS_AUSWERTUNG)}. Für ${euro(BUSINESS.PREIS_VOLL)} bekommst du zusätzlich einen fertigen Brief an deinen Vermieter, passend zum Ergebnis: den Widerspruch mit allen Beanstandungen oder, wenn nichts auffällt, die Aufforderung zur Belegeinsicht nach § 259 BGB. Dazu kommt ein Hinweis auf steuerlich absetzbare Posten (§ 35a EStG). Kein Abo, keine Registrierung.`,
       },
       {
         h2: "Was wir nicht können",
@@ -70,7 +70,7 @@ export const WERKZEUGE = [
       },
     ],
     faq: [
-      { frage: "Ist die Prüfung der Nebenkostenabrechnung wirklich kostenlos?", antwort: "Ja, die Basisanalyse mit der Bewertung jedes Postens ist kostenlos und ohne Registrierung. Kostenpflichtig sind nur das PDF mit der ausführlichen Auswertung und die fertigen Briefe an den Vermieter." },
+      { frage: "Ist die Prüfung der Nebenkostenabrechnung wirklich kostenlos?", antwort: "Ja, die Basisanalyse mit der Bewertung jedes Postens ist kostenlos und ohne Registrierung. Kostenpflichtig sind nur das PDF mit der ausführlichen Auswertung und der fertige Brief an den Vermieter." },
       { frage: "Welche Unterlagen brauche ich?", antwort: "Die Nebenkostenabrechnung selbst, als Foto oder PDF, und deine Wohnfläche. Für die Heizkosten hilft die Heizkostenabrechnung des Messdienstes, falls sie separat beiliegt." },
       { frage: "Bis wann kann ich der Abrechnung widersprechen?", antwort: "Einwendungen musst du bis zum Ablauf des zwölften Monats nach Zugang der Abrechnung mitteilen (§ 556 Abs. 3 Satz 5 BGB). Das genaue Datum für deinen Fall rechnet unser kostenloser Fristenrechner aus." },
       { frage: "Was passiert mit meiner Abrechnung?", antwort: "Fotos oder PDF werden nur zum Auslesen der Beträge verarbeitet (über die KI von Anthropic) und danach nicht gespeichert. Deine Eingaben speichern wir erst, wenn du eine kostenpflichtige Auswertung bestellst, und dann höchstens 12 Monate. Details stehen in der Datenschutzerklärung." },
