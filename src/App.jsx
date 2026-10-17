@@ -65,6 +65,7 @@ const Download = lazy(() => import("./pages/Download.jsx"));
 const Konto = lazy(() => import("./pages/Konto.jsx"));
 import Danke from "./pages/Danke.jsx";
 import Impressum from "./pages/Impressum.jsx";
+import Widerruf from "./pages/Widerruf.jsx";
 import AGB from "./pages/AGB.jsx";
 import Datenschutz from "./pages/Datenschutz.jsx";
 import Ratgeber from "./pages/Ratgeber.jsx";
@@ -488,6 +489,7 @@ export default function App() {
     if (step === "impressum") return <Impressum {...pageProps} />;
     if (step === "agb") return <AGB {...pageProps} />;
     if (step === "datenschutz") return <Datenschutz {...pageProps} />;
+    if (step === "widerruf") return <Widerruf {...pageProps} />;
     if (step === "faq") return <FAQ {...pageProps} />;
     if (step === "ratgeber") return <Ratgeber {...pageProps} />;
     if (step === "artikel") return <Artikel {...pageProps} />;
