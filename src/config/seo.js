@@ -32,6 +32,8 @@
 // Werte unten halten sich daran.
 // ─────────────────────────────────────────────────────────────────────────
 
+import { WERKZEUGE } from "./werkzeuge.js";
+
 export const BASIS_URL = "https://nebenkostenradar.com";
 
 // Vorschaubild für geteilte Links (WhatsApp, Facebook, LinkedIn, Slack).
@@ -56,6 +58,10 @@ export const SEO_STANDARD = {
 
 export const SEO_SEITEN = {
   welcome: SEO_STANDARD,
+
+  // Werkzeug-Seiten (17.10.2026): Titel und Beschreibung stehen bei den
+  // Inhalten in src/config/werkzeuge.js und werden hier nur übernommen.
+  ...Object.fromEntries(WERKZEUGE.map(w => [w.step, { titel: w.seoTitel, beschreibung: w.seoBeschreibung }])),
 
   ratgeber: {
     titel: "Ratgeber Nebenkosten & Mietrecht | NebenkostenRadar",
@@ -142,11 +148,27 @@ const TITEL_ZUSATZ = " | NebenkostenRadar";
 const BESCHREIBUNG_MAX = 200;
 const BESCHREIBUNG_MIN_SINNVOLL = 120;
 
+// SNIPPET-FELDER (17.10.2026, nach Search-Console-Auswertung):
+// Mehrere Artikel standen auf Position 7 bis 9 und bekamen trotzdem keinen
+// einzigen Klick (z. B. Heizkosten-Fehler: 86 Impressionen, Position 7,8).
+// Titel und Beschreibung im Suchergebnis haben nicht neugierig gemacht.
+// Zwei optionale Felder pro Artikel:
+//   seoTitel          — ersetzt den kompletten <title> (OHNE Markenzusatz,
+//                       weil der Zusatz sonst die Kernbegriffe verdrängt;
+//                       Google ergänzt den Seitennamen meist selbst).
+//                       Höchstens 60 Zeichen.
+//   metaBeschreibung  — ersetzt die aus dem Teaser gebildete Beschreibung.
+//                       Höchstens 155 Zeichen, konkret, mit Nutzen.
+// Leitlinie "seriöse Neugier" (Stefan, 17.10.2026): Zahlen, Fragen,
+// konkreter Nutzen ja — aber nur, was der Artikel tatsächlich einlöst.
+// Keine unbelegten Prozentzahlen, keine Versprechen.
 export function artikelTitel(artikel) {
+  if (artikel.seoTitel) return artikel.seoTitel;
   return (artikel.titelKurz || artikel.titel) + TITEL_ZUSATZ;
 }
 
 export function artikelBeschreibung(artikel) {
+  if (artikel.metaBeschreibung) return artikel.metaBeschreibung;
   const teaser = (artikel.teaser || "").trim();
   if (teaser.length <= BESCHREIBUNG_MAX) return teaser;
 
