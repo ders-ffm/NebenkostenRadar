@@ -310,6 +310,7 @@ function buildArticleHtml(template, artikel, artikelById) {
       <p><a href="/ratgeber">← Ratgeber</a></p>
       <p>${escapeHtml(artikel.kategorie)} · ${escapeHtml(artikel.datum)} · ${escapeHtml(artikel.lesezeit)}</p>
       <h1>${escapeHtml(artikel.titel)}</h1>
+      <p>Mit Unterstützung künstlicher Intelligenz erstellt. Kein Ersatz für eine Rechtsberatung.</p>
       ${inhaltHtml}
       <p>Kostenlose Werkzeuge: ${WERKZEUGE.map(w => `<a href="${w.pfad}">${escapeHtml(w.menue)}</a>`).join(" · ")}</p>
     </article>
