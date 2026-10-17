@@ -2,6 +2,14 @@
 
 Alle wesentlichen Änderungen an diesem Projekt, mit Datum und Begründung. Dient der Nachvollziehbarkeit, damit auch ohne KI-Unterstützung verstanden werden kann, warum etwas so ist, wie es ist.
 
+## 17.10.2026 — Startseite entschlackt, Menü mit Untermenüs
+
+Von Stefan am 17.10.2026 nach Ansicht der Vorschau freigegeben (Pull Request #4).
+
+- **Menü mit Untermenüs** (`Nav.jsx`): „Prüfen ▾“ (die drei Werkzeuge), „Ratgeber ▾“ (Alle Artikel + fünf meistgesuchte Themen laut Search Console), FAQ, Über uns. Mobil als gegliederte Liste. Alle Links stehen als echtes `<a href>` immer im DOM (nur eingeklappt) — übliches Menü, kein versteckter Text.
+- **Startseite** (`Welcome.jsx`): H1-Zeile 2 „kostenlos online prüfen“ statt „in 3 Schritten prüfen“ (Suchbegriffe sichtbar im Text). Block „Mehr erfahren“ entfällt (steht jetzt im Menü). Beispielergebnis eingeklappt. Preisblock beschreibt den Brief der 12,99-€-Stufe konkret: ein Brief, je nach Ergebnis Widerspruch oder Aufforderung zur Belegeinsicht nach § 259 BGB. **Korrektur im Compliance-Check (17.10.2026):** Ein früherer Entwurf und die bereits live geschaltete Seite `/nebenkostenabrechnung-pruefen` sprachen von „zwei fertigen Schreiben“. Laut `src/pdf/BriefPDF.jsx` enthält das PDF aber genau einen Brief, dessen Modus vom Ergebnis abhängt. Die Aussage wäre irreführende Werbung (§ 5 UWG) gewesen und ist überall korrigiert (`Welcome.jsx`, `werkzeuge.js`, `prerender.mjs`). Badge ohne doppeltes „Für Mieter“. Vorgerenderter Text in `prerender.mjs` angeglichen.
+- **Versteckter Text (weiße Schrift auf weißem Grund) bewusst NICHT umgesetzt:** Verstößt gegen Googles Spam-Richtlinien („Hidden text“) und kann zu einer manuellen Maßnahme bis zur Entfernung aus dem Index führen. Siehe auch den Kommentar zu `.vorab` in `index.html`.
+
 ## 17.10.2026 — Suchergebnis-Snippets: neue Titel und Beschreibungen für 17 Artikel
 
 ### Anlass
