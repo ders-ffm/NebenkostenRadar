@@ -28,6 +28,22 @@
 // im ersten Satz. Wichtig auch juristisch: Das Angebot bezieht sich auf
 // WOHNRAUMmiete. Für Gewerbemietverträge und für Eigentümer gelten andere
 // Regeln — deshalb steht das ausdrücklich dabei und nicht nur implizit.
+//
+// ZWEITER UMBAU 17.10.2026 (Stefan: "Startseite übersichtlicher, weniger
+// überladen, Infos lieber ins Menü als Unterrubrik"). Nur VORSCHAU auf dem
+// Branch startseite-vorschau, Freigabe durch Stefan steht aus.
+//   - H1 zweite Zeile jetzt "kostenlos online prüfen" statt "in 3 Schritten
+//     prüfen": Das sind die Begriffe, mit denen Mieter suchen ("nebenkosten-
+//     abrechnung prüfen kostenlos", "… online prüfen", Marktrecherche vom
+//     17.10.2026). Sichtbar im Text, nicht versteckt.
+//   - Block "Mehr erfahren" entfällt: FAQ, Über uns, Ratgeber und die neuen
+//     Werkzeuge stehen jetzt im Menü (mit Untermenüs) und in der Fußzeile.
+//   - Beispielergebnis ist eingeklappt ("So sieht dein Ergebnis aus"), statt
+//     die halbe Seite zu füllen. Es bleibt aber auf der Startseite, weil es
+//     der stärkste Vertrauensbaustein ist (siehe beispiel.js).
+//   - Preisblock nennt den echten Preisvorteil: Widerspruch UND
+//     Belegeinsicht als fertige Briefe zusammen für 12,99 €.
+// Ergebnis: vier sichtbare Blöcke statt fünf, davon einer eingeklappt.
 // ─────────────────────────────────────────────────────────────────────────
 import { THEME } from "../config/theme.js";
 import { euro } from "../lib/format.js";
@@ -35,6 +51,7 @@ import { BUSINESS } from "../config/business.js";
 import { BEISPIEL_QM, BEISPIEL_POSTEN, BEISPIEL_ANZAHL, BEISPIEL_UNZULAESSIG_SUMME } from "../config/beispiel.js";
 import Nav from "../components/layout/Nav.jsx";
 import LegalFooter from "../components/layout/LegalFooter.jsx";
+import Verweis from "../components/ui/Verweis.jsx";
 
 export default function Welcome({ navigateTo, navigateToArtikel, IS_DEMO }) {
   const C = THEME.color;
@@ -54,7 +71,7 @@ export default function Welcome({ navigateTo, navigateToArtikel, IS_DEMO }) {
       {/* ── 1. Hero ─────────────────────────────────────────────────────── */}
       <div style={{ ...abschnitt, padding: "48px 24px 40px", textAlign: "center" }}>
         <div style={{ display: "inline-block", background: C.brandBg, borderRadius: 4, padding: "4px 12px", fontSize: 11, color: C.brand, fontWeight: 700, marginBottom: 20, textTransform: "uppercase", letterSpacing: "0.04em" }}>
-          Für Mieter · Unabhängig · Ohne Registrierung
+          Unabhängig · Ohne Registrierung · Kein Abo
         </div>
 
         {/* ÜBERSCHRIFT, Stand 11.09.2026.
@@ -129,11 +146,11 @@ export default function Welcome({ navigateTo, navigateToArtikel, IS_DEMO }) {
             Für Mieter
           </div>
           <div style={{ fontSize: "clamp(20px, 6.2vw, 30px)" }}>Nebenkostenabrechnung</div>
-          <div style={{ fontSize: "clamp(20px, 6.2vw, 30px)", color: C.brand }}>in 3 Schritten prüfen</div>
+          <div style={{ fontSize: "clamp(20px, 6.2vw, 30px)", color: C.brand }}>kostenlos online prüfen</div>
         </h1>
 
         <p style={{ fontSize: 16, color: C.textMuted, margin: "0 0 8px", lineHeight: 1.7, maxWidth: 520, marginLeft: "auto", marginRight: "auto" }}>
-          Du hast als Mieter deine Nebenkostenabrechnung bekommen und weißt nicht, ob sie stimmt? Wir vergleichen jeden Posten der Betriebskostenabrechnung mit den Richtwerten des Deutschen Mieterbundes und prüfen, was dein Vermieter überhaupt umlegen darf.
+          Foto oder PDF deiner Nebenkostenabrechnung hochladen. Wir prüfen jeden Posten gegen den Betriebskostenspiegel des Deutschen Mieterbundes und die Betriebskostenverordnung und zeigen dir in wenigen Minuten, was dein Vermieter umlegen darf und was nicht.
         </p>
         <p style={{ fontSize: 12, color: C.textDim, margin: "0 0 28px", lineHeight: 1.6, maxWidth: 520, marginLeft: "auto", marginRight: "auto" }}>
           Für Wohnraummiete in Deutschland. Für Gewerbemietverträge und für Eigentümer gelten andere Regeln.
@@ -141,12 +158,12 @@ export default function Welcome({ navigateTo, navigateToArtikel, IS_DEMO }) {
 
         {IS_DEMO && <div style={{ background: C.warnBg, borderRadius: 6, padding: "8px 14px", marginBottom: 16, fontSize: 11, color: C.warn }}>Demo-Modus. Stripe nicht konfiguriert</div>}
 
-        <button onClick={() => navigateTo("wohnung")}
-          style={{ width: "100%", maxWidth: 420, background: C.accent, color: C.accentText, border: "none", borderRadius: THEME.radius.lg, padding: "18px 40px", fontSize: 16, fontFamily: THEME.font.heading, fontWeight: 600, cursor: "pointer" }}>
+        <Verweis href="/pruefen/wohnung" onNavigate={() => navigateTo("wohnung")}
+          style={{ display: "block", width: "100%", maxWidth: 420, margin: "0 auto", boxSizing: "border-box", background: C.accent, color: C.accentText, borderRadius: THEME.radius.lg, padding: "18px 40px", fontSize: 16, fontFamily: THEME.font.heading, fontWeight: 600, cursor: "pointer" }}>
           Jetzt kostenlos prüfen
-        </button>
+        </Verweis>
         <p style={{ fontSize: 12, color: C.textDim, marginTop: 10 }}>
-          Basisanalyse kostenlos · Auswertung als PDF ab {euro(BUSINESS.PREIS_AUSWERTUNG)} · kein Abo
+          Basisanalyse kostenlos · Ergebnis in wenigen Minuten
         </p>
         <p style={{ fontSize: 12, color: C.textMuted, margin: "12px 0 0" }}>
           Schon dabei?{" "}
@@ -172,9 +189,34 @@ export default function Welcome({ navigateTo, navigateToArtikel, IS_DEMO }) {
         </div>
       </div>
 
-      {/* ── 3. Beispielergebnis ─────────────────────────────────────────── */}
-      <div style={abschnitt}>
-        <div style={ueberschrift}>So sieht dein Ergebnis aus</div>
+      {/* ── 3. Preise ───────────────────────────────────────────────────── */}
+      <div style={{ ...abschnitt, textAlign: "center" }}>
+        <div style={ueberschrift}>Was es kostet</div>
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(240px, 1fr))", gap: 14, maxWidth: 560, margin: "0 auto" }}>
+          <div style={{ background: C.surface, border: "1px solid " + C.border, borderRadius: THEME.radius.lg, padding: "20px 18px", textAlign: "left" }}>
+            <div style={{ fontSize: 12, color: C.textMuted, marginBottom: 4 }}>Auswertung</div>
+            <div style={{ fontFamily: THEME.font.heading, fontSize: 22, fontWeight: 600, color: C.text, marginBottom: 10 }}>{euro(BUSINESS.PREIS_AUSWERTUNG)}</div>
+            <div style={{ fontSize: 12, color: C.textMuted, lineHeight: 1.6 }}>Alle Positionen mit Richtwerten und Begründungen als PDF</div>
+          </div>
+          <div style={{ background: C.text, borderRadius: THEME.radius.lg, padding: "20px 18px", textAlign: "left" }}>
+            <div style={{ fontSize: 12, color: "#D8D2C4", marginBottom: 4 }}>Auswertung + beide Briefe + Steuer-Bonus</div>
+            <div style={{ fontFamily: THEME.font.heading, fontSize: 22, fontWeight: 600, color: "#fff", marginBottom: 10 }}>{euro(BUSINESS.PREIS_VOLL)}</div>
+            <div style={{ fontSize: 12, color: "#D8D2C4", lineHeight: 1.6 }}>Zusätzlich zwei fertige Schreiben an deinen Vermieter: Widerspruch und Aufforderung zur Belegeinsicht (§ 259 BGB). Dazu ein Hinweis auf steuerlich absetzbare Posten (§ 35a EStG).</div>
+          </div>
+        </div>
+        <Verweis href="/pruefen/wohnung" onNavigate={() => navigateTo("wohnung")}
+          style={{ display: "inline-block", marginTop: 20, background: C.accent, borderRadius: THEME.radius.md, padding: "14px 32px", fontSize: 14, fontFamily: THEME.font.heading, fontWeight: 600, color: C.accentText, cursor: "pointer" }}>
+          Kostenlos starten, Preis später wählen
+        </Verweis>
+        <p style={{ fontSize: 12, color: C.textDim, marginTop: 10 }}>
+          Einmalig, kein Abo. <a href="/ratgeber/nebenkostenabrechnung-pruefen-lassen" onClick={e => { e.preventDefault(); navigateToArtikel("nebenkostenabrechnung-pruefen-lassen"); }} style={{ color: C.brand, fontWeight: 600 }}>Nebenkostenabrechnung prüfen lassen: was kosten die Alternativen?</a>
+        </p>
+      </div>
+
+      {/* ── 4. Beispielergebnis (eingeklappt) ─────────────────────────────────────────── */}
+      <details style={abschnitt}>
+        <summary style={{ ...ueberschrift, cursor: "pointer", marginBottom: 0, listStylePosition: "inside" }}>So sieht dein Ergebnis aus (Beispiel)</summary>
+        <div style={{ height: 16 }} />
         <p style={{ fontSize: 13, color: C.textMuted, margin: "0 auto 18px", lineHeight: 1.65, maxWidth: 480, textAlign: "center" }}>
           Ein erfundener Beispielfall: {BEISPIEL_QM} m², Abrechnungsjahr 2024.
         </p>
@@ -216,54 +258,11 @@ export default function Welcome({ navigateTo, navigateToArtikel, IS_DEMO }) {
         <p style={{ fontSize: 11, color: C.textDim, lineHeight: 1.6, margin: "12px auto 0", maxWidth: 560, textAlign: "left" }}>
           Erfundener Beispielfall, keine echten Kundendaten. Dein Ergebnis hängt von deinen eigenen Zahlen ab und kann auch lauten: alles in Ordnung.
         </p>
-      </div>
+      </details>
 
-      {/* ── 4. Preise ───────────────────────────────────────────────────── */}
-      <div style={{ ...abschnitt, textAlign: "center" }}>
-        <div style={ueberschrift}>Was es kostet</div>
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(240px, 1fr))", gap: 14, maxWidth: 560, margin: "0 auto" }}>
-          <div style={{ background: C.surface, border: "1px solid " + C.border, borderRadius: THEME.radius.lg, padding: "20px 18px", textAlign: "left" }}>
-            <div style={{ fontSize: 12, color: C.textMuted, marginBottom: 4 }}>Auswertung</div>
-            <div style={{ fontFamily: THEME.font.heading, fontSize: 22, fontWeight: 600, color: C.text, marginBottom: 10 }}>{euro(BUSINESS.PREIS_AUSWERTUNG)}</div>
-            <div style={{ fontSize: 12, color: C.textMuted, lineHeight: 1.6 }}>Alle Positionen mit Richtwerten und Begründungen als PDF</div>
-          </div>
-          <div style={{ background: C.text, borderRadius: THEME.radius.lg, padding: "20px 18px", textAlign: "left" }}>
-            <div style={{ fontSize: 12, color: "#D8D2C4", marginBottom: 4 }}>Auswertung + Brief + Steuer-Bonus</div>
-            <div style={{ fontFamily: THEME.font.heading, fontSize: 22, fontWeight: 600, color: "#fff", marginBottom: 10 }}>{euro(BUSINESS.PREIS_VOLL)}</div>
-            <div style={{ fontSize: 12, color: "#D8D2C4", lineHeight: 1.6 }}>Zusätzlich der versandfertige Brief an deinen Vermieter und ein Hinweis auf steuerlich absetzbare Positionen (§ 35a EStG)</div>
-          </div>
-        </div>
-        <button onClick={() => navigateTo("wohnung")}
-          style={{ marginTop: 20, background: C.accent, border: "none", borderRadius: THEME.radius.md, padding: "14px 32px", fontSize: 14, fontFamily: THEME.font.heading, fontWeight: 600, color: C.accentText, cursor: "pointer" }}>
-          Kostenlos starten. Preis später wählen
-        </button>
-        <p style={{ fontSize: 12, color: C.textDim, marginTop: 10 }}>
-          Einmalig, kein Abo. <a href="/ratgeber/nebenkostenabrechnung-pruefen-lassen" onClick={e => { e.preventDefault(); navigateToArtikel("nebenkostenabrechnung-pruefen-lassen"); }} style={{ color: C.brand, fontWeight: 600 }}>Nebenkostenabrechnung prüfen lassen: was kosten die Alternativen?</a>
-        </p>
-      </div>
-
-      {/* ── 5. Weiterlesen ──────────────────────────────────────────────── */}
-      <div style={abschnitt}>
-        <div style={ueberschrift}>Mehr erfahren</div>
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(180px, 1fr))", gap: 12, maxWidth: 640, margin: "0 auto" }}>
-          {[
-            ["Häufige Fragen", "Unabhängigkeit, Genauigkeit, Fristen, Datenschutz, auch die unbequemen Fragen.", "faq"],
-            ["Worauf die Prüfung beruht", "DMB-Betriebskostenspiegel, § 2 BetrKV, HeizkostenV, CO₂KostAufG, alle Quellen benannt.", "ueberuns"],
-            ["Ratgeber", "Umlageschlüssel, Belegeinsicht, Fristen und mehr, verständlich erklärt.", "ratgeber"],
-          ].map(([titel, text, ziel]) => (
-            <a key={ziel} href={"/" + (ziel === "ueberuns" ? "ueber-uns" : ziel)}
-              onClick={e => { e.preventDefault(); navigateTo(ziel); }}
-              style={{ display: "block", padding: "16px 18px", background: C.surface, border: "1px solid " + C.border, borderRadius: THEME.radius.md, textDecoration: "none" }}>
-              <div style={{ fontSize: 14, fontWeight: 600, color: C.brand, marginBottom: 4, fontFamily: THEME.font.heading }}>{titel} →</div>
-              <div style={{ fontSize: 12, color: C.textMuted, lineHeight: 1.6 }}>{text}</div>
-            </a>
-          ))}
-        </div>
-
-        <p style={{ fontSize: 12, color: C.textDim, lineHeight: 1.7, margin: "20px auto 0", maxWidth: 560, textAlign: "center" }}>
-          Grundlage der Prüfung ist der Betriebskostenspiegel des Deutschen Mieterbundes ({BUSINESS.RICHTWERTE_JAHR}). Er ist ein bundesweiter Durchschnitt: Eine Abweichung nach oben ist ein Anlass zur Nachfrage: kein Nachweis eines Fehlers. Genau so weisen wir es auch aus.
-        </p>
-      </div>
+      <p style={{ fontSize: 11.5, color: C.textDim, lineHeight: 1.7, margin: "20px auto 28px", maxWidth: 560, textAlign: "center", padding: "0 24px" }}>
+        Grundlage ist der Betriebskostenspiegel des Deutschen Mieterbundes ({BUSINESS.RICHTWERTE_JAHR}), ein bundesweiter Durchschnitt: Eine Abweichung nach oben ist ein Anlass zur Nachfrage, kein Nachweis eines Fehlers.
+      </p>
 
       <LegalFooter navigateTo={navigateTo} />
     </div>
