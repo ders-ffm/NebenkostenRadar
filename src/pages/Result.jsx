@@ -307,7 +307,7 @@ export default function Result({ navigateTo, result, wohnung, werte, gesamtsumme
               <input type="checkbox" checked={widerrufOk} onChange={e => setWiderrufOk(e.target.checked)}
                 style={{ marginTop: 3, flexShrink: 0, width: 16, height: 16, cursor: "pointer", accentColor: C.accent }} />
               <span style={{ fontSize: 11, color: C.textMuted, lineHeight: 1.6 }}>
-                Ich stimme zu, dass mit der Ausführung des Vertrags sofort begonnen wird, und ich habe zur Kenntnis genommen, dass ich mit Beginn der Ausführung mein <strong style={{ color: C.text }}>Widerrufsrecht verliere</strong> (§ 356 Abs. 5 BGB i. V. m. § 18 VRRL). Das PDF steht sofort nach Zahlung zur Verfügung.
+                Ich stimme zu, dass mit der Ausführung des Vertrags sofort begonnen wird, und ich habe zur Kenntnis genommen, dass ich mit Beginn der Ausführung mein <strong style={{ color: C.text }}>Widerrufsrecht verliere</strong> (§ 356 Abs. 5 BGB). Das PDF steht sofort nach Zahlung zur Verfügung; die Bestätigung dieser Erklärung bekommst du mit der Vertragsbestätigung per E-Mail.
               </span>
             </label>
           </div>
@@ -327,9 +327,12 @@ export default function Result({ navigateTo, result, wohnung, werte, gesamtsumme
           {!widerrufOk && <div style={{ textAlign: "center", fontSize: 11, color: C.warn, marginTop: 6 }}>⚠ Bitte zuerst die Checkbox oben bestätigen</div>}
 
           <div style={{ textAlign: "center", marginTop: 8, fontSize: 10, color: C.textDim }}>
-            Mit dem Kauf akzeptierst du unsere{" "}
+            {/* 17.10.2026: Vorher "Mit dem Kauf akzeptierst du unsere AGB und
+                Datenschutzerklärung". Eine Datenschutzerklärung ist eine
+                Information, keine Vertragsbedingung, die man "akzeptiert". */}
+            Es gelten unsere{" "}
             <button onClick={() => navigateTo("agb")} style={{ background: "none", border: "none", color: C.textDim, textDecoration: "underline", cursor: "pointer", fontSize: 10, padding: 0 }}>AGB</button>{" "}
-            und{" "}
+            · Infos zum Datenschutz:{" "}
             <button onClick={() => navigateTo("datenschutz")} style={{ background: "none", border: "none", color: C.textDim, textDecoration: "underline", cursor: "pointer", fontSize: 10, padding: 0 }}>Datenschutzerklärung</button>
           </div>
         </div>
