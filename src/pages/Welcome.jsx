@@ -41,8 +41,11 @@
 //   - Beispielergebnis ist eingeklappt ("So sieht dein Ergebnis aus"), statt
 //     die halbe Seite zu füllen. Es bleibt aber auf der Startseite, weil es
 //     der stärkste Vertrauensbaustein ist (siehe beispiel.js).
-//   - Preisblock nennt den echten Preisvorteil: Widerspruch UND
-//     Belegeinsicht als fertige Briefe zusammen für 12,99 €.
+//   - Preisblock beschreibt den Brief der 12,99-€-Stufe konkret. KORREKTUR
+//     17.10.2026 (Compliance-Check): Es ist EIN Brief, dessen Inhalt vom
+//     Ergebnis abhängt (Widerspruch, Rückfragen oder Belegeinsicht, siehe
+//     src/pdf/BriefPDF.jsx), nicht zwei Briefe. "Zwei Schreiben" wäre
+//     irreführende Werbung (§ 5 UWG).
 // Ergebnis: vier sichtbare Blöcke statt fünf, davon einer eingeklappt.
 // ─────────────────────────────────────────────────────────────────────────
 import { THEME } from "../config/theme.js";
@@ -199,9 +202,9 @@ export default function Welcome({ navigateTo, navigateToArtikel, IS_DEMO }) {
             <div style={{ fontSize: 12, color: C.textMuted, lineHeight: 1.6 }}>Alle Positionen mit Richtwerten und Begründungen als PDF</div>
           </div>
           <div style={{ background: C.text, borderRadius: THEME.radius.lg, padding: "20px 18px", textAlign: "left" }}>
-            <div style={{ fontSize: 12, color: "#D8D2C4", marginBottom: 4 }}>Auswertung + beide Briefe + Steuer-Bonus</div>
+            <div style={{ fontSize: 12, color: "#D8D2C4", marginBottom: 4 }}>Auswertung + Brief + Steuer-Bonus</div>
             <div style={{ fontFamily: THEME.font.heading, fontSize: 22, fontWeight: 600, color: "#fff", marginBottom: 10 }}>{euro(BUSINESS.PREIS_VOLL)}</div>
-            <div style={{ fontSize: 12, color: "#D8D2C4", lineHeight: 1.6 }}>Zusätzlich zwei fertige Schreiben an deinen Vermieter: Widerspruch und Aufforderung zur Belegeinsicht (§ 259 BGB). Dazu ein Hinweis auf steuerlich absetzbare Posten (§ 35a EStG).</div>
+            <div style={{ fontSize: 12, color: "#D8D2C4", lineHeight: 1.6 }}>Zusätzlich ein fertiger Brief an deinen Vermieter, passend zum Ergebnis: Widerspruch gegen auffällige Posten oder Aufforderung zur Belegeinsicht (§ 259 BGB). Dazu ein Hinweis auf steuerlich absetzbare Posten (§ 35a EStG).</div>
           </div>
         </div>
         <Verweis href="/pruefen/wohnung" onNavigate={() => navigateTo("wohnung")}
