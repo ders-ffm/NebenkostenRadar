@@ -373,7 +373,7 @@ function startseiteInhalt() {
          verschmelzen würde. Sieht Google unterschiedliche Überschriften in
          vorgerenderter und interaktiver Fassung, wertet es das als
          widersprüchliches Signal. Bei Änderungen also immer beide Stellen. -->
-    <h1>Für Mieter: Nebenkostenabrechnung in 3 Schritten prüfen</h1>
+    <h1>Für Mieter: Nebenkostenabrechnung kostenlos online prüfen</h1>
     <p>Du hast als Mieter deine Nebenkostenabrechnung bekommen und weißt nicht, ob sie stimmt? NebenkostenRadar vergleicht jeden Posten der Betriebskostenabrechnung mit den Richtwerten des Deutschen Mieterbundes und prüft, was dein Vermieter überhaupt umlegen darf. Das Angebot richtet sich an Mieter von Wohnraum in Deutschland; für Gewerbemietverträge und für Eigentümer gelten andere Regeln.</p>
     <h2>So läuft es ab</h2>
     <ol>
@@ -390,7 +390,7 @@ function startseiteInhalt() {
       <li>Im Paket „Auswertung + Brief“ zusätzlich ein Hinweis auf steuerlich absetzbare Positionen nach § 35a EStG.</li>
     </ul>
     <h2>Was es kostet</h2>
-    <p>Die Basisanalyse ist kostenlos und ohne Registrierung. Die Auswertung als PDF kostet einmalig ${preisA} €, mit Musterbrief und Steuer-Bonus ${preisV} €. Kein Abo. <a href="/ratgeber/nebenkostenabrechnung-pruefen-lassen">Nebenkostenabrechnung prüfen lassen: was kosten die Alternativen?</a></p>
+    <p>Die Basisanalyse ist kostenlos und ohne Registrierung. Die Auswertung als PDF kostet einmalig ${preisA} €. Für ${preisV} € kommen zwei fertige Schreiben an den Vermieter dazu, Widerspruch und Aufforderung zur Belegeinsicht, plus ein Hinweis auf steuerlich absetzbare Posten. Kein Abo. <a href="/ratgeber/nebenkostenabrechnung-pruefen-lassen">Nebenkostenabrechnung prüfen lassen: was kosten die Alternativen?</a></p>
     <h2>Worauf die Prüfung beruht</h2>
     <p>Grundlage sind der Betriebskostenspiegel des Deutschen Mieterbundes für das Abrechnungsjahr ${escapeHtml(BUSINESS.RICHTWERTE_JAHR)}, § 2 der Betriebskostenverordnung, die Heizkostenverordnung, das CO₂-Kostenaufteilungsgesetz und § 35a EStG. Der Betriebskostenspiegel ist ein bundesweiter Durchschnitt ohne regionale Aufschlüsselung: Eine Abweichung nach oben ist ein Anlass zur Nachfrage, kein Nachweis eines Fehlers.</p>
     <p><a href="/pruefen/wohnung">Kostenlos prüfen</a> · <a href="/ratgeber">Ratgeber</a> · <a href="/faq">Häufige Fragen</a> · <a href="/ueber-uns">Über uns</a></p>
