@@ -5,13 +5,16 @@
 // ─────────────────────────────────────────────────────────────────────────
 import { useState } from "react";
 import { THEME } from "../config/theme.js";
+// Fußzeile auch auf den Rechtsseiten (17.10.2026): Dort steht der Link
+// "Cookie-Einstellungen" zum Widerruf der Einwilligung (Art. 7 Abs. 3 DSGVO).
+import LegalFooter from "../components/layout/LegalFooter.jsx";
 import BrandAnschrift from "../components/layout/BrandAnschrift.jsx";
 import Field from "../components/ui/Field.jsx";
 
 const ABSCHNITTE = [
   { t: "Angaben gemäß § 5 DDG", brand: true, lines: ["NebenkostenRadar, nebenkostenradar.com", "Inhaber: Stefan Hennig", "Ludwigstr. 33-37", "60327 Frankfurt am Main"] },
   { t: "Kontakt", lines: ["E-Mail: support@nebenkostenradar.com", "Für eine schnelle Antwort nutze bitte auch unser Kontaktformular unten auf dieser Seite."] },
-  { t: "Verantwortlich für den Inhalt nach § 55 Abs. 2 RStV", lines: ["Inhaber: Stefan Hennig", "Ludwigstr. 33-37", "60327 Frankfurt am Main"] },
+  { t: "Verantwortlich für den Inhalt nach § 18 Abs. 2 MStV", lines: ["Inhaber: Stefan Hennig", "Ludwigstr. 33-37", "60327 Frankfurt am Main"] },
   { t: "Haftungsausschluss", lines: ["Die Inhalte dieser Website wurden mit größter Sorgfalt erstellt. Für die Richtigkeit, Vollständigkeit und Aktualität können wir keine Gewähr übernehmen."] },
   { t: "Haftung für Links", lines: ["Unser Angebot enthält Links zu externen Websites Dritter, auf deren Inhalte wir keinen Einfluss haben."] },
   { t: "Streitschlichtung", lines: ["Wir sind nicht bereit und nicht verpflichtet, an Streitbeilegungsverfahren vor einer Verbraucherschlichtungsstelle teilzunehmen (§ 36 VSBG)."] },
@@ -79,6 +82,7 @@ export default function Impressum({ navigateTo }) {
           )}
         </div>
       </div>
+      <LegalFooter navigateTo={navigateTo} />
     </div>
   );
 }
