@@ -437,7 +437,7 @@ function ueberUnsInhalt() {
     <p>NebenkostenRadar gehört keinem Vermieterverband, keiner Hausverwaltung, keinem Messdienstleister und keinem Abrechnungsunternehmen an und erhält von keiner dieser Seiten Geld. Es gibt keine Provisionen und keine Vermittlungsvereinbarungen.</p>
     <h2>Keine Rechtsberatung</h2>
     <p>Eine Bewertung des Einzelfalls, wie sie ein Anwalt oder ein Mieterverein vornimmt, ersetzt das Werkzeug nicht. Bei hohen Streitwerten oder einer Auseinandersetzung vor Gericht ist anwaltlicher Rat der richtige Weg.</p>
-    <p><a href="/faq">Häufige Fragen</a> · <a href="/impressum">Impressum</a> · <a href="/datenschutz">Datenschutz</a></p>
+    <p><a href="/faq">Häufige Fragen</a> · <a href="/impressum">Impressum</a> · <a href="/datenschutz">Datenschutz</a> · <a href="/widerruf">Vertrag widerrufen</a></p>
   `;
 }
 
@@ -632,6 +632,7 @@ async function main() {
     ["/impressum", "impressum", "Impressum"],
     ["/agb", "agb", "AGB und Widerrufsbelehrung"],
     ["/datenschutz", "datenschutz", "Datenschutzerklärung"],
+    ["/widerruf", "widerruf", "Vertrag widerrufen"],
   ]) {
     const dir = join(DIST, pfad.slice(1));
     mkdirSync(dir, { recursive: true });
