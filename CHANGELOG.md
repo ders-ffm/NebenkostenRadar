@@ -2,9 +2,9 @@
 
 Alle wesentlichen Änderungen an diesem Projekt, mit Datum und Begründung. Dient der Nachvollziehbarkeit, damit auch ohne KI-Unterstützung verstanden werden kann, warum etwas so ist, wie es ist.
 
-## 17.10.2026 — VORSCHAU (nicht live): Startseite entschlackt, Menü mit Untermenüs
+## 17.10.2026 — Startseite entschlackt, Menü mit Untermenüs
 
-Nur auf dem Branch `startseite-vorschau`, Freigabe durch Stefan steht aus.
+Von Stefan am 17.10.2026 nach Ansicht der Vorschau freigegeben (Pull Request #4).
 
 - **Menü mit Untermenüs** (`Nav.jsx`): „Prüfen ▾“ (die drei Werkzeuge), „Ratgeber ▾“ (Alle Artikel + fünf meistgesuchte Themen laut Search Console), FAQ, Über uns. Mobil als gegliederte Liste. Alle Links stehen als echtes `<a href>` immer im DOM (nur eingeklappt) — übliches Menü, kein versteckter Text.
 - **Startseite** (`Welcome.jsx`): H1-Zeile 2 „kostenlos online prüfen“ statt „in 3 Schritten prüfen“ (Suchbegriffe sichtbar im Text). Block „Mehr erfahren“ entfällt (steht jetzt im Menü). Beispielergebnis eingeklappt. Preisblock nennt beide Briefe der 12,99-€-Stufe ausdrücklich (Widerspruch + Belegeinsicht nach § 259 BGB). Badge ohne doppeltes „Für Mieter“. Vorgerenderter Text in `prerender.mjs` angeglichen.
