@@ -85,7 +85,12 @@ Font.register({
 
 const C = THEME.color;
 const s = StyleSheet.create({
-  page: { padding: "36pt 42pt 28pt", fontFamily: "Work Sans", fontSize: 10, color: C.text },
+  // Unterer Rand 62 pt statt 28 pt (17.10.2026, Stefans Testkauf): Die
+  // Fußzeile steht absolut bei 24 pt vom Rand und ist mit Linie und Text
+  // rund 16 pt hoch. Bei 28 pt Rand lief der letzte Begründungskasten auf
+  // Seite 1 in die Fußzeile hinein. scripts/pdf-probedruck.mjs prüft das
+  // seitdem automatisch.
+  page: { padding: "36pt 42pt 62pt", fontFamily: "Work Sans", fontSize: 10, color: C.text },
   header: { flexDirection: "row", justifyContent: "space-between", alignItems: "center", borderBottom: "1pt solid " + C.brandBg, paddingBottom: 12, marginBottom: 16 },
   logoRow: { flexDirection: "row", alignItems: "center", gap: 6 },
   logoBox: { width: 20, height: 20, borderRadius: 5, backgroundColor: C.brand },
@@ -109,6 +114,7 @@ const s = StyleSheet.create({
   footer: { position: "absolute", bottom: 24, left: 42, right: 42, borderTop: "0.5pt solid " + C.border, paddingTop: 6, flexDirection: "row", justifyContent: "space-between", fontSize: 7, color: C.textDim },
 });
 
+const istUnterposition = p => /^davon\s/i.test(p.posten || "") && !(p.richtwert > 0) && p.status === "ok";
 const STATUS_LABEL = { ok: "Unauffällig", hoch: "Erhöht", sehr_hoch: "Stark erhöht", nicht_umlagefaehig: "Nicht zulässig", pruefen: "Prüfen" };
 const STATUS_COLOR = { ok: C.brand, hoch: C.accent, sehr_hoch: C.accent, nicht_umlagefaehig: C.critical, pruefen: C.accent };
 
@@ -197,16 +203,27 @@ export default function AbrechnungPDF({ result, wohnung, seite = 1, seitenGesamt
             <Text style={s.colPosten}>{p.posten}</Text>
             <Text style={s.colBetrag}>{fmt(p.betrag)}</Text>
             <Text style={s.colRicht}>{p.richtwert > 0 ? fmt(p.richtwert) : ""}</Text>
-            <Text style={[s.colStatus, { color: STATUS_COLOR[p.status] }]}>{STATUS_LABEL[p.status] || p.status}</Text>
+            {/* "davon"-Zeilen (17.10.2026): Unterpositionen haben keinen eigenen
+                Richtwert, geprüft wird die Summe in der Zeile darüber. Vorher
+                stand hier "Unauffällig", auch wenn die Summe "Stark erhöht"
+                war (Testkauf: Versicherungen). */}
+            {istUnterposition(p)
+              ? <Text style={[s.colStatus, { color: C.textDim }]}>in Summe</Text>
+              : <Text style={[s.colStatus, { color: STATUS_COLOR[p.status] }]}>{STATUS_LABEL[p.status] || p.status}</Text>}
           </View>
         ))}
       </View>
 
+      {/* wrap={false} (17.10.2026): Ein Kasten darf nicht über den
+          Seitenumbruch zerrissen werden. Im Testkauf stand sonst oben auf
+          Seite 2 nur noch ein Stück vom linken Rand des Kastens. */}
       {result.posten_bewertung.filter(p => p.status !== "ok").map((p, i) => (
-        <Text key={i} style={s.begruendung}>
-          <Text style={{ fontFamily: "Poppins", fontWeight: 600 }}>{p.posten}: </Text>
-          {p.hinweis} ({p.paragraf})
-        </Text>
+        <View key={i} wrap={false}>
+          <Text style={s.begruendung}>
+            <Text style={{ fontFamily: "Poppins", fontWeight: 600 }}>{p.posten}: </Text>
+            {p.hinweis} ({p.paragraf})
+          </Text>
+        </View>
       ))}
 
       {/* ────────────────────────────────────────────────────────────────────
