@@ -2,6 +2,98 @@
 
 Alle wesentlichen Änderungen an diesem Projekt, mit Datum und Begründung. Dient der Nachvollziehbarkeit, damit auch ohne KI-Unterstützung verstanden werden kann, warum etwas so ist, wie es ist.
 
+## 17.10.2026 — Suchergebnis-Snippets: neue Titel und Beschreibungen für 17 Artikel
+
+### Anlass
+
+Search Console (28 Tage bis 14.10.2026): Klickrate 0,9 %. Mehrere Artikel standen auf Position 7 bis 9 und bekamen keinen Klick (Heizkosten-Fehler 86 Impressionen/Position 7,8; Hausmeister Position 7,0; Aufzug 8,6). Die beiden stärksten Seiten (Widerspruch 995, Betriebskostenspiegel 1.053 Impressionen) hatten nur 8 bzw. 7 Klicks. 15 von 27 Beschreibungen waren länger als 160 Zeichen und wurden in der Suche abgeschnitten.
+
+### Änderungen
+
+- Zwei neue, optionale Felder je Artikel in `src/artikel.js`: `seoTitel` (ersetzt den kompletten `<title>`, ohne Markenzusatz, max. 60 Zeichen) und `metaBeschreibung` (max. 155 Zeichen). `artikelTitel()`/`artikelBeschreibung()` in `seo.js` nutzen sie, sonst greift die bisherige Logik.
+- Leitlinie „seriöse Neugier“ (Stefan, 17.10.2026): Zahl, Frage oder konkreter Nutzen im Titel, aber nur, was der Artikel einlöst. Beispiel: „Heizkostenabrechnung: 6 Fehler, die Mieter Geld kosten“ (der Artikel hat genau sechs Fehler-Abschnitte). Die frühere Beschreibung „Nach Schätzung des Deutschen Mieterbunds enthält ein erheblicher Teil …“ ist ersetzt (unbelegte Schätzung).
+- Betriebskostenspiegel: URL bleibt (`…-2024`, hat Rankings), Titel jetzt „Betriebskostenspiegel 2026: alle DMB-Werte je Kostenart“, die Beschreibung nennt ausdrücklich das Abrechnungsjahr 2024. Bewusst keine zweite Seite „…-2026“ (doppelter Inhalt).
+- Jeder Artikel verlinkt am Ende die drei kostenlosen Werkzeuge (React und vorgerendert).
+
+### Geprüft
+
+`npm run check` grün. Alle neuen Titel ≤ 60 Zeichen (auch nach HTML-Maskierung, deshalb „Frist, Muster, Anleitung“ statt „&“), alle Beschreibungen ≤ 155 Zeichen.
+
+### Nachkontrolle
+
+In 4 Wochen in der Search Console Klickrate je Seite mit dem Stand vom 14.10.2026 vergleichen.
+
+## 17.10.2026 — Drei kostenlose Werkzeug-Seiten: Prüfen, Fristenrechner, Heizkosten-Kürzungs-Check
+
+### Anlass
+
+Marktrecherche vom 17.10.2026 mit echten Google-Suchen (google.de, nicht personalisiert): Bei „Nebenkostenabrechnung prüfen kostenlos“ und „… online prüfen“ stehen NebenkostenPro und mein-nebenkostenrechner auf Platz 1 und 2, jeweils mit einer eigenen Werkzeug-Seite, deren Adresse und Überschrift den Suchbegriff enthalten. NebenkostenRadar kam laut Search Console in 28 Tagen bei allen Suchanfragen mit „prüf“ auf 4 Impressionen (Ø Position 52,5). Fristenrechner sind außerdem verlinkenswert (Mineko-Rechner wird von web.de zitiert); einen eigenen Check zu den 3-Prozent-Kürzungsrechten hatte keiner der geprüften Wettbewerber.
+
+### Neu
+
+- `/nebenkostenabrechnung-pruefen`: Einstiegsseite mit den 7 Fehlern, die die Prüfung tatsächlich automatisch erkennt (abgeglichen mit `src/lib/analyse.js`), Ablauf, Preisen, Grenzen und FAQ.
+- `/fristenrechner-nebenkostenabrechnung`: Rechner für Abrechnungsfrist (§ 556 Abs. 3 S. 2/3 BGB) und Einwendungsfrist (S. 5). Gibt bei der Einwendungsfrist bewusst das früheste vertretbare Ende an (Zugang + 12 Monate nach §§ 187, 188 BGB) — die sichere Seite für Mieter. Bei Zeitraumende mitten im Monat Hinweis auf die Lesart.
+- `/heizkosten-kuerzen-3-prozent`: Fragen-Check zu 15 % (§ 12 Abs. 1 S. 1 HeizkostenV), 3 % fehlender Vorjahresvergleich (§ 6a, § 12 Abs. 1 S. 3), 3 % fehlende Fernablesbarkeit (§ 5 Abs. 2/3, § 12 Abs. 1 S. 2 — für Jahre vor 2027 nur bei Einbau nach dem 01.12.2021, gleiche Linie wie `HKV_NACHRUEST_FRIST` in analyse.js) und 3 % fehlende CO₂-Aufteilung (§ 7 Abs. 3/4 CO2KostAufG, ab Abrechnungsjahr 2023). 15 % und 3 % Vorjahresvergleich werden nicht kombiniert (gleiche Linie wie analyse.js).
+- Beide Rechner laufen nur im Browser, ohne Serveranfrage und ohne Speicherung.
+- Inhalte an einer Stelle: `src/config/werkzeuge.js` speist React-Seite (`src/pages/Werkzeug.jsx`), Vorrendern und FAQPage-Markup. Titel/Beschreibung über `seo.js`, Routen in `routen.js`, Sitemap (jetzt 30 URLs), Rewrites als Sicherheitsnetz in `vercel.json`.
+- Fußzeile hat eine zweite Zeile „Kostenlos: …“ mit den drei Werkzeugen (interne Verlinkung von jeder Seite aus).
+- `scripts/seo-check.mjs`: FAQPage-Markup ist jetzt auch auf den Werkzeug-Seiten erlaubt, aber nur, wenn jede Frage aus dem Markup auch im sichtbaren Text steht.
+
+### Gesetzestexte geprüft am 17.10.2026
+
+§ 556 Abs. 3 BGB; § 5 Abs. 2 und 3, § 12 Abs. 1 HeizkostenV (gesetze.legal); § 7 Abs. 3 und 4 CO2KostAufG (gesetze.legal).
+
+### Geprüft
+
+`npm run check` grün (33 Seiten, 0 Verstöße). Playwright bei 390 px Breite: alle drei Seiten Status 200 mit eigenem Titel; Fristenrechner liefert für Zeitraumende 31.12.2025 und Zugang 05.01.2027 „zu spät“, für Zugang 15.11.2026 „rechtzeitig“ und Widerspruch bis 15.11.2027, für Zeitraumende 30.06.2025 die Frist 30.06.2026; Kürzungs-Check rechnet 3 % von 1.170,00 € = 35,10 €. Keine JavaScript-Fehler.
+
+## 17.10.2026 — Technisches SEO und Datenschutz: echte Links, echte 404, www-Weiterleitung, Cookie-Widerruf
+
+### Anlass
+
+Technischer Gesamttest vom 17.10.2026 und Search-Console-Check (in den Seitenberichten tauchten `https://www.nebenkostenradar.com/login`, `http://nebenkostenradar.com/` und eine Tippfehler-URL `…-as-betriebskosten-2026` auf).
+
+### Änderungen
+
+1. **www → ohne www (308).** `vercel.json` leitet jede Anfrage an `www.nebenkostenradar.com` dauerhaft auf `https://nebenkostenradar.com/…` um. Vorher lieferte www dieselben Seiten mit Status 200 aus: doppelte Inhalte, verteilte Signale.
+2. **Echte 404 statt Soft-404.** Rewrite `/ratgeber/(.*)` entfernt (alle Artikel liegen vorgerendert als statische Datei vor). Neue `dist/404.html` aus `scripts/prerender.mjs` (noindex, ohne React, mit Links zu Startseite/Ratgeber/beliebten Artikeln). Innerhalb der App setzt `App.jsx` bei unbekanntem Artikel `noindex`. Die Rewrites der festen Seiten (/ratgeber, /faq, …) bleiben als Sicherheitsnetz stehen.
+3. **Prerender-Fehler bricht jetzt den Build ab** (`process.exit(1)`). Ohne Artikel-Rewrite wären bei einem stillen Prerender-Fehler alle Artikel 404; ein abgebrochener Build lässt dagegen die letzte funktionierende Version online.
+4. **Echte Links (`<a href>`) statt Buttons/`div onClick`.** Neue Komponente `src/components/ui/Verweis.jsx` (normaler Klick ohne Neuladen, Strg/Cmd-Klick öffnet neuen Tab). Umgestellt: Menü inkl. Logo und „Kostenlos prüfen“, Fußzeile, Ratgeber-Karten, „← Startseite/Ratgeber“, Querverweise und „Weitere Artikel“ im Artikel. Gemessen im gerenderten DOM: Ratgeber-Übersicht 0 → 34 Links, Artikel 0 → 37. Routen-Tabelle dafür aus `App.jsx` nach `src/config/routen.js` verschoben.
+5. **Article-Schema in den `<head>`.** Stand bisher in `#root` und wurde von React beim Start gelöscht. Zusätzlich absolute Bild-URL, `datePublished/dateModified`, `author/publisher` als Verweis auf die Organization, `mainEntityOfPage`, `inLanguage`.
+6. **Sicherheits-Header für alle Seiten:** `X-Content-Type-Options`, `X-Frame-Options: DENY`, `Referrer-Policy`, `Permissions-Policy`, minimale CSP (`frame-ancestors 'none'; base-uri 'self'; object-src 'none'`). Bewusst keine strenge `script-src`-CSP: Die Seite nutzt Inline-Skripte (Consent-Default) und Inline-Styles; eine falsch gesetzte CSP würde die Seite still lahmlegen. `/assets/*` (Dateinamen mit Hash) jetzt ein Jahr im Browser-Cache.
+7. **Cookie-Widerruf (Art. 7 Abs. 3 DSGVO).** Neuer Link „Cookie-Einstellungen“ in der Fußzeile öffnet den Banner erneut; „Nur notwendige“ setzt Consent auf `denied`, schaltet GA4 per `ga-disable-…` ab und löscht die `_ga`-Cookies. „Mehr erfahren“ im Banner zeigte auf `#datenschutz` (ohne Wirkung), jetzt `/datenschutz`. Fußzeile jetzt auch auf Impressum, AGB, Datenschutz. Datenschutzerklärung Abschnitt 4 um den Widerrufsweg ergänzt.
+8. **Rechtstexte:** Impressum „§ 55 Abs. 2 RStV“ → „§ 18 Abs. 2 MStV“ (RStV seit 2020 abgelöst). AGB „Stand“ und Datenschutz „gilt ab“ zeigten immer das heutige Datum; jetzt feste Daten (AGB 13.09.2026 = letzte inhaltliche Änderung laut Git, Datenschutz 17.10.2026 wegen der Ergänzung oben).
+
+### Geprüft
+
+`npm run check` grün (30 Seiten SEO-Check, 0 Verstöße). Playwright gegen einen lokalen Server, der die `vercel.json`-Regeln nachbildet: Startseite, Ratgeber, Artikel, FAQ, Über uns, Impressum mit Status 200, Links im gerenderten DOM vorhanden, Article-Schema nach dem React-Start noch im Head; `/ratgeber/gibt-es-nicht` → 404 mit noindex; Klick auf eine Ratgeber-Karte navigiert ohne Neuladen; Cookie-Widerruf löscht `_ga`-Cookies.
+
+### Nach dem Deploy live prüfen
+
+`https://www.nebenkostenradar.com/faq` muss auf `https://nebenkostenradar.com/faq` umleiten; `/ratgeber/gibt-es-nicht` muss 404 liefern.
+
+## 17.10.2026 — Sicherheit: Mailversand, Stufe, Kundenkonto und Webhook abgesichert
+
+### Anlass
+
+Technischer Gesamttest vom 17.10.2026 (Code gelesen, nichts ausgelöst). Vier Lücken, die alle denselben Kern hatten: Der Server hat Angaben aus dem Browser geglaubt, die er selbst hätte prüfen können.
+
+### Befunde und Korrekturen
+
+1. **`api/send-email.js` war ein offenes Mail-Relay (kritisch).** Empfänger, PDF-Anhang, Vorname und Stufe kamen ungeprüft aus dem Request. Per curl hätte jeder über `noreply@nebenkostenradar.com` beliebige PDFs an beliebige Adressen schicken können (Phishing unter unserem Namen, Sperre des Resend-Kontos, Domain auf Spam-Listen). **Jetzt:** Zahlung wird in der Funktion selbst bei Stripe geprüft, Empfänger/Stufe/Vorname kommen nur aus `nkr_reports`, Anhang muss mit `%PDF` beginnen und ist größenbegrenzt, Dateiname wird bereinigt. Download.jsx schickt nur noch `{ stripeSession, pdfBase64, pdfFilename }`.
+2. **Kundenkonto zeigte unbezahlte Berichte (hoch).** Die Zeile in `nkr_reports` entsteht VOR der Zahlung. Wer den Stripe-Checkout abbrach und sich dann per Magic-Link anmeldete, konnte das volle PDF samt Musterbrief kostenlos laden. **Jetzt:** `api/my-reports.js` liefert nur Berichte mit protokolliertem Kauf in `nkr_purchases` (vom signaturgeprüften Webhook geschrieben).
+3. **Stufe aus dem Browser (mittel).** "voll" ließ sich speichern und dann über den 9,99-€-Link bezahlen. **Jetzt:** `get-report.js`, `send-email.js` und `webhook.js` leiten die Stufe aus `amount_subtotal` der Stripe-Session ab (Betrag vor Gutschein, Grenze 11,49 €). Der Webhook korrigiert die Stufe zusätzlich in `nkr_reports`, damit auch das Kundenkonto stimmt. **Bei Preisänderungen `STUFE_VOLL_AB_CENT` in allen drei Dateien anpassen.**
+4. **Webhook "fail-open" (mittel).** Ohne `STRIPE_WEBHOOK_SECRET` wurde jede Anfrage ungeprüft verarbeitet, kein Replay-Schutz. **Jetzt:** ohne Secret 500, Zeitstempel max. 5 Minuten, zeitkonstanter Vergleich, mehrere `v1`-Signaturen. Vorab live geprüft: Das Secret ist gesetzt (falsche Signatur → 400).
+5. Nebenbei: `save-report.js` (PATCH) kann die gespeicherte E-Mail-Adresse nicht mehr ändern; `get-report.js` und `my-reports.js` geben keine internen Fehlertexte mehr nach außen; Stripe-Session-ID wird URL-kodiert.
+
+### Geprüft
+
+`npm run check` grün. Zusätzlich ein lokaler Test mit nachgebautem `fetch` (Stripe/Supabase/Resend) für 19 Fälle: falsches Session-Format, kein PDF, unbekannte/unbezahlte Session, Empfänger aus DB statt Request, Stufen-Herabstufung bei 9,99 €, "voll" mit NKR20-Gutschein bleibt "voll", Doppelversand, nur bezahlte Berichte im Konto, Webhook mit gültiger/falscher/alter Signatur und ohne Secret. Alle bestanden.
+
+### Nicht testbar ohne echte Zahlung
+
+Ob die Kundenmail nach einem echten Kauf ankommt. Nach dem Deploy einmal mit NKR20 testkaufen (wie am 25.09.2026).
+
 ## 30.09.2026 — GEO: Organization-Schema ergänzt, Ratgeber-Audit ohne Befund
 
 ### Anlass
