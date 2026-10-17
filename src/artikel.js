@@ -34,6 +34,8 @@
 // dem Build. Damit die Jahreszahl dort mitwandert, muss einmal im Jahr neu
 // gebaut werden. Das erledigt .github/workflows/jahreswechsel.yml.
 // ───────────────────────────────────────────────────────────────────────────
+import { jahrEinsetzenTief, enthaeltJahrPlatzhalter } from "./lib/jahr.js";
+
 const ARTIKEL_ROH = [
     // ─────────────────────────────────────────────────────────────────────
     // ZIELSEITE "Nebenkostenabrechnung prüfen lassen", angelegt 25.09.2026.
@@ -784,8 +786,8 @@ const ARTIKEL_ROH = [
     },
     {
       id: "betriebskostenabrechnung-fristen-und-verjaehrung-2026",
-      seoTitel: "Nebenkostenabrechnung: alle Fristen 2026 im Überblick",
-      metaBeschreibung: "Abrechnung 2025 muss bis 31.12.2026 da sein. Wie lange Sie widersprechen können und wann Nachforderungen verjähren, mit kostenlosem Fristenrechner.",
+      seoTitel: "Nebenkostenabrechnung: alle Fristen {JAHR} im Überblick",
+      metaBeschreibung: "Abrechnung {VORJAHR} muss bis 31.12.{JAHR} da sein. Wie lange Sie widersprechen können und wann Nachforderungen verjähren, mit kostenlosem Fristenrechner.",
       titelKurz: "Fristen und Verjährung 2026",
       titel: "Betriebskostenabrechnung 2026: Fristen und Verjährung: was Mieter wissen müssen",
       teaser: "Wann muss der Vermieter abrechnen, wie lange können Sie widersprechen und ab wann sind Nachforderungen verjährt? Der komplette Überblick über alle Fristen rund um die Betriebskostenabrechnung 2026.",
@@ -1292,7 +1294,7 @@ const ARTIKEL_ROH = [
     },
     {
       id: "betriebskostenspiegel-2024",
-      seoTitel: "Betriebskostenspiegel 2026: alle DMB-Werte je Kostenart",
+      seoTitel: "Betriebskostenspiegel {JAHR}: alle DMB-Werte je Kostenart",
       metaBeschreibung: "2,67 € pro m² und Monat im Schnitt: die aktuellen DMB-Werte für alle Nebenkostenarten (Abrechnungsjahr 2024), mit Tabelle und Rechenbeispiel für 75 m².",
       // WICHTIG: Dieses Feld, nicht "titel", landet im <title> der Seite und
       // damit in der Google-Trefferliste (siehe artikelTitel() in
@@ -1843,24 +1845,13 @@ const ARTIKEL_ROH = [
 //
 // Wird beim Laden des Moduls genau einmal ausgeführt, also im Browser beim
 // Seitenaufruf und in scripts/prerender.mjs beim Bauen.
-const AKTUELLES_JAHR = String(new Date().getFullYear());
-
-function jahrEinsetzen(wert) {
-  if (typeof wert === "string") return wert.split("{JAHR}").join(AKTUELLES_JAHR);
-  if (Array.isArray(wert)) return wert.map(jahrEinsetzen);
-  if (wert && typeof wert === "object") {
-    const neu = {};
-    for (const k of Object.keys(wert)) neu[k] = jahrEinsetzen(wert[k]);
-    return neu;
-  }
-  return wert;
-}
-
-export const ARTIKEL = ARTIKEL_ROH.map(jahrEinsetzen);
+// Seit 17.10.2026 gemeinsame Funktion in src/lib/jahr.js, die zusätzlich
+// {VORJAHR} und {FOLGEJAHR} kennt (für Fristen-Texte).
+export const ARTIKEL = ARTIKEL_ROH.map(jahrEinsetzenTief);
 
 // Welche Artikel hängen am laufenden Jahr? Braucht der Jahreswechsel-Workflow,
 // um hinterher gezielt die Neuindexierung dieser Seiten anzustoßen, statt
 // blind alle 22 einzureichen.
 export const ARTIKEL_MIT_JAHR = ARTIKEL_ROH
-  .filter(a => JSON.stringify(a).includes("{JAHR}"))
+  .filter(a => enthaeltJahrPlatzhalter(a))
   .map(a => a.id);

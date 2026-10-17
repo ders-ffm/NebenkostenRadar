@@ -26,8 +26,11 @@
 // ─────────────────────────────────────────────────────────────────────────
 import { BUSINESS } from "./business.js";
 import { euro } from "../lib/format.js";
+import { jahrEinsetzenTief, JAHR } from "../lib/jahr.js";
 
-export const WERKZEUGE = [
+// Relative Jahreszahlen als {JAHR}/{VORJAHR}/{FOLGEJAHR}, siehe src/lib/jahr.js
+// (17.10.2026: wandern zum Jahreswechsel automatisch mit).
+const WERKZEUGE_ROH = [
   // ───────────────────────────────────────────────────────────────────────
   {
     step: "werkzeug-pruefen",
@@ -35,17 +38,17 @@ export const WERKZEUGE = [
     menue: "Nebenkostenabrechnung prüfen",
     kurz: "Kostenlos online prüfen",
     titel: "Nebenkostenabrechnung prüfen: kostenlos und online",
-    seoTitel: "Nebenkostenabrechnung prüfen: kostenlos & online (2026)",
+    seoTitel: "Nebenkostenabrechnung prüfen: kostenlos & online ({JAHR})",
     seoBeschreibung: "Abrechnung hochladen und in wenigen Minuten wissen, ob sie stimmt: Jeder Posten gegen DMB-Betriebskostenspiegel und § 2 BetrKV geprüft. Ohne Konto.",
     widget: "start",
-    intro: "Du hast deine Nebenkostenabrechnung 2025 bekommen und fragst dich, ob die Nachzahlung stimmt? Lade sie als Foto oder PDF hoch. Wir lesen die Posten aus, prüfen jeden einzelnen gegen den Betriebskostenspiegel des Deutschen Mieterbundes und die Betriebskostenverordnung und zeigen dir kostenlos, wo etwas auffällt.",
+    intro: "Du hast deine Nebenkostenabrechnung {VORJAHR} bekommen und fragst dich, ob die Nachzahlung stimmt? Lade sie als Foto oder PDF hoch. Wir lesen die Posten aus, prüfen jeden einzelnen gegen den Betriebskostenspiegel des Deutschen Mieterbundes und die Betriebskostenverordnung und zeigen dir kostenlos, wo etwas auffällt.",
     abschnitte: [
       {
         h2: "Diese 7 Fehler prüfen wir automatisch",
         liste: [
           "Kosten, die gar nicht umgelegt werden dürfen: Verwaltung (auch Kontoführung), Instandhaltung und Reparaturen (§ 1 Abs. 2 BetrKV).",
-          "Kabelfernsehen: seit dem 1. Juli 2024 grundsätzlich nicht mehr umlagefähig. Steht es in der Abrechnung 2025, ist das ein klarer Fund.",
-          "Zu spät zugestellt: Die Abrechnung 2025 muss bis zum 31. Dezember 2026 bei dir sein (§ 556 Abs. 3 BGB). Sonst ist eine Nachforderung in der Regel ausgeschlossen.",
+          "Kabelfernsehen: seit dem 1. Juli 2024 grundsätzlich nicht mehr umlagefähig. Steht es in der Abrechnung {VORJAHR}, ist das ein klarer Fund.",
+          "Zu spät zugestellt: Die Abrechnung {VORJAHR} muss bis zum 31. Dezember {JAHR} bei dir sein (§ 556 Abs. 3 BGB). Sonst ist eine Nachforderung in der Regel ausgeschlossen.",
           "Heizkosten nicht nach Verbrauch verteilt: Dann darfst du deinen Anteil um 15 Prozent kürzen (§ 12 Abs. 1 HeizkostenV).",
           "Verteilung außerhalb von 50 bis 70 Prozent nach Verbrauch bei Heizung und Warmwasser (§§ 7, 8 HeizkostenV).",
           "Fehlender grafischer Vorjahresvergleich in der Heizkostenabrechnung: 3 Prozent Kürzungsrecht (§ 12 Abs. 1 Satz 3, § 6a HeizkostenV).",
@@ -84,14 +87,14 @@ export const WERKZEUGE = [
     menue: "Fristenrechner",
     kurz: "Zu spät? Frist berechnen",
     titel: "Fristenrechner: Kam deine Nebenkostenabrechnung zu spät?",
-    seoTitel: "Fristenrechner Nebenkostenabrechnung: zu spät? (2026)",
+    seoTitel: "Fristenrechner Nebenkostenabrechnung: zu spät? ({JAHR})",
     seoBeschreibung: "Zwei Daten eingeben, sofort wissen: Durfte der Vermieter noch nachfordern, und bis wann kannst du widersprechen? Kostenlos, nach § 556 Abs. 3 BGB.",
     widget: "fristen",
     intro: "Für die Nebenkostenabrechnung gelten zwei Fristen, die viele verwechseln: Der Vermieter muss rechtzeitig abrechnen, und du musst rechtzeitig widersprechen. Trag unten ein, wann der Abrechnungszeitraum endete und wann die Abrechnung bei dir ankam. Der Rechner zeigt dir beide Fristen. Deine Eingaben bleiben in deinem Browser.",
     abschnitte: [
       {
         h2: "Frist 1: Bis wann muss der Vermieter abrechnen?",
-        text: () => "Die Abrechnung muss dir spätestens bis zum Ablauf des zwölften Monats nach Ende des Abrechnungszeitraums zugehen (§ 556 Abs. 3 Satz 2 BGB). Für das Kalenderjahr 2025 heißt das: bis zum 31. Dezember 2026. Entscheidend ist der Zugang bei dir, nicht das Datum auf dem Brief. Kommt die Abrechnung später, kann der Vermieter eine Nachzahlung in der Regel nicht mehr verlangen, es sei denn, er hat die Verspätung nicht zu vertreten (§ 556 Abs. 3 Satz 3 BGB). Ein Guthaben musst du trotzdem bekommen.",
+        text: () => "Die Abrechnung muss dir spätestens bis zum Ablauf des zwölften Monats nach Ende des Abrechnungszeitraums zugehen (§ 556 Abs. 3 Satz 2 BGB). Für das Kalenderjahr {VORJAHR} heißt das: bis zum 31. Dezember {JAHR}. Entscheidend ist der Zugang bei dir, nicht das Datum auf dem Brief. Kommt die Abrechnung später, kann der Vermieter eine Nachzahlung in der Regel nicht mehr verlangen, es sei denn, er hat die Verspätung nicht zu vertreten (§ 556 Abs. 3 Satz 3 BGB). Ein Guthaben musst du trotzdem bekommen.",
       },
       {
         h2: "Frist 2: Bis wann kannst du widersprechen?",
@@ -104,9 +107,9 @@ export const WERKZEUGE = [
       },
     ],
     faq: [
-      { frage: "Bis wann muss die Nebenkostenabrechnung 2025 da sein?", antwort: "Bei einem Abrechnungszeitraum vom 1. Januar bis 31. Dezember 2025 muss die Abrechnung spätestens am 31. Dezember 2026 bei dir zugegangen sein (§ 556 Abs. 3 Satz 2 BGB)." },
+      { frage: "Bis wann muss die Nebenkostenabrechnung {VORJAHR} da sein?", antwort: "Bei einem Abrechnungszeitraum vom 1. Januar bis 31. Dezember {VORJAHR} muss die Abrechnung spätestens am 31. Dezember {JAHR} bei dir zugegangen sein (§ 556 Abs. 3 Satz 2 BGB)." },
       { frage: "Was passiert, wenn die Abrechnung zu spät kommt?", antwort: "Der Vermieter kann dann in der Regel keine Nachzahlung mehr verlangen, außer er hat die Verspätung nicht zu vertreten. Ein Guthaben zu deinen Gunsten muss er trotzdem auszahlen." },
-      { frage: "Wie lange habe ich Zeit für einen Widerspruch?", antwort: "Bis zum Ablauf des zwölften Monats nach Zugang der Abrechnung (§ 556 Abs. 3 Satz 5 BGB). Kam sie zum Beispiel am 15. November 2026, solltest du spätestens bis zum 15. November 2027 widersprochen haben." },
+      { frage: "Wie lange habe ich Zeit für einen Widerspruch?", antwort: "Bis zum Ablauf des zwölften Monats nach Zugang der Abrechnung (§ 556 Abs. 3 Satz 5 BGB). Kam sie zum Beispiel am 15. November {JAHR}, solltest du spätestens bis zum 15. November {FOLGEJAHR} widersprochen haben." },
       { frage: "Zählt das Datum auf der Abrechnung?", antwort: "Nein. Für beide Fristen kommt es darauf an, wann die Abrechnung tatsächlich bei dir angekommen ist (Zugang). Notiere dir das Datum, an dem du sie aus dem Briefkasten geholt hast." },
     ],
   },
@@ -136,8 +139,12 @@ export const WERKZEUGE = [
         ],
       },
       {
-        h2: "Ab 2027 wird es strenger",
-        text: () => "Alte, nicht fernablesbare Zähler müssen bis zum 31. Dezember 2026 nachgerüstet oder ausgetauscht werden (§ 5 Abs. 3 HeizkostenV), außer in begründeten Ausnahmefällen. Ab dem Abrechnungsjahr 2027 kann deshalb auch ein alter, nicht nachgerüsteter Zähler das 3-Prozent-Kürzungsrecht auslösen.",
+        // Gesetzliches Stichdatum 31.12.2026 (§ 5 Abs. 3 HeizkostenV) bleibt
+        // fest. Ab 2027 wechselt der Text von "wird" zu "gilt" (17.10.2026).
+        h2: Number(JAHR) >= 2027 ? "Seit 2027 gilt es auch für alte Zähler" : "Ab 2027 wird es strenger",
+        text: () => Number(JAHR) >= 2027
+          ? "Alte, nicht fernablesbare Zähler mussten bis zum 31. Dezember 2026 nachgerüstet oder ausgetauscht werden (§ 5 Abs. 3 HeizkostenV), außer in begründeten Ausnahmefällen. Ab dem Abrechnungsjahr 2027 kann deshalb auch ein alter, nicht nachgerüsteter Zähler das 3-Prozent-Kürzungsrecht auslösen."
+          : "Alte, nicht fernablesbare Zähler müssen bis zum 31. Dezember 2026 nachgerüstet oder ausgetauscht werden (§ 5 Abs. 3 HeizkostenV), außer in begründeten Ausnahmefällen. Ab dem Abrechnungsjahr 2027 kann deshalb auch ein alter, nicht nachgerüsteter Zähler das 3-Prozent-Kürzungsrecht auslösen.",
       },
     ],
     faq: [
@@ -148,6 +155,8 @@ export const WERKZEUGE = [
     ],
   },
 ];
+
+export const WERKZEUGE = jahrEinsetzenTief(WERKZEUGE_ROH);
 
 export function werkzeugFuerStep(step) {
   return WERKZEUGE.find(w => w.step === step) || null;

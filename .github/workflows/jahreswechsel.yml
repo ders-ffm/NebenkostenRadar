@@ -57,6 +57,10 @@ jobs:
           node --input-type=module -e "
             const m = await import('./src/artikel.js');
             const urls = m.ARTIKEL_MIT_JAHR.map(id => 'https://nebenkostenradar.com/ratgeber/' + id);
+            // Seit 17.10.2026 tragen auch die Werkzeug-Seiten das Jahr im Titel
+            // (src/config/werkzeuge.js, Platzhalter aus src/lib/jahr.js).
+            const w = await import('./src/config/werkzeuge.js');
+            for (const x of w.WERKZEUGE) urls.push('https://nebenkostenradar.com' + x.pfad);
             console.log(urls.join('\n'));
           " > seiten.txt
           echo "anzahl=$(wc -l < seiten.txt)" >> "$GITHUB_OUTPUT"

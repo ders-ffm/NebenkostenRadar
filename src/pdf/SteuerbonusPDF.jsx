@@ -26,19 +26,21 @@ import { BUSINESS } from "../config/business.js";
 
 const C = THEME.color;
 const s = StyleSheet.create({
-  page: { padding: "40pt 46pt", fontFamily: "Work Sans", fontSize: 10, color: C.text, lineHeight: 1.55 },
-  logoRow: { flexDirection: "row", alignItems: "center", gap: 5, marginBottom: 24 },
+  // Unterer Rand 70 pt (17.10.2026): Die Fußzeile hier ist zweizeilig und
+  // reicht bis etwa 52 pt vom Rand.
+  page: { padding: "36pt 46pt 70pt", fontFamily: "Work Sans", fontSize: 10, color: C.text, lineHeight: 1.5 },
+  logoRow: { flexDirection: "row", alignItems: "center", gap: 5, marginBottom: 16 },
   logoBox: { width: 12, height: 12, borderRadius: 3, backgroundColor: C.brand },
   logoText: { fontFamily: "Poppins", fontSize: 8, fontWeight: 600, color: C.textDim },
   titel: { fontFamily: "Poppins", fontSize: 14, fontWeight: 600, marginBottom: 3 },
-  untertitel: { fontSize: 8.5, color: C.textDim, marginBottom: 16 },
+  untertitel: { fontSize: 8.5, color: C.textDim, marginBottom: 12 },
   absatz: { marginBottom: 10, fontSize: 10 },
   table: { marginBottom: 12, borderTop: "0.5pt solid " + C.border },
-  tRow: { flexDirection: "row", borderBottom: "0.5pt solid " + C.border, paddingVertical: 6 },
+  tRow: { flexDirection: "row", borderBottom: "0.5pt solid " + C.border, paddingVertical: 4 },
   tRowSum: { flexDirection: "row", paddingVertical: 6, fontWeight: 500 },
   tLabel: { flex: 3, color: C.textMuted },
   tValue: { flex: 1, textAlign: "right" },
-  hinweisBox: { backgroundColor: C.brandBg, borderRadius: 6, padding: "10pt 12pt", marginBottom: 16, fontSize: 9.5, color: C.text, lineHeight: 1.5 },
+  hinweisBox: { backgroundColor: C.brandBg, borderRadius: 6, padding: "9pt 12pt", marginBottom: 12, fontSize: 9.5, color: C.text, lineHeight: 1.45 },
   anfrageTitel: { fontSize: 10, fontWeight: 500, marginBottom: 6 },
   anfrageBox: { border: "0.5pt solid " + C.border, borderRadius: 6, padding: "10pt 12pt", marginBottom: 16, fontSize: 9.5, color: C.textMuted, lineHeight: 1.6 },
   footer: { position: "absolute", bottom: 24, left: 46, right: 46, borderTop: "0.5pt solid " + C.border, paddingTop: 6, fontSize: 7, color: C.textDim, textAlign: "center" },
@@ -83,7 +85,10 @@ export default function SteuerbonusPDF({ result, wohnung, adressen }) {
       </View>
 
       <Text style={s.titel}>Steuer-Bonus: was du absetzen kannst</Text>
-      <Text style={s.untertitel}>Unverbindlicher Hinweis nach § 35a EStG, reine Rechenhilfe, keine Steuerberatung.</Text>
+      {/* Datum steht seit 17.10.2026 hier oben. Vorher stand es als letzte
+          Zeile unter allen Kästen und rutschte im Testkauf allein auf eine
+          sonst leere fünfte Seite. */}
+      <Text style={s.untertitel}>Unverbindlicher Hinweis nach § 35a EStG, reine Rechenhilfe, keine Steuerberatung. Stand: {heute}</Text>
 
       {positionen.length === 0 ? (
         <Text style={s.absatz}>
@@ -221,6 +226,10 @@ export default function SteuerbonusPDF({ result, wohnung, adressen }) {
                 </Text>
               </View>
 
+              {/* Überschrift und Kasten zusammenhalten (17.10.2026): Im
+                  Probedruck stand die Überschrift sonst allein unten auf der
+                  Seite und der Kasten auf der nächsten. */}
+              <View wrap={false}>
               <Text style={s.anfrageTitel}>Ein Punkt, den du vorher prüfen solltest</Text>
               <View style={s.hinweisBox}>
                 <Text>
@@ -236,12 +245,11 @@ export default function SteuerbonusPDF({ result, wohnung, adressen }) {
                   ausdrücklich verpflichtet, stellt sie aber in der Regel aus.
                 </Text>
               </View>
+              </View>
             </>
           );
         })()
       )}
-
-      <Text style={{ fontSize: 8.5, color: C.textDim }}>{(adressen.mieterOrt || "").trim()}, {heute}</Text>
 
       <View style={s.footer} fixed>
         <Text>Reine Rechenhilfe, keine Steuerberatung. Automatisiert erstellter Hinweis, keine Gewähr für Richtigkeit oder Vollständigkeit, ob und in welcher Höhe die Ermäßigung im Einzelfall greift, hängt von deiner individuellen Steuererklärung ab.</Text>

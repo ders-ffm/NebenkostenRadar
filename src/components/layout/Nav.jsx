@@ -21,6 +21,7 @@ import { THEME } from "../../config/theme.js";
 import Verweis from "../ui/Verweis.jsx";
 import { pfadFuer } from "../../config/routen.js";
 import { WERKZEUGE } from "../../config/werkzeuge.js";
+import { JAHR } from "../../lib/jahr.js";
 
 // Artikel im Ratgeber-Untermenü: die Themen mit den meisten Impressionen in
 // der Search Console (Stand 14.10.2026) plus die Grundlagen-Artikel.
@@ -29,7 +30,7 @@ import { WERKZEUGE } from "../../config/werkzeuge.js";
 // Seiten liegen statisch vor.
 const RATGEBER_THEMEN = [
   ["Widerspruch einlegen", "/ratgeber/widerspruch-nebenkostenabrechnung"],
-  ["Alle Fristen 2026", "/ratgeber/betriebskostenabrechnung-fristen-und-verjaehrung-2026"],
+  ["Alle Fristen " + JAHR, "/ratgeber/betriebskostenabrechnung-fristen-und-verjaehrung-2026"], // Jahr wandert mit (src/lib/jahr.js)
   ["Betriebskostenspiegel", "/ratgeber/betriebskostenspiegel-2024"],
   ["Nicht umlagefähige Kosten", "/ratgeber/nicht-umlagefaehige-nebenkosten"],
   ["Heizkostenabrechnung", "/ratgeber/heizkostenabrechnung-vermieterfehler-2026-leitfaden"],

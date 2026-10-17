@@ -20,7 +20,19 @@
 //
 // Die eigentliche PDF-Zustellung an den Kunden übernimmt weiterhin
 // api/send-email.js, ausgelöst aus Download.jsx.
+//
+// ERGÄNZT 17.10.2026 (Compliance-Check): 4. Vertragsbestätigung per E-Mail
+// (§ 312f Abs. 2 und 3 BGB) mit Bestelldaten, der Bestätigung der
+// Zustimmung zum vorzeitigen Erlöschen des Widerrufsrechts und den AGB.
+// Ohne diese Mail erlischt das Widerrufsrecht nicht (§ 356 Abs. 5 Nr. 3
+// BGB), Erklärung siehe src/lib/vertragsmail.js. Der Versand läuft HIER und
+// nicht in send-email.js, weil der Webhook bei jeder bezahlten Bestellung
+// zuverlässig ausgelöst wird, auch wenn der Kunde den Tab nach der Zahlung
+// schließt. Einmalig pro Bestellung: Stripe wiederholt Webhooks bei
+// Zeitüberschreitung, deshalb wird nur verschickt, wenn der Kauf in
+// nkr_purchases NEU angelegt wurde (siehe "ignore-duplicates" unten).
 // ─────────────────────────────────────────────────────────────────────────
+import { vertragsbestaetigungHtml, vertragsbestaetigungBetreff } from '../src/lib/vertragsmail.js';
 // Siehe gleichnamige Funktion in send-email.js (dort ausführlich erklärt).
 // ÄNDERN SICH DIE PREISE, MUSS DIESE GRENZE MIT.
 const STUFE_VOLL_AB_CENT = 1149;
@@ -117,7 +129,7 @@ export default async function handler(req, res) {
     // Eigene, per Doppel-Eingabe geprüfte Adressdaten + Opt-in-Status holen
     // (zuverlässiger als die Stripe-E-Mail, die nicht gegengeprüft wird).
     const reportRes = await fetch(
-      supabaseUrl + '/rest/v1/nkr_reports?session_id=eq.' + encodeURIComponent(ourSessionId) + '&select=adressen,marketing_opt_in,created_at,stufe',
+      supabaseUrl + '/rest/v1/nkr_reports?session_id=eq.' + encodeURIComponent(ourSessionId) + '&select=adressen,marketing_opt_in,created_at,stufe,widerruf_ok',
       { headers: { apikey: supabaseKey, Authorization: 'Bearer ' + supabaseKey } }
     );
     const reportRows = reportRes.ok ? await reportRes.json() : [];
@@ -157,7 +169,12 @@ export default async function handler(req, res) {
         apikey: supabaseKey,
         Authorization: 'Bearer ' + supabaseKey,
         'Content-Type': 'application/json',
-        Prefer: 'resolution=merge-duplicates',
+        // GEÄNDERT 17.10.2026: ignore-duplicates statt merge-duplicates.
+        // Bei einer Stripe-Wiederholung bleibt die erste Zeile unverändert
+        // (die Werte wären ohnehin dieselben), und return=representation
+        // liefert dann eine LEERE Liste. Daran erkennen wir unten, dass die
+        // Vertragsbestätigung schon verschickt wurde.
+        Prefer: 'resolution=ignore-duplicates,return=representation',
       },
       body: JSON.stringify({
         session_id: ourSessionId,
@@ -170,10 +187,50 @@ export default async function handler(req, res) {
         abgemeldet: false,
       }),
     });
+    let neuAngelegt = false;
     if (!purchaseRes.ok) {
       console.error('nkr_purchases Fehler:', await purchaseRes.text());
     } else {
-      console.log('Kauf protokolliert:', ourSessionId, marketingOptIn ? '(mit Opt-in)' : '(ohne Opt-in)');
+      const zeilen = await purchaseRes.json().catch(() => []);
+      neuAngelegt = Array.isArray(zeilen) && zeilen.length > 0;
+      console.log('Kauf protokolliert:', ourSessionId, marketingOptIn ? '(mit Opt-in)' : '(ohne Opt-in)', neuAngelegt ? '' : '(bereits vorhanden)');
+    }
+
+    // Vertragsbestätigung (§ 312f BGB), nur beim ersten Eingang.
+    // Ein Fehler hier darf den Webhook nicht scheitern lassen (Stripe würde
+    // sonst wiederholen), deshalb eigenes try/catch und nur Protokoll.
+    const resendKey = process.env.RESEND_API_KEY;
+    if (neuAngelegt && resendKey) {
+      try {
+        const stufe = stufeLautZahlung(report?.stufe, obj);
+        const html = vertragsbestaetigungHtml({
+          vorname,
+          stufe,
+          betragCent: obj.amount_total,
+          // Zeitpunkt des Zahlungseingangs (= Vertragsschluss laut AGB § 3);
+          // obj.created wäre der Start des Checkouts, nicht der Abschluss.
+          zeitpunkt: new Date(),
+          bestellnummer: ourSessionId,
+          widerrufOk: report?.widerruf_ok === true,
+        });
+        const mailRes = await fetch('https://api.resend.com/emails', {
+          method: 'POST',
+          headers: { Authorization: 'Bearer ' + resendKey, 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            from: 'NebenkostenRadar <noreply@nebenkostenradar.com>',
+            to: email,
+            reply_to: 'support@nebenkostenradar.com',
+            subject: vertragsbestaetigungBetreff(),
+            html,
+          }),
+        });
+        if (!mailRes.ok) console.error('Vertragsbestätigung nicht versendet:', await mailRes.text());
+        else console.log('Vertragsbestätigung versendet:', ourSessionId);
+      } catch (err) {
+        console.error('Vertragsbestätigung fehlgeschlagen:', err.message);
+      }
+    } else if (neuAngelegt && !resendKey) {
+      console.error('RESEND_API_KEY fehlt — Vertragsbestätigung NICHT versendet:', ourSessionId);
     }
   } catch (err) {
     console.error('Webhook-Verarbeitung fehlgeschlagen:', err.message);

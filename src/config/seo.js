@@ -93,6 +93,12 @@ export const SEO_SEITEN = {
       "Allgemeine Geschäftsbedingungen, Leistungsbeschreibung, Preise und Widerrufsbelehrung für NebenkostenRadar.",
   },
 
+  widerruf: {
+    titel: "Vertrag widerrufen | NebenkostenRadar",
+    beschreibung:
+      "Elektronische Widerrufsfunktion: Hier kannst du einen über nebenkostenradar.com geschlossenen Vertrag widerrufen und bekommst sofort eine Eingangsbestätigung.",
+  },
+
   datenschutz: {
     titel: "Datenschutzerklärung | NebenkostenRadar",
     beschreibung:

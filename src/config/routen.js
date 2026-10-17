@@ -23,6 +23,7 @@ export const ROUTES = {
   "/impressum": "impressum",
   "/agb": "agb",
   "/datenschutz": "datenschutz",
+  "/widerruf": "widerruf", // Widerrufsbutton, § 356a BGB (17.10.2026)
   "/ratgeber": "ratgeber",
   "/ueber-uns": "ueberuns",
   "/faq": "faq",

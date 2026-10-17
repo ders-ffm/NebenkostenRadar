@@ -10,21 +10,23 @@ import { fmt } from "../lib/format.js";
 
 const C = THEME.color;
 const s = StyleSheet.create({
-  page: { padding: "40pt 46pt", fontFamily: "Work Sans", fontSize: 10, color: C.text, lineHeight: 1.55 },
-  logoRow: { flexDirection: "row", alignItems: "center", gap: 5, marginBottom: 24 },
+  // Unterer Rand 58 pt (17.10.2026): Die Fußzeile steht bei 24 pt und ist
+  // rund 15 pt hoch, bei 40 pt lief Text in sie hinein (Testkauf).
+  page: { padding: "36pt 46pt 58pt", fontFamily: "Work Sans", fontSize: 10, color: C.text, lineHeight: 1.5 },
+  logoRow: { flexDirection: "row", alignItems: "center", gap: 5, marginBottom: 16 },
   logoBox: { width: 12, height: 12, borderRadius: 3, backgroundColor: C.brand },
   logoText: { fontFamily: "Poppins", fontSize: 8, fontWeight: 600, color: C.textDim },
-  block: { marginBottom: 18, fontSize: 9.5 },
-  datum: { fontSize: 9.5, color: C.textMuted, marginBottom: 16 },
-  betreff: { fontSize: 10.5, fontWeight: 500, marginBottom: 14 },
-  absatz: { marginBottom: 10, fontSize: 10 },
+  block: { marginBottom: 12, fontSize: 9.5 },
+  datum: { fontSize: 9.5, color: C.textMuted, marginBottom: 12 },
+  betreff: { fontSize: 10.5, fontWeight: 500, marginBottom: 10 },
+  absatz: { marginBottom: 8, fontSize: 10 },
   table: { marginBottom: 14, borderTop: "0.5pt solid " + C.border },
-  tRow: { flexDirection: "row", borderBottom: "0.5pt solid " + C.border, paddingVertical: 6 },
+  tRow: { flexDirection: "row", borderBottom: "0.5pt solid " + C.border, paddingVertical: 4, fontSize: 9.5 },
   tRowSum: { flexDirection: "row", paddingVertical: 6, fontWeight: 500 },
   tLabel: { flex: 3, color: C.textMuted },
   tValue: { flex: 1, textAlign: "right" },
-  gruppenTitel: { fontSize: 8.5, fontWeight: 600, color: C.textMuted, textTransform: "uppercase", marginTop: 10, marginBottom: 2 },
-  gruss: { marginTop: 20, marginBottom: 30 },
+  gruppenTitel: { fontSize: 8.5, fontWeight: 600, color: C.textMuted, textTransform: "uppercase", marginTop: 8, marginBottom: 2 },
+  gruss: { marginTop: 14, marginBottom: 10 },
   footer: { position: "absolute", bottom: 24, left: 46, right: 46, borderTop: "0.5pt solid " + C.border, paddingTop: 6, fontSize: 7, color: C.textDim, textAlign: "center" },
 });
 
@@ -71,6 +73,21 @@ export default function BriefPDF({ result, wohnung, adressen }) {
       const name = (p.posten || "").toLowerCase().trim();
       return name && !bereitsGenannt.some(t => t.includes(name));
     });
+  // NEU 17.10.2026 (Stefans Testkauf): Positionen mit Status "hoch" (41 bis
+  // 80 Prozent über dem DMB-Richtwert) standen im Bericht als "Erhöht" und
+  // flossen in die Kopfzahl "möglicherweise zu viel gezahlt" ein, fehlten
+  // aber im Brief. Im Testkauf: Kopfzahl 456,87 €, im Brief nur 300,88 €,
+  // Grundsteuer (+43 %) und Müllbeseitigung (+53 %) tauchten nicht auf.
+  // Für einen förmlichen Einwand sind diese Abweichungen zu schwach (deshalb
+  // nicht in der Liste oben), für eine Bitte um Belegeinsicht nach § 259 BGB
+  // reichen sie: Darauf hat der Mieter ohnehin Anspruch. Jetzt stehen sie
+  // als eigene Gruppe im Brief, Bericht und Brief passen zusammen.
+  const erhoehtePositionen = (result.posten_bewertung || [])
+    .filter(p => p.status === "hoch")
+    .filter(p => {
+      const name = (p.posten || "").toLowerCase().trim();
+      return name && !bereitsGenannt.some(t => t.includes(name));
+    });
   const hatBeanstandungen = gruendeHart.length > 0 || gruendeStatistisch.length > 0;
 
   // DREI BRIEFMODI (Stand 09.09.2026, aufgedeckt durch
@@ -96,7 +113,7 @@ export default function BriefPDF({ result, wohnung, adressen }) {
   // Inhalt: eine sachliche, jederzeit berechtigte Aufforderung zur
   // Belegeinsicht — kein Vorwurf, keine Behauptung, kein leeres Blatt.
   const modus = hatBeanstandungen ? "einwendungen"
-    : offenePositionen.length > 0 ? "auskunft"
+    : (offenePositionen.length > 0 || erhoehtePositionen.length > 0) ? "auskunft"
     : "belegeinsicht";
   const istAuskunftsschreiben = modus === "auskunft";
   const zeigtListe = modus !== "belegeinsicht";
@@ -235,13 +252,25 @@ export default function BriefPDF({ result, wohnung, adressen }) {
         {/* Positionen ohne offiziellen Vergleichswert, siehe Kommentar zu
             offenePositionen oben. Bewusst als Frage formuliert, nicht als
             Vorwurf: Wir wissen nicht, was im Mietvertrag steht. */}
+        {erhoehtePositionen.length > 0 && (
+          <>
+            <Text style={s.gruppenTitel}>Über dem DMB-Durchschnitt, bitte um Belegeinsicht</Text>
+            {erhoehtePositionen.map((p, i) => (
+              <View key={"e" + i} style={s.tRow}>
+                <Text style={s.tLabel}>
+                  {gruendeHart.length + gruendeStatistisch.length + i + 1}. {p.posten} ({fmt(p.betrag)}) liegt {p.abweichung_prozent} % über dem Durchschnittswert des Deutschen Mieterbundes. Ich bitte um Vorlage der zugrunde liegenden Rechnungen und Bescheide.
+                </Text>
+              </View>
+            ))}
+          </>
+        )}
         {offenePositionen.length > 0 && (
           <>
             <Text style={s.gruppenTitel}>Bitte um Angabe der vertraglichen Grundlage und um Belegeinsicht</Text>
             {offenePositionen.map((p, i) => (
               <View key={"o" + i} style={s.tRow}>
                 <Text style={s.tLabel}>
-                  {gruendeHart.length + gruendeStatistisch.length + i + 1}. {p.posten} ({fmt(p.betrag)}): Auf welcher vertraglichen Grundlage wurde diese Position umgelegt, und ist sie nach § 2 BetrKV umlagefähig?
+                  {gruendeHart.length + gruendeStatistisch.length + erhoehtePositionen.length + i + 1}. {p.posten} ({fmt(p.betrag)}): Auf welcher vertraglichen Grundlage wurde diese Position umgelegt, und ist sie nach § 2 BetrKV umlagefähig?
                 </Text>
               </View>
             ))}
@@ -272,11 +301,18 @@ export default function BriefPDF({ result, wohnung, adressen }) {
       {result.saldo > 0 && (
         <Text style={s.absatz}>Eine eventuelle Nachzahlung leiste ich ausdrücklich unter Vorbehalt.</Text>
       )}
+      {/* Letzter Satz und Gruß bleiben zusammen (wrap={false}), damit eine
+          zweite Briefseite nie nur aus Gruß und Name besteht. */}
+      <View wrap={false}>
       <Text style={s.absatz}>Ich bitte um schriftliche Stellungnahme innerhalb von 4 Wochen.</Text>
 
-      <View style={s.gruss}>
+      {/* wrap={false}: Gruß und Name bleiben zusammen (17.10.2026). Im
+          Probedruck stand sonst der Name allein auf einer neuen Seite. Platz
+          für die Unterschrift: eine Leerzeile statt zwei. */}
+      <View style={s.gruss} wrap={false}>
         <Text>Mit freundlichen Grüßen</Text>
-        <Text>{"\n\n"}{adressen.mieterName}</Text>
+        <Text>{"\n"}{adressen.mieterName}</Text>
+      </View>
       </View>
 
       <View style={s.footer} fixed>

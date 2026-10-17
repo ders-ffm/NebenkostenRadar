@@ -2,6 +2,55 @@
 
 Alle wesentlichen Änderungen an diesem Projekt, mit Datum und Begründung. Dient der Nachvollziehbarkeit, damit auch ohne KI-Unterstützung verstanden werden kann, warum etwas so ist, wie es ist.
 
+## 17.10.2026 — PDF aus Stefans Testkauf korrigiert, Jahreszahlen wandern automatisch mit
+
+### PDF (Befunde aus dem echten Testkauf)
+
+1. **Text lief in die Fußzeile (Seite 1).** Unterer Seitenrand war 28 pt, die Fußzeile steht absolut bei 24 pt und ist rund 16 pt hoch. Jetzt 62 pt (Bericht), 58 pt (Brief), 70 pt (Steuerseite, zweizeilige Fußzeile). Begründungskästen werden nicht mehr über den Seitenumbruch zerrissen (`wrap={false}`).
+2. **Fast leere fünfte Seite.** Die Datumszeile am Ende der Steuerseite rutschte allein auf eine neue Seite. Datum steht jetzt im Untertitel oben, Abstände leicht verdichtet, Überschrift und Kasten „Ein Punkt, den du vorher prüfen solltest“ bleiben zusammen.
+3. **Bericht und Brief passten nicht zusammen.** Kopfzahl „456,87 € möglicherweise zu viel“ enthielt Grundsteuer (+43 %) und Müllbeseitigung (+53 %), der Brief nannte nur die Versicherungen (300,88 €). Positionen 41 bis 80 % über Richtwert stehen jetzt im Brief als „Über dem DMB-Durchschnitt, bitte um Belegeinsicht“ (§ 259 BGB), nicht als förmliche Einwendung.
+4. **„davon“-Zeilen zeigten „Unauffällig“,** obwohl die Summe darüber „Stark erhöht“ war (Versicherungen). Jetzt „in Summe“ (PDF) bzw. „in Summe geprüft“ (Ergebnisseite).
+5. **Brief:** Gruß und Name bleiben zusammen; bei sehr vielen Befunden darf der Brief zweiseitig werden, aber die zweite Seite besteht nie nur aus Gruß und Name.
+
+`scripts/pdf-probedruck.mjs` prüft jetzt zusätzlich einen zweiten Fall (ohne Heizkosten-Angaben, wie der Testkauf), Text im Fußbereich und fast leere Seiten. Vorher: 4 Befunde, jetzt 0. `npm run check` (72 Brief-Konstellationen) grün.
+
+### Jahreszahlen
+
+Stefans Vorgabe: Zum Jahreswechsel muss alles automatisch auf das neue Jahr gehen. Neue Datei `src/lib/jahr.js` mit den Platzhaltern `{JAHR}`, `{VORJAHR}` (= das Abrechnungsjahr, um das es gerade geht) und `{FOLGEJAHR}`. Umgestellt: Titel der Werkzeug-Seiten („… (2026)“), Fristen-Texte und FAQ im Fristenrechner und auf der Prüfen-Seite, Snippets der Artikel „Fristen“ und „Betriebskostenspiegel“, Menüpunkt „Alle Fristen 2026“. Gesetzliche Stichtage (z. B. Kabelanschluss 01.07.2024, Nachrüstfrist 31.12.2026) bleiben bewusst fest; der Abschnitt „Ab 2027 wird es strenger“ schaltet 2027 automatisch auf „Seit 2027 gilt es …“ um. Mit simuliertem Datum 02.01.2027 geprüft. Der Jahreswechsel-Workflow (Neubau am 2. Januar) listet jetzt auch die Werkzeug-Seiten zur Neuindexierung.
+
+Bewusst NICHT geändert: Jahreszahlen in Adressen (URLs) wie `/ratgeber/betriebskostenspiegel-2024`. Eine neue Adresse würde die bisherigen Rankings kosten.
+
+## 17.10.2026 — Compliance: Vertragsbestätigung, Widerrufsbutton, AGB-Haftung, Datenschutz-Lücken
+
+### Anlass
+
+Compliance-Check auf Stefans Auftrag (17.10.2026), anhand des Codes und der Live-Seite. Stand: noch keine echten Verkäufe, deshalb jetzt beheben, bevor der erste Kauf kommt.
+
+### Befunde und Korrekturen
+
+1. **Vertragsbestätigung fehlte (hoch).** Bei digitalen Inhalten erlischt das Widerrufsrecht nur, wenn der Kunde zugestimmt hat, sein Wissen um den Verlust bestätigt hat UND eine Vertragsbestätigung mit dieser Zustimmung auf einem dauerhaften Datenträger bekommen hat (§ 356 Abs. 5 Nr. 3 i. V. m. § 312f Abs. 3 BGB). Die Kaufmail enthielt nur „Dein Prüfbericht ist fertig“ und das PDF. Folge: 14 Tage Widerrufsrecht trotz geliefertem Bericht, außerdem abmahnfähig (auch § 312f Abs. 2: Vertragsinhalt inkl. AGB). **Jetzt:** `api/webhook.js` schickt nach jeder bezahlten Bestellung genau einmal eine Vertragsbestätigung (Anbieter, Leistung, bezahlter Betrag, Zeitpunkt, Bestellnummer, Bestätigung der Zustimmung, vollständige AGB). Text in `src/lib/vertragsmail.js`. Einmaligkeit über `nkr_purchases` (Upsert mit `ignore-duplicates`, Stripe-Wiederholungen lösen keine zweite Mail aus). Fehlt `widerruf_ok`, nennt die Mail das volle Widerrufsrecht statt etwas zu bestätigen, das nicht belegt ist.
+2. **Widerrufsbutton fehlte (hoch).** Seit 19.06.2026 müssen Online-Verträge über eine elektronische Widerrufsfunktion widerrufen werden können (§ 356a BGB). **Jetzt:** Link „Vertrag widerrufen“ in der Fußzeile jeder Seite → `/widerruf` (`src/pages/Widerruf.jsx`) mit Name, Bestellung, E-Mail und Schaltfläche „Widerruf bestätigen“; `api/contact.js` (Typ `widerruf`, keine neue Function wegen Hobby-Limit 12) schickt die Erklärung an support@ und sofort eine Eingangsbestätigung mit Inhalt, Datum und Uhrzeit an den Kunden.
+3. **Haftungsausschluss in den AGB unwirksam (mittel).** „Eine Haftung für rechtliche Richtigkeit oder Vollständigkeit … wird ausgeschlossen“ ist gegenüber Verbrauchern nach § 309 Nr. 7 BGB unwirksam und abmahnfähig. **Jetzt:** übliche Klausel (unbeschränkt bei Vorsatz, grober Fahrlässigkeit, Leben/Körper/Gesundheit, ProdHaftG; bei leichter Fahrlässigkeit nur Kardinalpflichten, begrenzt auf den vorhersehbaren Schaden) plus Hinweis auf die gesetzliche Gewährleistung für digitale Produkte (§§ 327 ff. BGB).
+4. **Weitere AGB-Punkte.** Leistungsbeschreibung präzisiert (ein Brief, Inhalt je nach Ergebnis; automatisierte Prüfung, keine Rechtsberatung). § 3 ergänzt um Korrektur von Eingabefehlern und Speicherung des Vertragstexts (Art. 246c EGBGB; die Überschrift versprach das, der Inhalt fehlte). Rechtswahl mit Vorbehalt zugunsten von Verbrauchern aus anderen Staaten (Art. 6 Abs. 2 Rom-I-VO). Gerichtsstand-Satz gestrichen (gegenüber Verbrauchern ohnehin unwirksam). AGB-Text liegt jetzt an EINER Stelle (`src/config/vertrag.js`) für Webseite und Vertragsbestätigung.
+5. **Datenschutzerklärung (mittel).** (a) „Später fortsetzen“ speichert seit 30.08.2026 Zwischenstände in `nkr_drafts` (30 Tage) und war nicht beschrieben → neuer Abschnitt 2b. (b) Angaben werden schon beim Klick auf „Jetzt kaufen“ gespeichert, nicht erst beim Kauf; bei Kaufabbruch blieben sie 365 Tage → Text korrigiert und `scripts/datenloeschung.mjs` löscht unbezahlte Zeilen jetzt nach 30 Tagen. (c) Vertragsbestätigung und Widerrufsfunktion ergänzt (Art. 6 Abs. 1 lit. c DSGVO). (d) Hinweis auf das Widerspruchsrecht nach Art. 21 DSGVO (muss gesondert erfolgen). (e) Serverstandort Supabase Frankfurt genannt.
+6. **Kleinigkeiten im Kaufablauf (`Result.jsx`).** „§ 18 VRRL“ war falsch zitiert (die Richtlinie hat Artikel, und die Ausnahme steht in Art. 16 lit. m) → gestrichen. „Mit dem Kauf akzeptierst du unsere AGB und Datenschutzerklärung“ → „Es gelten unsere AGB · Infos zum Datenschutz“ (eine Datenschutzerklärung ist eine Information, keine Vertragsbedingung).
+
+7. **Anthropic-Speicherdauer (Datenschutzerklärung 2a).** Dort stand, Anthropic speichere hochgeladene Abrechnungsfotos nicht über die Anfrage hinaus. Laut Anthropic (privacy.claude.com, abgerufen 17.10.2026) werden API-Ein- und -Ausgaben standardmäßig bis zu 30 Tage aufbewahrt, länger nur zur Durchsetzung der Nutzungsrichtlinien oder aus gesetzlichen Gründen. Text korrigiert.
+8. **KI-Hinweis in den Ratgeber-Artikeln.** Die Artikel entstehen per KI und werden nicht redaktionell gegengelesen (Stefans Angabe). Art. 50 Abs. 4 KI-VO (seit 02.08.2026) verlangt für KI-erzeugte Texte zur Information der Öffentlichkeit eine Offenlegung, außer bei menschlicher Prüfung und redaktioneller Verantwortung. Jetzt steht unter jeder Artikelüberschrift „Mit Unterstützung künstlicher Intelligenz erstellt. Kein Ersatz für eine Rechtsberatung.“ (`Artikel.jsx`, `prerender.mjs`).
+9. **Widerrufsbutton gegen den Gesetzestext geprüft** (§ 356a BGB, gesetze-im-internet.de, 17.10.2026): Beschriftungen „Vertrag widerrufen“ und „Widerruf bestätigen“, Angaben Name, Vertrag, elektronischer Weg für die Bestätigung, Eingangsbestätigung mit Inhalt, Datum und Uhrzeit auf dauerhaftem Datenträger. Alles erfüllt.
+
+### Offen, nicht im Code lösbar
+
+**Vercel-Tarif.** Laut Vercel Fair Use Guidelines (abgerufen 17.10.2026) ist der Hobby-Tarif auf „non-commercial personal use only“ beschränkt; jede Seite, die Zahlungen abwickelt, gilt als kommerziell. NebenkostenRadar läuft auf Hobby und verkauft Berichte über Stripe. Entweder auf Pro wechseln oder zu einem Anbieter ziehen, dessen kostenloser Tarif kommerzielle Nutzung erlaubt. Entscheidung bei Stefan.
+
+### Geprüft
+
+`npm run check` grün. Mock-Tests (`fetch` nachgebaut) für Vertragsbestätigung, Einmaligkeit bei Stripe-Wiederholung, Stufe/Preis mit Gutschein, fehlende Zustimmung, Mailfehler, Widerruf (zwei Mails, Validierung, Maskierung, Fehlerfall), Kontaktformular unverändert, Löschung nur unbezahlter Berichte. Playwright (390 px): Fußzeilen-Link, Widerrufsformular inkl. Validierung und Erfolgsmeldung, AGB und Datenschutz neu, keine JS-Fehler.
+
+### Nach dem Deploy
+
+Testkauf mit NKR20: Es müssen jetzt ZWEI Mails ankommen, die Vertragsbestätigung (mit AGB) und die Mail mit dem PDF. Einmal das Widerrufsformular mit eigener Adresse ausprobieren.
+
 ## 17.10.2026 — Startseite entschlackt, Menü mit Untermenüs
 
 Von Stefan am 17.10.2026 nach Ansicht der Vorschau freigegeben (Pull Request #4).
