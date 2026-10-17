@@ -86,6 +86,20 @@ await renderToFile(
   ZIEL
 );
 
+// ZWEITER FALL (17.10.2026, Stefans Testkauf): dieselbe Abrechnung OHNE die
+// freiwilligen Heizkosten-Angaben. Genau so sah der echte Testkauf aus, und
+// dabei fielen zwei Satzfehler auf, die der erste Fall nicht zeigt: Auf
+// Seite 1 liefen die Begründungskästen in die Fußzeile, und die Steuerseite
+// schob die Datumszeile allein auf eine fast leere fünfte Seite. Ohne
+// Heizkosten-Angaben steht im Bericht der lange Erklärungsblock, dadurch
+// verschieben sich alle Seitenumbrüche.
+const wohnungOhneHeiz = { flaeche: wohnung.flaeche, jahr: wohnung.jahr, vorauszahlung: wohnung.vorauszahlung };
+const ZIEL2 = "/tmp/nkr-probedruck-ohne-heiz.pdf";
+await renderToFile(
+  React.createElement(PruefberichtDocument, { result: buildResult(werte, wohnungOhneHeiz), wohnung: wohnungOhneHeiz, werte, adressen, stufe: "voll" }),
+  ZIEL2
+);
+
 // ── Automatische Prüfungen auf dem fertigen PDF ──────────────────────────
 // pdfjs statt pdfplumber, damit keine Python-Abhängigkeit nötig ist.
 const doc = await getDocument({ data: new Uint8Array(readFileSync(ZIEL)) }).promise;
@@ -127,7 +141,23 @@ for (const posten of ["Hauswart", "Gartenpflege", "Schornsteinreinigung", "Wartu
   pruefe(`Posten "${posten}" steht ${n}x auf der Steuerseite`, n > 1);
 }
 
-console.log(`PDF erzeugt: ${ZIEL} · ${doc.numPages} Seiten`);
+// 6. Satzspiegel (17.10.2026): Kein Text außer der Fußzeile darf in den
+//    Fußbereich laufen, und keine Seite darf fast leer sein. pdfjs liefert
+//    die Grundlinie jedes Textstücks (transform[5], gemessen vom unteren
+//    Seitenrand in pt). Die Fußzeilen stehen bei etwa 24 bis 45 pt; Inhalt
+//    muss oberhalb von 52 pt enden.
+const FUSS = /^(Unverbindliche Auswertung|Seite \d+$|Unverbindliches Musterschreiben|Reine Rechenhilfe|die Ermäßigung im Einzelfall|Erstellt mit)/;
+for (const [datei, d] of [[ZIEL, doc], [ZIEL2, await getDocument({ data: new Uint8Array(readFileSync(ZIEL2)) }).promise]]) {
+  for (let i = 1; i <= d.numPages; i++) {
+    const items = (await d.getPage(i).then(p => p.getTextContent())).items.filter(x => x.str.trim());
+    const inhalt = items.filter(x => !FUSS.test(x.str.trim()));
+    const zuTief = inhalt.filter(x => x.transform[5] < 52);
+    pruefe(`${datei.split("/").pop()} Seite ${i}: Text läuft in die Fußzeile`, zuTief.length > 0, zuTief.slice(0, 2).map(x => x.str.slice(0, 40)).join(" | "));
+    pruefe(`${datei.split("/").pop()} Seite ${i}: Seite fast leer (${inhalt.length} Textstücke)`, inhalt.length < 6, inhalt.map(x => x.str.slice(0, 30)).join(" | "));
+  }
+}
+
+console.log(`PDF erzeugt: ${ZIEL} · ${doc.numPages} Seiten (zweiter Fall: ${ZIEL2})`);
 if (probleme.length === 0) {
   console.log("✓ Keine Satzfehler gefunden.");
 } else {
