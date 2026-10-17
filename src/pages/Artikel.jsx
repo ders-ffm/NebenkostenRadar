@@ -72,7 +72,19 @@ export default function Artikel({ navigateTo, navigateToArtikel, ratgeberArtikel
           <span style={{ background: C.brandBg, color: C.brand, fontSize: 10, fontWeight: 700, padding: "3px 10px", borderRadius: 4 }}>{artikel.kategorie}</span>
           <span style={{ color: C.textDim, fontSize: 12 }}>{artikel.datum} · {artikel.lesezeit}</span>
         </div>
-        <h1 style={{ fontFamily: THEME.font.heading, fontSize: 24, fontWeight: 600, margin: "0 0 16px", lineHeight: 1.3 }}>{artikel.titel}</h1>
+        <h1 style={{ fontFamily: THEME.font.heading, fontSize: 24, fontWeight: 600, margin: "0 0 8px", lineHeight: 1.3 }}>{artikel.titel}</h1>
+        {/* KI-HINWEIS (17.10.2026, Compliance-Check): Die Ratgeber-Artikel
+            entstehen per KI (scripts/rechtsmonitor.mjs) und werden vor der
+            Veröffentlichung NICHT redaktionell gegengelesen (Stefans Angabe
+            vom 17.10.2026). Für KI-erzeugte Texte, die die Öffentlichkeit
+            über Angelegenheiten von öffentlichem Interesse informieren, ist
+            die Offenlegung nach Art. 50 Abs. 4 KI-Verordnung (gilt seit
+            02.08.2026) nur entbehrlich, wenn ein Mensch sie prüft und
+            redaktionell verantwortet. Unabhängig davon ist der Hinweis
+            ehrlich und schadet nicht. Wird künftig jeder Artikel vor dem
+            Mergen inhaltlich geprüft, kann der Satz entsprechend angepasst
+            werden. Gleicher Text im vorgerenderten HTML (prerender.mjs). */}
+        <p style={{ fontSize: 11.5, color: C.textDim, margin: "0 0 16px", lineHeight: 1.6 }}>Mit Unterstützung künstlicher Intelligenz erstellt. Kein Ersatz für eine Rechtsberatung.</p>
 
         {artikel.inhalt.map((block, i) => {
           if (block.typ === "intro") return <p key={i} style={{ fontSize: 16, color: C.text, lineHeight: 1.75, margin: "0 0 24px", borderLeft: "3px solid " + C.brand, paddingLeft: 16 }}>{block.text}</p>;
