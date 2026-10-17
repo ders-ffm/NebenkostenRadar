@@ -1,6 +1,7 @@
 // ─────────────────────────────────────────────────────────────────────────
 // UeberUns.jsx — URL: "/ueber-uns"
 // ─────────────────────────────────────────────────────────────────────────
+import Verweis from "../components/ui/Verweis.jsx";
 import { THEME } from "../config/theme.js";
 import { euro } from "../lib/format.js";
 import { BUSINESS } from "../config/business.js";
@@ -22,7 +23,7 @@ export default function UeberUns({ navigateTo }) {
     <div style={{ fontFamily: THEME.font.body, background: C.bg, color: C.text, minHeight: "100vh" }}>
       <Nav activeStep="ueberuns" navigateTo={navigateTo} />
       <div style={{ maxWidth: PAGE_MAX, margin: "0 auto", padding: "32px 20px 60px" }}>
-        <button onClick={() => navigateTo("welcome")} style={{ background: "none", border: "none", color: C.textMuted, cursor: "pointer", fontSize: 13, padding: "0 0 20px" }}>← Startseite</button>
+        <Verweis href="/" onNavigate={() => navigateTo("welcome")} style={{ display: "inline-block", color: C.textMuted, cursor: "pointer", fontSize: 13, padding: "0 0 20px" }}>← Startseite</Verweis>
         <h1 style={{ fontFamily: THEME.font.heading, fontSize: 24, fontWeight: 600, margin: "0 0 16px" }}>Über NebenkostenRadar</h1>
         <p style={{ fontSize: 15, color: C.textMuted, lineHeight: 1.75, margin: "0 0 28px" }}>
           NebenkostenRadar ist ein unabhängiger digitaler Prüfdienst für Nebenkostenabrechnungen. Wir helfen Mietern in Deutschland, ihre Betriebskostenabrechnungen auf Fehler, überhöhte Posten und nicht umlagefähige Kosten zu überprüfen, schnell, transparent und ohne juristische Vorkenntnisse.
