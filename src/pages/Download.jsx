@@ -194,12 +194,12 @@ export default function Download({ navigateTo }) {
     <div style={{ fontFamily: THEME.font.body, background: C.bg, color: C.text, minHeight: "100vh", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", padding: 32 }}>
       <div style={{ maxWidth: 460, width: "100%", textAlign: "center" }}>
         <div style={{ width: 60, height: 60, borderRadius: "50%", background: C.brandBg, border: "2px solid " + C.brand, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 26, margin: "0 auto 22px" }}>✓</div>
-        <h1 style={{ fontFamily: THEME.font.heading, fontSize: 22, fontWeight: 600, margin: "0 0 10px" }}>Zahlung erfolgreich</h1>
+        <h1 style={{ fontFamily: THEME.font.heading, fontSize: 24, fontWeight: 600, margin: "0 0 10px" }}>Zahlung erfolgreich</h1>
 
-        {status === "laden" && <p style={{ fontSize: 14, color: C.textMuted }}>Dein PDF wird vorbereitet …</p>}
+        {status === "laden" && <p style={{ fontSize: 16, color: C.textMuted }}>Dein PDF wird vorbereitet …</p>}
 
         {status === "fehler" && (
-          <div style={{ background: "#fdf0ee", borderRadius: THEME.radius.md, padding: "16px 20px", fontSize: 13, color: C.text, lineHeight: 1.6 }}>
+          <div style={{ background: "#FBEAE7", borderRadius: THEME.radius.md, padding: "16px 20px", fontSize: 15, color: C.text, lineHeight: 1.6 }}>
             Dein PDF konnte nicht automatisch geladen werden. Bitte schreib uns kurz: support@nebenkostenradar.com, wir schicken es dir umgehend nach.
           </div>
         )}
@@ -207,12 +207,12 @@ export default function Download({ navigateTo }) {
         {/* Adressabfrage nach der Zahlung, siehe Kommentar bei adressEntwurf oben. */}
         {brauchtAdressen && adressEntwurf && (
           <div style={{ textAlign: "left", marginTop: 8 }}>
-            <p style={{ fontSize: 14, color: C.textMuted, marginBottom: 18, textAlign: "center", lineHeight: 1.6 }}>
+            <p style={{ fontSize: 16, color: C.textMuted, marginBottom: 18, textAlign: "center", lineHeight: 1.6 }}>
               Letzter Schritt: Diese Angaben kommen in deinen Bericht{daten.stufe === "voll" ? " und in den Musterbrief" : ""}. Danach steht dein PDF sofort bereit.
             </p>
 
             <div style={{ background: C.surface, border: "1px solid " + C.border, borderRadius: THEME.radius.lg, padding: "16px", marginBottom: 14 }}>
-              <div style={{ fontSize: 11, color: C.accent, fontWeight: 700, letterSpacing: "0.1em", textTransform: "uppercase", marginBottom: 14 }}>Deine Adresse</div>
+              <div style={{ fontSize: 13, color: C.brandStrong, fontWeight: 700, letterSpacing: "0.1em", textTransform: "uppercase", marginBottom: 14 }}>Deine Adresse</div>
               <Field label="Vor- und Nachname" value={adressEntwurf.mieterName} onChange={v => setAdressEntwurf(p => ({ ...p, mieterName: v }))} placeholder="Max Mustermann" required error={adressFehler.mieterName} autoFocus />
               <Field label="Straße und Hausnummer" value={adressEntwurf.mieterStrasse} onChange={v => setAdressEntwurf(p => ({ ...p, mieterStrasse: v }))} placeholder="Musterstraße 12" required error={adressFehler.mieterStrasse} />
               <div style={{ display: "grid", gridTemplateColumns: "100px 1fr", gap: 10 }}>
@@ -223,8 +223,8 @@ export default function Download({ navigateTo }) {
 
             {daten.stufe === "voll" && (
               <div style={{ background: C.surface, border: "1px solid " + C.border, borderRadius: THEME.radius.lg, padding: "16px", marginBottom: 14 }}>
-                <div style={{ fontSize: 11, color: C.textMuted, fontWeight: 700, letterSpacing: "0.1em", textTransform: "uppercase", marginBottom: 6 }}>Vermieter oder Hausverwaltung</div>
-                <p style={{ fontSize: 12, color: C.textDim, margin: "0 0 14px", lineHeight: 1.6 }}>Steht auf deiner Abrechnung oder im Mietvertrag, kommt als Empfänger auf den Musterbrief.</p>
+                <div style={{ fontSize: 13, color: C.textMuted, fontWeight: 700, letterSpacing: "0.1em", textTransform: "uppercase", marginBottom: 6 }}>Vermieter oder Hausverwaltung</div>
+                <p style={{ fontSize: 14, color: C.textDim, margin: "0 0 14px", lineHeight: 1.6 }}>Steht auf deiner Abrechnung oder im Mietvertrag, kommt als Empfänger auf den Musterbrief.</p>
                 <Field label="Name oder Firma" value={adressEntwurf.vermieterName} onChange={v => setAdressEntwurf(p => ({ ...p, vermieterName: v }))} placeholder="Muster Verwaltungs GmbH" required error={adressFehler.vermieterName} />
                 <Field label="Straße und Hausnummer" value={adressEntwurf.vermieterStrasse} onChange={v => setAdressEntwurf(p => ({ ...p, vermieterStrasse: v }))} placeholder="Verwalterstraße 1" required error={adressFehler.vermieterStrasse} />
                 <div style={{ display: "grid", gridTemplateColumns: "100px 1fr", gap: 10 }}>
@@ -242,7 +242,7 @@ export default function Download({ navigateTo }) {
 
         {status === "bereit" && daten && !brauchtAdressen && (
           <>
-            <p style={{ fontSize: 14, color: C.textMuted, marginBottom: 22 }}>
+            <p style={{ fontSize: 16, color: C.textMuted, marginBottom: 22 }}>
               Dein PDF ist fertig.{daten.email ? " Zusätzlich schicken wir es dir gerade an deine E-Mail-Adresse." : ""}
             </p>
             <Btn onClick={handlePdfDownload} disabled={pdfWirdErstellt}>
@@ -250,15 +250,15 @@ export default function Download({ navigateTo }) {
             </Btn>
 
             {daten.email && (
-              <p style={{ fontSize: 12, color: C.textDim, lineHeight: 1.6, marginTop: 16 }}>
+              <p style={{ fontSize: 14, color: C.textDim, lineHeight: 1.6, marginTop: 16 }}>
                 Tipp: Mit einem kostenlosen Kundenkonto kannst du diesen Bericht jederzeit erneut herunterladen, einfach mit deiner E-Mail-Adresse{" "}
-                <button onClick={() => navigateTo("login")} style={{ background: "none", border: "none", padding: 0, color: C.brand, fontSize: 12, textDecoration: "underline", cursor: "pointer", fontFamily: THEME.font.body }}>anmelden</button>.
+                <button onClick={() => navigateTo("login")} style={{ background: "none", border: "none", padding: 0, color: C.brand, fontSize: 14, textDecoration: "underline", cursor: "pointer", fontFamily: THEME.font.body }}>anmelden</button>.
               </p>
             )}
           </>
         )}
 
-        <button onClick={() => navigateTo("welcome")} style={{ marginTop: 20, background: "transparent", border: "none", color: C.textMuted, fontSize: 13, textDecoration: "underline", cursor: "pointer" }}>
+        <button onClick={() => navigateTo("welcome")} style={{ marginTop: 20, background: "transparent", border: "none", color: C.textMuted, fontSize: 15, textDecoration: "underline", cursor: "pointer" }}>
           Zur Startseite
         </button>
       </div>

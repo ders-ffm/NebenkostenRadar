@@ -49,20 +49,20 @@ export default class NachladeFehler extends Component {
     return (
       <div style={{ fontFamily: THEME.font.body, background: C.bg, minHeight: "100vh", padding: "64px 24px", textAlign: "center" }}>
         <div style={{ maxWidth: 460, margin: "0 auto" }}>
-          <h1 style={{ fontFamily: THEME.font.heading, fontSize: 22, fontWeight: 600, color: C.text, margin: "0 0 12px" }}>
+          <h1 style={{ fontFamily: THEME.font.heading, fontSize: 24, fontWeight: 600, color: C.text, margin: "0 0 12px" }}>
             Diese Seite konnte nicht geladen werden
           </h1>
-          <p style={{ fontSize: 15, color: C.textMuted, lineHeight: 1.7, margin: "0 0 8px" }}>
+          <p style={{ fontSize: 17, color: C.textMuted, lineHeight: 1.7, margin: "0 0 8px" }}>
             Wahrscheinlich war die Verbindung kurz unterbrochen. Ein Neuladen behebt das in aller Regel.
           </p>
-          <p style={{ fontSize: 14, color: C.textMuted, lineHeight: 1.7, margin: "0 0 24px" }}>
+          <p style={{ fontSize: 16, color: C.textMuted, lineHeight: 1.7, margin: "0 0 24px" }}>
             Falls du bereits bezahlt hast: Deine Auswertung ist erstellt und wurde dir per E-Mail geschickt. Es ist nichts verloren gegangen.
           </p>
           <button onClick={() => window.location.reload()}
-            style={{ background: C.accent, color: C.accentText, border: "none", borderRadius: THEME.radius.md, padding: "14px 32px", fontSize: 15, fontFamily: THEME.font.heading, fontWeight: 600, cursor: "pointer" }}>
+            style={{ background: C.accent, color: C.accentText, border: "none", borderRadius: THEME.radius.md, padding: "14px 32px", fontSize: 17, fontFamily: THEME.font.heading, fontWeight: 600, cursor: "pointer" }}>
             Seite neu laden
           </button>
-          <p style={{ fontSize: 13, color: C.textDim, marginTop: 20 }}>
+          <p style={{ fontSize: 15, color: C.textDim, marginTop: 20 }}>
             Bleibt das Problem bestehen: <a href="mailto:support@nebenkostenradar.com" style={{ color: C.brand, fontWeight: 600 }}>support@nebenkostenradar.com</a>
           </p>
         </div>

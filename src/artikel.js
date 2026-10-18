@@ -148,7 +148,7 @@ const ARTIKEL_ROH = [
         ]},
 
         { typ: "h2", text: "Was NebenkostenRadar prüft und was nicht" },
-        { typ: "text", text: "NebenkostenRadar ist eine automatisierte Prüfung. Sie geben die Posten Ihrer Abrechnung ein oder laden ein Foto hoch. Jeder Posten wird mit dem Betriebskostenspiegel des Deutschen Mieterbundes verglichen und auf Umlagefähigkeit nach § 2 BetrKV geprüft, dazu kommen die Heizkostenverordnung, die Aufteilung der CO₂-Abgabe und die Fristen. Die Basisanalyse ist kostenlos und ohne Registrierung. Der Bericht als PDF kostet einmalig 9,99 Euro, mit Musterbrief an den Vermieter 12,99 Euro." },
+        { typ: "text", text: "NebenkostenRadar ist eine automatisierte Prüfung. Sie geben die Posten Ihrer Abrechnung ein oder laden ein Foto hoch. Jeder Posten wird mit dem Betriebskostenspiegel des Deutschen Mieterbundes verglichen und auf Umlagefähigkeit nach § 2 BetrKV geprüft, dazu kommen die Heizkostenverordnung, die Aufteilung der CO₂-Abgabe und die Fristen. Die Basisanalyse ist kostenlos und ohne Registrierung. Der Bericht als PDF mit Musterbrief an den Vermieter kostet einmalig 12,99 Euro." },
         { typ: "text", text: "Was NebenkostenRadar nicht leistet: Belege einsehen, Ihren Mietvertrag auslegen oder Sie vertreten. Im Bericht trennen wir klar zwischen Posten, die rechtlich nicht umgelegt werden dürfen, und Posten, die nur statistisch auffällig sind. Bei hohen Beträgen oder einem Streit ist ein Mieterverein oder ein Anwalt der richtige nächste Schritt." },
         { typ: "cta", text: "Prüfen Sie Ihre Nebenkostenabrechnung jetzt kostenlos. Das Ergebnis sehen Sie sofort, bezahlen müssen Sie nur, wenn Sie den Bericht als PDF möchten." },
       ],
@@ -1562,7 +1562,7 @@ const ARTIKEL_ROH = [
           "Parallel die Nachzahlung unter Vorbehalt überweisen, um Verzug auszuschließen.",
         ]},
         { typ: "verweis", ziel: "betriebskostenabrechnung-fristen-und-verjaehrung-2026", text: "Achten Sie dabei auf die Einwendungsfrist: Wie lange Sie Zeit haben, steht im Ratgeber zu Fristen und Verjährung." },
-        { typ: "cta", text: "Im Paket „Auswertung + Brief“ erstellt NebenkostenRadar das Schreiben an Ihren Vermieter automatisch, mit den passenden Rechtsgrundlagen und den konkreten Positionen aus Ihrer Abrechnung." },
+        { typ: "cta", text: "In der Auswertung mit Brief erstellt NebenkostenRadar das Schreiben an Ihren Vermieter automatisch, mit den passenden Rechtsgrundlagen und den konkreten Positionen aus Ihrer Abrechnung." },
       ],
     },
     {

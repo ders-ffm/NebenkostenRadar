@@ -37,15 +37,15 @@ function JaNeinFrage({ frage, hilfe, wert, onChange }) {
   ];
   return (
     <div style={{ padding: "10px 12px", marginBottom: 6, background: wert && wert !== "unbekannt" ? C.brandBg : C.bg, border: "1.5px solid " + (wert && wert !== "unbekannt" ? C.brand + "66" : C.border), borderRadius: THEME.radius.md }}>
-      <div style={{ fontSize: 13, color: C.text, fontFamily: THEME.font.body, lineHeight: 1.45 }}>{frage}</div>
-      {hilfe && <div style={{ fontSize: 10, color: C.textDim, marginTop: 3, lineHeight: 1.45 }}>{hilfe}</div>}
+      <div style={{ fontSize: 15, color: C.text, fontFamily: THEME.font.body, lineHeight: 1.45 }}>{frage}</div>
+      {hilfe && <div style={{ fontSize: 12, color: C.textDim, marginTop: 3, lineHeight: 1.45 }}>{hilfe}</div>}
       <div style={{ display: "flex", gap: 6, marginTop: 8 }}>
         {OPTIONEN.map(o => {
           const aktiv = wert === o.wert;
           return (
             <button key={o.wert} type="button" onClick={() => onChange(aktiv ? "" : o.wert)}
               style={{
-                flex: 1, padding: "8px 4px", fontSize: 12.5, fontFamily: THEME.font.body,
+                flex: 1, padding: "8px 4px", fontSize: 14.5, fontFamily: THEME.font.body,
                 fontWeight: aktiv ? 600 : 400, cursor: "pointer",
                 background: aktiv ? C.brand : C.surface,
                 color: aktiv ? "#fff" : C.textMuted,
@@ -255,25 +255,25 @@ export default function Posten({ navigateTo, werte, setWerte, wohnung, setWohnun
     <div style={{ fontFamily: THEME.font.body, background: C.bg, color: C.text, minHeight: "100vh" }}>
       <div style={{ background: C.surface, borderBottom: "1px solid " + C.border }}>
         <div style={{ padding: "20px 20px 0", maxWidth: THEME.layout.formMax, margin: "0 auto", boxSizing: "border-box" }}>
-          <button onClick={() => navigateTo("wohnung")} style={{ background: "none", border: "none", color: C.textMuted, cursor: "pointer", fontSize: 13, padding: "0 0 12px", fontFamily: THEME.font.body }}>← Zurück</button>
+          <button onClick={() => navigateTo("wohnung")} style={{ background: "none", border: "none", color: C.textMuted, cursor: "pointer", fontSize: 15, padding: "0 0 12px", fontFamily: THEME.font.body }}>← Zurück</button>
           <StepBar current={2} total={3} label="Kostenposten" />
         </div>
       </div>
       <div style={{ padding: "14px 20px 0", maxWidth: THEME.layout.formMax, margin: "0 auto", boxSizing: "border-box" }}>
-        <h2 style={{ fontFamily: THEME.font.heading, fontSize: 20, fontWeight: 600, margin: "0 0 4px", textAlign: "center" }}>Posten aus deiner Abrechnung</h2>
-        <p style={{ fontSize: 12, color: C.textMuted, margin: "0 0 12px", textAlign: "center" }}>Trage die Beträge so ein wie sie auf der Abrechnung stehen. Was bei dir nicht vorkommt, lässt du leer.</p>
+        <h2 style={{ fontFamily: THEME.font.heading, fontSize: 22, fontWeight: 600, margin: "0 0 4px", textAlign: "center" }}>Posten aus deiner Abrechnung</h2>
+        <p style={{ fontSize: 14, color: C.textMuted, margin: "0 0 12px", textAlign: "center" }}>Trage die Beträge so ein wie sie auf der Abrechnung stehen. Was bei dir nicht vorkommt, lässt du leer.</p>
         <div style={{ background: C.surface, border: "1px solid " + (total > 0 ? C.brand : C.border), borderRadius: THEME.radius.md, padding: "11px 16px", marginBottom: 12, display: "flex", justifyContent: "space-between", alignItems: "center" }}>
           <div>
-            <div style={{ fontSize: 10, color: C.textMuted, textTransform: "uppercase" }}>Eingegeben</div>
-            <div style={{ fontFamily: THEME.font.heading, fontSize: 21, fontWeight: 600, color: total > 0 ? C.accent : C.textDim }}>{total > 0 ? fmt(total) : "€ 0,00"}</div>
+            <div style={{ fontSize: 12, color: C.textMuted, textTransform: "uppercase" }}>Eingegeben</div>
+            <div style={{ fontFamily: THEME.font.heading, fontSize: 23, fontWeight: 600, color: total > 0 ? C.brandStrong : C.textDim }}>{total > 0 ? fmt(total) : "€ 0,00"}</div>
           </div>
           <div style={{ textAlign: "right" }}>
-            <div style={{ fontSize: 10, color: C.textMuted, textTransform: "uppercase" }}>Posten</div>
-            <div style={{ fontFamily: THEME.font.heading, fontSize: 21, fontWeight: 600, color: C.textMuted }}>{filledPosten}</div>
+            <div style={{ fontSize: 12, color: C.textMuted, textTransform: "uppercase" }}>Posten</div>
+            <div style={{ fontFamily: THEME.font.heading, fontSize: 23, fontWeight: 600, color: C.textMuted }}>{filledPosten}</div>
           </div>
         </div>
         {errors.gesamt && (
-          <div style={{ background: C.warnBg, borderLeft: "3px solid " + C.warn, borderRadius: THEME.radius.md, padding: "10px 14px", marginBottom: 12, fontSize: 12, color: C.warn }}>
+          <div style={{ background: C.warnBg, borderLeft: "3px solid " + C.warn, borderRadius: THEME.radius.md, padding: "10px 14px", marginBottom: 12, fontSize: 14, color: C.warn }}>
             {errors.gesamt}
           </div>
         )}
@@ -283,7 +283,7 @@ export default function Posten({ navigateTo, werte, setWerte, wohnung, setWohnun
             vielen Fällen ist das Fehlen völlig korrekt, und dann darf der
             Hinweis nicht wie ein Fehler aussehen. */}
         {fehlendeGrosspositionen.length > 0 && filledPosten > 0 && (
-          <div style={{ background: C.brandBg, borderRadius: THEME.radius.md, padding: "12px 14px", marginBottom: 12, fontSize: 12, color: C.textMuted, lineHeight: 1.65 }}>
+          <div style={{ background: C.brandBg, borderRadius: THEME.radius.md, padding: "12px 14px", marginBottom: 12, fontSize: 14, color: C.textMuted, lineHeight: 1.65 }}>
             <span style={{ color: C.text, fontWeight: 600 }}>
               Kein Eintrag bei {fehlendeGrosspositionen.map(p => p.label).join(" und ")}.
             </span>{" "}
@@ -297,7 +297,7 @@ export default function Posten({ navigateTo, werte, setWerte, wohnung, setWohnun
           <EuroInput label="Gesamtsumme laut Abrechnung" value={gesamtsummeAbrechnung} tip="Optional, steht meist oben auf der Abrechnung als 'Summe'. Dient nur dem Abgleich, hat keinen Einfluss aufs Fortfahren."
             onChange={setGesamtsummeAbrechnung} />
           {summenAbweichung && (
-            <div style={{ background: C.warnBg, borderLeft: "3px solid " + C.warn, borderRadius: THEME.radius.md, padding: "10px 14px", marginTop: -4, fontSize: 12, color: C.warn, lineHeight: 1.6 }}>
+            <div style={{ background: C.warnBg, borderLeft: "3px solid " + C.warn, borderRadius: THEME.radius.md, padding: "10px 14px", marginTop: -4, fontSize: 14, color: C.warn, lineHeight: 1.6 }}>
               {zuVielErfasst ? (
                 <>
                   <strong>Bitte kurz prüfen:</strong> Deine Posten ergeben zusammen {fmt(total)}, auf der Abrechnung steht aber {fmt(gesamtsummeNum)}. Es sind also {fmt(summenDiff)} <strong>zu viel</strong> erfasst. Meist liegt es daran, dass eine Position doppelt drinsteht oder eine erkannt wurde, die es auf deiner Abrechnung gar nicht gibt. Geh die Liste unten einmal durch und lösche, was nicht auf deiner Abrechnung steht. Das ist wichtig, weil eine Position, die es nicht gibt, sonst im Schreiben an deinen Vermieter auftauchen würde.
@@ -316,11 +316,11 @@ export default function Posten({ navigateTo, werte, setWerte, wohnung, setWohnun
             value={suche}
             onChange={e => setSuche(e.target.value)}
             placeholder="Suche z. B. 'Sturm', 'Kabel', 'Müll' … oder Begriff von deiner Abrechnung"
-            style={{ width: "100%", boxSizing: "border-box", background: C.surface, border: "1px solid " + C.border, borderRadius: THEME.radius.md, padding: "11px 14px", fontSize: 13, fontFamily: THEME.font.body, color: C.text }}
+            style={{ width: "100%", boxSizing: "border-box", background: C.surface, border: "1px solid " + C.border, borderRadius: THEME.radius.md, padding: "11px 14px", fontSize: 15, fontFamily: THEME.font.body, color: C.text }}
           />
           {suche && (
             <button onClick={() => setSuche("")} aria-label="Suche löschen"
-              style={{ position: "absolute", right: 8, top: "50%", transform: "translateY(-50%)", background: "none", border: "none", color: C.textDim, fontSize: 16, cursor: "pointer", padding: 4 }}>
+              style={{ position: "absolute", right: 8, top: "50%", transform: "translateY(-50%)", background: "none", border: "none", color: C.textDim, fontSize: 17.5, cursor: "pointer", padding: 4 }}>
               ×
             </button>
           )}
@@ -331,14 +331,14 @@ export default function Posten({ navigateTo, werte, setWerte, wohnung, setWohnun
             und macht den Weg zu allen Posten in einem Klick zugänglich. */}
         {kompaktModus && !sucheAktiv && (
           <div style={{ background: C.brandBg, border: "1px solid " + C.brand, borderRadius: THEME.radius.md, padding: "12px 14px", marginBottom: 16 }}>
-            <div style={{ fontSize: 13.5, fontWeight: 600, color: C.text, marginBottom: 4 }}>
+            <div style={{ fontSize: 15.5, fontWeight: 600, color: C.text, marginBottom: 4 }}>
               ✓ {fotoErkannt} {fotoErkannt === 1 ? "Posten" : "Posten"} aus deinem Foto übernommen
             </div>
-            <div style={{ fontSize: 12.5, color: C.textMuted, lineHeight: 1.6, marginBottom: 8 }}>
+            <div style={{ fontSize: 14.5, color: C.textMuted, lineHeight: 1.6, marginBottom: 8 }}>
               Bitte kurz prüfen, ob die Beträge stimmen. Fehlt etwas von deiner Abrechnung, kannst du alle weiteren Posten einblenden.
             </div>
             <button onClick={() => setAlleAnzeigen(true)}
-              style={{ background: "none", border: "none", color: C.brand, fontSize: 12.5, fontWeight: 600, cursor: "pointer", padding: 0, fontFamily: THEME.font.body, textDecoration: "underline" }}>
+              style={{ background: "none", border: "none", color: C.brand, fontSize: 14.5, fontWeight: 600, cursor: "pointer", padding: 0, fontFamily: THEME.font.body, textDecoration: "underline" }}>
               Alle {ausgeblendeteAnzahl} weiteren Posten einblenden
             </button>
           </div>
@@ -348,12 +348,12 @@ export default function Posten({ navigateTo, werte, setWerte, wohnung, setWohnun
             war, sonst gab es nie einen Kompaktmodus. */}
         {fotoErkannt > 0 && alleAnzeigen && !sucheAktiv && (
           <button onClick={() => setAlleAnzeigen(false)}
-            style={{ background: "none", border: "none", color: C.brand, fontSize: 12.5, fontWeight: 600, cursor: "pointer", padding: "0 0 12px", fontFamily: THEME.font.body, textDecoration: "underline" }}>
+            style={{ background: "none", border: "none", color: C.brand, fontSize: 14.5, fontWeight: 600, cursor: "pointer", padding: "0 0 12px", fontFamily: THEME.font.body, textDecoration: "underline" }}>
             ← Nur die erkannten Posten anzeigen
           </button>
         )}
         {gefilterteGruppen.length === 0 && (
-          <div style={{ textAlign: "center", padding: "24px 12px", fontSize: 13, color: C.textMuted }}>
+          <div style={{ textAlign: "center", padding: "24px 12px", fontSize: 15, color: C.textMuted }}>
             Kein Posten gefunden für "{suche}". Falls du den Begriff auf deiner Abrechnung nicht wiederfindest, trage ihn unter "Sonstige vereinbarte Betriebskosten" ein.
           </div>
         )}
@@ -371,12 +371,11 @@ export default function Posten({ navigateTo, werte, setWerte, wohnung, setWohnun
           return (
             <div key={gruppe.id} style={{ marginBottom: 18 }}>
               <div style={{ display: "flex", alignItems: "baseline", gap: 8, padding: "0 2px", marginBottom: 6 }}>
-                <span style={{ fontSize: 15 }}>{gruppe.icon}</span>
-                <div style={{ fontSize: 12, fontWeight: 700, color: C.text, textTransform: "uppercase", letterSpacing: "0.03em" }}>{gruppe.label}</div>
-                <div style={{ fontSize: 10, color: C.textDim }}>{gruppe.paragraf}</div>
-                {groupSum > 0 && <div style={{ marginLeft: "auto", fontSize: 12, color: C.accent, fontWeight: 600 }}>{fmt(groupSum)}</div>}
+                <div style={{ fontSize: 14, fontWeight: 700, color: C.text, textTransform: "uppercase", letterSpacing: "0.03em" }}>{gruppe.label}</div>
+                <div style={{ fontSize: 12, color: C.textDim }}>{gruppe.paragraf}</div>
+                {groupSum > 0 && <div style={{ marginLeft: "auto", fontSize: 15, color: C.brandStrong, fontWeight: 600, fontVariantNumeric: "tabular-nums" }}>{fmt(groupSum)}</div>}
               </div>
-              {gruppe.hint && <div style={{ fontSize: 10, color: C.textDim, margin: "-2px 2px 8px" }}>{gruppe.hint}</div>}
+              {gruppe.hint && <div style={{ fontSize: 12, color: C.textDim, margin: "-2px 2px 8px" }}>{gruppe.hint}</div>}
               <div style={{ background: C.surface, border: "1px solid " + (groupSum > 0 ? C.brand : C.border), borderRadius: THEME.radius.md, padding: "10px 12px" }}>
                 {sichtbarePosten.map(p => (
                   <EuroInput key={p.key} label={p.label} value={werte[p.key]} tip={p.tip} pflicht={p.pflicht}
@@ -385,7 +384,7 @@ export default function Posten({ navigateTo, werte, setWerte, wohnung, setWohnun
                 ))}
                 {versteckteAnzahl > 0 && (
                   <button onClick={() => toggleGruppe(gruppe.id)}
-                    style={{ background: "none", border: "none", color: C.brand, fontSize: 12, fontWeight: 600, cursor: "pointer", padding: "4px 0 2px", fontFamily: THEME.font.body }}>
+                    style={{ background: "none", border: "none", color: C.brand, fontSize: 14, fontWeight: 600, cursor: "pointer", padding: "4px 0 2px", fontFamily: THEME.font.body }}>
                     + {versteckteAnzahl} weitere{versteckteAnzahl === 1 ? "r" : ""} Posten in dieser Kategorie anzeigen
                   </button>
                 )}
@@ -422,10 +421,10 @@ export default function Posten({ navigateTo, werte, setWerte, wohnung, setWohnun
             {!heizSichtbar ? (
               <button onClick={() => setHeizOffen(true)}
                 style={{ width: "100%", textAlign: "left", background: C.surface, border: "1px dashed " + C.border, borderRadius: THEME.radius.md, padding: "13px 14px", cursor: "pointer", fontFamily: THEME.font.body }}>
-                <div style={{ fontSize: 13.5, fontWeight: 600, color: C.text, marginBottom: 3 }}>
+                <div style={{ fontSize: 15.5, fontWeight: 600, color: C.text, marginBottom: 3 }}>
                   + Heizkostenabrechnung zusätzlich prüfen
                 </div>
-                <div style={{ fontSize: 11.5, color: C.textMuted, lineHeight: 1.55 }}>
+                <div style={{ fontSize: 13.5, color: C.textMuted, lineHeight: 1.55 }}>
                   Freiwillig, dauert eine Minute. Hier prüfen wir nicht die Höhe, sondern ob
                   der Vermieter richtig verteilt hat. Das ist der Teil, den er nicht mit dem
                   Verbrauch erklären kann. Du brauchst dafür deine Heizkostenabrechnung,
@@ -435,13 +434,12 @@ export default function Posten({ navigateTo, werte, setWerte, wohnung, setWohnun
             ) : (
               <>
                 <div style={{ display: "flex", alignItems: "baseline", gap: 8, padding: "0 2px", marginBottom: 6 }}>
-                  <span style={{ fontSize: 15 }}>📐</span>
-                  <div style={{ fontSize: 12, fontWeight: 700, color: C.text, textTransform: "uppercase", letterSpacing: "0.03em" }}>Heizkostenabrechnung</div>
-                  <div style={{ fontSize: 10, color: C.textDim }}>§§ 7, 8, 12 HeizkostenV</div>
-                  <div style={{ marginLeft: "auto", fontSize: 10, color: C.textDim }}>freiwillig</div>
+                  <div style={{ fontSize: 14, fontWeight: 700, color: C.text, textTransform: "uppercase", letterSpacing: "0.03em" }}>Heizkostenabrechnung</div>
+                  <div style={{ fontSize: 12, color: C.textDim }}>§§ 7, 8, 12 HeizkostenV</div>
+                  <div style={{ marginLeft: "auto", fontSize: 12, color: C.textDim }}>freiwillig</div>
                 </div>
                 <div style={{ background: C.surface, border: "1px solid " + (heizAngaben > 0 ? C.brand : C.border), borderRadius: THEME.radius.md, padding: "12px 12px 10px" }}>
-                  <div style={{ fontSize: 11.5, color: C.textMuted, lineHeight: 1.6, marginBottom: 10 }}>
+                  <div style={{ fontSize: 13.5, color: C.textMuted, lineHeight: 1.6, marginBottom: 10 }}>
                     Der Vermieter muss mindestens 50 und höchstens 70 Prozent der Heizkosten nach
                     deinem gemessenen Verbrauch verteilen. Der Rest geht nach Wohnfläche. Hält er
                     das nicht ein, ist die Abrechnung fehlerhaft, unabhängig davon, wie viel du
@@ -449,21 +447,21 @@ export default function Posten({ navigateTo, werte, setWerte, wohnung, setWohnun
                     meist als "Grundkosten" und "Verbrauchskosten". Falls dort nur Prozentzahlen
                     stehen, trag die Prozentzahlen ein, das Ergebnis ist dasselbe.
                   </div>
-                  <div style={{ fontSize: 11, fontWeight: 600, color: C.textMuted, textTransform: "uppercase", letterSpacing: "0.04em", margin: "4px 2px 6px" }}>Heizung</div>
+                  <div style={{ fontSize: 13, fontWeight: 600, color: C.textMuted, textTransform: "uppercase", letterSpacing: "0.04em", margin: "4px 2px 6px" }}>Heizung</div>
                   <EuroInput label="Grundkosten Heizung" value={wohnung.heizGrundkosten}
                     tip="Der nach Wohnfläche verteilte Teil. Oft als 'Grundkosten' oder 'Festkosten' bezeichnet."
                     onChange={v => setHeiz("heizGrundkosten", v)} />
                   <EuroInput label="Verbrauchskosten Heizung" value={wohnung.heizVerbrauchskosten}
                     tip="Der nach deinem gemessenen Verbrauch verteilte Teil."
                     onChange={v => setHeiz("heizVerbrauchskosten", v)} />
-                  <div style={{ fontSize: 11, fontWeight: 600, color: C.textMuted, textTransform: "uppercase", letterSpacing: "0.04em", margin: "10px 2px 6px" }}>Warmwasser</div>
+                  <div style={{ fontSize: 13, fontWeight: 600, color: C.textMuted, textTransform: "uppercase", letterSpacing: "0.04em", margin: "10px 2px 6px" }}>Warmwasser</div>
                   <EuroInput label="Grundkosten Warmwasser" value={wohnung.wwGrundkosten}
                     tip="Nur ausfüllen, wenn deine Abrechnung Warmwasser getrennt aufteilt. Für Warmwasser gilt dieselbe Regel (§ 8 Abs. 1 HeizkostenV)."
                     onChange={v => setHeiz("wwGrundkosten", v)} />
                   <EuroInput label="Verbrauchskosten Warmwasser" value={wohnung.wwVerbrauchskosten}
                     tip="Der nach deinem gemessenen Warmwasserverbrauch verteilte Teil."
                     onChange={v => setHeiz("wwVerbrauchskosten", v)} />
-                  <div style={{ fontSize: 11, fontWeight: 600, color: C.textMuted, textTransform: "uppercase", letterSpacing: "0.04em", margin: "12px 2px 6px" }}>Zwei kurze Fragen</div>
+                  <div style={{ fontSize: 13, fontWeight: 600, color: C.textMuted, textTransform: "uppercase", letterSpacing: "0.04em", margin: "12px 2px 6px" }}>Zwei kurze Fragen</div>
                   <JaNeinFrage
                     frage="Steht auf der Abrechnung ein Zählerstand oder ein Verbrauchswert für deine Wohnung?"
                     hilfe="Zum Beispiel Einheiten am Heizkostenverteiler, Kilowattstunden oder Kubikmeter Warmwasser. Wurde gar nichts gemessen, darfst du 15 Prozent kürzen (§ 12 Abs. 1 Satz 1 HeizkostenV)."
@@ -480,7 +478,7 @@ export default function Posten({ navigateTo, werte, setWerte, wohnung, setWohnun
                       wert={wohnung.hkVorjahresvergleich}
                       onChange={v => setHeiz("hkVorjahresvergleich", v)} />
                   )}
-                  <div style={{ fontSize: 10, color: C.textDim, lineHeight: 1.5, marginTop: 8 }}>
+                  <div style={{ fontSize: 12, color: C.textDim, lineHeight: 1.5, marginTop: 8 }}>
                     Gilt nur bei einer zentralen Heizungsanlage oder bei Fernwärme (§ 1 HeizkostenV).
                     Mit eigener Gastherme lässt du diesen Teil leer.
                   </div>
@@ -494,7 +492,7 @@ export default function Posten({ navigateTo, werte, setWerte, wohnung, setWohnun
         <div style={{ padding: "20px 20px 24px", maxWidth: THEME.layout.formMax, margin: "0 auto", boxSizing: "border-box" }}>
           <button
             onClick={() => { if (validate()) runAnalyse(); }}
-            style={{ width: "100%", background: filledPosten > 0 ? C.accent : C.border, color: filledPosten > 0 ? C.accentText : C.textDim, border: "none", borderRadius: THEME.radius.lg, padding: "16px", fontSize: 15, fontFamily: THEME.font.heading, fontWeight: 600, cursor: filledPosten > 0 ? "pointer" : "default" }}>
+            style={{ width: "100%", background: filledPosten > 0 ? C.accent : C.border, color: filledPosten > 0 ? C.accentText : C.textDim, border: "none", borderRadius: THEME.radius.lg, padding: "16px", fontSize: 17, fontFamily: THEME.font.heading, fontWeight: 600, cursor: filledPosten > 0 ? "pointer" : "default" }}>
             {filledPosten === 0 ? "Posten eingeben um fortzufahren" : filledPosten + " Posten analysieren →"}
           </button>
         </div>

@@ -14,7 +14,7 @@ export default function BrandAnschrift() {
           <circle cx="9" cy="9" r="1" fill="white"/>
         </svg>
       </div>
-      <div style={{ fontSize: 17, fontWeight: 700, color: C.text, fontFamily: THEME.font.heading }}>
+      <div style={{ fontSize: 17, fontWeight: 700, color: "#2E2A22", fontFamily: THEME.font.logo }}>
         Nebenkosten<span style={{ color: C.brand }}>Radar</span>
       </div>
     </div>

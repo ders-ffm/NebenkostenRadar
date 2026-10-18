@@ -22,7 +22,11 @@
 import { BUSINESS } from "./business.js";
 import { euro } from "../lib/format.js";
 
-export const AGB_STAND = "17.10.2026";
+// 18.10.2026: Nur noch eine Ausführung (Auswertung + Brief, 12,99 €), die
+// Variante "nur Auswertung" (9,99 €) wird nicht mehr verkauft (Stefans
+// Entscheidung). Wer sie vorher gekauft hat, behält sie; deshalb bleibt
+// leistungsbeschreibung("auswertung") für Bestandsbestellungen erhalten.
+export const AGB_STAND = "18.10.2026";
 
 export const ANBIETER = {
   name: "NebenkostenRadar",
@@ -35,8 +39,8 @@ export const ANBIETER = {
 
 const ANBIETER_ZEILE = `${ANBIETER.name}, ${ANBIETER.inhaber}, ${ANBIETER.strasse}, ${ANBIETER.ort}, ${ANBIETER.email}`;
 
-// Kurzbeschreibung der beiden Stufen. Wird auch in der Vertragsbestätigung
-// verwendet, deshalb hier zentral.
+// Kurzbeschreibung je Stufe. Wird auch in der Vertragsbestätigung verwendet,
+// deshalb hier zentral. "auswertung" nur noch für Käufe vor dem 18.10.2026.
 export function leistungsbeschreibung(stufe) {
   return stufe === "voll"
     ? "Auswertung + Brief: PDF-Prüfbericht mit vollständiger Positionsübersicht, Richtwerten und Begründungen, dazu ein versandfertiger Brief an den Vermieter (Inhalt je nach Prüfergebnis: Einwendungen, Rückfragen mit Bitte um Belegeinsicht oder Aufforderung zur Belegeinsicht nach § 259 BGB) und ein unverbindlicher Hinweis zu möglicherweise steuerlich absetzbaren Positionen nach § 35a EStG."
@@ -51,9 +55,8 @@ export function agbAbschnitte() {
       "Anbieter: " + ANBIETER_ZEILE,
     ]},
     { t: "§ 2 Vertragsgegenstand", lines: [
-      "Gegenstand ist die einmalige Erstellung und Bereitstellung eines digitalen PDF-Prüfberichts zu einer Nebenkostenabrechnung, deren Angaben du selbst eingibst oder per Foto-/PDF-Erkennung vorausfüllen lässt. Es gibt zwei Ausführungen:",
-      "Auswertung (" + euro(BUSINESS.PREIS_AUSWERTUNG) + "): PDF mit vollständiger Positionsübersicht, Richtwerten und Begründungen.",
-      "Auswertung + Brief (" + euro(BUSINESS.PREIS_VOLL) + "): zusätzlich ein versandfertiger Brief an den Vermieter. Sein Inhalt richtet sich nach dem Prüfergebnis: Einwendungen gegen auffällige Positionen, Rückfragen mit Bitte um Belegeinsicht oder, wenn nichts auffällt, eine Aufforderung zur Belegeinsicht nach § 259 BGB. Dazu kommt ein unverbindlicher Hinweis zu möglicherweise steuerlich absetzbaren Positionen nach § 35a EStG mit einer Anfrage-Vorlage an den Vermieter (reine Rechenhilfe, keine Steuerberatung).",
+      "Gegenstand ist die einmalige Erstellung und Bereitstellung eines digitalen PDF-Prüfberichts zu einer Nebenkostenabrechnung, deren Angaben du selbst eingibst oder per Foto-/PDF-Erkennung vorausfüllen lässt.",
+      "Auswertung + Brief (" + euro(BUSINESS.PREIS_VOLL) + "): PDF mit vollständiger Positionsübersicht, Richtwerten und Begründungen sowie ein versandfertiger Brief an den Vermieter. Sein Inhalt richtet sich nach dem Prüfergebnis: Einwendungen gegen auffällige Positionen, Rückfragen mit Bitte um Belegeinsicht oder, wenn nichts auffällt, eine Aufforderung zur Belegeinsicht nach § 259 BGB. Dazu kommt ein unverbindlicher Hinweis zu möglicherweise steuerlich absetzbaren Positionen nach § 35a EStG mit einer Anfrage-Vorlage an den Vermieter (reine Rechenhilfe, keine Steuerberatung).",
       "Die Prüfung läuft automatisiert: Sie vergleicht deine Angaben mit gesetzlichen Vorgaben (u. a. Betriebskostenverordnung, Heizkostenverordnung) und mit Durchschnittswerten aus dem Betriebskostenspiegel des Deutschen Mieterbundes. Eine Abweichung vom Durchschnitt ist ein Anlass zur Nachfrage, kein Nachweis eines Fehlers. Der Bericht ist keine Rechtsberatung und keine individuelle Prüfung durch eine Juristin oder einen Juristen.",
       "Die optionale Foto-/PDF-Erkennung ist eine Ausfüllhilfe. Die vollständige manuelle Eingabe steht immer zur Verfügung und ist keine Voraussetzung für den Kauf.",
     ]},
@@ -64,7 +67,7 @@ export function agbAbschnitte() {
       "Vertragssprache: Deutsch.",
     ]},
     { t: "§ 4 Preise und Zahlung", lines: [
-      "Die Preise betragen " + euro(BUSINESS.PREIS_AUSWERTUNG) + " bzw. " + euro(BUSINESS.PREIS_VOLL) + ". Stefan Hennig ist Kleinunternehmer gemäß § 19 UStG; es wird keine Umsatzsteuer ausgewiesen.",
+      "Der Preis beträgt " + euro(BUSINESS.PREIS_VOLL) + ". Stefan Hennig ist Kleinunternehmer gemäß § 19 UStG; es wird keine Umsatzsteuer ausgewiesen.",
       "Zahlung über Stripe Payments Europe, Ltd. Einmalzahlung: kein Abo, keine Folgekosten.",
       "Nach jeder Zahlung erhältst du automatisch einen Zahlungsbeleg per E-Mail. Auf Anfrage stellen wir gerne eine Rechnung aus: " + ANBIETER.email,
     ]},

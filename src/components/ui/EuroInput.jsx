@@ -13,6 +13,7 @@
 import { useState } from "react";
 import { THEME } from "../../config/theme.js";
 import { toNum, fmtInput } from "../../lib/format.js";
+import Icon from "./Icon.jsx";
 
 export default function EuroInput({ label, value, onChange, tip, pflicht, warn }) {
   const C = THEME.color;
@@ -42,32 +43,32 @@ export default function EuroInput({ label, value, onChange, tip, pflicht, warn }
   return (
     <div style={{
       display: "flex", alignItems: "flex-start", justifyContent: "space-between",
-      padding: "10px 12px", marginBottom: 6,
-      background: warn ? "#fdf0ee" : filled ? C.brandBg : C.bg,
-      border: "1.5px solid " + (warn ? "#c0392b" : focused ? C.brand : filled ? C.brand + "66" : C.border),
+      padding: "12px 14px", marginBottom: 8,
+      background: warn ? "#FBEAE7" : filled ? C.brandBg : C.bg,
+      border: "1.5px solid " + (warn ? "#B03A2E" : focused ? C.brand : filled ? C.brand + "66" : C.border),
       borderRadius: THEME.radius.md,
     }}>
       <div style={{ flex: 1, minWidth: 0, marginRight: 10, paddingTop: 2 }}>
-        <div style={{ fontSize: 13, color: filled ? C.text : C.textMuted, fontWeight: filled ? 500 : 400, fontFamily: THEME.font.body }}>
+        <div style={{ fontSize: 15, color: filled ? C.text : C.textMuted, fontWeight: filled ? 500 : 400, fontFamily: THEME.font.body }}>
           {label}
           {/* GEÄNDERT 13.09.2026: hieß "✦ Pflicht". Es ist keine Pflicht mehr,
               siehe Begründung bei validate() in Posten.jsx. Der Hinweis bleibt,
               weil diese Posten bei den meisten Abrechnungen der größte Betrag
               sind und man sie leicht übersieht. */}
-          {pflicht && <span style={{ color: C.textDim, marginLeft: 4, fontSize: 10 }}>meist der größte Posten</span>}
-          {warn && <span style={{ color: "#c0392b", marginLeft: 6, fontSize: 10, fontWeight: 600 }}>⚠ nicht umlagefähig seit 07/2024!</span>}
+          {pflicht && <span style={{ color: C.textDim, marginLeft: 4, fontSize: 12 }}>meist der größte Posten</span>}
+          {warn && <span style={{ color: "#B03A2E", marginLeft: 6, fontSize: 12, fontWeight: 600 }}><Icon name="triangle-alert" size={14} style={{ marginRight: 4, marginTop: -2 }} />nicht umlagefähig seit 07/2024!</span>}
         </div>
-        {tip && <div style={{ fontSize: 10, color: C.textDim, marginTop: 3, lineHeight: 1.4 }}>{tip}</div>}
+        {tip && <div style={{ fontSize: 12, color: C.textDim, marginTop: 3, lineHeight: 1.4 }}>{tip}</div>}
       </div>
       <div style={{ display: "flex", alignItems: "center", gap: 4, flexShrink: 0, paddingTop: 2 }}>
-        <span style={{ fontSize: 12, color: C.textMuted }}>€</span>
+        <span style={{ fontSize: 14, color: C.textMuted }}>€</span>
         <input
           type="text" inputMode="decimal" placeholder="0,00" value={displayValue}
           onChange={handleChange}
           onFocus={() => setFocused(true)} onBlur={handleBlur}
           style={{
-            width: 108, background: C.surface, border: "1px solid " + (focused ? C.brand : C.border),
-            borderRadius: 7, padding: "7px 8px", fontSize: 14, fontFamily: THEME.font.body,
+            width: 116, background: C.surface, border: "1.5px solid " + (focused ? C.brand : C.inputBorder),
+            borderRadius: 9, padding: "9px 10px", fontSize: 16, fontFamily: THEME.font.body,
             color: C.text, textAlign: "right", outline: "none",
           }}
         />

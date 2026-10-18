@@ -77,7 +77,7 @@ const ABSCHNITTE = [
     "Unser Hosting-Anbieter Vercel (Vercel Inc., USA) erhebt automatisch Server-Log-Dateien (IP-Adresse, Browser, Zeitstempel). Rechtsgrundlage: Art. 6 Abs. 1 lit. f DSGVO. Datenübermittlung in die USA auf Basis von Standardvertragsklauseln der EU-Kommission (Art. 46 Abs. 2 lit. c DSGVO). Datenschutzerklärung: vercel.com/legal/privacy-policy",
   ]},
   { t: "6. Zahlungsabwicklung (Stripe)", lines: [
-    "Beim Kauf einer Auswertung (" + euro(BUSINESS.PREIS_AUSWERTUNG) + ") oder Auswertung mit Brief (" + euro(BUSINESS.PREIS_VOLL) + ") leiten wir dich zur Zahlungsseite von Stripe Payments Europe, Ltd. (Dublin, Irland) weiter. Dabei werden Name, E-Mail-Adresse und Zahlungsdaten an Stripe übermittelt.",
+    "Beim Kauf der Auswertung mit Brief (" + euro(BUSINESS.PREIS_VOLL) + ") leiten wir dich zur Zahlungsseite von Stripe Payments Europe, Ltd. (Dublin, Irland) weiter. Dabei werden Name, E-Mail-Adresse und Zahlungsdaten an Stripe übermittelt.",
     "Rechtsgrundlage: Art. 6 Abs. 1 lit. b DSGVO. Datenübermittlung in die USA auf Basis von Standardvertragsklauseln (Art. 46 Abs. 2 lit. c DSGVO). Datenschutzerklärung: stripe.com/de/privacy",
   ]},
   { t: "7. Bildmaterial (Unsplash)", lines: [
@@ -120,16 +120,16 @@ export default function Datenschutz({ navigateTo }) {
   return (
     <div style={{ fontFamily: THEME.font.body, background: C.bg, color: C.text, minHeight: "100vh" }}>
       <div style={{ background: C.surface, padding: "20px 20px 16px", borderBottom: "1px solid " + C.border }}>
-        <button onClick={() => navigateTo("welcome")} style={{ background: "none", border: "none", color: C.textMuted, cursor: "pointer", fontSize: 13, padding: "0 0 10px", fontFamily: THEME.font.body }}>← Zurück</button>
-        <h2 style={{ margin: 0, fontSize: 19, fontWeight: 600, fontFamily: THEME.font.heading }}>Datenschutzerklärung</h2>
+        <button onClick={() => navigateTo("welcome")} style={{ background: "none", border: "none", color: C.textMuted, cursor: "pointer", fontSize: 15, padding: "0 0 10px", fontFamily: THEME.font.body }}>← Zurück</button>
+        <h2 style={{ margin: 0, fontSize: 21, fontWeight: 600, fontFamily: THEME.font.heading }}>Datenschutzerklärung</h2>
       </div>
       <div style={{ padding: "24px 20px 60px", maxWidth: 720, margin: "0 auto" }}>
         {ABSCHNITTE.map((s, i) => (
           <div key={i} style={{ marginBottom: 24 }}>
-            <div style={{ fontSize: 13, fontWeight: 700, color: C.accent, marginBottom: 8, textTransform: "uppercase", letterSpacing: "0.06em" }}>{s.t}</div>
+            <div style={{ fontSize: 15, fontWeight: 700, color: C.brandStrong, marginBottom: 8, textTransform: "uppercase", letterSpacing: "0.06em" }}>{s.t}</div>
             {s.brand && <BrandAnschrift />}
             {s.lines.map((line, j) => (
-              <div key={j} style={{ fontSize: 13, color: C.textMuted, lineHeight: 1.8, marginBottom: 6 }}>{line}</div>
+              <div key={j} style={{ fontSize: 15, color: C.textMuted, lineHeight: 1.8, marginBottom: 6 }}>{line}</div>
             ))}
           </div>
         ))}

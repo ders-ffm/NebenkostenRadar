@@ -284,7 +284,8 @@ async function main() {
   {
     const html = readFileSync(join(ROOT, "index.html"), "utf8");
     const gefunden = [...html.matchAll(/"price":\s*"([\d.]+)"/g)].map(m => parseFloat(m[1]));
-    const erwartet = [BUSINESS.PREIS_AUSWERTUNG, BUSINESS.PREIS_VOLL];
+    // Seit 18.10.2026 nur noch ein Angebot (Auswertung + Brief).
+    const erwartet = [BUSINESS.PREIS_VOLL];
     if (gefunden.length !== erwartet.length || gefunden.some((p, i) => p !== erwartet[i])) {
       verstoesse.push(
         `index.html: Preise im JSON-LD (${gefunden.join(", ") || "keine"}) weichen von business.js ab (${erwartet.join(", ")}). ` +

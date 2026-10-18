@@ -293,7 +293,7 @@ export default function App() {
   const [fotoErkannt, setFotoErkannt] = useState(0);
   const [result, setResult] = useState(null);
   const [gekauft, setGekauft] = useState(() => window.location.pathname === "/danke" || window.location.pathname === "/pruefen/download");
-  const [stufe, setStufe] = useState(null); // "auswertung" | "voll"
+  const [stufe, setStufe] = useState(null); // seit 18.10.2026 nur noch "voll"
 
   // Automatisches Zwischenspeichern (siehe ladeEntwurf() weiter oben): bei
   // jeder Änderung an Wohnung/Posten/Gesamtsumme wird der aktuelle Stand lokal
@@ -480,10 +480,10 @@ export default function App() {
       return (
         <div style={{ fontFamily: THEME.font.body, background: THEME.color.bg, color: THEME.color.text, minHeight: "100vh", display: "flex", alignItems: "center", justifyContent: "center", padding: 24 }}>
           <div style={{ maxWidth: 420, textAlign: "center" }}>
-            <h2 style={{ fontFamily: THEME.font.heading, fontSize: 19, fontWeight: 600, margin: "0 0 10px" }}>{v.titel}</h2>
-            <p style={{ fontSize: 14, lineHeight: 1.65, color: THEME.color.textMuted, margin: "0 0 20px" }}>{v.text}</p>
+            <h2 style={{ fontFamily: THEME.font.heading, fontSize: 21, fontWeight: 600, margin: "0 0 10px" }}>{v.titel}</h2>
+            <p style={{ fontSize: 16, lineHeight: 1.65, color: THEME.color.textMuted, margin: "0 0 20px" }}>{v.text}</p>
             <button onClick={() => navigateTo(v.zurueckZu)}
-              style={{ background: THEME.color.accent, color: THEME.color.accentText, border: "none", borderRadius: THEME.radius.lg, padding: "14px 28px", fontSize: 15, fontFamily: THEME.font.heading, fontWeight: 600, cursor: "pointer" }}>
+              style={{ background: THEME.color.accent, color: THEME.color.accentText, border: "none", borderRadius: THEME.radius.lg, padding: "14px 28px", fontSize: 17, fontFamily: THEME.font.heading, fontWeight: 600, cursor: "pointer" }}>
               {v.knopf}
             </button>
           </div>
@@ -529,7 +529,7 @@ export default function App() {
           höchstens einen Wimpernschlag zu sehen, während die PDF-Bibliothek
           nachgeladen wird. */}
       <NachladeFehler>
-        <Suspense fallback={<div style={{ padding: 40, textAlign: "center", fontFamily: "system-ui, sans-serif", color: "#6B6152" }}>Wird geladen …</div>}>
+        <Suspense fallback={<div style={{ padding: 40, textAlign: "center", fontFamily: "system-ui, sans-serif", color: "#47534C" }}>Wird geladen …</div>}>
           {renderPage()}
         </Suspense>
       </NachladeFehler>

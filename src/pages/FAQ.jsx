@@ -36,7 +36,7 @@ export default function FAQ({ navigateTo }) {
         <h1 style={{ fontFamily: THEME.font.heading, fontSize: 28, fontWeight: 600, color: C.text, margin: "0 0 12px", lineHeight: 1.3 }}>
           Häufige Fragen
         </h1>
-        <p style={{ fontSize: 15, color: C.textMuted, lineHeight: 1.7, margin: "0 0 32px" }}>
+        <p style={{ fontSize: 17, color: C.textMuted, lineHeight: 1.7, margin: "0 0 32px" }}>
           Hier stehen die Fragen, die wir uns selbst stellen würden, auch die unbequemen. Wenn deine Frage fehlt, schreib uns; wir nehmen sie auf.
         </p>
 
@@ -47,10 +47,10 @@ export default function FAQ({ navigateTo }) {
         <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
           {FAQ_STARTSEITE.map(({ frage, antwort }) => (
             <details key={frage} style={{ background: C.surface, border: "1px solid " + C.border, borderRadius: THEME.radius.md, padding: "16px 18px" }}>
-              <summary style={{ fontSize: 15, fontWeight: 600, color: C.text, fontFamily: THEME.font.heading, cursor: "pointer", lineHeight: 1.5 }}>
+              <summary style={{ fontSize: 17, fontWeight: 600, color: C.text, fontFamily: THEME.font.heading, cursor: "pointer", lineHeight: 1.5 }}>
                 {frage}
               </summary>
-              <div style={{ fontSize: 14, color: C.textMuted, lineHeight: 1.75, marginTop: 12 }}>{antwort}</div>
+              <div style={{ fontSize: 16, color: C.textMuted, lineHeight: 1.75, marginTop: 12 }}>{antwort}</div>
             </details>
           ))}
         </div>
@@ -70,8 +70,8 @@ export default function FAQ({ navigateTo }) {
             anderen drei müssen von Hand geprüft werden.
             ───────────────────────────────────────────────────────────── */}
         <div style={{ marginTop: 40 }}>
-          <h2 style={{ fontFamily: THEME.font.heading, fontSize: 20, fontWeight: 600, color: C.text, margin: "0 0 8px" }}>Was die Alternativen kosten</h2>
-          <p style={{ fontSize: 14, color: C.textMuted, lineHeight: 1.7, margin: "0 0 18px" }}>
+          <h2 style={{ fontFamily: THEME.font.heading, fontSize: 22, fontWeight: 600, color: C.text, margin: "0 0 8px" }}>Was die Alternativen kosten</h2>
+          <p style={{ fontSize: 16, color: C.textMuted, lineHeight: 1.7, margin: "0 0 18px" }}>
             Damit du den Preis einordnen kannst, einschließlich der kostenlosen Alternative.
           </p>
           <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
@@ -87,11 +87,11 @@ export default function FAQ({ navigateTo }) {
               },
               {
                 titel: "NebenkostenRadar", hervor: true,
-                preis: euro(BUSINESS.PREIS_AUSWERTUNG) + ", " + euro(BUSINESS.PREIS_VOLL),
+                preis: euro(BUSINESS.PREIS_VOLL),
                 punkte: [
                   "Einmalig, kein Abo, kein Kundenkonto nötig",
                   "Jede Position gegen Richtwert und Rechtsgrundlage geprüft",
-                  "Versandfertiger Brief an den Vermieter (im größeren Paket)",
+                  "Versandfertiger Brief an den Vermieter inklusive",
                   "Ergebnis in wenigen Minuten, keine Terminvereinbarung",
                 ],
               },
@@ -116,29 +116,29 @@ export default function FAQ({ navigateTo }) {
             ].map(({ titel, preis, hervor, punkte }) => (
               <div key={titel} style={{ padding: "16px 18px", background: hervor ? C.brandBg : C.surface, border: "1px solid " + (hervor ? C.brand : C.border), borderRadius: THEME.radius.md }}>
                 <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", gap: 12, marginBottom: 8 }}>
-                  <div style={{ fontSize: 15, fontWeight: 600, color: C.text, fontFamily: THEME.font.heading }}>{titel}</div>
-                  <div style={{ fontSize: 13, fontWeight: 600, color: hervor ? C.brand : C.textMuted, textAlign: "right" }}>{preis}</div>
+                  <div style={{ fontSize: 17, fontWeight: 600, color: C.text, fontFamily: THEME.font.heading }}>{titel}</div>
+                  <div style={{ fontSize: 15, fontWeight: 600, color: hervor ? C.brand : C.textMuted, textAlign: "right" }}>{preis}</div>
                 </div>
-                <ul style={{ margin: 0, paddingLeft: 18, fontSize: 13, color: C.textMuted, lineHeight: 1.7 }}>
+                <ul style={{ margin: 0, paddingLeft: 18, fontSize: 15, color: C.textMuted, lineHeight: 1.7 }}>
                   {punkte.map(punkt => <li key={punkt}>{punkt}</li>)}
                 </ul>
               </div>
             ))}
           </div>
-          <p style={{ fontSize: 11, color: C.textDim, lineHeight: 1.6, marginTop: 12 }}>
+          <p style={{ fontSize: 13, color: C.textDim, lineHeight: 1.6, marginTop: 12 }}>
             Beiträge der Mietervereine nach den Beitragsordnungen 2026 einzelner Ortsvereine (Spanne von Gelsenkirchen bis Kiel); die Höhe unterscheidet sich je nach Verein. Anwaltsgebühr nach § 34 Abs. 1 S. 3 RVG, brutto inkl. 19 % Umsatzsteuer. Stand 09/2026.
           </p>
         </div>
 
         <div style={{ marginTop: 32, padding: "20px 20px", background: C.brandBg, border: "1px solid " + C.border, borderRadius: THEME.radius.lg, textAlign: "center" }}>
-          <div style={{ fontSize: 15, fontWeight: 600, color: C.text, fontFamily: THEME.font.heading, marginBottom: 6 }}>
+          <div style={{ fontSize: 17, fontWeight: 600, color: C.text, fontFamily: THEME.font.heading, marginBottom: 6 }}>
             Noch unsicher?
           </div>
-          <p style={{ fontSize: 13, color: C.textMuted, lineHeight: 1.65, margin: "0 0 16px" }}>
+          <p style={{ fontSize: 15, color: C.textMuted, lineHeight: 1.65, margin: "0 0 16px" }}>
             Die Basisanalyse kostet nichts und verlangt kein Kundenkonto. Du kannst sie ausprobieren und danach immer noch entscheiden.
           </p>
           <button onClick={() => navigateTo("wohnung")}
-            style={{ background: C.accent, border: "none", borderRadius: THEME.radius.md, padding: "14px 32px", fontSize: 14, fontFamily: THEME.font.heading, fontWeight: 600, color: C.accentText, cursor: "pointer" }}>
+            style={{ background: C.accent, border: "none", borderRadius: THEME.radius.md, padding: "14px 32px", fontSize: 16, fontFamily: THEME.font.heading, fontWeight: 600, color: C.accentText, cursor: "pointer" }}>
             Jetzt kostenlos prüfen
           </button>
         </div>

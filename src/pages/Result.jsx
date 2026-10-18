@@ -1,8 +1,8 @@
 // ─────────────────────────────────────────────────────────────────────────
 // Result.jsx — Ergebnis-Seite + Preisstufen-Auswahl. URL: "/pruefen/ergebnis"
 //
-// Zeigt eine kostenlose Vorschau (3 Positionen). Bei Kaufwunsch: Nutzer wählt
-// Stufe (Preise siehe BUSINESS.PREIS_AUSWERTUNG/PREIS_VOLL), Widerrufs-Checkbox
+// Zeigt eine kostenlose Vorschau (3 Positionen). Bei Kaufwunsch: seit
+// 18.10.2026 nur noch ein Paket (BUSINESS.PREIS_VOLL), Widerrufs-Checkbox
 // (Pflicht nach § 356 Abs. 5 BGB, Zustand liegt in App.jsx, siehe Kommentar
 // dort), dann weiter zu Adressen (für beide Stufen, siehe weiterZumKauf()).
 // ─────────────────────────────────────────────────────────────────────────
@@ -12,6 +12,7 @@ import { BUSINESS } from "../config/business.js";
 import { euro, fmt } from "../lib/format.js";
 import { BEWERTUNG } from "../lib/analyse.js";
 import Btn from "../components/ui/Btn.jsx";
+import Icon from "../components/ui/Icon.jsx";
 import LegalFooter from "../components/layout/LegalFooter.jsx";
 
 const STATUS_LABEL = { ok: "✓ Unauffällig", hoch: "↑ Erhöht", sehr_hoch: "↑↑ Stark erhöht", nicht_umlagefaehig: "✗ Nicht zulässig", pruefen: "? Prüfen" };
@@ -73,7 +74,8 @@ export default function Result({ navigateTo, result, wohnung, werte, gesamtsumme
   // Empfehlung muss wieder auf 12,99 sein und zwar immer", löst die
   // gestaffelte Preisstufen-Empfehlung vom 10.08.2026 wieder ab, siehe
   // CHANGELOG für die frühere Begründung).
-  const [gewaehlteStufe, setGewaehlteStufe] = useState("voll");
+  // 18.10.2026: nur noch "voll" (ein Paket), siehe Kommentar beim Preisblock.
+  const gewaehlteStufe = "voll";
 
   if (!result) {
     return (
@@ -100,20 +102,20 @@ export default function Result({ navigateTo, result, wohnung, werte, gesamtsumme
   return (
     <div style={{ fontFamily: THEME.font.body, background: C.bg, color: C.text, minHeight: "100vh" }}>
       <div style={{ background: C.surface, padding: "22px 20px 18px", borderBottom: "1px solid " + C.border }}>
-        <div style={{ fontSize: 10, color: C.textDim, letterSpacing: "0.2em", textTransform: "uppercase", marginBottom: 8 }}>NebenkostenRadar · Ergebnis {wohnung.jahr}</div>
-        <h1 style={{ fontFamily: THEME.font.heading, fontSize: 22, fontWeight: 600, margin: 0 }}>Deine Analyse</h1>
+        <div style={{ fontSize: 12, color: C.textDim, letterSpacing: "0.2em", textTransform: "uppercase", marginBottom: 8 }}>NebenkostenRadar · Ergebnis {wohnung.jahr}</div>
+        <h1 style={{ fontFamily: THEME.font.heading, fontSize: 30, fontWeight: 700, letterSpacing: "-0.02em", margin: 0 }}>Deine Analyse</h1>
       </div>
 
       <div style={{ padding: "16px 20px 60px", maxWidth: 640, margin: "0 auto" }}>
         <div style={{ background: bew.bg, borderLeft: "4px solid " + bew.farbe, borderRadius: THEME.radius.lg, padding: "14px 16px", marginBottom: 14 }}>
           <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 6 }}>
-            <span style={{ fontSize: 22 }}>{bew.icon}</span>
+            <span style={{ color: bew.farbe, display: "inline-flex" }}><Icon name={{ ok: "circle-check", auffaellig: "triangle-alert", kritisch: "circle-x" }[result.gesamtbewertung] || "triangle-alert"} size={26} /></span>
             <div>
-              <div style={{ fontSize: 15, fontWeight: 700, color: bew.farbe, fontFamily: THEME.font.heading }}>{bew.label}{result.fehler_anzahl > 0 ? " · " + result.fehler_anzahl + " Fehler" : ""}</div>
-              <div style={{ fontSize: 11, color: C.textMuted }}>{bew.sub}</div>
+              <div style={{ fontSize: 17, fontWeight: 700, color: bew.farbe, fontFamily: THEME.font.heading }}>{bew.label}{result.fehler_anzahl > 0 ? " · " + result.fehler_anzahl + " Fehler" : ""}</div>
+              <div style={{ fontSize: 13, color: C.textMuted }}>{bew.sub}</div>
             </div>
           </div>
-          <div style={{ fontSize: 13, color: C.textMuted, lineHeight: 1.6 }}>{result.zusammenfassung}</div>
+          <div style={{ fontSize: 15, color: C.textMuted, lineHeight: 1.6 }}>{result.zusammenfassung}</div>
         </div>
 
         <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8, marginBottom: 14 }}>
@@ -127,28 +129,28 @@ export default function Result({ navigateTo, result, wohnung, werte, gesamtsumme
             { l: "Geprüfte Posten", v: result.posten_bewertung.length },
           ].map(k => (
             <div key={k.l} style={{ background: k.hi ? C.brandBg : C.surface, border: "1px solid " + (k.hi ? C.brand : C.border), borderRadius: THEME.radius.md, padding: "11px 12px" }}>
-              <div style={{ fontSize: 9, color: C.textDim, textTransform: "uppercase", marginBottom: 3 }}>{k.l}</div>
-              <div style={{ fontFamily: THEME.font.heading, fontSize: 17, fontWeight: 600, color: k.hi ? C.brand : C.text }}>{k.v}</div>
+              <div style={{ fontSize: 12, color: C.textDim, textTransform: "uppercase", marginBottom: 3 }}>{k.l}</div>
+              <div style={{ fontFamily: THEME.font.heading, fontSize: 18.5, fontWeight: 600, color: k.hi ? C.brand : C.text }}>{k.v}</div>
             </div>
           ))}
         </div>
 
         <div style={{ background: C.surface, border: "1px solid " + C.border, borderRadius: THEME.radius.md, marginBottom: 14, overflow: "hidden" }}>
-          <div style={{ padding: "11px 16px", borderBottom: "1px solid " + C.border, fontSize: 11, fontWeight: 700, color: C.textMuted, textTransform: "uppercase" }}>
+          <div style={{ padding: "11px 16px", borderBottom: "1px solid " + C.border, fontSize: 13, fontWeight: 700, color: C.textMuted, textTransform: "uppercase" }}>
             Positions-Vorschau ({Math.min(3, result.posten_bewertung.length)} von {result.posten_bewertung.length})
           </div>
           {result.posten_bewertung.slice(0, 3).map((p, i, arr) => (
             <div key={i} style={{ display: "flex", alignItems: "flex-start", padding: "11px 16px", borderBottom: i < arr.length - 1 ? "1px solid " + C.border : "none" }}>
               <div style={{ flex: 1 }}>
-                <div style={{ fontSize: 13, fontWeight: 600 }}>{p.posten}</div>
-                <div style={{ fontSize: 11, color: C.textMuted, marginTop: 2, lineHeight: 1.4 }}>{p.hinweis}</div>
+                <div style={{ fontSize: 15, fontWeight: 600 }}>{p.posten}</div>
+                <div style={{ fontSize: 13, color: C.textMuted, marginTop: 2, lineHeight: 1.4 }}>{p.hinweis}</div>
               </div>
               <div style={{ textAlign: "right", marginLeft: 10 }}>
-                <div style={{ fontSize: 13, fontWeight: 700 }}>{fmt(p.betrag)}</div>
+                <div style={{ fontSize: 15, fontWeight: 700 }}>{fmt(p.betrag)}</div>
                 {/* "davon"-Zeilen: siehe AbrechnungPDF.jsx (17.10.2026) */}
                 {/^davon\s/i.test(p.posten || "") && !(p.richtwert > 0) && p.status === "ok"
-                  ? <div style={{ fontSize: 10, fontWeight: 600, marginTop: 2, color: C.textDim }}>in Summe geprüft</div>
-                  : <div style={{ fontSize: 10, fontWeight: 600, marginTop: 2, color: statusFarbe[p.status] || C.textMuted }}>{STATUS_LABEL[p.status] || p.status}</div>}
+                  ? <div style={{ fontSize: 12, fontWeight: 600, marginTop: 2, color: C.textDim }}>in Summe geprüft</div>
+                  : <div style={{ fontSize: 12, fontWeight: 600, marginTop: 2, color: statusFarbe[p.status] || C.textMuted }}>{STATUS_LABEL[p.status] || p.status}</div>}
               </div>
             </div>
           ))}
@@ -173,18 +175,18 @@ export default function Result({ navigateTo, result, wohnung, werte, gesamtsumme
             ──────────────────────────────────────────────────────────────── */}
         {heizBefunde.length > 0 ? (
           <div style={{ background: C.surface, border: "1px solid " + C.border, borderRadius: THEME.radius.md, marginBottom: 14, overflow: "hidden" }}>
-            <div style={{ padding: "11px 16px", borderBottom: "1px solid " + C.border, fontSize: 11, fontWeight: 700, color: C.textMuted, textTransform: "uppercase" }}>
+            <div style={{ padding: "11px 16px", borderBottom: "1px solid " + C.border, fontSize: 13, fontWeight: 700, color: C.textMuted, textTransform: "uppercase" }}>
               Heizkostenabrechnung, formale Prüfung
             </div>
             {heizBefunde.map((b, i, arr) => (
               <div key={i} style={{ display: "flex", alignItems: "flex-start", padding: "11px 16px", borderBottom: i < arr.length - 1 ? "1px solid " + C.border : "none" }}>
                 <div style={{ flex: 1 }}>
-                  <div style={{ fontSize: 13, fontWeight: 600 }}>{b.titel}</div>
-                  <div style={{ fontSize: 11, color: C.textMuted, marginTop: 2, lineHeight: 1.4 }}>{b.norm}</div>
+                  <div style={{ fontSize: 15, fontWeight: 600 }}>{b.titel}</div>
+                  <div style={{ fontSize: 13, color: C.textMuted, marginTop: 2, lineHeight: 1.4 }}>{b.norm}</div>
                 </div>
                 <div style={{ textAlign: "right", marginLeft: 10 }}>
-                  {b.betrag > 0 && <div style={{ fontSize: 13, fontWeight: 700 }}>{fmt(b.betrag)}</div>}
-                  <div style={{ fontSize: 10, fontWeight: 600, marginTop: 2, color: b.status === "verstoss" ? C.critical : C.ok }}>
+                  {b.betrag > 0 && <div style={{ fontSize: 15, fontWeight: 700 }}>{fmt(b.betrag)}</div>}
+                  <div style={{ fontSize: 12, fontWeight: 600, marginTop: 2, color: b.status === "verstoss" ? C.critical : C.ok }}>
                     {b.status === "verstoss" ? "✗ Beanstandung" : "✓ Korrekt"}
                   </div>
                 </div>
@@ -193,17 +195,17 @@ export default function Result({ navigateTo, result, wohnung, werte, gesamtsumme
           </div>
         ) : (
           <div style={{ background: C.brandBg, borderRadius: THEME.radius.md, padding: "13px 16px", marginBottom: 14 }}>
-            <div style={{ fontSize: 13, fontWeight: 600, color: C.text, marginBottom: 4 }}>
+            <div style={{ fontSize: 15, fontWeight: 600, color: C.text, marginBottom: 4 }}>
               Heizkostenabrechnung noch nicht geprüft
             </div>
-            <div style={{ fontSize: 11.5, color: C.textMuted, lineHeight: 1.6, marginBottom: 8 }}>
+            <div style={{ fontSize: 13.5, color: C.textMuted, lineHeight: 1.6, marginBottom: 8 }}>
               Bei der Höhe der Heizkosten kann der Vermieter immer auf deinen Verbrauch verweisen.
               Bei der Verteilung nicht: Mindestens 50 und höchstens 70 Prozent müssen nach gemessenem
               Verbrauch abgerechnet werden. Dafür brauchen wir zwei Zahlen von deiner
               Heizkostenabrechnung, meist ein eigenes Blatt von Brunata, ista oder Techem.
             </div>
             <button onClick={() => navigateTo("posten")}
-              style={{ background: "none", border: "none", color: C.brand, fontSize: 12.5, fontWeight: 600, cursor: "pointer", padding: 0, fontFamily: THEME.font.body, textDecoration: "underline" }}>
+              style={{ background: "none", border: "none", color: C.brand, fontSize: 14.5, fontWeight: 600, cursor: "pointer", padding: 0, fontFamily: THEME.font.body, textDecoration: "underline" }}>
               Angaben nachtragen, deine Eingaben bleiben erhalten
             </button>
           </div>
@@ -221,16 +223,16 @@ export default function Result({ navigateTo, result, wohnung, werte, gesamtsumme
         {result.gesamtbewertung === "ok" && (
           <div style={{ background: C.okBg, border: "1px solid " + C.ok, borderRadius: THEME.radius.lg, padding: "16px 18px", marginBottom: 14 }}>
             <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 6 }}>
-              <span style={{ fontSize: 18 }}>✅</span>
-              <div style={{ fontSize: 14, fontWeight: 700, color: C.ok, fontFamily: THEME.font.heading }}>Kein Widerspruch nötig</div>
+              <span style={{ color: C.ok, display: "inline-flex" }}><Icon name="circle-check" size={22} /></span>
+              <div style={{ fontSize: 16, fontWeight: 700, color: C.ok, fontFamily: THEME.font.heading }}>Kein Widerspruch nötig</div>
             </div>
-            <div style={{ fontSize: 12, color: C.text, lineHeight: 1.6 }}>
+            <div style={{ fontSize: 14, color: C.text, lineHeight: 1.6 }}>
               Wir haben keine Position gefunden, die einen Widerspruch beim Vermieter rechtfertigen würde. Ein kostenpflichtiger Bericht bringt dir hier wahrscheinlich keinen zusätzlichen Nutzen, du bräuchtest ihn nur, wenn du die Prüfung trotzdem schriftlich dokumentieren möchtest.
             </div>
           </div>
         )}
 
-        <div style={{ background: C.surface, border: "2px solid " + C.text, borderRadius: THEME.radius.xl, padding: "20px 18px" }}>
+        <div style={{ background: C.surface, border: "2px solid " + C.brand, borderRadius: THEME.radius.xl, padding: "22px 20px", boxShadow: THEME.shadow }}>
           {/* Kurze, am Kundenwunsch orientierte Formulierung statt "hart"/
               "statistisch"-Fachsprache (10.08.2026, siehe CHANGELOG, Stefans
               Wunsch): Die Entscheidung Bericht vs. Brief hängt letztlich
@@ -239,41 +241,33 @@ export default function Result({ navigateTo, result, wohnung, werte, gesamtsumme
               Beweisstärke-Einordnung. Die liefert nur die Grundlage für die
               Empfehlung, wird dem Kunden aber nicht mehr als Begriff gezeigt. */}
           <div style={{ textAlign: "center", marginBottom: 16 }}>
-            <h3 style={{ margin: "0 0 6px", fontSize: 16, fontFamily: THEME.font.heading }}>
-              {result.gesamtbewertung === "ok" ? "Trotzdem als PDF dokumentieren" : hatHart ? "Auswertung + Brief" : "Auswertung als PDF"}
+            <h3 style={{ margin: "0 0 6px", fontSize: 17.5, fontFamily: THEME.font.heading }}>
+              {result.gesamtbewertung === "ok" ? "Trotzdem als PDF dokumentieren" : "Auswertung + Brief"}
             </h3>
-            <p style={{ margin: 0, fontSize: 12, color: C.textMuted }}>
+            <p style={{ margin: 0, fontSize: 14, color: C.textMuted }}>
               {result.gesamtbewertung === "ok"
                 ? "Optional, für deine eigenen Unterlagen, nicht für einen Widerspruch nötig"
                 : hatHart
                   ? "Wir haben einen eindeutigen Verstoß gefunden. Willst du Belege vom Vermieter anfordern? Dann brauchst du den Brief."
-                  : "Willst du Belege vom Vermieter anfordern? Dann hilft dir der Brief. Reicht dir die Auswertung: die genügt."}
+                  : "Mit dem Brief forderst du beim Vermieter Belege an und fragst zu den auffälligen Posten nach."}
             </p>
           </div>
 
-          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10, marginBottom: 16 }}>
-            <button onClick={() => setGewaehlteStufe("auswertung")}
-              style={{ textAlign: "left", background: gewaehlteStufe === "auswertung" ? C.brandBg : C.bg, border: "2px solid " + (gewaehlteStufe === "auswertung" ? C.brand : C.border), borderRadius: THEME.radius.md, padding: "14px", cursor: "pointer", position: "relative" }}>
-              <div style={{ fontSize: 11, color: C.textMuted, marginBottom: 4 }}>Nur Auswertung</div>
-              <div style={{ fontFamily: THEME.font.heading, fontSize: 19, fontWeight: 600, color: C.text }}>{euro(BUSINESS.PREIS_AUSWERTUNG)}</div>
-              <div style={{ fontSize: 10, color: C.textDim, marginTop: 4 }}>1-seitiges PDF</div>
-            </button>
-            <button onClick={() => setGewaehlteStufe("voll")}
-              style={{ textAlign: "left", background: gewaehlteStufe === "voll" ? C.brandBg : C.bg, border: "2px solid " + (gewaehlteStufe === "voll" ? C.brand : C.border), borderRadius: THEME.radius.md, padding: "14px", cursor: "pointer", position: "relative" }}>
-              {/* "Empfohlen"-Badge fest auf dieser Stufe, unabhängig von hart/
-                  statistisch (11.08.2026, Stefans Vorgabe, siehe Kommentar oben
-                  bei gewaehlteStufe). */}
-              <div style={{ position: "absolute", top: -9, right: 10, background: C.accent, color: C.accentText, fontSize: 9, fontWeight: 700, padding: "2px 8px", borderRadius: 10 }}>Empfohlen</div>
-              <div style={{ fontSize: 11, color: C.textMuted, marginBottom: 4 }}>Auswertung + Brief</div>
-              <div style={{ fontFamily: THEME.font.heading, fontSize: 19, fontWeight: 600, color: C.text }}>{euro(BUSINESS.PREIS_VOLL)}</div>
-              <div style={{ fontSize: 10, color: C.textDim, marginTop: 4 }}>3-seitiges PDF inkl. Musterbrief und Steuer-Bonus (§ 35a EStG)</div>
-              {/* 14.08.2026, siehe planung/steuerbonus-35a-rollout.md: kleiner
-                  eigener Badge für den Kaufanreiz, zusätzlich zum Beschreibungstext
-, Stefan hat das Mockup mit diesem Badge freigegeben. */}
-              <div style={{ display: "inline-block", marginTop: 8, background: C.accentBg, color: C.textDim, fontSize: 9, fontWeight: 600, padding: "3px 8px", borderRadius: 8 }}>+ Steuer-Bonus</div>
-            </button>
+          {/* 18.10.2026: Nur noch EIN Paket (Stefans Entscheidung), keine
+              Auswahl zwischen 9,99 € und 12,99 € mehr. Statt der zwei Kacheln
+              steht hier, was im Paket enthalten ist. */}
+          <div style={{ background: C.alt, border: "1px solid " + C.border, borderRadius: THEME.radius.md, padding: "16px 18px", marginBottom: 16, display: "flex", flexWrap: "wrap", gap: "12px 20px", alignItems: "center", justifyContent: "space-between" }}>
+            <div>
+              <div style={{ fontSize: 14.5, color: C.textMuted, fontWeight: 600 }}>Auswertung + Brief + Steuer-Bonus</div>
+              <div style={{ fontFamily: THEME.font.heading, fontSize: 30, fontWeight: 700, letterSpacing: "-0.02em", color: C.text, fontVariantNumeric: "tabular-nums" }}>{euro(BUSINESS.PREIS_VOLL)}</div>
+              <div style={{ fontSize: 13.5, color: C.textDim }}>einmalig · kein Abo</div>
+            </div>
+            <ul style={{ listStyle: "none", padding: 0, margin: 0, display: "grid", gap: 8, fontSize: 15, color: C.textMuted, flex: "1 1 240px" }}>
+              {["Alle Positionen mit Richtwerten und Begründungen als PDF", "Fertiger Brief an deinen Vermieter", "Hinweis auf steuerlich absetzbare Posten (§\u00A035a\u00A0EStG)"].map(t => (
+                <li key={t} style={{ display: "grid", gridTemplateColumns: "20px 1fr", gap: 8 }}><span style={{ color: C.brand, display: "inline-flex", marginTop: 2 }}><Icon name="circle-check" size={17} /></span><span>{t}</span></li>
+              ))}
+            </ul>
           </div>
-
 
           {/* Umformuliert weg von "Mögliche Rückforderung" als Kernversprechen
               (10.08.2026, siehe CHANGELOG, Stefans Frage zur Plausibilität/
@@ -286,7 +280,7 @@ export default function Result({ navigateTo, result, wohnung, werte, gesamtsumme
               ähnlich wie es z.B. NebenkostenPro handhabt (kein "Geld zurück"
               als Versprechen, sondern "Auffälligkeitshinweise"/"Prüfpotenzial"). */}
           {(result.ersparnis_hart > 0 || result.ersparnis_statistisch > 0) && (
-            <div style={{ background: C.brandBg, borderLeft: "3px solid " + C.brand, borderRadius: 8, padding: "10px 14px", fontSize: 12, color: C.brand, marginBottom: 14 }}>
+            <div style={{ background: C.brandBg, borderLeft: "3px solid " + C.brand, borderRadius: 8, padding: "10px 14px", fontSize: 14, color: C.brand, marginBottom: 14 }}>
               {result.ersparnis_hart > 0 && (
                 <div><strong>{fmt(result.ersparnis_hart)}</strong> eindeutig zu viel gezahlt, unabhängig von Belegen nachweisbar.</div>
               )}
@@ -309,13 +303,13 @@ export default function Result({ navigateTo, result, wohnung, werte, gesamtsumme
             <label style={{ display: "flex", alignItems: "flex-start", gap: 10, cursor: "pointer" }}>
               <input type="checkbox" checked={widerrufOk} onChange={e => setWiderrufOk(e.target.checked)}
                 style={{ marginTop: 3, flexShrink: 0, width: 16, height: 16, cursor: "pointer", accentColor: C.accent }} />
-              <span style={{ fontSize: 11, color: C.textMuted, lineHeight: 1.6 }}>
+              <span style={{ fontSize: 13, color: C.textMuted, lineHeight: 1.6 }}>
                 Ich stimme zu, dass mit der Ausführung des Vertrags sofort begonnen wird, und ich habe zur Kenntnis genommen, dass ich mit Beginn der Ausführung mein <strong style={{ color: C.text }}>Widerrufsrecht verliere</strong> (§ 356 Abs. 5 BGB). Das PDF steht sofort nach Zahlung zur Verfügung; die Bestätigung dieser Erklärung bekommst du mit der Vertragsbestätigung per E-Mail.
               </span>
             </label>
           </div>
 
-          <div style={{ fontSize: 11, color: C.textDim, marginBottom: 12, lineHeight: 1.7, textAlign: "center" }}>
+          <div style={{ fontSize: 13, color: C.textDim, marginBottom: 12, lineHeight: 1.7, textAlign: "center" }}>
             Anbieter: NebenkostenRadar · Inhaber: Stefan Hennig · Frankfurt am Main<br />
             Zahlung über Stripe · Kein Abo · Einmalige Zahlung
           </div>
@@ -325,54 +319,54 @@ export default function Result({ navigateTo, result, wohnung, werte, gesamtsumme
                 schon mit, auf dem Knopf stand live "Weiter · 12,99 € €".
                 Ausgerechnet auf dem Kaufknopf, dem empfindlichsten Element
                 der ganzen Seite. Gefunden im Funnel-Test am 19.09.2026. */}
-            Weiter · {gewaehlteStufe === "voll" ? euro(BUSINESS.PREIS_VOLL) : euro(BUSINESS.PREIS_AUSWERTUNG)}
+            Weiter · {euro(BUSINESS.PREIS_VOLL)}
           </Btn>
-          {!widerrufOk && <div style={{ textAlign: "center", fontSize: 11, color: C.warn, marginTop: 6 }}>⚠ Bitte zuerst die Checkbox oben bestätigen</div>}
+          {!widerrufOk && <div style={{ textAlign: "center", fontSize: 13, color: C.warn, marginTop: 6 }}>⚠ Bitte zuerst die Checkbox oben bestätigen</div>}
 
-          <div style={{ textAlign: "center", marginTop: 8, fontSize: 10, color: C.textDim }}>
+          <div style={{ textAlign: "center", marginTop: 8, fontSize: 12, color: C.textDim }}>
             {/* 17.10.2026: Vorher "Mit dem Kauf akzeptierst du unsere AGB und
                 Datenschutzerklärung". Eine Datenschutzerklärung ist eine
                 Information, keine Vertragsbedingung, die man "akzeptiert". */}
             Es gelten unsere{" "}
-            <button onClick={() => navigateTo("agb")} style={{ background: "none", border: "none", color: C.textDim, textDecoration: "underline", cursor: "pointer", fontSize: 10, padding: 0 }}>AGB</button>{" "}
+            <button onClick={() => navigateTo("agb")} style={{ background: "none", border: "none", color: C.textDim, textDecoration: "underline", cursor: "pointer", fontSize: 12, padding: 0 }}>AGB</button>{" "}
             · Infos zum Datenschutz:{" "}
-            <button onClick={() => navigateTo("datenschutz")} style={{ background: "none", border: "none", color: C.textDim, textDecoration: "underline", cursor: "pointer", fontSize: 10, padding: 0 }}>Datenschutzerklärung</button>
+            <button onClick={() => navigateTo("datenschutz")} style={{ background: "none", border: "none", color: C.textDim, textDecoration: "underline", cursor: "pointer", fontSize: 12, padding: 0 }}>Datenschutzerklärung</button>
           </div>
         </div>
 
         <div style={{ marginTop: 14, background: C.surface, border: "1px solid " + C.border, borderRadius: THEME.radius.lg, padding: "14px 16px" }}>
           {fortsetzenStatus !== "fertig" ? (
             <>
-              <div style={{ fontSize: 13, fontWeight: 600, color: C.text, marginBottom: 4, fontFamily: THEME.font.heading }}>Noch nicht sicher?</div>
-              <div style={{ fontSize: 12, color: C.textMuted, marginBottom: 10, lineHeight: 1.6 }}>
+              <div style={{ fontSize: 15, fontWeight: 600, color: C.text, marginBottom: 4, fontFamily: THEME.font.heading }}>Noch nicht sicher?</div>
+              <div style={{ fontSize: 14, color: C.textMuted, marginBottom: 10, lineHeight: 1.6 }}>
                 Kein Konto nötig: Ein Link merkt sich deine Eingabe für 30 Tage, du kannst später auf jedem Gerät weitermachen.
               </div>
               <button onClick={spaeterFortsetzen} disabled={fortsetzenStatus === "speichert"}
-                style={{ width: "100%", background: "none", border: "1px solid " + C.brand, color: C.brand, borderRadius: THEME.radius.md, padding: "11px", fontSize: 13, fontWeight: 600, fontFamily: THEME.font.heading, cursor: fortsetzenStatus === "speichert" ? "default" : "pointer" }}>
+                style={{ width: "100%", background: "none", border: "1px solid " + C.brand, color: C.brand, borderRadius: THEME.radius.md, padding: "11px", fontSize: 15, fontWeight: 600, fontFamily: THEME.font.heading, cursor: fortsetzenStatus === "speichert" ? "default" : "pointer" }}>
                 {fortsetzenStatus === "speichert" ? "Wird gespeichert …" : "Link zum späteren Fortsetzen erstellen"}
               </button>
               {fortsetzenStatus === "fehler" && (
-                <div style={{ fontSize: 11, color: C.warn, marginTop: 8 }}>Konnte nicht gespeichert werden. Bitte kurz erneut versuchen, deine Eingabe bleibt in diesem Browser trotzdem automatisch erhalten.</div>
+                <div style={{ fontSize: 13, color: C.warn, marginTop: 8 }}>Konnte nicht gespeichert werden. Bitte kurz erneut versuchen, deine Eingabe bleibt in diesem Browser trotzdem automatisch erhalten.</div>
               )}
             </>
           ) : (
             <>
-              <div style={{ fontSize: 13, fontWeight: 600, color: C.brand, marginBottom: 6, fontFamily: THEME.font.heading }}>✓ Link erstellt, 30 Tage gültig</div>
+              <div style={{ fontSize: 15, fontWeight: 600, color: C.brand, marginBottom: 6, fontFamily: THEME.font.heading }}>✓ Link erstellt, 30 Tage gültig</div>
               <div style={{ display: "flex", gap: 8, alignItems: "center", background: C.bg, border: "1px solid " + C.border, borderRadius: THEME.radius.md, padding: "8px 10px" }}>
-                <div style={{ flex: 1, fontSize: 11, color: C.textMuted, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{fortsetzenLink}</div>
-                <button onClick={linkKopieren} style={{ flexShrink: 0, background: C.brand, color: "#fff", border: "none", borderRadius: 6, padding: "6px 12px", fontSize: 11, fontWeight: 600, cursor: "pointer" }}>
+                <div style={{ flex: 1, fontSize: 13, color: C.textMuted, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{fortsetzenLink}</div>
+                <button onClick={linkKopieren} style={{ flexShrink: 0, background: C.brand, color: "#fff", border: "none", borderRadius: 6, padding: "6px 12px", fontSize: 13, fontWeight: 600, cursor: "pointer" }}>
                   {linkKopiert ? "Kopiert ✓" : "Kopieren"}
                 </button>
               </div>
-              <div style={{ fontSize: 11, color: C.textDim, marginTop: 8, lineHeight: 1.6 }}>Am besten gleich an dich selbst schicken (E-Mail/Notiz-App), z. B. um auf dem Computer weiterzumachen.</div>
+              <div style={{ fontSize: 13, color: C.textDim, marginTop: 8, lineHeight: 1.6 }}>Am besten gleich an dich selbst schicken (E-Mail/Notiz-App), z. B. um auf dem Computer weiterzumachen.</div>
             </>
           )}
         </div>
 
-        <button onClick={resetAll} style={{ width: "100%", marginTop: 12, background: "transparent", border: "1px solid " + C.border, color: C.textMuted, borderRadius: THEME.radius.lg, padding: "14px", fontSize: 14, fontFamily: THEME.font.body, cursor: "pointer" }}>
+        <button onClick={resetAll} style={{ width: "100%", marginTop: 12, background: "transparent", border: "1px solid " + C.border, color: C.textMuted, borderRadius: THEME.radius.lg, padding: "14px", fontSize: 16, fontFamily: THEME.font.body, cursor: "pointer" }}>
           ← Neue Prüfung starten
         </button>
-        <p style={{ textAlign: "center", fontSize: 10, color: C.textDim, marginTop: 12, lineHeight: 1.6 }}>Keine Rechtsberatung. Deutscher Mieterbund: mieterbund.de · Tel. 030 223230</p>
+        <p style={{ textAlign: "center", fontSize: 12, color: C.textDim, marginTop: 12, lineHeight: 1.6 }}>Keine Rechtsberatung. Deutscher Mieterbund: mieterbund.de · Tel. 030 223230</p>
       </div>
       <LegalFooter navigateTo={navigateTo} />
     </div>

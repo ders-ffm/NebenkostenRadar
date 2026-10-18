@@ -22,6 +22,7 @@ import Verweis from "../ui/Verweis.jsx";
 import { pfadFuer } from "../../config/routen.js";
 import { WERKZEUGE } from "../../config/werkzeuge.js";
 import { JAHR } from "../../lib/jahr.js";
+import Icon from "../ui/Icon.jsx";
 
 // Artikel im Ratgeber-Untermenü: die Themen mit den meisten Impressionen in
 // der Search Console (Stand 14.10.2026) plus die Grundlagen-Artikel.
@@ -96,10 +97,13 @@ export default function Nav({ activeStep, navigateTo }) {
         </svg>
       </div>
       <div>
-        <div style={{ fontSize: 20, fontWeight: 700, color: C.text, fontFamily: THEME.font.heading, lineHeight: 1.1 }}>
+        {/* LOGO: Schrift, Größe und Farben bewusst fest (Stefans Vorgabe beim
+            Redesign 18.10.2026: "das Logo muss bleiben"). Nicht an THEME.size
+            oder die allgemeine Textfarbe koppeln. */}
+        <div style={{ fontSize: 20, fontWeight: 700, color: "#2E2A22", fontFamily: THEME.font.logo, lineHeight: 1.1 }}>
           Nebenkosten<span style={{ color: C.brand }}>Radar</span>
         </div>
-        <div style={{ fontSize: 10, color: C.textMuted, fontWeight: 500 }}>Nebenkosten prüfen, für Mieter</div>
+        <div style={{ fontSize: 10, color: "#6B6152", fontWeight: 500, fontFamily: THEME.font.logoSub }}>Nebenkosten prüfen, für Mieter</div>
       </div>
     </Verweis>
   );
@@ -107,14 +111,14 @@ export default function Nav({ activeStep, navigateTo }) {
   const ctaButton = (onClickExtra) => (
     <Verweis href={pfadFuer("wohnung")}
       onNavigate={() => { onClickExtra && onClickExtra(); navigateTo("wohnung"); }}
-      style={{ display: "inline-block", background: C.accent, border: "none", borderRadius: THEME.radius.sm, padding: "10px 18px", fontSize: 13, fontFamily: THEME.font.heading, fontWeight: 600, color: C.accentText, cursor: "pointer" }}>
+      style={{ display: "inline-block", background: C.accent, border: "none", borderRadius: THEME.radius.sm, padding: "11px 18px", fontSize: 15, fontFamily: THEME.font.heading, fontWeight: 600, color: C.accentText, cursor: "pointer", whiteSpace: "nowrap" }}>
       Kostenlos prüfen
     </Verweis>
   );
 
   // Ein Untermenü-Link: mit step → Navigation ohne Neuladen, sonst normaler Link.
   const kindLink = (kind, stil, extra) => kind.step
-    ? <Verweis key={kind.href} href={kind.href} onNavigate={() => gehe(kind, extra)} style={stil}>{kind.label}{kind.hinweis && <span style={{ display: "block", fontSize: 11.5, color: C.textDim, fontWeight: 400 }}>{kind.hinweis}</span>}</Verweis>
+    ? <Verweis key={kind.href} href={kind.href} onNavigate={() => gehe(kind, extra)} style={stil}>{kind.label}{kind.hinweis && <span style={{ display: "block", fontSize: 13.5, color: C.textDim, fontWeight: 400 }}>{kind.hinweis}</span>}</Verweis>
     : <a key={kind.href} href={kind.href} style={{ color: "inherit", textDecoration: "none", ...stil }}>{kind.label}</a>;
 
   if (isMobile) {
@@ -134,13 +138,13 @@ export default function Nav({ activeStep, navigateTo }) {
         <div style={{ display: mobileOpen ? "flex" : "none", borderTop: "1px solid " + C.border, padding: "10px 0 16px", flexDirection: "column", gap: 2, maxHeight: "calc(100vh - 64px)", overflowY: "auto" }}>
           {items.map(item => item.kinder ? (
             <div key={item.label} style={{ padding: "6px 0" }}>
-              <div style={{ fontSize: 11, fontWeight: 700, color: C.textDim, textTransform: "uppercase", letterSpacing: "0.06em", padding: "6px 6px 4px" }}>{item.label}</div>
-              {item.kinder.map(k => kindLink(k, { display: "block", padding: "10px 6px", fontSize: 15, color: k.step === activeStep ? C.brand : C.text, fontWeight: k.step === activeStep ? 600 : 400 }, () => setMobileOpen(false)))}
+              <div style={{ fontSize: 13, fontWeight: 700, color: C.textDim, textTransform: "uppercase", letterSpacing: "0.06em", padding: "6px 6px 4px" }}>{item.label}</div>
+              {item.kinder.map(k => kindLink(k, { display: "block", padding: "10px 6px", fontSize: 17, color: k.step === activeStep ? C.brand : C.text, fontWeight: k.step === activeStep ? 600 : 400 }, () => setMobileOpen(false)))}
             </div>
           ) : (
             <Verweis key={item.label} href={pfadFuer(item.target)}
               onNavigate={() => { setMobileOpen(false); navigateTo(item.target); }}
-              style={{ display: "block", textAlign: "left", padding: "12px 6px", fontSize: 15, fontFamily: THEME.font.body, color: activeStep === item.target ? C.brand : C.text, fontWeight: activeStep === item.target ? 600 : 400, cursor: "pointer" }}>
+              style={{ display: "block", textAlign: "left", padding: "12px 6px", fontSize: 17, fontFamily: THEME.font.body, color: activeStep === item.target ? C.brand : C.text, fontWeight: activeStep === item.target ? 600 : 400, cursor: "pointer" }}>
               {item.label}
             </Verweis>
           ))}
@@ -151,12 +155,12 @@ export default function Nav({ activeStep, navigateTo }) {
   }
 
   return (
-    <div style={{ borderBottom: "1px solid " + C.border, padding: "0 20px", background: C.surface, position: "sticky", top: 0, zIndex: 100, boxShadow: "0 1px 8px rgba(0,0,0,0.05)" }}>
-      <div ref={navRef} style={{ maxWidth: THEME.layout.pageMax, margin: "0 auto", display: "flex", alignItems: "center", justifyContent: "space-between", height: 72 }}>
+    <div style={{ borderBottom: "1px solid " + C.border, padding: "0 20px", background: C.surface, position: "sticky", top: 0, zIndex: 100, boxShadow: "none" }}>
+      <div ref={navRef} style={{ maxWidth: THEME.layout.pageMax, margin: "0 auto", display: "flex", alignItems: "center", justifyContent: "space-between", height: 76 }}>
         {logo}
         <div style={{ display: "flex", alignItems: "center", gap: 2 }}>
           {items.map(item => {
-            const stil = { background: "none", border: "none", padding: "6px 10px", fontSize: 13, fontFamily: THEME.font.body, color: istAktiv(item) ? C.brand : C.textMuted, fontWeight: istAktiv(item) ? 600 : 400, cursor: "pointer", borderRadius: 6 };
+            const stil = { display: "inline-flex", alignItems: "center", gap: 4, background: "none", border: "none", padding: "8px 12px", fontSize: 15, fontFamily: THEME.font.body, color: istAktiv(item) ? C.brandStrong : C.textMuted, fontWeight: istAktiv(item) ? 600 : 500, cursor: "pointer", borderRadius: 6 };
             if (!item.kinder) {
               return (
                 <Verweis key={item.label} href={pfadFuer(item.target)} onNavigate={() => navigateTo(item.target)} style={stil}>
@@ -169,10 +173,10 @@ export default function Nav({ activeStep, navigateTo }) {
               <div key={item.label} style={{ position: "relative" }}
                 onMouseEnter={() => setOffen(item.label)} onMouseLeave={() => setOffen(o => (o === item.label ? null : o))}>
                 <button type="button" aria-expanded={auf} aria-haspopup="true" onClick={() => setOffen(auf ? null : item.label)} style={stil}>
-                  {item.label} <span aria-hidden="true" style={{ fontSize: 10 }}>▾</span>
+                  {item.label} <Icon name="chevron-down" size={16} style={{ marginTop: -2, transform: auf ? "rotate(180deg)" : "none", transition: "transform .15s" }} />
                 </button>
                 <div style={{ display: auf ? "block" : "none", position: "absolute", top: "100%", left: 0, minWidth: 260, background: C.surface, border: "1px solid " + C.border, borderRadius: THEME.radius.md, boxShadow: "0 8px 24px rgba(0,0,0,0.08)", padding: "8px 0", zIndex: 200 }}>
-                  {item.kinder.map(k => kindLink(k, { display: "block", padding: "9px 16px", fontSize: 13.5, color: k.step === activeStep ? C.brand : C.text, fontWeight: 500, lineHeight: 1.4 }))}
+                  {item.kinder.map(k => kindLink(k, { display: "block", padding: "9px 16px", fontSize: 15.5, color: k.step === activeStep ? C.brand : C.text, fontWeight: 500, lineHeight: 1.4 }))}
                 </div>
               </div>
             );

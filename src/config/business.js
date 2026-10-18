@@ -28,12 +28,18 @@ export const BUSINESS = {
   // Zugehöriger Live-Webhook-Endpunkt in Stripe: https://nebenkostenradar.com/api/webhook
   // (checkout.session.completed) — Signing Secret muss mit STRIPE_WEBHOOK_SECRET
   // in Vercel übereinstimmen, sonst schlägt die Rabatt-Mail-Protokollierung fehl.
+  // NICHT MEHR VERKAUFT seit 18.10.2026 (Stefans Entscheidung: nur noch
+  // das Paket mit Brief, keine Auswahl). Bleibt nur stehen, damit
+  // Altkäufe korrekt zugeordnet und ausgewertet werden (webhook.js,
+  // get-report.js, monatsauswertung.mjs). Den Payment Link in Stripe
+  // deaktivieren.
   STRIPE_LINK_AUSWERTUNG: "https://buy.stripe.com/aFadR99SP26h3os0MzgUM03",
   STRIPE_LINK_VOLL: "https://buy.stripe.com/9B63cv0ifbGR8IMfHtgUM04",
   // Zwei Preisstufen (siehe Projekt-Entscheidung 08/2026):
   //   Stufe 1: nur Auswertung als 1-seitiges PDF
   //   Stufe 2: Auswertung + Musterbrief als 2-seitiges PDF
-  PREIS_AUSWERTUNG: 9.99,
+  PREIS_AUSWERTUNG: 9.99, // nur noch für Altkäufe, siehe oben
+  // Der einzige Preis seit 18.10.2026:
   PREIS_VOLL: 12.99,
   RICHTWERTE_JAHR: "2024 (veröffentlicht 12/2025)",
   RICHTWERTE_QUELLE:
@@ -111,4 +117,4 @@ export const BUSINESS = {
   BEWERTUNG_BIS_TAGE: 30,
 };
 // IS_DEMO: true, solange mindestens ein Stripe-Link nicht konfiguriert ist (Platzhaltererkennung)
-export const IS_DEMO = BUSINESS.STRIPE_LINK_AUSWERTUNG.includes("HIER") || BUSINESS.STRIPE_LINK_VOLL.includes("HIER");
+export const IS_DEMO = BUSINESS.STRIPE_LINK_VOLL.includes("HIER");

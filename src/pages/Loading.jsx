@@ -38,13 +38,13 @@ export default function Loading() {
           <circle cx="9" cy="9" r="1" fill="white"/>
         </svg>
       </div>
-      <div style={{ fontFamily: THEME.font.heading, fontSize: 20, fontWeight: 600, marginBottom: 6 }}>Nebenkosten<span style={{ color: C.accent }}>Radar</span></div>
-      <div style={{ fontSize: 11, color: C.textDim, textTransform: "uppercase", marginBottom: 26 }}>Analyse läuft</div>
-      <p style={{ fontSize: 13, color: C.textMuted, margin: "0 0 28px", textAlign: "center", minHeight: 20 }}>{LOADING_MSGS[idx]}</p>
+      <div style={{ fontFamily: THEME.font.logo, fontSize: 22, fontWeight: 700, color: "#2E2A22", marginBottom: 6 }}>Nebenkosten<span style={{ color: C.brand }}>Radar</span></div>
+      <div style={{ fontSize: 13, color: C.textDim, textTransform: "uppercase", marginBottom: 26 }}>Analyse läuft</div>
+      <p style={{ fontSize: 15, color: C.textMuted, margin: "0 0 28px", textAlign: "center", minHeight: 20 }}>{LOADING_MSGS[idx]}</p>
       <div style={{ width: "100%", maxWidth: 260 }}>
         <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 8 }}>
-          <span style={{ fontSize: 10, color: C.textDim, textTransform: "uppercase" }}>Prüffortschritt</span>
-          <span style={{ fontSize: 11, color: C.accent, fontWeight: 600 }}>{Math.round(pct(idx + 1, LOADING_MSGS.length))}%</span>
+          <span style={{ fontSize: 12, color: C.textDim, textTransform: "uppercase" }}>Prüffortschritt</span>
+          <span style={{ fontSize: 13, color: C.brandStrong, fontWeight: 600 }}>{Math.round(pct(idx + 1, LOADING_MSGS.length))}%</span>
         </div>
         <div style={{ height: 5, background: C.border, borderRadius: 3, overflow: "hidden" }}>
           <div style={{ height: "100%", background: C.accent, width: pct(idx + 1, LOADING_MSGS.length) + "%", transition: "width 0.9s ease", borderRadius: 3 }} />
