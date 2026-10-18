@@ -97,6 +97,18 @@ export const BUSINESS = {
   // Bei einer Preisänderung: neuen Stripe-Rabattbetrag passend zur Differenz
   // zwischen altem und neuem Preis einstellen.
   MARKETING_RABATT_CODE: "DANKE10",
+
+  // Ziel der Bewertungsbitte (18.10.2026, scripts/bewertung-versand.mjs).
+  // Leer lassen = es wird keine Bewertungsbitte verschickt.
+  // Google-Bewertungslink aus dem Google-Unternehmensprofil ("Rezensionen
+  // anfordern" → Link kopieren), von Stefan am 18.10.2026 vorgegeben.
+  // Google-Regeln: alle Kunden gleich fragen, keine Gegenleistung.
+  // Alternative ohne Profil-ID: https://de.trustpilot.com/evaluate/nebenkostenradar.com
+  BEWERTUNG_URL: "https://g.page/r/CZo7LP2oLNUMEBM/review",
+  // Ab wie vielen Tagen nach dem Kauf, und bis wie viele Tage danach
+  // höchstens (ältere Käufe bekommen keine Bitte mehr).
+  BEWERTUNG_NACH_TAGEN: 5,
+  BEWERTUNG_BIS_TAGE: 30,
 };
 // IS_DEMO: true, solange mindestens ein Stripe-Link nicht konfiguriert ist (Platzhaltererkennung)
 export const IS_DEMO = BUSINESS.STRIPE_LINK_AUSWERTUNG.includes("HIER") || BUSINESS.STRIPE_LINK_VOLL.includes("HIER");

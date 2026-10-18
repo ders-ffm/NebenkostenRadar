@@ -11,7 +11,7 @@
 #   SUPABASE_SERVICE_ROLE_KEY
 #   RESEND_API_KEY
 # ─────────────────────────────────────────────────────────────────────────
-name: Marketing-Rabatt-Mail versenden
+name: Marketing-Rabatt-Mail und Bewertungsbitte versenden
 
 on:
   schedule:
@@ -37,3 +37,13 @@ jobs:
           SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
           RESEND_API_KEY: ${{ secrets.RESEND_API_KEY }}
         run: node scripts/marketing-rabatt-versand.mjs
+      # NEU 18.10.2026: einmalige Bewertungsbitte, nur mit eigener Einwilligung
+      # (siehe scripts/bewertung-versand.mjs). Läuft auch, wenn der Schritt
+      # davor scheitert, damit ein Fehler dort nicht beide Mails blockiert.
+      - name: Bewertungsbitten verschicken
+        if: always()
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+          RESEND_API_KEY: ${{ secrets.RESEND_API_KEY }}
+        run: node scripts/bewertung-versand.mjs

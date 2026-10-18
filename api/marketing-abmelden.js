@@ -1,6 +1,8 @@
 // ─────────────────────────────────────────────────────────────────────────
 // marketing-abmelden.js — NEU (08/2026). Pflicht-Abmeldelink für die
-// Rabatt-Mail (10 Monate nach Kauf, siehe scripts/marketing-rabatt-versand.mjs).
+// Rabatt-Mail (10 Monate nach Kauf, siehe scripts/marketing-rabatt-versand.mjs)
+// und seit 18.10.2026 für die Bewertungsbitte (scripts/bewertung-versand.mjs,
+// prüft dasselbe Feld "abgemeldet").
 //
 // Aufruf: GET /api/marketing-abmelden?s=<sessionId>  (sessionId = unsere
 // eigene, in der Mail verlinkte session_id — nicht die Stripe-Session-ID).
@@ -43,7 +45,7 @@ export default async function handler(req, res) {
     );
     const rows = await findRes.json();
     if (!findRes.ok || !rows.length) {
-      return res.status(200).send(seite("Dieser Abmeldelink wurde bereits verwendet oder ist abgelaufen. Du bekommst ohnehin keine weiteren Rabatt-Mails von uns."));
+      return res.status(200).send(seite("Dieser Abmeldelink wurde bereits verwendet oder ist abgelaufen. Du bekommst ohnehin keine weiteren Rabatt-Mails oder Bewertungsbitten von uns."));
     }
     const email = rows[0].email;
 
@@ -62,7 +64,7 @@ export default async function handler(req, res) {
       }
     );
 
-    return res.status(200).send(seite("Du wurdest erfolgreich abgemeldet. Du erhältst keine Rabatt-Mails mehr von NebenkostenRadar."));
+    return res.status(200).send(seite("Du wurdest erfolgreich abgemeldet. Du erhältst keine Rabatt-Mails und Bewertungsbitten mehr von NebenkostenRadar."));
   } catch (err) {
     console.error("marketing-abmelden Fehler:", err.message);
     return res.status(500).send(seite("Da ist etwas schiefgelaufen. Schreib uns gerne: support@nebenkostenradar.com"));

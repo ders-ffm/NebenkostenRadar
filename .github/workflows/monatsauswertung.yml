@@ -1,0 +1,36 @@
+# ─────────────────────────────────────────────────────────────────────────
+# Monatsauswertung (NEU 18.10.2026): Trichter, Käufe, Partner und anonyme
+# Befund-Statistik des Vormonats als GitHub-Issue mit Label "auswertung".
+# Siehe scripts/monatsauswertung.mjs. Läuft vor der SEO/GEO-Aufgabe am
+# 1. des Monats (09:41 Berlin), damit diese die Zahlen schon vorfindet.
+#
+# Secrets wie bei den anderen Workflows: SUPABASE_URL,
+# SUPABASE_SERVICE_ROLE_KEY. GITHUB_TOKEN stellt GitHub selbst bereit.
+# ─────────────────────────────────────────────────────────────────────────
+name: Monatsauswertung
+
+on:
+  schedule:
+    - cron: "0 5 1 * *" # monatlich am 1. um 05:00 UTC
+  workflow_dispatch: {}
+
+permissions:
+  issues: write
+
+jobs:
+  auswerten:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - name: Abhängigkeiten installieren
+        run: npm ci
+      - name: Auswertung erstellen
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_REPO: ${{ github.repository }}
+        run: node scripts/monatsauswertung.mjs

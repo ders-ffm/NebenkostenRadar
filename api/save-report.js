@@ -80,35 +80,56 @@ export default async function handler(req, res) {
 
   if (req.method !== "POST") return res.status(405).end();
 
-  const { sessionId, stufe, adressen, werte, wohnung, marketingOptIn, widerrufOk } = req.body || {};
+  const { sessionId, stufe, adressen, werte, wohnung, marketingOptIn, widerrufOk, bewertungOptIn, partner } = req.body || {};
 
   if (!sessionId || !supabaseUrl || !supabaseKey) {
     return res.status(400).json({ error: "Fehlende Parameter" });
   }
 
+  // Basisfelder (seit 08/2026) und Felder vom 18.10.2026 (Partnercode,
+  // Bewertungs-Einwilligung). Die neuen Spalten legt
+  // supabase/2026-10-18-wachstum.sql an. Fehlen sie noch, lehnt Supabase die
+  // ganze Zeile ab (PGRST204 "column not found"). Damit dann nicht der Kauf
+  // scheitert, wird in diesem Fall ohne die neuen Felder erneut gespeichert.
+  const basis = {
+    session_id: sessionId,
+    stufe,
+    adressen,
+    werte,
+    wohnung,
+    marketing_opt_in: !!marketingOptIn,
+    // Nachweis der Zustimmung zum vorzeitigen Erlöschen des Widerrufsrechts
+    // (§ 356 Abs. 5 BGB) — Zeitstempel ist server-seitig (created_at unten),
+    // nicht vom Client übernommen, damit er im Streitfall belastbar ist.
+    widerruf_ok: !!widerrufOk,
+    created_at: new Date().toISOString(),
+  };
+  const partnerCode = typeof partner === "string" && /^[a-z0-9-]{2,30}$/.test(partner) ? partner : null;
+  const neu = { partner: partnerCode, bewertung_opt_in: !!bewertungOptIn };
+
+  const speichern = (zeile) => fetch(supabaseUrl + "/rest/v1/nkr_reports", {
+    method: "POST",
+    headers: {
+      apikey: supabaseKey,
+      Authorization: "Bearer " + supabaseKey,
+      "Content-Type": "application/json",
+      Prefer: "resolution=merge-duplicates",
+    },
+    body: JSON.stringify(zeile),
+  });
+
   try {
-    const supabaseRes = await fetch(supabaseUrl + "/rest/v1/nkr_reports", {
-      method: "POST",
-      headers: {
-        apikey: supabaseKey,
-        Authorization: "Bearer " + supabaseKey,
-        "Content-Type": "application/json",
-        Prefer: "resolution=merge-duplicates",
-      },
-      body: JSON.stringify({
-        session_id: sessionId,
-        stufe,
-        adressen,
-        werte,
-        wohnung,
-        marketing_opt_in: !!marketingOptIn,
-        // Nachweis der Zustimmung zum vorzeitigen Erlöschen des Widerrufsrechts
-        // (§ 356 Abs. 5 BGB) — Zeitstempel ist server-seitig (created_at unten),
-        // nicht vom Client übernommen, damit er im Streitfall belastbar ist.
-        widerruf_ok: !!widerrufOk,
-        created_at: new Date().toISOString(),
-      }),
-    });
+    let supabaseRes = await speichern({ ...basis, ...neu });
+    if (!supabaseRes.ok) {
+      const text = await supabaseRes.text();
+      if (/PGRST204|column/i.test(text)) {
+        console.warn("Neue Spalten fehlen noch (supabase/2026-10-18-wachstum.sql ausführen) — speichere ohne:", text);
+        supabaseRes = await speichern(basis);
+      } else {
+        console.error("Supabase Fehler:", text);
+        return res.status(500).json({ error: "Speichern fehlgeschlagen" });
+      }
+    }
     if (!supabaseRes.ok) {
       const err = await supabaseRes.text();
       console.error("Supabase Fehler:", err);
