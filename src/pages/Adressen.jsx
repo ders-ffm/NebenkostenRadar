@@ -36,8 +36,9 @@ import Field from "../components/ui/Field.jsx";
 import Btn from "../components/ui/Btn.jsx";
 import StepBar from "../components/ui/StepBar.jsx";
 import { BUSINESS } from "../config/business.js";
+import { zaehle, aktuellerPartner } from "../lib/messung.js";
 
-export default function Adressen({ navigateTo, adressen, setAdressen, stufe, werte, wohnung, marketingOptIn, setMarketingOptIn, widerrufOk }) {
+export default function Adressen({ navigateTo, adressen, setAdressen, stufe, werte, wohnung, marketingOptIn, setMarketingOptIn, bewertungOptIn, setBewertungOptIn, widerrufOk }) {
   const C = THEME.color;
   const [errors, setErrors] = useState({});
   const [laeuft, setLaeuft] = useState(false);
@@ -90,7 +91,7 @@ export default function Adressen({ navigateTo, adressen, setAdressen, stufe, wer
           )}
         </div>
 
-        <label style={{ display: "flex", alignItems: "flex-start", gap: 10, marginBottom: 18, cursor: "pointer" }}>
+        <label style={{ display: "flex", alignItems: "flex-start", gap: 10, marginBottom: 10, cursor: "pointer" }}>
           <input
             type="checkbox"
             checked={!!marketingOptIn}
@@ -103,9 +104,26 @@ export default function Adressen({ navigateTo, adressen, setAdressen, stufe, wer
           </span>
         </label>
 
+        {/* Bewertungsbitte (18.10.2026): eigene Einwilligung, nicht
+            vorausgewählt. Die Rabatt-Einwilligung oben deckt diesen Zweck
+            nicht ab, und Bewertungsbitten per E-Mail gelten als Werbung
+            (BGH, 10.07.2018, VI ZR 225/17). Versand: scripts/bewertung-versand.mjs. */}
+        <label style={{ display: "flex", alignItems: "flex-start", gap: 10, marginBottom: 18, cursor: "pointer" }}>
+          <input
+            type="checkbox"
+            checked={!!bewertungOptIn}
+            onChange={e => setBewertungOptIn(e.target.checked)}
+            style={{ marginTop: 3, width: 16, height: 16, accentColor: C.brand, flexShrink: 0 }}
+          />
+          <span style={{ fontSize: 12.5, color: C.textMuted, lineHeight: 1.6 }}>
+            Ja, ihr dürft mich einige Tage nach dem Kauf einmalig per E-Mail fragen, ob ich NebenkostenRadar bewerten möchte. Freiwillig, jederzeit widerrufbar.
+          </span>
+        </label>
+
         <Btn disabled={laeuft} onClick={async () => {
           if (!validate()) return;
           setLaeuft(true);
+          zaehle("kauf_klick"); // anonym, siehe src/lib/messung.js
           const sessionId = crypto.randomUUID();
           // Ergebnisdaten vor dem Stripe-Redirect speichern, damit Download.jsx
           // nach der Zahlung das PDF erzeugen kann. Die Adressfelder sind an
@@ -115,7 +133,7 @@ export default function Adressen({ navigateTo, adressen, setAdressen, stufe, wer
             await fetch("/api/save-report", {
               method: "POST",
               headers: { "Content-Type": "application/json" },
-              body: JSON.stringify({ sessionId, stufe, adressen, werte, wohnung, marketingOptIn: !!marketingOptIn, widerrufOk: !!widerrufOk }),
+              body: JSON.stringify({ sessionId, stufe, adressen, werte, wohnung, marketingOptIn: !!marketingOptIn, bewertungOptIn: !!bewertungOptIn, partner: aktuellerPartner(), widerrufOk: !!widerrufOk }),
             });
           } catch (e) {
             console.error("Zwischenspeichern fehlgeschlagen:", e);
