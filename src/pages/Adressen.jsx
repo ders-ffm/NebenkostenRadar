@@ -43,7 +43,10 @@ export default function Adressen({ navigateTo, adressen, setAdressen, stufe, wer
   const [errors, setErrors] = useState({});
   const [laeuft, setLaeuft] = useState(false);
   const setA = (k, v) => setAdressen(p => ({ ...p, [k]: v }));
-  const preis = stufe === "voll" ? BUSINESS.PREIS_VOLL : BUSINESS.PREIS_AUSWERTUNG;
+  // Seit 18.10.2026 gibt es nur noch "Auswertung + Brief" (Stefans
+  // Entscheidung). Auch ein älterer, im Browser wiederhergestellter Stand mit
+  // stufe "auswertung" landet deshalb immer beim Paket mit Brief.
+  const preis = BUSINESS.PREIS_VOLL;
 
   function validate() {
     const e = {};
@@ -60,14 +63,14 @@ export default function Adressen({ navigateTo, adressen, setAdressen, stufe, wer
     <div style={{ fontFamily: THEME.font.body, background: C.bg, color: C.text, minHeight: "100vh" }}>
       <div style={{ background: C.surface, borderBottom: "1px solid " + C.border }}>
         <div style={{ padding: "20px 20px 0", maxWidth: THEME.layout.formMax, margin: "0 auto", boxSizing: "border-box" }}>
-          <button onClick={() => navigateTo("result")} style={{ background: "none", border: "none", color: C.textMuted, cursor: "pointer", fontSize: 13, padding: "0 0 12px", fontFamily: THEME.font.body }}>← Zurück</button>
+          <button onClick={() => navigateTo("result")} style={{ background: "none", border: "none", color: C.textMuted, cursor: "pointer", fontSize: 15, padding: "0 0 12px", fontFamily: THEME.font.body }}>← Zurück</button>
           <StepBar current={3} total={3} label="Zahlung" />
         </div>
       </div>
 
       <div style={{ padding: "22px 20px 40px", maxWidth: THEME.layout.formMax, margin: "0 auto", boxSizing: "border-box" }}>
-        <h2 style={{ fontFamily: THEME.font.heading, fontSize: 21, fontWeight: 600, margin: "0 0 6px", textAlign: "center" }}>Wohin sollen wir dein PDF schicken?</h2>
-        <p style={{ fontSize: 13, color: C.textMuted, margin: "0 0 22px", textAlign: "center" }}>
+        <h2 style={{ fontFamily: THEME.font.heading, fontSize: 23, fontWeight: 600, margin: "0 0 6px", textAlign: "center" }}>Wohin sollen wir dein PDF schicken?</h2>
+        <p style={{ fontSize: 15, color: C.textMuted, margin: "0 0 22px", textAlign: "center" }}>
           Nur die E-Mail-Adresse. Deine Anschrift für den Bericht fragen wir direkt nach der Zahlung ab: das dauert keine Minute.
         </p>
 
@@ -85,7 +88,7 @@ export default function Adressen({ navigateTo, adressen, setAdressen, stufe, wer
           {/* Ersetzt das frühere Wiederholungsfeld: sichtbare Rückmeldung statt
               zweitem Tippen. Erscheint erst, wenn die Adresse formal gültig ist. */}
           {mailOk && !errors.email && (
-            <div style={{ fontSize: 12.5, color: C.textMuted, marginTop: -4, lineHeight: 1.6 }}>
+            <div style={{ fontSize: 14.5, color: C.textMuted, marginTop: -4, lineHeight: 1.6 }}>
               Wir schicken es an: <strong style={{ color: C.text }}>{adressen.email.trim()}</strong>, bitte kurz prüfen.
             </div>
           )}
@@ -98,7 +101,7 @@ export default function Adressen({ navigateTo, adressen, setAdressen, stufe, wer
             onChange={e => setMarketingOptIn(e.target.checked)}
             style={{ marginTop: 3, width: 16, height: 16, accentColor: C.brand, flexShrink: 0 }}
           />
-          <span style={{ fontSize: 12.5, color: C.textMuted, lineHeight: 1.6 }}>
+          <span style={{ fontSize: 14.5, color: C.textMuted, lineHeight: 1.6 }}>
             Ja, ich möchte gelegentlich einen Rabattcode für die nächste Prüfung per E-Mail erhalten. Freiwillig, jederzeit mit einem Klick in der Mail widerrufbar. Details in der{" "}
             <a href="/datenschutz" onClick={e => { e.preventDefault(); navigateTo("datenschutz"); }} style={{ color: C.brand }}>Datenschutzerklärung</a>.
           </span>
@@ -115,7 +118,7 @@ export default function Adressen({ navigateTo, adressen, setAdressen, stufe, wer
             onChange={e => setBewertungOptIn(e.target.checked)}
             style={{ marginTop: 3, width: 16, height: 16, accentColor: C.brand, flexShrink: 0 }}
           />
-          <span style={{ fontSize: 12.5, color: C.textMuted, lineHeight: 1.6 }}>
+          <span style={{ fontSize: 14.5, color: C.textMuted, lineHeight: 1.6 }}>
             Ja, ihr dürft mich einige Tage nach dem Kauf einmalig per E-Mail fragen, ob ich NebenkostenRadar bewerten möchte. Freiwillig, jederzeit widerrufbar.
           </span>
         </label>
@@ -133,18 +136,18 @@ export default function Adressen({ navigateTo, adressen, setAdressen, stufe, wer
             await fetch("/api/save-report", {
               method: "POST",
               headers: { "Content-Type": "application/json" },
-              body: JSON.stringify({ sessionId, stufe, adressen, werte, wohnung, marketingOptIn: !!marketingOptIn, bewertungOptIn: !!bewertungOptIn, partner: aktuellerPartner(), widerrufOk: !!widerrufOk }),
+              body: JSON.stringify({ sessionId, stufe: "voll", adressen, werte, wohnung, marketingOptIn: !!marketingOptIn, bewertungOptIn: !!bewertungOptIn, partner: aktuellerPartner(), widerrufOk: !!widerrufOk }),
             });
           } catch (e) {
             console.error("Zwischenspeichern fehlgeschlagen:", e);
           }
-          const link = stufe === "voll" ? BUSINESS.STRIPE_LINK_VOLL : BUSINESS.STRIPE_LINK_AUSWERTUNG;
+          const link = BUSINESS.STRIPE_LINK_VOLL;
           window.location.href = link + "?client_reference_id=" + sessionId;
         }}>
           {laeuft ? "Einen Moment …" : "Jetzt kaufen · " + preis.toFixed(2).replace(".", ",") + " € →"}
         </Btn>
 
-        <p style={{ fontSize: 11.5, color: C.textDim, textAlign: "center", marginTop: 12, lineHeight: 1.6 }}>
+        <p style={{ fontSize: 13.5, color: C.textDim, textAlign: "center", marginTop: 12, lineHeight: 1.6 }}>
           Zahlung über Stripe · Einmalig, kein Abo · Speicherdauer der Daten maximal 12 Monate, siehe{" "}
           <a href="/datenschutz" onClick={e => { e.preventDefault(); navigateTo("datenschutz"); }} style={{ color: C.brand }}>Datenschutzerklärung</a>.
         </p>

@@ -44,38 +44,38 @@ export default function Impressum({ navigateTo }) {
   return (
     <div style={{ fontFamily: THEME.font.body, background: C.bg, color: C.text, minHeight: "100vh" }}>
       <div style={{ background: C.surface, padding: "20px 20px 16px", borderBottom: "1px solid " + C.border }}>
-        <button onClick={() => navigateTo("welcome")} style={{ background: "none", border: "none", color: C.textMuted, cursor: "pointer", fontSize: 13, padding: "0 0 10px", fontFamily: THEME.font.body }}>← Zurück</button>
-        <h2 style={{ margin: 0, fontSize: 19, fontWeight: 600, fontFamily: THEME.font.heading }}>Impressum</h2>
+        <button onClick={() => navigateTo("welcome")} style={{ background: "none", border: "none", color: C.textMuted, cursor: "pointer", fontSize: 15, padding: "0 0 10px", fontFamily: THEME.font.body }}>← Zurück</button>
+        <h2 style={{ margin: 0, fontSize: 21, fontWeight: 600, fontFamily: THEME.font.heading }}>Impressum</h2>
       </div>
       <div style={{ padding: "24px 20px 60px", maxWidth: 720, margin: "0 auto" }}>
         {ABSCHNITTE.map((s, i) => (
           <div key={i} style={{ marginBottom: 24 }}>
-            <div style={{ fontSize: 13, fontWeight: 700, color: C.accent, marginBottom: 8, textTransform: "uppercase", letterSpacing: "0.06em" }}>{s.t}</div>
+            <div style={{ fontSize: 15, fontWeight: 700, color: C.brandStrong, marginBottom: 8, textTransform: "uppercase", letterSpacing: "0.06em" }}>{s.t}</div>
             {s.brand && <BrandAnschrift />}
-            {s.lines.map((line, j) => <div key={j} style={{ fontSize: 13, color: C.textMuted, lineHeight: 1.8 }}>{line}</div>)}
+            {s.lines.map((line, j) => <div key={j} style={{ fontSize: 15, color: C.textMuted, lineHeight: 1.8 }}>{line}</div>)}
           </div>
         ))}
 
         <div style={{ marginTop: 8, background: C.surface, border: "1px solid " + C.border, borderRadius: THEME.radius.lg, padding: "20px" }}>
-          <div style={{ fontSize: 13, fontWeight: 700, color: C.accent, marginBottom: 4, textTransform: "uppercase", letterSpacing: "0.06em" }}>Kontaktformular</div>
-          <p style={{ fontSize: 12, color: C.textMuted, margin: "0 0 16px", lineHeight: 1.6 }}>Schreib uns direkt, wir antworten in der Regel innerhalb weniger Werktage.</p>
+          <div style={{ fontSize: 15, fontWeight: 700, color: C.brandStrong, marginBottom: 4, textTransform: "uppercase", letterSpacing: "0.06em" }}>Kontaktformular</div>
+          <p style={{ fontSize: 14, color: C.textMuted, margin: "0 0 16px", lineHeight: 1.6 }}>Schreib uns direkt, wir antworten in der Regel innerhalb weniger Werktage.</p>
           {sent ? (
             <div style={{ background: C.brandBg, borderRadius: 8, padding: "14px 16px" }}>
-              <div style={{ fontSize: 13, color: C.brand, fontWeight: 700 }}>✓ Nachricht wurde gesendet</div>
-              <div style={{ fontSize: 12, color: C.textMuted, marginTop: 4 }}>Danke für deine Nachricht. Wir melden uns so bald wie möglich.</div>
+              <div style={{ fontSize: 15, color: C.brand, fontWeight: 700 }}>✓ Nachricht wurde gesendet</div>
+              <div style={{ fontSize: 14, color: C.textMuted, marginTop: 4 }}>Danke für deine Nachricht. Wir melden uns so bald wie möglich.</div>
             </div>
           ) : (
             <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
               <Field label="Name (optional)" value={name} onChange={setName} placeholder="Dein Name" />
               <Field label="E-Mail-Adresse" value={email} onChange={v => { setEmail(v); setError(""); }} type="email" placeholder="deine@email.de" required />
               <div>
-                <label style={{ fontSize: 12, color: C.textMuted, display: "block", marginBottom: 5 }}>Nachricht<span style={{ color: C.accent, marginLeft: 3 }}>*</span></label>
+                <label style={{ fontSize: 14, color: C.textMuted, display: "block", marginBottom: 5 }}>Nachricht<span style={{ color: C.critical, marginLeft: 3 }}>*</span></label>
                 <textarea value={message} onChange={e => { setMessage(e.target.value); setError(""); }} rows={5} placeholder="Deine Nachricht an uns"
-                  style={{ width: "100%", boxSizing: "border-box", background: C.surface, border: "1.5px solid " + C.border, borderRadius: THEME.radius.md, padding: "12px 14px", fontSize: 14, fontFamily: THEME.font.body, color: C.text, outline: "none", resize: "vertical" }} />
+                  style={{ width: "100%", boxSizing: "border-box", background: C.surface, border: "1.5px solid " + C.border, borderRadius: THEME.radius.md, padding: "12px 14px", fontSize: 16, fontFamily: THEME.font.body, color: C.text, outline: "none", resize: "vertical" }} />
               </div>
-              {error && <div style={{ fontSize: 12, color: "#c0392b" }}>⚠ {error}</div>}
+              {error && <div style={{ fontSize: 14, color: "#B03A2E" }}>⚠ {error}</div>}
               <button onClick={senden} disabled={sending}
-                style={{ background: sending ? C.border : C.accent, color: sending ? C.textDim : C.accentText, border: "none", borderRadius: THEME.radius.md, padding: "13px 16px", fontSize: 14, fontFamily: THEME.font.heading, fontWeight: 600, cursor: sending ? "not-allowed" : "pointer" }}>
+                style={{ background: sending ? C.border : C.accent, color: sending ? C.textDim : C.accentText, border: "none", borderRadius: THEME.radius.md, padding: "13px 16px", fontSize: 16, fontFamily: THEME.font.heading, fontWeight: 600, cursor: sending ? "not-allowed" : "pointer" }}>
                 {sending ? "Wird gesendet…" : "Nachricht senden"}
               </button>
             </div>

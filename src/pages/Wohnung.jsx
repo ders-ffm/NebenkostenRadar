@@ -11,6 +11,7 @@
 // ─────────────────────────────────────────────────────────────────────────
 import { useState, useRef, useEffect } from "react";
 import { THEME } from "../config/theme.js";
+import Icon from "../components/ui/Icon.jsx";
 import { BUSINESS } from "../config/business.js";
 import { toNum, fmt } from "../lib/format.js";
 import Field from "../components/ui/Field.jsx";
@@ -333,16 +334,16 @@ export default function Wohnung({ navigateTo, wohnung, setWohnung, werte, setWer
     <div style={{ fontFamily: THEME.font.body, background: C.bg, color: C.text, minHeight: "100vh" }}>
       <div style={{ background: C.surface, borderBottom: "1px solid " + C.border }}>
         <div style={{ padding: "20px 20px 0", maxWidth: THEME.layout.formMax, margin: "0 auto", boxSizing: "border-box" }}>
-          <button onClick={() => navigateTo("welcome")} style={{ background: "none", border: "none", color: C.textMuted, cursor: "pointer", fontSize: 13, padding: "0 0 12px", fontFamily: THEME.font.body }}>← Zurück</button>
+          <button onClick={() => navigateTo("welcome")} style={{ background: "none", border: "none", color: C.textMuted, cursor: "pointer", fontSize: 15, padding: "0 0 12px", fontFamily: THEME.font.body }}>← Zurück</button>
           <StepBar current={1} total={3} label="Wohnungsdaten" />
         </div>
       </div>
       <div style={{ padding: "22px 20px 40px", maxWidth: THEME.layout.formMax, margin: "0 auto", boxSizing: "border-box" }}>
-        <h2 style={{ fontFamily: THEME.font.heading, fontSize: 21, fontWeight: 600, margin: "0 0 6px", textAlign: "center" }}>Angaben zur Mietsache</h2>
-        <p style={{ fontSize: 13, color: C.textMuted, margin: "0 0 16px", lineHeight: 1.55, textAlign: "center" }}>Steht auf dem Deckblatt deiner Abrechnung.</p>
+        <h2 style={{ fontFamily: THEME.font.heading, fontSize: 23, fontWeight: 600, margin: "0 0 6px", textAlign: "center" }}>Angaben zur Mietsache</h2>
+        <p style={{ fontSize: 15, color: C.textMuted, margin: "0 0 16px", lineHeight: 1.55, textAlign: "center" }}>Steht auf dem Deckblatt deiner Abrechnung.</p>
 
         {entwurfLadeFehler && (
-          <div style={{ background: C.warnBg, borderLeft: "3px solid " + C.warn, borderRadius: THEME.radius.md, padding: "10px 14px", marginBottom: 16, fontSize: 12, color: C.warn }}>
+          <div style={{ background: C.warnBg, borderLeft: "3px solid " + C.warn, borderRadius: THEME.radius.md, padding: "10px 14px", marginBottom: 16, fontSize: 14, color: C.warn }}>
             {entwurfLadeFehler}
           </div>
         )}
@@ -361,10 +362,10 @@ export default function Wohnung({ navigateTo, wohnung, setWohnung, werte, setWer
             weiterbearbeitet oder eine neue prüft. */}
         {entwurf && (
           <div style={{ background: C.brandBg, border: "1px solid " + C.border, borderRadius: THEME.radius.md, padding: "14px 16px", marginBottom: 20 }}>
-            <div style={{ color: C.text, fontWeight: 600, marginBottom: 4, fontSize: 14, fontFamily: THEME.font.heading }}>
+            <div style={{ color: C.text, fontWeight: 600, marginBottom: 4, fontSize: 16, fontFamily: THEME.font.heading }}>
               Du hast hier schon einmal angefangen
             </div>
-            <div style={{ fontSize: 13, color: C.textMuted, lineHeight: 1.6, marginBottom: 12 }}>
+            <div style={{ fontSize: 15, color: C.textMuted, lineHeight: 1.6, marginBottom: 12 }}>
               Auf diesem Gerät ist eine begonnene Prüfung gespeichert
               {entwurf.savedAt ? " vom " + new Date(entwurf.savedAt).toLocaleDateString("de-DE", { day: "numeric", month: "long", year: "numeric" }) : ""}
               {entwurf.wohnung?.jahr ? ", Abrechnungsjahr " + entwurf.wohnung.jahr : ""}.
@@ -372,18 +373,18 @@ export default function Wohnung({ navigateTo, wohnung, setWohnung, werte, setWer
             </div>
             <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
               <button type="button" onClick={entwurfUebernehmen}
-                style={{ flex: "1 1 160px", background: C.accent, color: C.accentText, border: "none", borderRadius: THEME.radius.md, padding: "11px 16px", fontSize: 14, fontFamily: THEME.font.heading, fontWeight: 600, cursor: "pointer" }}>
+                style={{ flex: "1 1 160px", background: C.accent, color: C.accentText, border: "none", borderRadius: THEME.radius.md, padding: "11px 16px", fontSize: 16, fontFamily: THEME.font.heading, fontWeight: 600, cursor: "pointer" }}>
                 Dort weitermachen
               </button>
               <button type="button" onClick={entwurfVerwerfen}
-                style={{ flex: "1 1 160px", background: "transparent", color: C.textMuted, border: "1px solid " + C.border, borderRadius: THEME.radius.md, padding: "11px 16px", fontSize: 14, fontFamily: THEME.font.body, cursor: "pointer" }}>
+                style={{ flex: "1 1 160px", background: "transparent", color: C.textMuted, border: "1px solid " + C.border, borderRadius: THEME.radius.md, padding: "11px 16px", fontSize: 16, fontFamily: THEME.font.body, cursor: "pointer" }}>
                 Neue Abrechnung prüfen
               </button>
             </div>
           </div>
         )}
-        <div style={{ background: C.brandBg, borderRadius: THEME.radius.md, padding: "13px 14px", marginBottom: 20, fontSize: 12, color: C.textMuted, lineHeight: 1.75 }}>
-          <div style={{ color: C.text, fontWeight: 600, marginBottom: 5, fontSize: 13, fontFamily: THEME.font.heading }}>Wie funktioniert eine Nebenkostenabrechnung?</div>
+        <div style={{ background: C.brandBg, borderRadius: THEME.radius.md, padding: "13px 14px", marginBottom: 20, fontSize: 14, color: C.textMuted, lineHeight: 1.75 }}>
+          <div style={{ color: C.text, fontWeight: 600, marginBottom: 5, fontSize: 15, fontFamily: THEME.font.heading }}>Wie funktioniert eine Nebenkostenabrechnung?</div>
           Du zahlst monatlich Abschläge für Heizung, Wasser, Müll u. a. Einmal im Jahr rechnet dein Vermieter ab, was tatsächlich angefallen ist. Im nächsten Schritt siehst du jeden Posten zur Prüfung: per Foto- oder PDF-Upload automatisch befüllt oder komplett manuell, genau so wie er auf der Abrechnung steht.
         </div>
 
@@ -403,13 +404,13 @@ export default function Wohnung({ navigateTo, wohnung, setWohnung, werte, setWer
               cursor: "pointer", textAlign: "left", fontFamily: THEME.font.body,
             }}
           >
-            <div style={{ fontSize: 26, lineHeight: 1, flexShrink: 0 }}>📱</div>
+            <div style={{ width: 44, height: 44, borderRadius: 12, background: C.brandBg, color: C.brandStrong, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}><Icon name="file-up" size={22} /></div>
             <div style={{ flex: 1, minWidth: 0 }}>
-              <div style={{ display: "inline-block", background: C.brandBg, color: C.brand, fontSize: 10, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.04em", borderRadius: 4, padding: "2px 8px", marginBottom: 4 }}>Empfohlen, spart Abtippen</div>
-              <div style={{ fontSize: 15, fontWeight: 700, color: C.text, fontFamily: THEME.font.heading }}>Foto oder PDF hochladen</div>
-              <div style={{ fontSize: 12, color: C.textMuted, marginTop: 2 }}>Wir lesen die Beträge automatisch aus, du prüfst nur noch und bestätigst.</div>
+              <div style={{ display: "inline-flex", alignItems: "center", gap: 6, background: C.brandBg, color: C.brandStrong, fontSize: 13, fontWeight: 600, borderRadius: 999, padding: "3px 10px", marginBottom: 6 }}><Icon name="sparkles" size={14} />Empfohlen, spart Abtippen</div>
+              <div style={{ fontSize: 17, fontWeight: 700, color: C.text, fontFamily: THEME.font.heading }}>Foto oder PDF hochladen</div>
+              <div style={{ fontSize: 14, color: C.textMuted, marginTop: 2 }}>Wir lesen die Beträge automatisch aus, du prüfst nur noch und bestätigst.</div>
             </div>
-            <div style={{ fontSize: 16, color: C.textDim, flexShrink: 0, transform: aufgeklappt ? "rotate(180deg)" : "none", transition: "transform 0.15s" }}>⌄</div>
+            <div style={{ color: C.textDim, flexShrink: 0, display: "inline-flex", transform: aufgeklappt ? "rotate(180deg)" : "none", transition: "transform 0.15s" }}><Icon name="chevron-down" size={22} /></div>
           </button>
 
           {aufgeklappt && (
@@ -422,15 +423,15 @@ export default function Wohnung({ navigateTo, wohnung, setWohnung, werte, setWer
               einer Zeile mit Doppelpunkt, auf Wunsch, die Fettung allein reicht
               als Kennzeichnung des Labels. */}
           <div style={{ background: C.bg, borderRadius: THEME.radius.md, padding: "10px 12px", marginBottom: 10 }}>
-            <div style={{ display: "grid", gridTemplateColumns: "20px 1fr", columnGap: 8, rowGap: 10, fontSize: 12, color: C.text, lineHeight: 1.55 }}>
-              <span>📱</span>
+            <div style={{ display: "grid", gridTemplateColumns: "22px 1fr", columnGap: 10, rowGap: 12, fontSize: 15, color: C.text, lineHeight: 1.55 }}>
+              <span style={{ color: C.brandStrong, display: "inline-flex", marginTop: 1 }}><Icon name="smartphone" size={20} /></span>
               <div>
-                <div style={{ fontWeight: 700 }}>Smartphone</div>
+                <div style={{ fontWeight: 600 }}>Smartphone</div>
                 <div>Foto aufnehmen oder aus der Fotomediathek wählen.</div>
               </div>
-              <span>💻</span>
+              <span style={{ color: C.brandStrong, display: "inline-flex", marginTop: 1 }}><Icon name="laptop" size={20} /></span>
               <div>
-                <div style={{ fontWeight: 700 }}>PC/Mac</div>
+                <div style={{ fontWeight: 600 }}>PC/Mac</div>
                 <div>Aus der Mediathek wählen oder als PDF hochladen.</div>
               </div>
             </div>
@@ -442,7 +443,7 @@ export default function Wohnung({ navigateTo, wohnung, setWohnung, werte, setWer
               Smartphone/PC-Block oben) statt Bullet+Text im Fließtext, sonst
               rutscht eine umgebrochene zweite Zeile unter das Bullet-Zeichen
               statt unter den Textanfang. */}
-          <div style={{ display: "grid", gridTemplateColumns: "10px 1fr", columnGap: 6, rowGap: 4, fontSize: 11, color: C.textDim, marginBottom: 10, lineHeight: 1.6 }}>
+          <div style={{ display: "grid", gridTemplateColumns: "10px 1fr", columnGap: 6, rowGap: 4, fontSize: 13, color: C.textDim, marginBottom: 10, lineHeight: 1.6 }}>
             <span>•</span><span>Bis zu {MAX_DATEIEN} Seiten hochladen, die Kostenaufstellung reicht aus.</span>
             <span>•</span><span>Alle Uploads werden ausschließlich zur Analyse genutzt und nicht gespeichert.</span>
           </div>
@@ -453,8 +454,8 @@ export default function Wohnung({ navigateTo, wohnung, setWohnung, werte, setWer
                 <div key={f.id} style={{ position: "relative", width: 60, height: 60, borderRadius: THEME.radius.sm, overflow: "hidden", border: "1px solid " + C.border, flexShrink: 0, background: C.brandBg }}>
                   {f.typ === "pdf" ? (
                     <div style={{ width: "100%", height: "100%", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center" }}>
-                      <div style={{ fontSize: 20 }}>📄</div>
-                      <div style={{ fontSize: 9, fontWeight: 700, color: C.brand }}>PDF</div>
+                      <div style={{ color: C.brandStrong, display: "inline-flex" }}><Icon name="file-text" size={22} /></div>
+                      <div style={{ fontSize: 12, fontWeight: 700, color: C.brand }}>PDF</div>
                     </div>
                   ) : (
                     <img src={f.previewUrl} alt={"Datei " + (i + 1)} style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }} />
@@ -462,7 +463,7 @@ export default function Wohnung({ navigateTo, wohnung, setWohnung, werte, setWer
                   <div title={f.status === "bereit" ? "Bereit" : f.status === "fehler" ? f.fehlerText : "Wird geprüft …"} style={{
                     position: "absolute", top: 3, left: 3, width: 16, height: 16, borderRadius: "50%",
                     background: f.status === "bereit" ? C.brand : f.status === "fehler" ? C.warn : C.textDim,
-                    color: "#fff", fontSize: 10, fontWeight: 700, display: "flex", alignItems: "center", justifyContent: "center", lineHeight: 1,
+                    color: "#fff", fontSize: 12, fontWeight: 700, display: "flex", alignItems: "center", justifyContent: "center", lineHeight: 1,
                   }}>
                     {f.status === "bereit" ? "✓" : f.status === "fehler" ? "!" : "…"}
                   </div>
@@ -471,7 +472,7 @@ export default function Wohnung({ navigateTo, wohnung, setWohnung, werte, setWer
                     aria-label={"Datei " + (i + 1) + " entfernen"}
                     style={{
                       position: "absolute", top: 3, right: 3, width: 18, height: 18, borderRadius: "50%",
-                      background: "rgba(0,0,0,0.6)", color: "#fff", border: "none", fontSize: 12, lineHeight: "17px",
+                      background: "rgba(0,0,0,0.6)", color: "#fff", border: "none", fontSize: 14, lineHeight: "17px",
                       cursor: "pointer", padding: 0, fontFamily: "system-ui, sans-serif",
                     }}
                   >×</button>
@@ -481,8 +482,8 @@ export default function Wohnung({ navigateTo, wohnung, setWohnung, werte, setWer
           )}
 
           {dateien.some(f => f.status === "fehler") && (
-            <div style={{ marginBottom: 10, fontSize: 12, color: C.warn, lineHeight: 1.7 }}>
-              {dateien.map((f, i) => f.status === "fehler" ? <div key={f.id}>⚠ Datei {i + 1}: {f.fehlerText}</div> : null)}
+            <div style={{ marginBottom: 10, fontSize: 14, color: C.warn, lineHeight: 1.7 }}>
+              {dateien.map((f, i) => f.status === "fehler" ? <div key={f.id} style={{ display: "flex", gap: 6, alignItems: "flex-start" }}><Icon name="circle-alert" size={16} style={{ marginTop: 4 }} /><span>Datei {i + 1}: {f.fehlerText}</span></div> : null)}
             </div>
           )}
 
@@ -507,7 +508,7 @@ export default function Wohnung({ navigateTo, wohnung, setWohnung, werte, setWer
                 color: C.accentText,
                 fontFamily: THEME.font.heading,
                 fontWeight: 600,
-                fontSize: 14,
+                fontSize: 16,
                 padding: "14px 20px",
                 borderRadius: THEME.radius.md,
                 cursor: "pointer",
@@ -516,7 +517,7 @@ export default function Wohnung({ navigateTo, wohnung, setWohnung, werte, setWer
                 WebkitTapHighlightColor: "transparent",
               }}
             >
-              📎 {dateien.length === 0 ? "Foto oder PDF hinzufügen" : "Weitere Datei hinzufügen"}
+              <Icon name="paperclip" size={20} /> {dateien.length === 0 ? "Foto oder PDF hinzufügen" : "Weitere Datei hinzufügen"}
             </label>
           )}
           {/* Label+input-Kopplung statt Klick-Handler in JS: löst auf iOS/Android zuverlässig
@@ -534,7 +535,7 @@ export default function Wohnung({ navigateTo, wohnung, setWohnung, werte, setWer
             style={{ display: "none" }} />
 
           {fotoStatus !== "fertig" && (
-            <div style={{ fontSize: 11, color: C.textDim, marginTop: 8 }}>
+            <div style={{ fontSize: 13, color: C.textDim, marginTop: 8 }}>
               {dateien.length} von {MAX_DATEIEN} Dateien ausgewählt{dateien.length >= MAX_DATEIEN ? " · Maximum erreicht" : ""}
             </div>
           )}
@@ -546,7 +547,7 @@ export default function Wohnung({ navigateTo, wohnung, setWohnung, werte, setWer
                 marginTop: 10, width: "100%",
                 background: C.brand, color: "#fff",
                 border: "none", borderRadius: THEME.radius.md, padding: "13px",
-                fontSize: 14, fontWeight: 600, fontFamily: THEME.font.heading,
+                fontSize: 16, fontWeight: 600, fontFamily: THEME.font.heading,
                 cursor: "pointer",
               }}
             >
@@ -567,14 +568,14 @@ export default function Wohnung({ navigateTo, wohnung, setWohnung, werte, setWer
           {fotoStatus === "analysiere" && (
             <div style={{ marginTop: 10, background: C.brandBg, borderRadius: THEME.radius.md, padding: "14px 16px" }}>
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", marginBottom: 8 }}>
-                <span style={{ fontSize: 13, fontWeight: 600, color: C.text }}>Wird analysiert …</span>
-                <span style={{ fontSize: 13, fontWeight: 700, color: C.brand }}>{analysePct}%</span>
+                <span style={{ fontSize: 15, fontWeight: 600, color: C.text }}>Wird analysiert …</span>
+                <span style={{ fontSize: 15, fontWeight: 700, color: C.brand }}>{analysePct}%</span>
               </div>
               <div style={{ height: 6, background: C.border, borderRadius: 3, overflow: "hidden", marginBottom: 8 }}>
                 <div style={{ height: "100%", background: C.brand, width: analysePct + "%", transition: "width 0.9s ease", borderRadius: 3 }} />
               </div>
-              <div style={{ fontSize: 12, color: C.textMuted, minHeight: 16, textAlign: "center" }}>{analyseMeldung(analysePct)}</div>
-              <div style={{ fontSize: 11, color: C.textDim, marginTop: 8, textAlign: "center" }}>
+              <div style={{ fontSize: 14, color: C.textMuted, minHeight: 16, textAlign: "center" }}>{analyseMeldung(analysePct)}</div>
+              <div style={{ fontSize: 13, color: C.textDim, marginTop: 8, textAlign: "center" }}>
                 Das kann bis zu 2 Minuten dauern, wir prüfen jede Zeile einzeln, um Verwechslungen zu vermeiden. Bitte die Seite offen lassen.
               </div>
             </div>
@@ -582,14 +583,14 @@ export default function Wohnung({ navigateTo, wohnung, setWohnung, werte, setWer
 
           {fotoStatus === "fertig" && (
             <div style={{ marginTop: 10 }}>
-              <div style={{ fontSize: 12, color: C.brand, fontWeight: 600 }}>
+              <div style={{ fontSize: 14, color: C.brand, fontWeight: 600 }}>
                 ✓ {fotoAnzahl > 0 ? fotoAnzahl + " Posten erkannt und unten ausgefüllt." : "Wohnungsdaten übernommen, aber keine Posten sicher erkannt."} Bitte prüfen.
               </div>
               <button
                 onClick={() => setFotoStatus("idle")}
                 style={{
                   marginTop: 8, background: "none", border: "none", padding: 0,
-                  color: C.textMuted, fontSize: 12, textDecoration: "underline",
+                  color: C.textMuted, fontSize: 14, textDecoration: "underline",
                   cursor: "pointer", fontFamily: THEME.font.body,
                 }}
               >
@@ -598,15 +599,15 @@ export default function Wohnung({ navigateTo, wohnung, setWohnung, werte, setWer
             </div>
           )}
           {fotoStatus === "fehler" && (
-            <div style={{ marginTop: 10, fontSize: 12, color: C.warn }}>
+            <div style={{ marginTop: 10, fontSize: 14, color: C.warn }}>
               {analyseFehler || "Erkennung fehlgeschlagen."} Bitte Werte manuell eingeben (unten und auf der nächsten Seite) oder erneut versuchen.
             </div>
           )}
           {hinweise.length > 0 && (
             <div style={{ marginTop: 10, background: C.warnBg, borderLeft: "3px solid " + C.warn, borderRadius: THEME.radius.md, padding: "10px 12px" }}>
-              <div style={{ fontSize: 11, fontWeight: 700, color: C.warn, marginBottom: 4, textTransform: "uppercase" }}>Bitte zusätzlich prüfen</div>
+              <div style={{ fontSize: 13, fontWeight: 700, color: C.warn, marginBottom: 4, textTransform: "uppercase" }}>Bitte zusätzlich prüfen</div>
               {hinweise.map((h, i) => (
-                <div key={i} style={{ fontSize: 12, color: C.warn, lineHeight: 1.6 }}>• {h}</div>
+                <div key={i} style={{ fontSize: 14, color: C.warn, lineHeight: 1.6 }}>• {h}</div>
               ))}
             </div>
           )}
@@ -615,7 +616,7 @@ export default function Wohnung({ navigateTo, wohnung, setWohnung, werte, setWer
         </div>
         <div style={{ display: "flex", alignItems: "center", gap: 10, margin: "0 0 16px" }}>
           <div style={{ flex: 1, height: 1, background: C.border }} />
-          <div style={{ fontSize: 11, color: C.textDim, textTransform: "uppercase" }}>oder ohne Foto: manuell eingeben</div>
+          <div style={{ fontSize: 13, color: C.textDim, textTransform: "uppercase" }}>oder ohne Foto: manuell eingeben</div>
           <div style={{ flex: 1, height: 1, background: C.border }} />
         </div>
 
@@ -631,12 +632,12 @@ export default function Wohnung({ navigateTo, wohnung, setWohnung, werte, setWer
         <Field label="Geleistete Vorauszahlungen" value={wohnung.vorauszahlung} onChange={v => setW("vorauszahlung", v)} money placeholder="0,00" prefix="€" width="medium" required error={errors.vorauszahlung} tip="Alle Abschläge des Jahres, steht als 'Summe Vorauszahlungen' auf der Abrechnung" />
 
         {vzQm !== null && vzQm < 0.5 && (
-          <div style={{ background: C.warnBg, borderLeft: "3px solid " + C.warn, borderRadius: THEME.radius.md, padding: "12px 14px", marginBottom: 10, fontSize: 13, color: C.warn }}>
+          <div style={{ background: C.warnBg, borderLeft: "3px solid " + C.warn, borderRadius: THEME.radius.md, padding: "12px 14px", marginBottom: 10, fontSize: 15, color: C.warn }}>
             Vorauszahlung sehr niedrig: {fmt(vzQm)}/m²/Monat. DMB-Richtwert: {fmt(BUSINESS.RICHTWERTE.gesamt)}/m²/Monat. Bitte Eingabe prüfen.
           </div>
         )}
         {vzQm !== null && vzQm > BUSINESS.RICHTWERTE.gesamt * 2 && (
-          <div style={{ background: C.warnBg, borderLeft: "3px solid " + C.warn, borderRadius: THEME.radius.md, padding: "12px 14px", marginBottom: 10, fontSize: 13, color: C.warn }}>
+          <div style={{ background: C.warnBg, borderLeft: "3px solid " + C.warn, borderRadius: THEME.radius.md, padding: "12px 14px", marginBottom: 10, fontSize: 15, color: C.warn }}>
             Vorauszahlung auffällig hoch: {fmt(vzQm)}/m²/Monat, mehr als doppelt so hoch wie der DMB-Richtwert.
           </div>
         )}

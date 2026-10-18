@@ -58,23 +58,23 @@ export default function Widerruf({ navigateTo }) {
   return (
     <div style={{ fontFamily: THEME.font.body, background: C.bg, color: C.text, minHeight: "100vh" }}>
       <div style={{ background: C.surface, padding: "20px 20px 16px", borderBottom: "1px solid " + C.border }}>
-        <button onClick={() => navigateTo("welcome")} style={{ background: "none", border: "none", color: C.textMuted, cursor: "pointer", fontSize: 13, padding: "0 0 10px", fontFamily: THEME.font.body }}>← Zurück</button>
-        <h1 style={{ margin: 0, fontSize: 19, fontWeight: 600, fontFamily: THEME.font.heading }}>Vertrag widerrufen</h1>
+        <button onClick={() => navigateTo("welcome")} style={{ background: "none", border: "none", color: C.textMuted, cursor: "pointer", fontSize: 15, padding: "0 0 10px", fontFamily: THEME.font.body }}>← Zurück</button>
+        <h1 style={{ margin: 0, fontSize: 21, fontWeight: 600, fontFamily: THEME.font.heading }}>Vertrag widerrufen</h1>
       </div>
       <div style={{ padding: "24px 20px 60px", maxWidth: 620, margin: "0 auto" }}>
         {eingang ? (
           <div style={{ background: C.brandBg, borderRadius: THEME.radius.md, padding: "16px 18px" }}>
-            <div style={{ fontSize: 15, color: C.brand, fontWeight: 700, marginBottom: 6 }}>✓ Dein Widerruf ist bei uns eingegangen</div>
-            <div style={{ fontSize: 13, color: C.textMuted, lineHeight: 1.7 }}>
+            <div style={{ fontSize: 17, color: C.brand, fontWeight: 700, marginBottom: 6 }}>✓ Dein Widerruf ist bei uns eingegangen</div>
+            <div style={{ fontSize: 15, color: C.textMuted, lineHeight: 1.7 }}>
               Eingang: {eingang}. Eine Bestätigung mit dem Inhalt deiner Erklärung haben wir an <strong style={{ color: C.text }}>{email.trim()}</strong> geschickt. Wir prüfen die Bestellung und melden uns bei dir.
             </div>
           </div>
         ) : (
           <>
-            <p style={{ fontSize: 14, lineHeight: 1.75, color: C.text, margin: "0 0 12px" }}>
+            <p style={{ fontSize: 16, lineHeight: 1.75, color: C.text, margin: "0 0 12px" }}>
               Hier kannst du einen Vertrag widerrufen, den du über nebenkostenradar.com geschlossen hast. Gib dazu deinen Namen, die Bestellung und eine E-Mail-Adresse an. Wir schicken dir sofort eine Eingangsbestätigung.
             </p>
-            <p style={{ fontSize: 12.5, lineHeight: 1.7, color: C.textMuted, margin: "0 0 20px" }}>
+            <p style={{ fontSize: 14.5, lineHeight: 1.7, color: C.textMuted, margin: "0 0 20px" }}>
               Gut zu wissen: Bei unseren PDF-Berichten erlischt das Widerrufsrecht in der Regel, sobald das PDF bereitgestellt ist, wenn du beim Kauf der sofortigen Ausführung zugestimmt hast (siehe <a href="/agb" onClick={e => { e.preventDefault(); navigateTo("agb"); }} style={{ color: C.brand }}>AGB § 6</a>). Wir prüfen jeden Widerruf anhand der Bestellung und melden uns.
             </p>
             <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
@@ -82,16 +82,16 @@ export default function Widerruf({ navigateTo }) {
               <Field label="Bestellung" value={bestellung} onChange={v => { setBestellung(v); setError(""); }} placeholder="z. B. Kauf vom 12.10.2026, Auswertung + Brief" required />
               <Field label="E-Mail-Adresse für die Eingangsbestätigung" value={email} onChange={v => { setEmail(v); setError(""); }} type="email" placeholder="deine@email.de" required />
               <div>
-                <label style={{ fontSize: 12, color: C.textMuted, display: "block", marginBottom: 5 }}>Nachricht (optional)</label>
+                <label style={{ fontSize: 14, color: C.textMuted, display: "block", marginBottom: 5 }}>Nachricht (optional)</label>
                 <textarea value={nachricht} onChange={e => setNachricht(e.target.value)} rows={3}
-                  style={{ width: "100%", boxSizing: "border-box", background: C.surface, border: "1.5px solid " + C.border, borderRadius: THEME.radius.md, padding: "12px 14px", fontSize: 14, fontFamily: THEME.font.body, color: C.text, outline: "none", resize: "vertical" }} />
+                  style={{ width: "100%", boxSizing: "border-box", background: C.surface, border: "1.5px solid " + C.border, borderRadius: THEME.radius.md, padding: "12px 14px", fontSize: 16, fontFamily: THEME.font.body, color: C.text, outline: "none", resize: "vertical" }} />
               </div>
-              {error && <div style={{ fontSize: 12.5, color: "#c0392b", lineHeight: 1.6 }}>⚠ {error}</div>}
+              {error && <div style={{ fontSize: 14.5, color: "#B03A2E", lineHeight: 1.6 }}>⚠ {error}</div>}
               <button onClick={bestaetigen} disabled={sending}
-                style={{ background: sending ? C.border : C.accent, color: sending ? C.textDim : C.accentText, border: "none", borderRadius: THEME.radius.md, padding: "14px 16px", fontSize: 15, fontFamily: THEME.font.heading, fontWeight: 600, cursor: sending ? "not-allowed" : "pointer" }}>
+                style={{ background: sending ? C.border : C.accent, color: sending ? C.textDim : C.accentText, border: "none", borderRadius: THEME.radius.md, padding: "14px 16px", fontSize: 17, fontFamily: THEME.font.heading, fontWeight: 600, cursor: sending ? "not-allowed" : "pointer" }}>
                 {sending ? "Wird gesendet…" : "Widerruf bestätigen"}
               </button>
-              <p style={{ fontSize: 11.5, color: C.textDim, lineHeight: 1.6, margin: 0 }}>
+              <p style={{ fontSize: 13.5, color: C.textDim, lineHeight: 1.6, margin: 0 }}>
                 Du kannst den Widerruf auch formlos per E-Mail an support@nebenkostenradar.com erklären. Wie wir deine Angaben verarbeiten, steht in der <a href="/datenschutz" onClick={e => { e.preventDefault(); navigateTo("datenschutz"); }} style={{ color: C.brand }}>Datenschutzerklärung</a> (Abschnitt 8).
               </p>
             </div>

@@ -70,11 +70,11 @@ function Kasten({ children, C }) {
 
 function Ergebniszeile({ C, ton, titel, text }) {
   const farbe = ton === "gut" ? C.brand : ton === "warn" ? C.warn : C.textMuted;
-  const hg = ton === "gut" ? C.brandBg : ton === "warn" ? C.warnBg : "#F7F3EC";
+  const hg = ton === "gut" ? C.brandBg : ton === "warn" ? C.warnBg : C.alt;
   return (
     <div style={{ background: hg, borderLeft: "3px solid " + farbe, borderRadius: THEME.radius.sm, padding: "12px 14px", marginBottom: 10 }}>
-      <div style={{ fontSize: 14, fontWeight: 700, color: C.text, fontFamily: THEME.font.heading, marginBottom: 4 }}>{titel}</div>
-      <div style={{ fontSize: 13, color: C.text, lineHeight: 1.65 }}>{text}</div>
+      <div style={{ fontSize: 16, fontWeight: 700, color: C.text, fontFamily: THEME.font.heading, marginBottom: 4 }}>{titel}</div>
+      <div style={{ fontSize: 15, color: C.text, lineHeight: 1.65 }}>{text}</div>
     </div>
   );
 }
@@ -82,14 +82,14 @@ function Ergebniszeile({ C, ton, titel, text }) {
 function PruefenKnopf({ C, navigateTo, text = "Ganze Abrechnung kostenlos prüfen →" }) {
   return (
     <Verweis href="/pruefen/wohnung" onNavigate={() => navigateTo("wohnung")}
-      style={{ display: "inline-block", background: C.accent, color: C.accentText, borderRadius: THEME.radius.lg, padding: "14px 26px", fontSize: 15, fontFamily: THEME.font.heading, fontWeight: 600, cursor: "pointer" }}>
+      style={{ display: "inline-block", background: C.accent, color: C.accentText, borderRadius: THEME.radius.lg, padding: "14px 26px", fontSize: 17, fontFamily: THEME.font.heading, fontWeight: 600, cursor: "pointer" }}>
       {text}
     </Verweis>
   );
 }
 
-const feldStil = C => ({ width: "100%", boxSizing: "border-box", padding: "11px 12px", fontSize: 15, border: "1px solid " + C.border, borderRadius: THEME.radius.sm, fontFamily: THEME.font.body, color: C.text, background: "#fff" });
-const labelStil = C => ({ display: "block", fontSize: 13, fontWeight: 600, color: C.text, margin: "0 0 6px" });
+const feldStil = C => ({ width: "100%", boxSizing: "border-box", padding: "11px 12px", fontSize: 17, border: "1px solid " + C.border, borderRadius: THEME.radius.sm, fontFamily: THEME.font.body, color: C.text, background: "#fff" });
+const labelStil = C => ({ display: "block", fontSize: 15, fontWeight: 600, color: C.text, margin: "0 0 6px" });
 
 // ── Widget 1: Einstieg Prüfung ───────────────────────────────────────────
 function StartWidget({ C, navigateTo }) {
@@ -97,7 +97,7 @@ function StartWidget({ C, navigateTo }) {
     <Kasten C={C}>
       <div style={{ textAlign: "center" }}>
         <PruefenKnopf C={C} navigateTo={navigateTo} text="Abrechnung hochladen und kostenlos prüfen →" />
-        <p style={{ fontSize: 12, color: C.textDim, margin: "12px 0 0", lineHeight: 1.6 }}>
+        <p style={{ fontSize: 14, color: C.textDim, margin: "12px 0 0", lineHeight: 1.6 }}>
           Foto oder PDF · ohne Konto · Basisanalyse kostenlos · für Wohnraummieter in Deutschland
         </p>
       </div>
@@ -147,18 +147,18 @@ function FristenWidget({ C, navigateTo }) {
         <label>
           <span style={labelStil(C)}>Ende des Abrechnungszeitraums</span>
           <input type="date" value={ende} onChange={ev => setEnde(ev.target.value)} style={feldStil(C)} />
-          <span style={{ display: "block", fontSize: 11.5, color: C.textDim, marginTop: 4 }}>Meist der 31.12., steht oben auf der Abrechnung.</span>
+          <span style={{ display: "block", fontSize: 13.5, color: C.textDim, marginTop: 4 }}>Meist der 31.12., steht oben auf der Abrechnung.</span>
         </label>
         <label>
           <span style={labelStil(C)}>Abrechnung angekommen am</span>
           <input type="date" value={zugang} onChange={ev => setZugang(ev.target.value)} style={feldStil(C)} />
-          <span style={{ display: "block", fontSize: 11.5, color: C.textDim, marginTop: 4 }}>Tag, an dem sie in deinem Briefkasten lag.</span>
+          <span style={{ display: "block", fontSize: 13.5, color: C.textDim, marginTop: 4 }}>Tag, an dem sie in deinem Briefkasten lag.</span>
         </label>
       </div>
       <div aria-live="polite">
         {ergebnis.map((r, i) => <Ergebniszeile key={i} C={C} {...r} />)}
       </div>
-      <p style={{ fontSize: 11.5, color: C.textDim, lineHeight: 1.6, margin: "12px 0 16px" }}>
+      <p style={{ fontSize: 13.5, color: C.textDim, lineHeight: 1.6, margin: "12px 0 16px" }}>
         Allgemeine Berechnung nach § 556 Abs. 3 BGB, keine Rechtsberatung im Einzelfall. Abweichende Vereinbarungen zum Nachteil des Mieters sind unwirksam (§ 556 Abs. 4 BGB).
       </p>
       <div style={{ textAlign: "center" }}><PruefenKnopf C={C} navigateTo={navigateTo} text="Jetzt die Abrechnung selbst prüfen →" /></div>
@@ -170,12 +170,12 @@ function FristenWidget({ C, navigateTo }) {
 function Frage({ C, frage, hilfe, wert, setWert, optionen = [["ja", "Ja"], ["nein", "Nein"], ["unklar", "Weiß nicht"]] }) {
   return (
     <fieldset style={{ border: "none", padding: 0, margin: "0 0 16px" }}>
-      <legend style={{ fontSize: 14, fontWeight: 600, color: C.text, marginBottom: 4, lineHeight: 1.5 }}>{frage}</legend>
-      {hilfe && <div style={{ fontSize: 12, color: C.textDim, marginBottom: 8, lineHeight: 1.55 }}>{hilfe}</div>}
+      <legend style={{ fontSize: 16, fontWeight: 600, color: C.text, marginBottom: 4, lineHeight: 1.5 }}>{frage}</legend>
+      {hilfe && <div style={{ fontSize: 14, color: C.textDim, marginBottom: 8, lineHeight: 1.55 }}>{hilfe}</div>}
       <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
         {optionen.map(([v, l]) => (
           <button key={v} type="button" onClick={() => setWert(v)} aria-pressed={wert === v}
-            style={{ padding: "8px 16px", fontSize: 13, borderRadius: THEME.radius.sm, cursor: "pointer", fontFamily: THEME.font.body,
+            style={{ padding: "8px 16px", fontSize: 15, borderRadius: THEME.radius.sm, cursor: "pointer", fontFamily: THEME.font.body,
               border: "1px solid " + (wert === v ? C.brand : C.border), background: wert === v ? C.brandBg : "#fff", color: wert === v ? C.brand : C.text, fontWeight: wert === v ? 600 : 400 }}>
             {l}
           </button>
@@ -259,7 +259,7 @@ function HeizkostenWidget({ C, navigateTo }) {
         )}
         {offen.map((t, i) => <Ergebniszeile key={"o" + i} C={C} ton="neutral" titel="Noch offen" text={t} />)}
       </div>
-      <p style={{ fontSize: 11.5, color: C.textDim, lineHeight: 1.6, margin: "12px 0 16px" }}>
+      <p style={{ fontSize: 13.5, color: C.textDim, lineHeight: 1.6, margin: "12px 0 16px" }}>
         Allgemeine Auswertung nach HeizkostenV und CO2KostAufG, keine Rechtsberatung im Einzelfall. Die Kürzung musst du dem Vermieter mit Begründung mitteilen. Im Paket „Auswertung + Brief“ formulieren wir das für dich.
       </p>
       <div style={{ textAlign: "center" }}><PruefenKnopf C={C} navigateTo={navigateTo} /></div>
@@ -278,11 +278,11 @@ export default function Werkzeug({ step, navigateTo, navigateToArtikel }) {
     <div style={{ fontFamily: THEME.font.body, background: C.bg, color: C.text, minHeight: "100vh" }}>
       <Nav activeStep={step} navigateTo={navigateTo} />
       <div style={{ maxWidth: 760, margin: "0 auto", padding: "28px 20px 60px" }}>
-        <div style={{ display: "inline-block", background: C.brandBg, borderRadius: 4, padding: "3px 10px", fontSize: 11, color: C.brand, fontWeight: 700, marginBottom: 14, textTransform: "uppercase", letterSpacing: "0.04em" }}>
+        <div style={{ display: "inline-block", background: C.brandBg, borderRadius: 4, padding: "3px 10px", fontSize: 13, color: C.brand, fontWeight: 700, marginBottom: 14, textTransform: "uppercase", letterSpacing: "0.04em" }}>
           Kostenloses Werkzeug für Mieter
         </div>
         <h1 style={{ fontFamily: THEME.font.heading, fontSize: "clamp(22px, 5.4vw, 30px)", fontWeight: 600, lineHeight: 1.3, margin: "0 0 14px" }}>{w.titel}</h1>
-        <p style={{ fontSize: 16, color: C.textMuted, lineHeight: 1.7, margin: "0 0 24px" }}>{w.intro}</p>
+        <p style={{ fontSize: 17.5, color: C.textMuted, lineHeight: 1.7, margin: "0 0 24px" }}>{w.intro}</p>
 
         {w.widget === "start" && <StartWidget C={C} navigateTo={navigateTo} />}
         {w.widget === "fristen" && <FristenWidget C={C} navigateTo={navigateTo} />}
@@ -292,25 +292,25 @@ export default function Werkzeug({ step, navigateTo, navigateToArtikel }) {
           const ziel = a.verweis ? ARTIKEL.find(x => x.id === a.verweis) : null;
           return (
             <section key={i}>
-              <h2 style={{ fontFamily: THEME.font.heading, fontSize: 19, fontWeight: 600, margin: "28px 0 12px" }}>{a.h2}</h2>
-              {a.text && <p style={{ fontSize: 14.5, color: C.textMuted, lineHeight: 1.75, margin: "0 0 14px" }}>{a.text()}</p>}
+              <h2 style={{ fontFamily: THEME.font.heading, fontSize: 21, fontWeight: 600, margin: "28px 0 12px" }}>{a.h2}</h2>
+              {a.text && <p style={{ fontSize: 16.5, color: C.textMuted, lineHeight: 1.75, margin: "0 0 14px" }}>{a.text()}</p>}
               {a.liste && (
                 <ul style={{ margin: "0 0 14px", paddingLeft: 0, listStyle: "none" }}>
                   {a.liste.map((t, j) => (
-                    <li key={j} style={{ display: "flex", gap: 10, marginBottom: 10, fontSize: 14.5, color: C.textMuted, lineHeight: 1.65 }}>
+                    <li key={j} style={{ display: "flex", gap: 10, marginBottom: 10, fontSize: 16.5, color: C.textMuted, lineHeight: 1.65 }}>
                       <span style={{ color: C.brand, flexShrink: 0, fontWeight: 700 }}>{j + 1}.</span><span>{t}</span>
                     </li>
                   ))}
                 </ul>
               )}
               {a.schritte && (
-                <ol style={{ margin: "0 0 14px", paddingLeft: 20, color: C.textMuted, fontSize: 14.5, lineHeight: 1.7 }}>
+                <ol style={{ margin: "0 0 14px", paddingLeft: 20, color: C.textMuted, fontSize: 16.5, lineHeight: 1.7 }}>
                   {a.schritte.map((t, j) => <li key={j} style={{ marginBottom: 8 }}>{t}</li>)}
                 </ol>
               )}
               {ziel && (
                 <p style={{ margin: "0 0 14px" }}>
-                  <Verweis href={"/ratgeber/" + ziel.id} onNavigate={() => navigateToArtikel(ziel.id)} style={{ color: C.brand, fontWeight: 600, fontSize: 14, textDecoration: "underline" }}>
+                  <Verweis href={"/ratgeber/" + ziel.id} onNavigate={() => navigateToArtikel(ziel.id)} style={{ color: C.brand, fontWeight: 600, fontSize: 16, textDecoration: "underline" }}>
                     Ratgeber: {ziel.titelKurz || ziel.titel} →
                   </Verweis>
                 </p>
@@ -319,22 +319,22 @@ export default function Werkzeug({ step, navigateTo, navigateToArtikel }) {
           );
         })}
 
-        <h2 style={{ fontFamily: THEME.font.heading, fontSize: 19, fontWeight: 600, margin: "32px 0 12px" }}>Häufige Fragen</h2>
+        <h2 style={{ fontFamily: THEME.font.heading, fontSize: 21, fontWeight: 600, margin: "32px 0 12px" }}>Häufige Fragen</h2>
         {w.faq.map((f, i) => (
           <details key={i} style={{ borderBottom: "1px solid " + C.border, padding: "12px 0" }}>
-            <summary style={{ fontSize: 15, fontWeight: 600, color: C.text, cursor: "pointer", lineHeight: 1.5 }}>{f.frage}</summary>
-            <p style={{ fontSize: 14, color: C.textMuted, lineHeight: 1.7, margin: "10px 0 0" }}>{f.antwort}</p>
+            <summary style={{ fontSize: 17, fontWeight: 600, color: C.text, cursor: "pointer", lineHeight: 1.5 }}>{f.frage}</summary>
+            <p style={{ fontSize: 16, color: C.textMuted, lineHeight: 1.7, margin: "10px 0 0" }}>{f.antwort}</p>
           </details>
         ))}
 
         <div style={{ marginTop: 36, paddingTop: 20, borderTop: "1px solid " + C.border }}>
-          <div style={{ fontSize: 12, fontWeight: 700, color: C.textDim, textTransform: "uppercase", letterSpacing: "0.06em", marginBottom: 12 }}>Weitere kostenlose Werkzeuge</div>
+          <div style={{ fontSize: 14, fontWeight: 700, color: C.textDim, textTransform: "uppercase", letterSpacing: "0.06em", marginBottom: 12 }}>Weitere kostenlose Werkzeuge</div>
           <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))", gap: 12 }}>
             {andere.map(x => (
               <Verweis key={x.step} href={x.pfad} onNavigate={() => navigateTo(x.step)}
                 style={{ display: "block", padding: "14px 16px", border: "1px solid " + C.border, borderRadius: THEME.radius.md }}>
-                <div style={{ fontSize: 14, fontWeight: 600, color: C.brand, fontFamily: THEME.font.heading, marginBottom: 2 }}>{x.menue} →</div>
-                <div style={{ fontSize: 12, color: C.textMuted }}>{x.kurz}</div>
+                <div style={{ fontSize: 16, fontWeight: 600, color: C.brand, fontFamily: THEME.font.heading, marginBottom: 2 }}>{x.menue} →</div>
+                <div style={{ fontSize: 14, color: C.textMuted }}>{x.kurz}</div>
               </Verweis>
             ))}
           </div>

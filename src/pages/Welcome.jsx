@@ -47,6 +47,20 @@
 //     src/pdf/BriefPDF.jsx), nicht zwei Briefe. "Zwei Schreiben" wäre
 //     irreführende Werbung (§ 5 UWG).
 // Ergebnis: vier sichtbare Blöcke statt fünf, davon einer eingeklappt.
+//
+// DRITTER UMBAU 18.10.2026: Redesign "Vorschlag A · klar & digital" (von
+// Stefan aus zwei Entwürfen gewählt) und NUR NOCH EIN PAKET (12,99 €, die
+// 9,99-€-Variante entfällt, Stefans Entscheidung). Messwerte und Quellen im
+// CHANGELOG, Eintrag 18.10.2026. Kurz:
+//   - Hero zweispaltig: links Text und Knopf, rechts das Beispielergebnis.
+//     Vorher war es eingeklappt und damit für die meisten unsichtbar, obwohl
+//     es der stärkste Beleg für das Produkt ist. Die neueren Wettbewerber
+//     (z. B. mietchecker.app) zeigen eine Beispielabrechnung direkt oben.
+//     Auf dem Handy rutscht das Beispiel unter den Knopf.
+//   - Symbole statt Ziffernkreise, Fließtext 17–19 px statt 12–16 px.
+//   - Vertrauenszeile mit den Prüfgrundlagen: nur nachprüfbare Fakten,
+//     keine erfundenen Bewertungen oder Kundenzahlen (§ 5 UWG).
+//   - Preisblock: ein Paket statt zwei.
 // ─────────────────────────────────────────────────────────────────────────
 import { THEME } from "../config/theme.js";
 import { euro } from "../lib/format.js";
@@ -55,217 +69,185 @@ import { BEISPIEL_QM, BEISPIEL_POSTEN, BEISPIEL_ANZAHL, BEISPIEL_UNZULAESSIG_SUM
 import Nav from "../components/layout/Nav.jsx";
 import LegalFooter from "../components/layout/LegalFooter.jsx";
 import Verweis from "../components/ui/Verweis.jsx";
+import Icon from "../components/ui/Icon.jsx";
+
+// Darstellung je Status im Beispielergebnis. Bewusst Symbol UND Wort: Die
+// Farbe allein darf die Bedeutung nicht tragen (WCAG 1.4.1).
+function statusStil(C, status) {
+  if (status === "unzulaessig") return { icon: "circle-x", farbe: C.critical, bg: C.criticalBg, wort: "nicht umlagefähig" };
+  if (status === "auffaellig") return { icon: "triangle-alert", farbe: C.amber, bg: C.amberBg, wort: "auffällig" };
+  return { icon: "circle-check", farbe: C.brandStrong, bg: C.brandBg, wort: "unauffällig" };
+}
 
 export default function Welcome({ navigateTo, navigateToArtikel, IS_DEMO }) {
   const C = THEME.color;
   const PAGE_MAX = THEME.layout.pageMax;
-  const abschnitt = { padding: "40px 24px", borderBottom: "1px solid " + C.border, maxWidth: PAGE_MAX, margin: "0 auto", boxSizing: "border-box" };
-  const ueberschrift = { fontSize: 12, fontWeight: 700, color: C.textDim, textTransform: "uppercase", letterSpacing: "0.06em", marginBottom: 16, textAlign: "center" };
+  const innen = { maxWidth: PAGE_MAX, margin: "0 auto", padding: "0 24px", boxSizing: "border-box" };
+  const h2 = { fontFamily: THEME.font.heading, fontWeight: 700, letterSpacing: "-0.02em", fontSize: "clamp(26px, 5vw, 34px)", lineHeight: 1.15, margin: "0 0 12px", textAlign: "center", color: C.text, textWrap: "balance" };
+  const h2Unter = { fontSize: 17, color: C.textMuted, lineHeight: 1.6, maxWidth: 560, margin: "0 auto 36px", textAlign: "center" };
+  const karte = { background: C.surface, border: "1px solid " + C.border, borderRadius: THEME.radius.xl, boxShadow: THEME.shadow };
+  const ctaGross = { display: "inline-flex", alignItems: "center", justifyContent: "center", gap: 10, width: "100%", maxWidth: 420, boxSizing: "border-box", background: C.accent, color: C.accentText, borderRadius: THEME.radius.lg, padding: "18px 28px", fontSize: 17, fontFamily: THEME.font.heading, fontWeight: 600, cursor: "pointer", textDecoration: "none" };
 
-  // Auf der Startseite werden nur die beanstandeten Positionen gezeigt.
-  // Die unauffälligen stehen als Zahl darunter — das kürzt den Block von
-  // fünf auf drei Zeilen, ohne das Ergebnis zu beschönigen.
-  const beanstandet = BEISPIEL_POSTEN.filter(p => p.status !== "ok");
+  // Im Beispiel: die drei beanstandeten Posten plus der erste unauffällige,
+  // damit sichtbar ist, dass auch "alles in Ordnung" ein Ergebnis sein kann.
+  const beispielZeilen = [...BEISPIEL_POSTEN.filter(p => p.status !== "ok"), ...BEISPIEL_POSTEN.filter(p => p.status === "ok").slice(0, 1)];
 
   return (
     <div style={{ fontFamily: THEME.font.body, background: C.bg, color: C.text, minHeight: "100vh" }}>
       <Nav activeStep="welcome" navigateTo={navigateTo} />
 
       {/* ── 1. Hero ─────────────────────────────────────────────────────── */}
-      <div style={{ ...abschnitt, padding: "48px 24px 40px", textAlign: "center" }}>
-        <div style={{ display: "inline-block", background: C.brandBg, borderRadius: 4, padding: "4px 12px", fontSize: 11, color: C.brand, fontWeight: 700, marginBottom: 20, textTransform: "uppercase", letterSpacing: "0.04em" }}>
-          Unabhängig · Ohne Registrierung · Kein Abo
-        </div>
-
-        {/* ÜBERSCHRIFT, Stand 11.09.2026.
-            Die beiden Schlagwörter "Nebenkostenabrechnung" und "Mieter"
-            MÜSSEN hier stehen bleiben. Das sind die Begriffe, nach denen
-            gesucht wird, und die H1 ist für Google das wichtigste Signal
-            einer Seite. Eine Zwischenfassung an diesem Tag hatte
-            "Nebenkostenabrechnung" durch "Deine Nebenkosten" ersetzt, um
-            einen Umbruch zu vermeiden. Das war der falsche Weg: Es hätte das
-            Ranking-Problem verschlimmert, das die Search Console für genau
-            diese Begriffe zeigt (Position 38,6).
-
-            DAS EIGENTLICHE PROBLEM war die feste Schriftgröße von 30 px.
-            Gemessen in der echten Schrift (Poppins 600) ist das Wort
-            "Nebenkostenabrechnung" bei 30 px 391 Pixel breit. Auf einem
-            360-Pixel-Display bleiben nach den 48 px Seitenpolster nur
-            312 Pixel übrig. Das Wort passte also nicht und wurde mitten
-            im Wort getrennt.
-
-            LÖSUNG: Die Schriftgröße skaliert mit der Bildschirmbreite.
-            clamp(20px, 6.4vw, 30px) heißt: nie kleiner als 20 px, nie
-            größer als 30 px, dazwischen 6,4 Prozent der Fensterbreite.
-            Nachgerechnet für die üblichen Gerätebreiten:
-
-              Breite   verfügbar   Schrift   Wortbreite   passt
-              320 px   272 px      20,5 px   267 px       ja
-              360 px   312 px      23,0 px   300 px       ja
-              390 px   342 px      25,0 px   326 px       ja
-              430 px   382 px      27,5 px   358 px       ja
-              ab 469   421+ px     30,0 px   391 px       ja
-
-            AUFBAU, von Stefan am 11.09.2026 so ausgewählt: eine kleine
-            Vorzeile "Für Mieter", darunter zwei kräftige Zeilen. Der Vorteil
-            dieser Form gegenüber einer durchlaufenden Überschrift ist, dass
-            keine Kommas nötig sind, um die Teile zu trennen. Frühere
-            Fassungen lasen sich wie eine Aufzählung von Bruchstücken
-            ("Nebenkostenabrechnung prüfen, für Mieter, in wenigen Minuten").
-
-            Die Vorzeile steht bewusst INNERHALB des h1-Elements. Dadurch
-            zählt "Mieter" für Google zur Überschrift, obwohl es optisch
-            kleiner gesetzt ist. Stünde sie als eigenes Element darüber,
-            ginge dieses Signal verloren.
-
-            "in 3 Schritten" ist keine Werbefloskel, sondern deckt sich mit
-            dem Block "So läuft es ab" direkt darunter, der genau drei
-            Schritte zeigt. Wer die Anzahl dort ändert, muss diese Zeile
-            mitändern, sonst widerspricht sich die Seite selbst.
-
-            GEMESSENE BREITEN (Poppins 600, auf der Live-Seite nachgemessen).
-            "Nebenkostenabrechnung" ist die längste Zeile und bestimmt alles:
-            391 px bei 30 px Schrift. Verfügbar sind Displaybreite minus
-            48 px Seitenpolster. Verbleibende Luft je Gerät:
-
-              320 px Gerät → Schrift 20,0 px → 11 px Luft
-              360 px Gerät → Schrift 22,3 px → 21 px Luft
-              390 px Gerät → Schrift 24,2 px → 27 px Luft
-              430 px Gerät → Schrift 26,7 px → 34 px Luft
-
-            Der Faktor ist bewusst 6.2vw und nicht 6.4vw: Bei 6.4 blieben auf
-            einem 360-px-Gerät nur 12 px Luft. Das reicht rechnerisch, ist
-            aber zu knapp, weil Poppins je nach Betriebssystem und
-            Schriftglättung minimal breiter rendern kann. Ein einziges
-            Pixel zu viel, und das Wort bricht wieder um. 6.2vw kostet
-            optisch fast nichts und verdoppelt die Reserve.
-
-            WER HIER ETWAS ÄNDERT: Faustregel für Poppins 600, Breite in
-            Pixeln ist ungefähr Zeichenzahl mal Schriftgröße mal 0,62.
-            Bleibt die längste Zeile bei 20 px unter 272 Pixeln, passt sie
-            auf jedem gängigen Gerät. */}
-        <h1 style={{ fontFamily: THEME.font.heading, fontWeight: 600, lineHeight: 1.3, margin: "0 0 16px", color: C.text, maxWidth: 540, marginLeft: "auto", marginRight: "auto" }}>
-          <div style={{ fontSize: 13, fontWeight: 600, letterSpacing: "0.08em", textTransform: "uppercase", color: C.brand, marginBottom: 8 }}>
-            Für Mieter
+      <div style={{ ...innen, padding: "clamp(36px, 6vw, 64px) 24px clamp(44px, 6vw, 72px)", display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(min(100%, 440px), 1fr))", gap: "clamp(36px, 5vw, 56px)", alignItems: "center" }}>
+        <div style={{ containerType: "inline-size", minWidth: 0 }}>
+          <div style={{ display: "inline-flex", alignItems: "center", gap: 8, background: C.brandBg, color: C.brandStrong, borderRadius: 999, padding: "6px 14px", fontSize: 14, fontWeight: 600 }}>
+            <Icon name="shield-check" size={16} /> Unabhängig · ohne Registrierung
           </div>
-          <div style={{ fontSize: "clamp(20px, 6.2vw, 30px)" }}>Nebenkostenabrechnung</div>
-          <div style={{ fontSize: "clamp(20px, 6.2vw, 30px)", color: C.brand }}>kostenlos online prüfen</div>
-        </h1>
 
-        <p style={{ fontSize: 16, color: C.textMuted, margin: "0 0 8px", lineHeight: 1.7, maxWidth: 520, marginLeft: "auto", marginRight: "auto" }}>
-          Foto oder PDF deiner Nebenkostenabrechnung hochladen. Wir prüfen jeden Posten gegen den Betriebskostenspiegel des Deutschen Mieterbundes und die Betriebskostenverordnung und zeigen dir in wenigen Minuten, was dein Vermieter umlegen darf und was nicht.
-        </p>
-        <p style={{ fontSize: 12, color: C.textDim, margin: "0 0 28px", lineHeight: 1.6, maxWidth: 520, marginLeft: "auto", marginRight: "auto" }}>
-          Für Wohnraummiete in Deutschland. Für Gewerbemietverträge und für Eigentümer gelten andere Regeln.
-        </p>
+          {/* ÜBERSCHRIFT. Die Schlagwörter "Nebenkostenabrechnung" und
+              "Mieter" müssen in der H1 bleiben (Suchbegriffe, siehe
+              Kommentar-Historie im CHANGELOG 11.09. und 17.10.2026). Die
+              Vorzeile "Für Mieter" steht bewusst INNERHALB der h1.
+              prerender.mjs enthält dieselbe H1 als Fließsatz, bei Änderungen
+              beide Stellen anpassen.
 
-        {IS_DEMO && <div style={{ background: C.warnBg, borderRadius: 6, padding: "8px 14px", marginBottom: 16, fontSize: 11, color: C.warn }}>Demo-Modus. Stripe nicht konfiguriert</div>}
+              UMBRUCH: Gemessen am 18.10.2026 brach "Nebenkostenabrechnung"
+              in der alten Fassung auf 360- und 390-px-Displays mitten im Wort
+              um ("…abrechnun / g"), weil die Rechnung im alten Kommentar mit
+              einem zu kleinen Breitenfaktor arbeitete. Jetzt zwei Sicherungen:
+              1. Die Größe hängt an der Breite der Textspalte (Einheit cqi,
+                 Container-Query, die Spalte ist der Container): 7,9 % der
+                 Spaltenbreite. Gemessen: "Nebenkostenabrechnung" ist in
+                 Inter 700 genau 12,25-mal so breit wie die Schriftgröße,
+                 bei 7,9 % also 96,8 % der Spalte. Das passt auf jedem Gerät
+                 und auch in der zweispaltigen Desktop-Ansicht. Höchstens
+                 46 px. Browser ohne cqi (vor 2022/23) nehmen die
+                 Standardgröße der h1; dort greift Sicherung 2.
+              2. Ein weiches Trennzeichen (&shy;) erlaubt auf noch schmaleren
+                 Geräten eine saubere Trennung "Nebenkosten-/abrechnung"
+                 statt eines Umbruchs an beliebiger Stelle. Für Google ist
+                 das Wort unverändert. */}
+          <h1 style={{ fontFamily: THEME.font.heading, fontWeight: 700, letterSpacing: "-0.025em", lineHeight: 1.08, margin: "18px 0 20px", color: C.text }}>
+            <span style={{ display: "block", fontSize: 15, fontWeight: 600, letterSpacing: "0.08em", textTransform: "uppercase", color: C.brandStrong, marginBottom: 12, lineHeight: 1.4 }}>
+              Für Mieter
+            </span>
+            <span style={{ display: "block", fontSize: "clamp(20px, 7.9cqi, 46px)" }}>Nebenkosten{"\u00AD"}abrechnung</span>
+            <span style={{ display: "block", fontSize: "clamp(20px, 7.9cqi, 46px)", color: C.brand }}>kostenlos online prüfen</span>
+          </h1>
 
-        <Verweis href="/pruefen/wohnung" onNavigate={() => navigateTo("wohnung")}
-          style={{ display: "block", width: "100%", maxWidth: 420, margin: "0 auto", boxSizing: "border-box", background: C.accent, color: C.accentText, borderRadius: THEME.radius.lg, padding: "18px 40px", fontSize: 16, fontFamily: THEME.font.heading, fontWeight: 600, cursor: "pointer" }}>
-          Jetzt kostenlos prüfen
-        </Verweis>
-        <p style={{ fontSize: 12, color: C.textDim, marginTop: 10 }}>
-          Basisanalyse kostenlos · Ergebnis in wenigen Minuten
-        </p>
-        <p style={{ fontSize: 12, color: C.textMuted, margin: "12px 0 0" }}>
-          Schon dabei?{" "}
-          <a href="/login" onClick={e => { e.preventDefault(); navigateTo("login"); }} style={{ color: C.brand, fontWeight: 600 }}>Anmelden</a>
-        </p>
-      </div>
+          <p style={{ fontSize: "clamp(17px, 2.2vw, 19px)", color: C.textMuted, margin: "0 0 10px", lineHeight: 1.6, maxWidth: 560 }}>
+            Foto oder PDF deiner Nebenkostenabrechnung hochladen. Wir prüfen jeden Posten gegen den Betriebskostenspiegel des Deutschen Mieterbundes und die Betriebskostenverordnung und zeigen dir in wenigen Minuten, was dein Vermieter umlegen darf und was nicht.
+          </p>
+          <p style={{ fontSize: 14.5, color: C.textDim, margin: "0 0 28px", lineHeight: 1.6, maxWidth: 560 }}>
+            Für Wohnraummiete in Deutschland. Für Gewerbemietverträge und für Eigentümer gelten andere Regeln.
+          </p>
 
-      {/* ── 2. Drei Schritte ────────────────────────────────────────────── */}
-      <div style={abschnitt}>
-        <div style={ueberschrift}>So läuft es ab</div>
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(180px, 1fr))", gap: 12, maxWidth: 640, margin: "0 auto" }}>
-          {[
-            ["1", "Abrechnung hochladen", "Foto oder PDF. Die Posten werden automatisch ausgelesen, du bestätigst sie nur kurz."],
-            ["2", "Kostenlose Basisanalyse", "Jeder Posten wird gegen Richtwerte und Rechtsgrundlagen geprüft. Ohne Konto, ohne Zahlung."],
-            ["3", "Auswertung als PDF", "Alle Positionen mit Begründung, auf Wunsch mit versandfertigem Brief an den Vermieter."],
-          ].map(([nr, titel, text]) => (
-            <div key={nr} style={{ padding: "16px 18px", background: C.surface, border: "1px solid " + C.border, borderRadius: THEME.radius.md }}>
-              <div style={{ width: 26, height: 26, borderRadius: "50%", background: C.brand, color: "#fff", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 13, fontWeight: 700, fontFamily: THEME.font.heading, marginBottom: 10 }}>{nr}</div>
-              <div style={{ fontSize: 14, fontWeight: 600, color: C.text, marginBottom: 4, fontFamily: THEME.font.heading }}>{titel}</div>
-              <div style={{ fontSize: 12, color: C.textMuted, lineHeight: 1.6 }}>{text}</div>
-            </div>
-          ))}
-        </div>
-      </div>
+          {IS_DEMO && <div style={{ background: C.warnBg, borderRadius: 8, padding: "8px 14px", marginBottom: 16, fontSize: 14, color: C.warn }}>Demo-Modus. Stripe nicht konfiguriert</div>}
 
-      {/* ── 3. Preise ───────────────────────────────────────────────────── */}
-      <div style={{ ...abschnitt, textAlign: "center" }}>
-        <div style={ueberschrift}>Was es kostet</div>
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(240px, 1fr))", gap: 14, maxWidth: 560, margin: "0 auto" }}>
-          <div style={{ background: C.surface, border: "1px solid " + C.border, borderRadius: THEME.radius.lg, padding: "20px 18px", textAlign: "left" }}>
-            <div style={{ fontSize: 12, color: C.textMuted, marginBottom: 4 }}>Auswertung</div>
-            <div style={{ fontFamily: THEME.font.heading, fontSize: 22, fontWeight: 600, color: C.text, marginBottom: 10 }}>{euro(BUSINESS.PREIS_AUSWERTUNG)}</div>
-            <div style={{ fontSize: 12, color: C.textMuted, lineHeight: 1.6 }}>Alle Positionen mit Richtwerten und Begründungen als PDF</div>
-          </div>
-          <div style={{ background: C.text, borderRadius: THEME.radius.lg, padding: "20px 18px", textAlign: "left" }}>
-            <div style={{ fontSize: 12, color: "#D8D2C4", marginBottom: 4 }}>Auswertung + Brief + Steuer-Bonus</div>
-            <div style={{ fontFamily: THEME.font.heading, fontSize: 22, fontWeight: 600, color: "#fff", marginBottom: 10 }}>{euro(BUSINESS.PREIS_VOLL)}</div>
-            <div style={{ fontSize: 12, color: "#D8D2C4", lineHeight: 1.6 }}>Zusätzlich ein fertiger Brief an deinen Vermieter, passend zum Ergebnis: Widerspruch gegen auffällige Posten oder Aufforderung zur Belegeinsicht (§ 259 BGB). Dazu ein Hinweis auf steuerlich absetzbare Posten (§ 35a EStG).</div>
+          <Verweis href="/pruefen/wohnung" onNavigate={() => navigateTo("wohnung")} style={ctaGross}>
+            Jetzt kostenlos prüfen <Icon name="arrow-right" size={20} />
+          </Verweis>
+          <p style={{ fontSize: 15, color: C.textMuted, margin: "12px 0 0", lineHeight: 1.6 }}>
+            Basisanalyse kostenlos · Ergebnis in wenigen Minuten · Schon dabei?{" "}
+            <a href="/login" onClick={e => { e.preventDefault(); navigateTo("login"); }} style={{ color: C.brandStrong, fontWeight: 600 }}>Anmelden</a>
+          </p>
+
+          <div style={{ display: "flex", flexWrap: "wrap", gap: "10px 22px", marginTop: 28, paddingTop: 22, borderTop: "1px solid " + C.border, fontSize: 15, color: C.textMuted }}>
+            {[["book-open-check", "DMB-Betriebskostenspiegel"], ["scale", "BetrKV, BGB, HeizkostenV"], ["badge-euro", "Einmalpreis, kein Abo"]].map(([ic, t]) => (
+              <span key={t} style={{ display: "inline-flex", alignItems: "center", gap: 8 }}><span style={{ color: C.brand, display: "inline-flex" }}><Icon name={ic} size={18} /></span>{t}</span>
+            ))}
           </div>
         </div>
-        <Verweis href="/pruefen/wohnung" onNavigate={() => navigateTo("wohnung")}
-          style={{ display: "inline-block", marginTop: 20, background: C.accent, borderRadius: THEME.radius.md, padding: "14px 32px", fontSize: 14, fontFamily: THEME.font.heading, fontWeight: 600, color: C.accentText, cursor: "pointer" }}>
-          Kostenlos starten, Preis später wählen
-        </Verweis>
-        <p style={{ fontSize: 12, color: C.textDim, marginTop: 10 }}>
-          Einmalig, kein Abo. <a href="/ratgeber/nebenkostenabrechnung-pruefen-lassen" onClick={e => { e.preventDefault(); navigateToArtikel("nebenkostenabrechnung-pruefen-lassen"); }} style={{ color: C.brand, fontWeight: 600 }}>Nebenkostenabrechnung prüfen lassen: was kosten die Alternativen?</a>
-        </p>
-      </div>
 
-      {/* ── 4. Beispielergebnis (eingeklappt) ─────────────────────────────────────────── */}
-      <details style={abschnitt}>
-        <summary style={{ ...ueberschrift, cursor: "pointer", marginBottom: 0, listStylePosition: "inside" }}>So sieht dein Ergebnis aus (Beispiel)</summary>
-        <div style={{ height: 16 }} />
-        <p style={{ fontSize: 13, color: C.textMuted, margin: "0 auto 18px", lineHeight: 1.65, maxWidth: 480, textAlign: "center" }}>
-          Ein erfundener Beispielfall: {BEISPIEL_QM} m², Abrechnungsjahr 2024.
-        </p>
-
-        <div style={{ maxWidth: 560, margin: "0 auto", border: "1px solid " + C.border, borderRadius: THEME.radius.lg, overflow: "hidden" }}>
-          <div style={{ background: C.text, padding: "12px 16px" }}>
-            <div style={{ fontFamily: THEME.font.heading, fontSize: 14, fontWeight: 600, color: "#fff" }}>
-              {BEISPIEL_ANZAHL.unzulaessig} nicht umlagefähig · {BEISPIEL_ANZAHL.auffaellig} auffällig · {BEISPIEL_ANZAHL.ok} unauffällig
-            </div>
-          </div>
-
-          {beanstandet.map(p => {
-            const farbe = p.status === "unzulaessig" ? C.warn : C.textDim;
-            const etikett = p.status === "unzulaessig" ? "nicht umlagefähig" : "auffällig";
-            return (
-              <div key={p.name} style={{ padding: "12px 16px", borderTop: "1px solid " + C.border, background: C.surface, textAlign: "left" }}>
-                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", gap: 10, marginBottom: 4 }}>
-                  <div style={{ fontSize: 13, fontWeight: 600, color: C.text, fontFamily: THEME.font.heading }}>{p.name}</div>
-                  <div style={{ fontSize: 13, fontWeight: 600, color: C.text, whiteSpace: "nowrap" }}>{euro(p.betrag)}</div>
-                </div>
-                <div style={{ display: "flex", gap: 8, alignItems: "center", flexWrap: "wrap" }}>
-                  <span style={{ fontSize: 10, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.05em", color: farbe, border: "1px solid " + farbe, borderRadius: 3, padding: "1px 6px" }}>{etikett}</span>
-                  {p.vergleich != null && (
-                    <span style={{ fontSize: 11, color: C.textDim }}>Richtwert {euro(p.vergleich)} · {p.abweichung > 0 ? "+" : ""}{p.abweichung} %</span>
-                  )}
-                  <span style={{ fontSize: 11, color: C.textDim }}>{p.grundlage}</span>
-                </div>
+        {/* Beispielergebnis. Erfundener Fall (siehe config/beispiel.js),
+            deshalb zweifach gekennzeichnet: im Kopf und darunter. */}
+        <div>
+          <div style={{ ...karte, overflow: "hidden" }}>
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: 12, padding: "16px 20px", borderBottom: "1px solid " + C.border }}>
+              <div style={{ fontSize: 14.5, color: C.textDim, lineHeight: 1.4 }}>
+                <strong style={{ color: C.text, fontSize: 16 }}>Beispiel-Ergebnis</strong> · {BEISPIEL_QM} m², Abrechnung 2024
               </div>
-            );
-          })}
-
-          <div style={{ padding: "12px 16px", borderTop: "1px solid " + C.border, background: C.brandBg, textAlign: "left" }}>
-            <div style={{ fontSize: 12, color: C.text, lineHeight: 1.6 }}>
-              <strong>{euro(BEISPIEL_UNZULAESSIG_SUMME)} zu Unrecht abgerechnet.</strong> Dazu {BEISPIEL_ANZAHL.ok} Positionen ohne Beanstandung. Im Paket mit Brief bekommst du das Schreiben an den Vermieter fertig formuliert dazu.
+              <span style={{ fontSize: 13, fontWeight: 600, color: C.textMuted, background: C.alt, borderRadius: 6, padding: "3px 8px", whiteSpace: "nowrap" }}>erfundener Fall</span>
+            </div>
+            {beispielZeilen.map(p => {
+              const s = statusStil(C, p.status);
+              return (
+                <div key={p.name} style={{ display: "grid", gridTemplateColumns: "26px 1fr auto", gap: 12, padding: "14px 20px", borderBottom: "1px solid " + C.border, alignItems: "start" }}>
+                  <span style={{ color: s.farbe, display: "inline-flex", marginTop: 1 }}><Icon name={s.icon} size={22} /></span>
+                  <div style={{ minWidth: 0 }}>
+                    <div style={{ fontWeight: 600, fontSize: 16 }}>{p.name}</div>
+                    <div style={{ fontSize: 14, color: C.textDim, marginTop: 2 }}>
+                      {p.vergleich != null ? "Richtwert " + euro(p.vergleich) + " · " + (p.abweichung > 0 ? "+" : "") + p.abweichung + " %" : p.grundlage}
+                    </div>
+                    <span style={{ display: "inline-block", marginTop: 6, fontSize: 13, fontWeight: 600, borderRadius: 6, padding: "2px 8px", background: s.bg, color: s.farbe }}>{s.wort}</span>
+                  </div>
+                  <div style={{ fontWeight: 600, fontSize: 16, fontVariantNumeric: "tabular-nums", whiteSpace: "nowrap" }}>{euro(p.betrag)}</div>
+                </div>
+              );
+            })}
+            <div style={{ padding: "16px 20px", background: C.brandBg, fontSize: 15.5, lineHeight: 1.5 }}>
+              <strong>{euro(BEISPIEL_UNZULAESSIG_SUMME)} zu Unrecht abgerechnet</strong>, dazu {BEISPIEL_ANZAHL.auffaellig === 1 ? "ein auffälliger Posten" : BEISPIEL_ANZAHL.auffaellig + " auffällige Posten"} zum Nachfragen. Den Brief an den Vermieter bekommst du fertig formuliert dazu.
             </div>
           </div>
+          <p style={{ fontSize: 14, color: C.textDim, lineHeight: 1.6, margin: "10px 4px 0" }}>
+            Erfundener Beispielfall, keine echten Kundendaten. Dein Ergebnis hängt von deinen eigenen Zahlen ab und kann auch lauten: alles in Ordnung.
+          </p>
         </div>
+      </div>
 
-        <p style={{ fontSize: 11, color: C.textDim, lineHeight: 1.6, margin: "12px auto 0", maxWidth: 560, textAlign: "left" }}>
-          Erfundener Beispielfall, keine echten Kundendaten. Dein Ergebnis hängt von deinen eigenen Zahlen ab und kann auch lauten: alles in Ordnung.
+      {/* ── 2. So läuft es ab ───────────────────────────────────────────── */}
+      <div style={{ background: C.alt, borderTop: "1px solid " + C.border, borderBottom: "1px solid " + C.border }}>
+        <div style={{ ...innen, padding: "clamp(48px, 7vw, 72px) 24px" }}>
+          <h2 style={h2}>So läuft es ab</h2>
+          <p style={h2Unter}>Drei Schritte, ohne Konto. Bezahlt wird nur, wenn du die ausführliche Auswertung möchtest.</p>
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(min(100%, 260px), 1fr))", gap: 20 }}>
+            {[
+              ["camera", "Abrechnung hochladen", "Foto oder PDF. Die Posten werden automatisch ausgelesen, du bestätigst sie nur kurz."],
+              ["list-checks", "Kostenlose Basisanalyse", "Jeder Posten wird gegen Richtwerte und Rechtsgrundlagen geprüft. Ohne Konto, ohne Zahlung."],
+              ["file-text", "Auswertung als PDF", "Alle Positionen mit Begründung und ein versandfertiger Brief an den Vermieter."],
+            ].map(([ic, titel, text], i) => (
+              <div key={titel} style={{ ...karte, padding: 28 }}>
+                <div style={{ width: 48, height: 48, borderRadius: 12, background: C.brandBg, color: C.brandStrong, display: "flex", alignItems: "center", justifyContent: "center", marginBottom: 18 }}><Icon name={ic} size={24} strokeWidth={1.75} /></div>
+                <div style={{ fontSize: 13, fontWeight: 600, color: C.textDim, letterSpacing: "0.06em", textTransform: "uppercase", marginBottom: 6 }}>Schritt {i + 1}</div>
+                <h3 style={{ fontSize: 19, fontWeight: 650, letterSpacing: "-0.01em", margin: "0 0 8px", fontFamily: THEME.font.heading }}>{titel}</h3>
+                <p style={{ margin: 0, color: C.textMuted, fontSize: 16, lineHeight: 1.6 }}>{text}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      {/* ── 3. Was es kostet (ein Paket seit 18.10.2026) ───────────────── */}
+      <div style={{ ...innen, padding: "clamp(48px, 7vw, 72px) 24px" }}>
+        <h2 style={h2}>Was es kostet</h2>
+        <p style={h2Unter}>Die Basisanalyse ist kostenlos. Erst wenn du die ausführliche Auswertung mit Brief möchtest, zahlst du einmalig, ohne Abo.</p>
+        <div style={{ ...karte, border: "2px solid " + C.brand, maxWidth: 820, margin: "0 auto", padding: 28, display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(min(100%, 260px), 1fr))", gap: "18px 32px", alignItems: "center" }}>
+          <div>
+            <div style={{ fontWeight: 600, color: C.textMuted, fontSize: 15.5 }}>Auswertung + Brief + Steuer-Bonus</div>
+            <div style={{ fontFamily: THEME.font.heading, fontWeight: 700, fontSize: 42, letterSpacing: "-0.02em", margin: "6px 0 4px", fontVariantNumeric: "tabular-nums" }}>{euro(BUSINESS.PREIS_VOLL)}</div>
+            <div style={{ fontSize: 14.5, color: C.textDim }}>Endpreis · einmalig · kein Abo</div>
+          </div>
+          <ul style={{ listStyle: "none", padding: 0, margin: 0, display: "grid", gap: 12, fontSize: 16, color: C.textMuted, lineHeight: 1.5 }}>
+            {[
+              "Alle Positionen mit Richtwerten und Begründungen als PDF",
+              "Fertiger Brief an den Vermieter, passend zum Ergebnis: Widerspruch gegen auffällige Posten oder Aufforderung zur Belegeinsicht (§\u00A0259\u00A0BGB)",
+              "Hinweis auf steuerlich absetzbare Posten (§\u00A035a\u00A0EStG)",
+            ].map(t => (
+              <li key={t} style={{ display: "grid", gridTemplateColumns: "22px 1fr", gap: 10 }}><span style={{ color: C.brand, display: "inline-flex", marginTop: 2 }}><Icon name="circle-check" size={18} /></span><span>{t}</span></li>
+            ))}
+          </ul>
+        </div>
+        <div style={{ textAlign: "center", marginTop: 32 }}>
+          <Verweis href="/pruefen/wohnung" onNavigate={() => navigateTo("wohnung")} style={ctaGross}>
+            Jetzt kostenlos prüfen <Icon name="arrow-right" size={20} />
+          </Verweis>
+          <p style={{ fontSize: 15, color: C.textMuted, marginTop: 14 }}>
+            <a href="/ratgeber/nebenkostenabrechnung-pruefen-lassen" onClick={e => { e.preventDefault(); navigateToArtikel("nebenkostenabrechnung-pruefen-lassen"); }} style={{ color: C.brandStrong, fontWeight: 600 }}>Nebenkostenabrechnung prüfen lassen: was kosten die Alternativen?</a>
+          </p>
+        </div>
+        <p style={{ fontSize: 14, color: C.textDim, lineHeight: 1.7, margin: "28px auto 0", maxWidth: 620, textAlign: "center" }}>
+          Grundlage ist der Betriebskostenspiegel des Deutschen Mieterbundes ({BUSINESS.RICHTWERTE_JAHR}), ein bundesweiter Durchschnitt: Eine Abweichung nach oben ist ein Anlass zur Nachfrage, kein Nachweis eines Fehlers.
         </p>
-      </details>
-
-      <p style={{ fontSize: 11.5, color: C.textDim, lineHeight: 1.7, margin: "20px auto 28px", maxWidth: 560, textAlign: "center", padding: "0 24px" }}>
-        Grundlage ist der Betriebskostenspiegel des Deutschen Mieterbundes ({BUSINESS.RICHTWERTE_JAHR}), ein bundesweiter Durchschnitt: Eine Abweichung nach oben ist ein Anlass zur Nachfrage, kein Nachweis eines Fehlers.
-      </p>
+      </div>
 
       <LegalFooter navigateTo={navigateTo} />
     </div>
