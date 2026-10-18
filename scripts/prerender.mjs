@@ -377,7 +377,6 @@ function buildEinfacheSeiteHtml(template, { pfad, step, inhalt }) {
 }
 
 function startseiteInhalt() {
-  const preisA = BUSINESS.PREIS_AUSWERTUNG.toLocaleString("de-DE", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
   const preisV = BUSINESS.PREIS_VOLL.toLocaleString("de-DE", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
   return `
     <!-- Diese H1 muss inhaltlich der H1 in src/pages/Welcome.jsx entsprechen.
@@ -393,7 +392,7 @@ function startseiteInhalt() {
     <ol>
       <li>Abrechnung als Foto oder PDF hochladen, die Posten werden automatisch ausgelesen.</li>
       <li>Kostenlose Basisanalyse: Jeder Posten wird gegen Richtwerte und Rechtsgrundlagen geprüft, ohne Konto und ohne Zahlung.</li>
-      <li>Auswertung als PDF, auf Wunsch mit versandfertigem Brief an den Vermieter.</li>
+      <li>Auswertung als PDF mit versandfertigem Brief an den Vermieter.</li>
     </ol>
     <h2>Was geprüft wird</h2>
     <ul>
@@ -401,10 +400,10 @@ function startseiteInhalt() {
       <li>Nicht umlagefähige Posten werden erkannt, etwa Verwaltungskosten oder, seit Juli 2024, der Kabelanschluss.</li>
       <li>Prüfung der 50/70-Regel nach Heizkostenverordnung sowie der Aufteilung der CO₂-Abgabe.</li>
       <li>Fristen nach § 556 Abs. 3 BGB: rechtzeitige Zustellung und Einwendungsfrist.</li>
-      <li>Im Paket „Auswertung + Brief“ zusätzlich ein Hinweis auf steuerlich absetzbare Positionen nach § 35a EStG.</li>
+      <li>Dazu ein Hinweis auf steuerlich absetzbare Positionen nach § 35a EStG.</li>
     </ul>
     <h2>Was es kostet</h2>
-    <p>Die Basisanalyse ist kostenlos und ohne Registrierung. Die Auswertung als PDF kostet einmalig ${preisA} €. Für ${preisV} € kommt ein fertiger Brief an den Vermieter dazu, je nach Ergebnis Widerspruch oder Aufforderung zur Belegeinsicht, plus ein Hinweis auf steuerlich absetzbare Posten. Kein Abo. <a href="/ratgeber/nebenkostenabrechnung-pruefen-lassen">Nebenkostenabrechnung prüfen lassen: was kosten die Alternativen?</a></p>
+    <p>Die Basisanalyse ist kostenlos und ohne Registrierung. Die Auswertung als PDF kostet einmalig ${preisV} €. Darin enthalten sind ein fertiger Brief an den Vermieter, je nach Ergebnis Widerspruch oder Aufforderung zur Belegeinsicht, und ein Hinweis auf steuerlich absetzbare Posten. Kein Abo. <a href="/ratgeber/nebenkostenabrechnung-pruefen-lassen">Nebenkostenabrechnung prüfen lassen: was kosten die Alternativen?</a></p>
     <h2>Worauf die Prüfung beruht</h2>
     <p>Grundlage sind der Betriebskostenspiegel des Deutschen Mieterbundes für das Abrechnungsjahr ${escapeHtml(BUSINESS.RICHTWERTE_JAHR)}, § 2 der Betriebskostenverordnung, die Heizkostenverordnung, das CO₂-Kostenaufteilungsgesetz und § 35a EStG. Der Betriebskostenspiegel ist ein bundesweiter Durchschnitt ohne regionale Aufschlüsselung: Eine Abweichung nach oben ist ein Anlass zur Nachfrage, kein Nachweis eines Fehlers.</p>
     <p><a href="/pruefen/wohnung">Kostenlos prüfen</a> · <a href="/ratgeber">Ratgeber</a> · <a href="/faq">Häufige Fragen</a> · <a href="/ueber-uns">Über uns</a></p>
