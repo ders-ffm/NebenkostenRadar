@@ -60,12 +60,12 @@ const WERKZEUGE_ROH = [
         schritte: [
           "Abrechnung als Foto oder PDF hochladen. Die Posten werden automatisch erkannt, du bestätigst sie kurz.",
           "Kostenlose Basisanalyse: Für jeden Posten siehst du, ob er zulässig ist und wie er im Vergleich liegt. Ohne Konto, ohne Zahlung.",
-          "Wenn du willst: Auswertung als PDF oder zusätzlich den fertigen Brief an deinen Vermieter.",
+          "Wenn du willst: Auswertung als PDF mit fertigem Brief an deinen Vermieter.",
         ],
       },
       {
         h2: "Was es kostet",
-        text: () => `Die Basisanalyse ist kostenlos. Die Auswertung aller Posten als PDF kostet einmalig ${euro(BUSINESS.PREIS_AUSWERTUNG)}. Für ${euro(BUSINESS.PREIS_VOLL)} bekommst du zusätzlich einen fertigen Brief an deinen Vermieter, passend zum Ergebnis: den Widerspruch mit allen Beanstandungen oder, wenn nichts auffällt, die Aufforderung zur Belegeinsicht nach § 259 BGB. Dazu kommt ein Hinweis auf steuerlich absetzbare Posten (§ 35a EStG). Kein Abo, keine Registrierung.`,
+        text: () => `Die Basisanalyse ist kostenlos. Die Auswertung aller Posten als PDF kostet einmalig ${euro(BUSINESS.PREIS_VOLL)}. Darin enthalten ist ein fertiger Brief an deinen Vermieter, passend zum Ergebnis: den Widerspruch mit allen Beanstandungen oder, wenn nichts auffällt, die Aufforderung zur Belegeinsicht nach § 259 BGB. Dazu kommt ein Hinweis auf steuerlich absetzbare Posten (§ 35a EStG). Kein Abo, keine Registrierung.`,
       },
       {
         h2: "Was wir nicht können",

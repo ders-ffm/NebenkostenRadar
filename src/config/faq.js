@@ -60,11 +60,9 @@ export const FAQ_STARTSEITE = [
   {
     frage: "Warum sollte ich zahlen, wenn ich auch selbst prüfen könnte?",
     antwort:
-      "Könntest du. Der Betriebskostenspiegel ist öffentlich, die BetrKV ebenfalls. Was du dafür brauchst: den Richtwert je Position finden und umrechnen, den Umlageschlüssel und die 50/70-Regel nachvollziehen, die CO₂-Aufteilung nachrechnen und daraus einen Brief formulieren, der die richtigen Vorschriften nennt. Genau diese Arbeit nimmt dir die Auswertung ab, für " +
-      euro(BUSINESS.PREIS_AUSWERTUNG) +
-      " bzw. " +
+      "Könntest du. Der Betriebskostenspiegel ist öffentlich, die BetrKV ebenfalls. Was du dafür brauchst: den Richtwert je Position finden und umrechnen, den Umlageschlüssel und die 50/70-Regel nachvollziehen, die CO₂-Aufteilung nachrechnen und daraus einen Brief formulieren, der die richtigen Vorschriften nennt. Genau diese Arbeit nimmt dir die Auswertung mit Brief ab, für einmalig " +
       euro(BUSINESS.PREIS_VOLL) +
-      " mit Brief. Ein Mieterverein kostet Jahresbeitrag, eine anwaltliche Prüfung meist ein Vielfaches des Streitwerts bei kleineren Beträgen.",
+      ". Ein Mieterverein kostet Jahresbeitrag, eine anwaltliche Prüfung meist ein Vielfaches des Streitwerts bei kleineren Beträgen.",
   },
   {
     // Verschoben von der Startseite am 10.09.2026 (Stefans Rückmeldung: die
