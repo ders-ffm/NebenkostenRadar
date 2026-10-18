@@ -59,6 +59,16 @@ const ABSCHNITTE = [
     "Ohne diese Zustimmung erhältst du keine solche E-Mail. Deine Einwilligung kannst du jederzeit mit einem Klick auf den Abmeldelink in der jeweiligen E-Mail widerrufen: die Verarbeitung bis zum Widerruf bleibt davon unberührt (Art. 7 Abs. 3 DSGVO).",
     "Deine E-Mail-Adresse und dein Vorname werden dafür separat in unserer Kaufhistorie hinterlegt, bis die Mail verschickt wurde oder du widerrufst.",
   ]},
+  { t: "3b. Bitte um eine Bewertung (optional)", lines: [
+    "Beim Kauf kannst du gesondert zustimmen, dass wir dich einige Tage später einmalig per E-Mail fragen, ob du NebenkostenRadar bewerten möchtest. Rechtsgrundlage: Art. 6 Abs. 1 lit. a DSGVO (Einwilligung). Die Zustimmung zur Rabatt-Mail (Abschnitt 3a) umfasst das nicht.",
+    "Wir verwenden dafür deine E-Mail-Adresse und deinen Vornamen aus der Bestellung und vermerken, dass die Mail verschickt wurde. Ob und wo du bewertest, entscheidest du selbst. Der Link führt zu einem externen Bewertungsportal, für das dessen eigene Datenschutzhinweise gelten.",
+    "Widerruf jederzeit über den Abmeldelink in der E-Mail oder per Nachricht an support@nebenkostenradar.com (Art. 7 Abs. 3 DSGVO).",
+  ]},
+  { t: "3c. Anonyme Zählung und Partnerlinks", lines: [
+    "Um zu verstehen, wie viele Besucher eine Prüfung beginnen, ein Ergebnis sehen und den Kauf starten, zählt unser Server diese drei Schritte als reine Tagessummen (z. B. „am 03.11. wurden 12 Prüfungen gestartet“). Dabei werden weder IP-Adresse noch eine Kennung gespeichert, und es werden keine Cookies oder ähnliche Techniken auf deinem Gerät eingesetzt. Rechtsgrundlage: Art. 6 Abs. 1 lit. f DSGVO (berechtigtes Interesse an der Verbesserung unseres Angebots).",
+    "Kommst du über den Link eines Partners zu uns (Adresse mit „?p=“ und einem Kürzel), zählen wir den Besuch ebenso als Tagessumme für dieses Kürzel. Kaufst du im selben Besuch, speichern wir das Kürzel bei deiner Bestellung, damit wir sehen, welche Partner zu Käufen führen. Partner erhalten von uns keine personenbezogenen Daten. Rechtsgrundlage: Art. 6 Abs. 1 lit. f DSGVO.",
+    "Aus den gespeicherten Eingaben bezahlter Prüfungen erstellen wir außerdem anonyme Statistiken, z. B. welche Kostenarten am häufigsten auffällig sind. Ausgewertet und veröffentlicht werden nur Summen und Anteile über mindestens 30 Prüfungen, nie einzelne Abrechnungen. Diese Weiterverarbeitung ist mit dem ursprünglichen Zweck vereinbar (Art. 6 Abs. 4 DSGVO); die Speicherdauer (Abschnitt 2) verlängert sich dadurch nicht.",
+  ]},
   { t: "4. Cookies und Webanalyse", lines: [
     "Diese Website verwendet Google Analytics (Google Ireland Ltd., Gordon House, Barrow Street, Dublin 4, Irland) ausschließlich nach deiner ausdrücklichen Einwilligung (§ 25 Abs. 1 TDDDG, Art. 6 Abs. 1 lit. a DSGVO): das Skript wird technisch erst nach deiner Zustimmung geladen. Du kannst die Einwilligung im Cookie-Banner ablehnen und eine erteilte Einwilligung jederzeit über den Link „Cookie-Einstellungen“ unten auf jeder Seite widerrufen; dabei werden die Analytics-Cookies gelöscht (Art. 7 Abs. 3 DSGVO). Technisch notwendige Cookies sind gemäß § 25 Abs. 2 TDDDG ohne Einwilligung zulässig.",
     "Google Analytics Datenschutzerklärung: policies.google.com/privacy",
@@ -99,7 +109,9 @@ const ABSCHNITTE = [
     // Fotos nicht über die Anfrage hinaus. Laut Anthropic werden API-Daten
     // standardmäßig bis zu 30 Tage aufbewahrt (privacy.claude.com, geprüft
     // am 17.10.2026).
-    "Diese Datenschutzerklärung gilt ab 17.10.2026.",
+    // 18.10.2026: Abschnitte 3b (Bewertungsbitte mit eigener Einwilligung)
+    // und 3c (anonyme Tageszähler, Partnerlinks, anonyme Statistik).
+    "Diese Datenschutzerklärung gilt ab 18.10.2026.",
   ]},
 ];
 
