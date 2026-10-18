@@ -15,6 +15,7 @@ import { ARTIKEL } from "./artikel.js";
 import { IS_DEMO } from "./config/business.js";
 import { buildResult, ALLE_POSTEN } from "./lib/analyse.js";
 import { toNum } from "./lib/format.js";
+import { zaehle } from "./lib/messung.js";
 // Nur für die Voraussetzungs-Anzeige weiter unten. THEME wird ohnehin von
 // jeder Seite geladen, der Import kostet hier nichts zusätzlich, verhindert
 // aber fest eingetippte Farbwerte, die beim nächsten Design-Wechsel
@@ -272,6 +273,11 @@ export default function App() {
   // Opt-in für Rabatt-Mail 10 Monate nach Kauf (Art. 6 Abs. 1 lit. a DSGVO — siehe Datenschutz.jsx Abschnitt 3a).
   // Bewusst NICHT vorausgewählt (echtes Opt-in, keine Vorbelegung).
   const [marketingOptIn, setMarketingOptIn] = useState(false);
+  // Einwilligung in die einmalige Bewertungsbitte nach dem Kauf (18.10.2026,
+  // Datenschutz.jsx Abschnitt 3b). Eigene Checkbox, weil eine Einwilligung
+  // zweckgebunden ist: Die Zustimmung zur Rabatt-Mail deckt sie nicht ab.
+  // Bewertungsbitten per E-Mail sind Werbung (BGH, 10.07.2018, VI ZR 225/17).
+  const [bewertungOptIn, setBewertungOptIn] = useState(false);
   // Zustimmung zum vorzeitigen Erlöschen des Widerrufsrechts (§ 356 Abs. 5 BGB,
   // siehe Result.jsx-Checkbox). Bewusst hier oben statt lokal in Result.jsx,
   // damit der Wert bis zum Kauf-Request in Adressen.jsx erhalten bleibt und
@@ -358,8 +364,15 @@ export default function App() {
     // die Analyse selbst ist regelbasiert und läuft sofort, ohne externen Aufruf.
     await new Promise(r => setTimeout(r, 6300));
     setResult(ergebnis);
+    zaehle("ergebnis"); // anonym, siehe src/lib/messung.js
     navigateTo("result");
   }
+
+  // Anonymer Zähler "Prüfung gestartet" (18.10.2026): einmal pro
+  // Seitenaufruf, sobald jemand den ersten Schritt der Prüfung erreicht.
+  useEffect(() => {
+    if (step === "wohnung") zaehle("start");
+  }, [step]);
 
   // Der Nutzer hat sich entschieden, die begonnene Prüfung fortzusetzen.
   // Erst hier werden die gespeicherten Werte tatsächlich angewendet.
@@ -403,6 +416,7 @@ export default function App() {
     entwurf, entwurfUebernehmen, entwurfVerwerfen,
     gekauft, setGekauft, stufe, setStufe,
     marketingOptIn, setMarketingOptIn,
+    bewertungOptIn, setBewertungOptIn,
     widerrufOk, setWiderrufOk,
     ratgeberArtikel, IS_DEMO,
     entwurfLadeFehler,
