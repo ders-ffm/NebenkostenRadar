@@ -634,10 +634,18 @@ const ARTIKEL_ROH = [
     },
     {
       id: "wasserkosten-und-kaltwasserzaehler-in-der-nebenkostenabrechnung",
+      // SEO-LAUF 18.10.2026: 249 Impressionen, Ø Position 7,4, 0 Klicks. Bisher
+      // ohne eigenen Suchtitel ("Wasserkosten und Zähler prüfen | …") und
+      // ohne Beschreibung. 0,29 € = DMB-Richtwert Wasser/Abwasser
+      // (business.js, RICHTWERTE.wasser_abwasser); bei neuer DMB-Ausgabe
+      // hier, in metaBeschreibung und im Absatz "Zur Orientierung" mitziehen.
+      seoTitel: "Wasserkosten zu hoch? Schnitt 0,29 €/m², Zähler, Eichfrist",
+      metaBeschreibung: "Wasser und Abwasser kosten Mieter im Schnitt 0,29 € pro m² und Monat (DMB). Was umlagefähig ist, was bei abgelaufener Eichfrist gilt und wie Sie prüfen.",
       titelKurz: "Wasserkosten und Zähler prüfen",
       titel: "Wasserkosten und Kaltwasserzähler in der Nebenkostenabrechnung 2026: Was Mieter wissen müssen",
       teaser: "Wasserkosten zählen zu den größten Posten in der Nebenkostenabrechnung und Kaltwasserzähler sind dabei oft eine Fehlerquelle. Erfahren Sie, welche Kosten umlagefähig sind, wie die Eichpflicht funktioniert und wie Sie Ihre Abrechnung selbst prüfen.",
       datum: "Juli 2026",
+      aktualisiert: "Oktober 2026",
       lesezeit: "8 Min.",
       bild: "/artikelbilder/wasserkosten-und-kaltwasserzaehler-in-der-nebenkostenabrechnung.jpg",
       bildAlt: "Mehrere Wasserzähler an Rohren an einer Wand",
@@ -676,11 +684,11 @@ const ARTIKEL_ROH = [
         },
         {
                 "typ": "text",
-                "text": "Kaltwasserzähler unterliegen einer gesetzlichen Eichpflicht nach dem Mess- und Eichgesetz (MessEG). Die Eichfrist für Kaltwasserzähler beträgt sechs Jahre, während Warmwasserzähler bereits nach fünf Jahren neu geeicht werden müssen. Ist diese Frist abgelaufen, gelten die abgelesenen Werte als anfechtbar, weil die Messgenauigkeit rechtlich nicht mehr gesichert ist."
+                "text": "Kaltwasserzähler unterliegen einer gesetzlichen Eichpflicht nach dem Mess- und Eichgesetz (MessEG). Die Eichfrist für Kaltwasserzähler beträgt sechs Jahre, während Warmwasserzähler bereits nach fünf Jahren neu geeicht werden müssen. Ist diese Frist abgelaufen, spricht keine Vermutung mehr dafür, dass die abgelesenen Werte stimmen."
         },
         {
                 "typ": "text",
-                "text": "Ist die Eichfrist bei den Zählern in Ihrer Wohnung überschritten, können Sie als Mieter die Abrechnung entsprechend kürzen. Verantwortlich für die rechtzeitige Erneuerung ist grundsätzlich der Vermieter beziehungsweise die von ihm beauftragte Hausverwaltung: ein abgelaufener Eichtermin geht nicht zulasten des Mieters."
+                "text": "Was dann gilt, hat der Bundesgerichtshof mit Urteil vom 17. November 2010 (Az. VIII ZR 112/10) entschieden: Der Vermieter darf die Werte eines nicht mehr geeichten Zählers zwar verwenden, muss aber beweisen, dass sie stimmen, etwa mit dem Prüfbericht einer staatlich anerkannten Prüfstelle. Gelingt ihm das nicht, sind die Werte nicht verwertbar, und der Verbrauch muss anders ermittelt werden, zum Beispiel durch Schätzung anhand früherer Abrechnungen. Ein pauschales Kürzungsrecht wie bei der Heizkostenverordnung gibt es für Kaltwasser nicht. Für die rechtzeitige Erneuerung der Zähler ist der Vermieter verantwortlich."
         },
         {
                 "typ": "hinweis",
@@ -708,7 +716,7 @@ const ARTIKEL_ROH = [
         },
         {
                 "typ": "text",
-                "text": "Zur Orientierung: In Deutschland liegt der durchschnittliche Wasserverbrauch bei etwa 125 Litern pro Person und Tag, also rund 45 Kubikmetern im Jahr. Bei einem Durchschnittspreis von etwa 2,20 Euro pro Kubikmeter ergeben sich daraus grob geschätzte Kosten von rund 100 Euro pro Person und Jahr allein für Frischwasser: ein Wert, an dem Sie Ihre eigene Abrechnung grob spiegeln können."
+                "text": "Zur Orientierung: Laut Betriebskostenspiegel des Deutschen Mieterbunds (Abrechnungsjahr 2024, veröffentlicht am 18.12.2025) kosten Wasser und Abwasser im Schnitt 0,29 Euro pro Quadratmeter und Monat. Für eine 75-Quadratmeter-Wohnung sind das rund 261 Euro im Jahr. Liegt Ihr Betrag deutlich darüber, ist das kein Beweis für einen Fehler, aber ein guter Grund, die Rechnung des Versorgers und die Zählerstände einzusehen."
         },
         {
                 "typ": "verweis",
@@ -721,7 +729,7 @@ const ARTIKEL_ROH = [
         },
         {
                 "typ": "text",
-                "text": "Ein häufiger Streitpunkt ist der nachträgliche Wechsel des Verteilerschlüssels. Ein Wechsel während der laufenden Vertragslaufzeit ist unzulässig, wenn er nicht vertraglich gedeckt ist, und darf nicht einseitig zulasten des Mieters erfolgen. Ebenso problematisch ist die Umlage von Wasserkosten für leerstehende Wohnungen: Diese Kosten trägt der Vermieter, sie dürfen nicht anteilig auf die übrigen Mieter verteilt werden."
+                "text": "Ein häufiger Streitpunkt ist der nachträgliche Wechsel des Verteilerschlüssels. Einseitig darf der Vermieter den Maßstab nur in eine Richtung ändern: Nach § 556a Abs. 2 BGB kann er durch Erklärung in Textform bestimmen, dass künftig ganz oder teilweise nach erfasstem Verbrauch abgerechnet wird, und zwar nur vor Beginn eines Abrechnungszeitraums. Andere einseitige Wechsel deckt das Gesetz nicht. Ebenso problematisch ist die Umlage von Wasserkosten für leerstehende Wohnungen: Diese Kosten trägt der Vermieter, sie dürfen nicht anteilig auf die übrigen Mieter verteilt werden."
         },
         {
                 "typ": "liste",
@@ -786,8 +794,12 @@ const ARTIKEL_ROH = [
     },
     {
       id: "betriebskostenabrechnung-fristen-und-verjaehrung-2026",
-      seoTitel: "Nebenkostenabrechnung: alle Fristen {JAHR} im Überblick",
-      metaBeschreibung: "Abrechnung {VORJAHR} muss bis 31.12.{JAHR} da sein. Wie lange Sie widersprechen können und wann Nachforderungen verjähren, mit kostenlosem Fristenrechner.",
+      // SEO-LAUF 18.10.2026: 491 Impressionen in 28 Tagen bei Ø Position 8,0,
+      // aber 0 Klicks. Der Titel nennt jetzt den konkreten Stichtag, nach
+      // dem Mieter mit der Abrechnung in der Hand suchen.
+      seoTitel: "Nebenkostenabrechnung {VORJAHR}: bis 31.12.{JAHR} – alle Fristen",
+      metaBeschreibung: "Kommt die Abrechnung {VORJAHR} nach dem 31.12.{JAHR}, ist eine Nachzahlung meist ausgeschlossen. Dazu: 12 Monate Widerspruch, 3 Jahre Verjährung, Fristenrechner.",
+      aktualisiert: "Oktober 2026",
       titelKurz: "Fristen und Verjährung 2026",
       titel: "Betriebskostenabrechnung 2026: Fristen und Verjährung: was Mieter wissen müssen",
       teaser: "Wann muss der Vermieter abrechnen, wie lange können Sie widersprechen und ab wann sind Nachforderungen verjährt? Der komplette Überblick über alle Fristen rund um die Betriebskostenabrechnung 2026.",
@@ -909,6 +921,15 @@ const ARTIKEL_ROH = [
                 "text": "Jetzt Abrechnung kostenlos prüfen lassen."
         }
 ],
+      // Fragenblock (18.10.2026): "Ähnliche Fragen" bei google.de für
+      // "nebenkostenabrechnung frist" (abgerufen 18.10.2026).
+      faq: [
+        { frage: "Wie lange darf sich der Vermieter mit der Nebenkostenabrechnung Zeit lassen?", antwort: "Zwölf Monate nach Ende des Abrechnungszeitraums (§ 556 Abs. 3 Satz 2 BGB). Läuft der Abrechnungszeitraum vom 1. Januar bis 31. Dezember {VORJAHR}, muss die Abrechnung spätestens am 31. Dezember {JAHR} bei Ihnen sein. Maßgeblich ist der Zugang, nicht das Datum auf dem Schreiben." },
+        { frage: "Was passiert, wenn die Nebenkostenabrechnung zu spät kommt?", antwort: "Dann kann der Vermieter keine Nachzahlung mehr verlangen, es sei denn, er hat die Verspätung nicht zu vertreten (§ 556 Abs. 3 Satz 3 BGB). Ein Guthaben aus der Abrechnung muss er Ihnen trotzdem auszahlen." },
+        { frage: "Wann muss ich die Nebenkostenabrechnung nicht mehr bezahlen?", antwort: "Wenn sie erst nach Ablauf der Zwölf-Monats-Frist bei Ihnen eingeht, wenn die Forderung verjährt ist (drei Jahre ab dem Ende des Jahres, in dem sie entstanden ist, §§ 195, 199 BGB) oder soweit sie Kosten enthält, die nicht umgelegt werden dürfen. Bei einer formell unwirksamen Abrechnung ist die Nachzahlung erst fällig, wenn eine ordnungsgemäße Abrechnung vorliegt." },
+        { frage: "Bis wann kann ich der Nebenkostenabrechnung widersprechen?", antwort: "Bis zum Ablauf des zwölften Monats nach Zugang der Abrechnung (§ 556 Abs. 3 Satz 5 BGB). Danach sind Einwendungen ausgeschlossen, es sei denn, Sie haben die Verspätung nicht zu vertreten." },
+        { frage: "Wie lange dürfen Nebenkosten rückwirkend eingefordert werden?", antwort: "Nur über die jährliche Abrechnung und nur, wenn diese innerhalb der Zwölf-Monats-Frist zugegangen ist. Eine so geltend gemachte Nachforderung verjährt nach drei Jahren, gerechnet ab dem Ende des Jahres, in dem die Abrechnung zuging (§§ 195, 199 BGB)." },
+      ],
     },
     {
       id: "heizkostenabrechnung-vermieterfehler-2026-leitfaden",
@@ -1208,39 +1229,47 @@ const ARTIKEL_ROH = [
     },
     {
       id: "widerspruch-nebenkostenabrechnung",
-      seoTitel: "Widerspruch Nebenkostenabrechnung: Frist, Muster, Anleitung",
-      metaBeschreibung: "Bis wann Sie widersprechen müssen, was in den Brief gehört und wie Sie Schritt für Schritt vorgehen. Mit allen Fristen nach § 556 BGB.",
+      // SEO-LAUF 18.10.2026 (siehe CHANGELOG): Search Console 28 Tage
+      // 992 Impressionen, Ø Position 10,2, CTR 0,8 %; zweitstärkste Seite
+      // in den KI-Übersichten (260 Impressionen). Titel bisher ohne Zahl,
+      // und die Seite versprach ein "Muster", das sie nicht enthielt. Jetzt:
+      // konkrete Frist im Titel, echter Musterbrief und Fragenblock.
+      seoTitel: "Widerspruch Nebenkostenabrechnung: 12 Monate Frist + Muster",
+      metaBeschreibung: "12 Monate ab Zugang (§ 556 Abs. 3 BGB), die Nachzahlung wird aber früher fällig. Mit kostenlosem Musterbrief zum Kopieren und Anleitung in 5 Schritten.",
       titelKurz: "Widerspruch Nebenkostenabrechnung",
-      titel: "Widerspruch Nebenkostenabrechnung 2026: Frist, Muster & Anleitung",
-      teaser: "12 Monate Zeit, aber nur 30 Tage für die Nachzahlung, viele Mieter verwechseln diese Fristen. Was Sie jetzt wissen müssen.",
+      titel: "Widerspruch Nebenkostenabrechnung {JAHR}: Frist, Musterbrief & Anleitung",
+      teaser: "12 Monate Zeit für den Widerspruch, aber die Nachzahlung wird früher fällig: Viele Mieter verwechseln diese Fristen. Mit Musterbrief zum Kopieren.",
       datum: "Juni 2026",
+      aktualisiert: "Oktober 2026",
       lesezeit: "6 Min.",
       bild: "/artikelbilder/widerspruch-nebenkostenabrechnung.jpg",
       bildAlt: "Person schreibt mit einem Stift auf einen Notizblock",
       kategorie: "Mietrecht",
       keywords: ["Widerspruch Nebenkostenabrechnung", "Frist", "Muster", "§ 556 BGB"],
       inhalt: [
-        { typ: "intro", text: "Sie haben Ihre Nebenkostenabrechnung erhalten und vermuten Fehler? Dann haben Sie als Mieter das Recht, innerhalb von 12 Monaten Widerspruch einzulegen. Doch Vorsicht: Die Zahlungsfrist für eine Nachzahlung beträgt nur 30 Tage, unabhängig vom Widerspruch. Wer das verwechselt, riskiert Verzugszinsen oder schlimmstenfalls die Kündigung." },
+        { typ: "intro", text: "Sie haben Ihre Nebenkostenabrechnung erhalten und vermuten Fehler? Dann haben Sie als Mieter das Recht, innerhalb von 12 Monaten nach Zugang Einwendungen zu erheben (§ 556 Abs. 3 Satz 5 BGB). Doch Vorsicht: Die Nachzahlung wird viel früher fällig, und der Widerspruch allein schiebt sie nicht auf. Wer das verwechselt, riskiert Verzugszinsen. Unten finden Sie einen Musterbrief zum Kopieren." },
         { typ: "h2", text: "Die zwei entscheidenden Fristen und warum viele Mieter sie verwechseln" },
         { typ: "text", text: "Das Mietrecht kennt zwei völlig unterschiedliche Fristen nach Erhalt der Nebenkostenabrechnung:" },
         { typ: "liste", items: [
-          "30 Tage: Zahlungsfrist für eine Nachzahlung (§ 286 BGB). Diese Frist gilt unabhängig davon, ob Sie Widerspruch einlegen. Lösung: Zahlen Sie unter Vorbehalt, schreiben Sie auf die Überweisung: 'Zahlung unter Vorbehalt der Überprüfung'.",
-          "12 Monate: Widerspruchsfrist gegen fehlerhafte Positionen (§ 556 Abs. 3 BGB). Die Frist beginnt mit dem Tag des Erhalts der Abrechnung.",
+          "Zahlung der Nachforderung: Sie wird nicht erst nach Ablauf der Widerspruchsfrist fällig. Spätestens 30 Tage nach Fälligkeit und Zugang der Abrechnung geraten Sie in Verzug, wenn die Abrechnung ausdrücklich auf diese Folge hinweist (§ 286 Abs. 3 BGB), nach einer Mahnung des Vermieters auch früher (§ 286 Abs. 1 BGB). Lösung: Zahlen Sie unter Vorbehalt, schreiben Sie auf die Überweisung: 'Zahlung unter Vorbehalt der Überprüfung'.",
+          "12 Monate: Frist für Ihre Einwendungen (§ 556 Abs. 3 Satz 5 BGB). Sie läuft ab Zugang der Abrechnung. Danach sind Einwendungen ausgeschlossen, es sei denn, Sie haben die Verspätung nicht zu vertreten (Satz 6).",
         ]},
         { typ: "hinweis", text: "Wichtig: Zahlung unter Vorbehalt schützt Sie. Auch wenn Sie die Nachzahlung leisten, können Sie innerhalb von 12 Monaten noch Widerspruch einlegen und zu viel gezahltes Geld zurückfordern." },
         { typ: "h2", text: "Wann lohnt sich ein Widerspruch?" },
         { typ: "text", text: "Ein Widerspruch ist sinnvoll wenn Ihre Abrechnung formelle oder inhaltliche Fehler enthält:" },
         { typ: "liste", items: [
-          "Formelle Fehler (gravierend): Abrechnung fehlt ganz, wurde zu spät zugestellt (nach dem 31.12. des Folgejahres), oder enthält keinen nachvollziehbaren Verteilerschlüssel. Folge: Die gesamte Abrechnung ist unwirksam. Sie müssen keine Nachzahlung leisten.",
+          "Zu spät zugestellt (später als zwölf Monate nach Ende des Abrechnungszeitraums, bei Kalenderjahr also nach dem 31.12. des Folgejahres): Eine Nachforderung ist dann in der Regel ausgeschlossen (§ 556 Abs. 3 Satz 3 BGB). Ein Guthaben steht Ihnen trotzdem zu.",
+          "Formelle Fehler: Es fehlen Pflichtangaben, etwa die Gesamtkosten oder ein nachvollziehbarer Verteilerschlüssel. Dann ist die Nachzahlung nicht fällig, bis eine ordnungsgemäße Abrechnung vorliegt.",
           "Inhaltliche Fehler: Nicht umlagefähige Posten (z.B. Kabelanschluss seit Juli 2024, Verwaltungskosten, Reparaturen), überhöhte Beträge über dem DMB-Richtwert, Verstoß gegen die Heizkostenverordnung.",
         ]},
+        { typ: "verweis", ziel: "nebenkostenabrechnung-formell-unwirksam", text: "Welche vier Angaben in jeder Abrechnung stehen müssen und was gilt, wenn eine fehlt, erklärt der Artikel zur formell unwirksamen Abrechnung." },
         { typ: "verweis", ziel: "kabelanschluss-nicht-umlagefaehig", text: "Kabelanschluss in Ihrer Abrechnung? Seit Juli 2024 ist dieser Posten grundsätzlich nicht mehr umlagefähig. Details im Artikel zur Rechtsänderung." },
-        { typ: "verweis", ziel: "betriebskostenspiegel-2024", text: "Nicht sicher, ob Ihre Beträge zu hoch sind? Der DMB-Betriebskostenspiegel 2024 zeigt die aktuellen Durchschnittswerte je Kostenart." },
+        { typ: "verweis", ziel: "betriebskostenspiegel-2024", text: "Nicht sicher, ob Ihre Beträge zu hoch sind? Der aktuelle DMB-Betriebskostenspiegel (Abrechnungsjahr 2024) zeigt die Durchschnittswerte je Kostenart." },
         { typ: "h2", text: "Schritt-für-Schritt: So legen Sie wirksam Widerspruch ein" },
         { typ: "schritte", items: [
           "Abrechnung systematisch prüfen: Jeden Posten auf Umlagefähigkeit (§ 2 BetrKV) und Plausibilität (DMB-Betriebskostenspiegel) prüfen.",
           "Fehler konkret benennen: Pauschal 'die Abrechnung ist falsch' reicht nicht, benennen Sie jeden strittigen Posten mit Betrag und Begründung.",
-          "Widerspruch schriftlich formulieren: Per Einschreiben mit Rückschein, nur so ist der Zugang beim Vermieter beweisbar.",
+          "Widerspruch schriftlich formulieren und nachweisbar zustellen, etwa per Einwurf-Einschreiben oder durch einen Boten, der den Einwurf bezeugen kann. Das Gesetz schreibt keine Form vor, aber Sie müssen den rechtzeitigen Zugang im Streitfall belegen können.",
           "Belegeinsicht anfordern: Sie haben das Recht, alle Originalrechnungen einzusehen (§ 259 BGB). Verlangen Sie die Belege immer, auch wenn Sie zahlen.",
           "Frist im Blick behalten: Spätestens 12 Monate nach Erhalt der Abrechnung muss der Widerspruch beim Vermieter eingegangen sein.",
         ]},
@@ -1255,15 +1284,31 @@ const ARTIKEL_ROH = [
           "Vorbehalt für weitere Einwände nach Belegeinsicht",
           "Bitte um schriftliche Stellungnahme",
         ]},
+        { typ: "h2", text: "Musterbrief: Widerspruch gegen die Nebenkostenabrechnung" },
+        { typ: "text", text: "Die folgende Vorlage können Sie kopieren und anpassen. Ersetzen Sie alle Angaben in eckigen Klammern. Nennen Sie nur Punkte, die auf Ihre Abrechnung tatsächlich zutreffen: Die beiden Beispiele sind Platzhalter, keine Prüfung Ihres Falls." },
+        { typ: "muster", titel: "Musterbrief Widerspruch Nebenkostenabrechnung", text: "[Ihr Name]\n[Straße und Hausnummer]\n[PLZ Ort]\n\n[Name des Vermieters oder der Hausverwaltung]\n[Straße und Hausnummer]\n[PLZ Ort]\n\n[Ort], [Datum]\n\nWiderspruch gegen die Betriebskostenabrechnung für den Zeitraum [01.01.{VORJAHR} bis 31.12.{VORJAHR}]\nMietobjekt: [Adresse, Lage der Wohnung]\n\nSehr geehrte Damen und Herren,\n\nIhre Betriebskostenabrechnung vom [Datum der Abrechnung] habe ich am [Datum des Zugangs] erhalten. Gegen diese Abrechnung erhebe ich nach § 556 Abs. 3 Satz 5 BGB folgende Einwendungen:\n\n1. [Position, z. B. Kabelanschluss], [Betrag] €: [Begründung, z. B. Seit dem 1. Juli 2024 nicht mehr als Betriebskosten umlagefähig.]\n2. [Position, z. B. Verwaltungskosten], [Betrag] €: [Begründung, z. B. Verwaltungskosten sind keine Betriebskosten, § 1 Abs. 2 Nr. 1 BetrKV.]\n\nBitte gewähren Sie mir Einsicht in die Originalbelege zu den genannten Positionen sowie zu [weitere Positionen] (§ 259 BGB). Nennen Sie mir dafür bitte einen Termin oder senden Sie mir Kopien der Belege.\n\nWeitere Einwendungen nach Einsicht in die Belege behalte ich mir vor. Eine etwaige Zahlung leiste ich nur unter dem Vorbehalt der Rückforderung.\n\nBitte senden Sie mir bis zum [Datum, etwa vier Wochen später] eine korrigierte Abrechnung oder eine schriftliche Stellungnahme.\n\nMit freundlichen Grüßen\n\n[Unterschrift]\n[Name]" },
+        { typ: "hinweis", text: "Der Musterbrief ist eine allgemeine Vorlage und ersetzt keine Rechtsberatung im Einzelfall. Ob eine Position in Ihrer Abrechnung tatsächlich zu beanstanden ist, hängt von Ihrem Mietvertrag und den Belegen ab." },
         { typ: "verweis", ziel: "nebenkostenabrechnung-pruefen-lassen", text: "Sie überlegen, Ihre Nebenkostenabrechnung prüfen zu lassen? Mieterverein, Anwalt, Rechtsschutz und Online-Prüfung im Vergleich, mit Kosten und Dauer." },
         { typ: "cta", text: "NebenkostenRadar erstellt den Widerspruchsbrief automatisch, mit allen Rechtsgrundlagen, auf Basis Ihrer konkreten Abrechnung." },
         { typ: "h2", text: "Häufige Fehler beim Widerspruch und wie Sie sie vermeiden" },
         { typ: "liste", items: [
-          "Nur mündlich widersprechen: Gilt rechtlich nicht, immer schriftlich.",
+          "Nur mündlich widersprechen: Das Gesetz verlangt keine bestimmte Form, aber ohne schriftlichen Nachweis können Sie später kaum belegen, dass und wann Sie widersprochen haben.",
           "Zu pauschal formulieren: 'Die Abrechnung stimmt nicht' reicht nicht, konkrete Positionen nennen.",
           "Frist verpassen: Ab dem 13. Monat nach Erhalt sind Einwände in der Regel ausgeschlossen.",
           "Nicht unter Vorbehalt zahlen: Wer die Nachzahlung ohne Vorbehalt zahlt, erschwert eine spätere Rückforderung.",
         ]},
+      ],
+      // Fragenblock (18.10.2026): Fragen aus dem Kasten "Ähnliche Fragen"
+      // bei google.de für "widerspruch nebenkostenabrechnung" und
+      // "… widerspruch frist" (abgerufen 18.10.2026). Sichtbar auf der Seite
+      // UND als FAQPage-Markup (prerender.mjs), Antworten nur mit Normen
+      // bzw. bereits verifizierten Urteilen.
+      faq: [
+        { frage: "Muss ich trotz Widerspruch die Nachzahlung bezahlen?", antwort: "Ein Widerspruch allein schiebt die Zahlung nicht auf. Sicherer ist es, unter Vorbehalt zu zahlen und zu viel Gezahltes später zurückzufordern. Eine Ausnahme gilt, solange der Vermieter eine berechtigte Bitte um Belegeinsicht nicht erfüllt: Dann dürfen Sie die Nachzahlung zurückhalten (§ 273 Abs. 1 BGB; BGH, Urteil vom 8. März 2006, Az. VIII ZR 78/05). Kam die Abrechnung zu spät, ist eine Nachforderung in der Regel ganz ausgeschlossen (§ 556 Abs. 3 Satz 3 BGB)." },
+        { frage: "Wie lange kann ich gegen die Nebenkostenabrechnung Widerspruch einlegen?", antwort: "Ihre Einwendungen müssen dem Vermieter spätestens bis zum Ablauf des zwölften Monats nach Zugang der Abrechnung vorliegen (§ 556 Abs. 3 Satz 5 BGB). Danach sind sie ausgeschlossen, es sei denn, Sie haben die Verspätung nicht zu vertreten (Satz 6). Notieren Sie deshalb das Datum, an dem die Abrechnung bei Ihnen angekommen ist." },
+        { frage: "Muss der Vermieter auf einen Widerspruch reagieren?", antwort: "Eine gesetzliche Antwortfrist gibt es nicht. Der Vermieter muss Ihnen aber auf Verlangen Einsicht in die Belege gewähren (§ 259 BGB). Ihre Einwendungen bleiben auch dann wirksam erhoben, wenn er nicht antwortet, sofern sie rechtzeitig bei ihm eingegangen sind." },
+        { frage: "Ist ein Widerspruch per E-Mail wirksam?", antwort: "Das Gesetz verlangt nur, dass Sie dem Vermieter Ihre Einwendungen mitteilen (§ 556 Abs. 3 Satz 5 BGB), eine bestimmte Form schreibt es nicht vor. Entscheidend ist, dass Sie den rechtzeitigen Zugang später nachweisen können. Ein Brief per Einwurf-Einschreiben ist dafür ein verbreiteter Weg." },
+        { frage: "Was passiert nach einem Widerspruch?", antwort: "Der Vermieter prüft Ihre Einwendungen und korrigiert die Abrechnung, legt Belege vor oder bleibt bei seiner Abrechnung. Bleibt es strittig, können ein Mieterverein oder eine Anwältin für Mietrecht weiterhelfen. Bis zur Klärung ist die Zahlung unter Vorbehalt der sichere Weg." },
       ],
     },
     {
@@ -1294,7 +1339,14 @@ const ARTIKEL_ROH = [
     },
     {
       id: "betriebskostenspiegel-2024",
-      seoTitel: "Betriebskostenspiegel {JAHR}: alle DMB-Werte je Kostenart",
+      // SEO-LAUF 18.10.2026: 1.086 Impressionen, Ø Position 14,5, CTR 0,7 %;
+      // stärkste Seite in den KI-Übersichten (322) und bei "betriebskostenspiegel
+      // {JAHR}" als Quelle zitiert. Titel nennt jetzt die gesuchte Kernzahl.
+      // BEI NEUER DMB-AUSGABE (meist Dezember, scripts/richtwerte-monitor.mjs
+      // meldet sie): "2,67" hier, in metaBeschreibung, Intro, Rechenbeispiel
+      // und im Fragenblock unten mitziehen; RICHTWERTE in business.js sind
+      // die Quelle (gesamt: 2.67).
+      seoTitel: "Betriebskostenspiegel {JAHR}: 2,67 €/m² – alle DMB-Werte",
       metaBeschreibung: "2,67 € pro m² und Monat im Schnitt: die aktuellen DMB-Werte für alle Nebenkostenarten (Abrechnungsjahr 2024), mit Tabelle und Rechenbeispiel für 75 m².",
       // WICHTIG: Dieses Feld, nicht "titel", landet im <title> der Seite und
       // damit in der Google-Trefferliste (siehe artikelTitel() in
@@ -1336,6 +1388,7 @@ const ARTIKEL_ROH = [
       titel: "Betriebskostenspiegel {JAHR}: was ist normal? Aktuelle DMB-Zahlen",
       teaser: "Der Deutsche Mieterbund veröffentlicht jährlich Durchschnittswerte für alle Nebenkostenarten. Die aktuellen Zahlen stammen aus dem Abrechnungsjahr 2024. Hier erfahren Sie, was für Ihre Wohnungsgröße normal ist und wann Ihre Abrechnung zu teuer ist.",
       datum: "September 2026",
+      aktualisiert: "Oktober 2026",
       lesezeit: "5 Min.",
       bild: "/artikelbilder/betriebskostenspiegel-2024.jpg",
       bildAlt: "Diagramme und Auswertungen auf einem Bildschirm",
@@ -1377,15 +1430,6 @@ const ARTIKEL_ROH = [
         ]},
         { typ: "hinweis", text: "Praktische Folge: Eine Abweichung nach oben ist ein Grund, Belege anzufordern, nicht mehr und nicht weniger. Erst wenn sich aus den Belegen keine sachliche Erklärung ergibt, wird daraus ein begründeter Einwand." },
 
-        { typ: "h2", text: "Häufige Fragen zum Betriebskostenspiegel" },
-        { typ: "liste", items: [
-          "Woher stammen die Daten? Vom Deutschen Mieterbund, ausgewertet aus bundesweit eingereichten realen Abrechnungen. Die Ausgabe für das Abrechnungsjahr 2024 wurde am 18.12.2025 veröffentlicht.",
-          "Warum gibt es keine Werte für meine Stadt? Auf Stadt- oder Kreisebene existieren in Deutschland keine belastbaren Betriebskostendaten. Was dort veröffentlicht wird, sind Mietspiegel: die bilden die Kaltmiete ab, nicht die Nebenkosten.",
-          "Ist eine Abweichung nach oben ein Beweis für einen Fehler? Nein. Sie ist ein Anlass, Belegeinsicht zu verlangen (§ 259 BGB). Diesen Anspruch haben Sie ohne Angabe von Gründen.",
-          "Muss ich zahlen, wenn ich die Abrechnung anzweifle? Ja und zwar zuerst. Zahlen Sie unter Vorbehalt und widersprechen Sie parallel. Wer nicht zahlt, riskiert Verzugszinsen und im Extremfall die Kündigung, unabhängig davon, ob der Widerspruch später Erfolg hat.",
-          "Wie aktuell sind die Werte auf dieser Seite? Sie stammen direkt aus der Konfiguration, mit der auch unsere Prüfung rechnet. Ratgeber und Prüfbericht können deshalb nicht auseinanderlaufen.",
-          "Ist NebenkostenRadar unabhängig? Ja. Keine Verbindung zu Vermietern, Hausverwaltungen, Messdienstleistern oder Immobilienunternehmen. Wir verkaufen ausschließlich die Prüfung an Mieter.",
-        ]},
         { typ: "hinweis", text: "Zahlung unter Vorbehalt: Schreiben Sie bei der Überweisung 'Zahlung unter Vorbehalt der Überprüfung' in den Verwendungszweck. Damit erhalten Sie sich den Rückforderungsanspruch, ohne in Zahlungsverzug zu geraten." },
 
         { typ: "h2", text: "Tabelle auf der eigenen Website einbinden" },
@@ -1400,6 +1444,21 @@ const ARTIKEL_ROH = [
         { typ: "verweis", ziel: "betriebskostenabrechnung-fristen-und-verjaehrung-2026", text: "Wie lange Ihr Vermieter für die Abrechnung Zeit hat und bis wann Sie widersprechen können, erklärt der Ratgeber zu Fristen und Verjährung." },
         { typ: "verweis", ziel: "nebenkostenabrechnung-pruefen-lassen", text: "Ihre Abrechnung liegt deutlich über dem Durchschnitt und Sie möchten sie prüfen lassen? Alle Wege mit Kosten und Fristen im Vergleich." },
         { typ: "cta", text: "NebenkostenRadar macht diesen Vergleich automatisch für jeden Posten Ihrer Abrechnung und sagt Ihnen dazu, wo eine Abweichung erklärbar ist und wo nicht." },
+      ],
+      // Fragenblock (18.10.2026): Bisher stand er als einfache Liste mitten im
+      // Artikel. Jetzt als eigener Block mit Frage-Überschriften und
+      // FAQPage-Markup; Fragen 1 und 2 aus "Ähnliche Fragen" bei google.de
+      // für "betriebskostenspiegel {JAHR}" (abgerufen 18.10.2026). Zahlen:
+      // DMB-Meldung vom 18.12.2025 (mieterbund.de), abgerufen 18.10.2026.
+      faq: [
+        { frage: "Wie viel Nebenkosten sind {JAHR} normal?", antwort: "Laut aktuellem Betriebskostenspiegel des Deutschen Mieterbunds (Abrechnungsjahr 2024, veröffentlicht am 18.12.2025) zahlen Mieter im Schnitt 2,67 € pro Quadratmeter und Monat, Heizung und Warmwasser eingerechnet. Fallen alle denkbaren Kostenarten an, können es bis zu 3,68 € sein. Für eine 75-Quadratmeter-Wohnung entspricht der Durchschnitt rund 200 € im Monat." },
+        { frage: "Wie hoch sind die durchschnittlichen Heizkosten pro Quadratmeter?", antwort: "Für Heizung und Warmwasser nennt der Deutsche Mieterbund für das Abrechnungsjahr 2024 durchschnittlich 1,32 € pro Quadratmeter und Monat, als Spitzenwert 2,18 €. Wie hoch die Kosten im Einzelfall sind, hängt stark vom energetischen Zustand des Gebäudes, vom Energieträger und vom Versorger ab." },
+        { frage: "Woher stammen die Daten?", antwort: "Vom Deutschen Mieterbund, ausgewertet aus bundesweit eingereichten realen Abrechnungen. Die Ausgabe für das Abrechnungsjahr 2024 wurde am 18.12.2025 veröffentlicht." },
+        { frage: "Warum gibt es keine Werte für meine Stadt?", antwort: "Auf Stadt- oder Kreisebene existieren in Deutschland keine belastbaren Betriebskostendaten. Was dort veröffentlicht wird, sind Mietspiegel: Die bilden die Kaltmiete ab, nicht die Nebenkosten." },
+        { frage: "Ist eine Abweichung nach oben ein Beweis für einen Fehler?", antwort: "Nein. Sie ist ein Anlass, Belegeinsicht zu verlangen (§ 259 BGB). Diesen Anspruch haben Sie ohne Angabe von Gründen." },
+        { frage: "Muss ich zahlen, wenn ich die Abrechnung anzweifle?", antwort: "In der Regel ja, und zwar zuerst. Zahlen Sie unter Vorbehalt und widersprechen Sie parallel. Wer nicht zahlt, riskiert Verzugszinsen, unabhängig davon, ob der Widerspruch später Erfolg hat. Solange der Vermieter eine berechtigte Bitte um Belegeinsicht nicht erfüllt, dürfen Sie die Nachzahlung allerdings zurückhalten (§ 273 Abs. 1 BGB)." },
+        { frage: "Wie aktuell sind die Werte auf dieser Seite?", antwort: "Sie stammen direkt aus der Konfiguration, mit der auch unsere Prüfung rechnet. Ratgeber und Prüfbericht können deshalb nicht auseinanderlaufen." },
+        { frage: "Ist NebenkostenRadar unabhängig?", antwort: "Ja. Keine Verbindung zu Vermietern, Hausverwaltungen, Messdienstleistern oder Immobilienunternehmen. Wir verkaufen ausschließlich die Prüfung an Mieter." },
       ],
     },
 
