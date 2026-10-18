@@ -2,6 +2,29 @@
 
 Alle wesentlichen Änderungen an diesem Projekt, mit Datum und Begründung. Dient der Nachvollziehbarkeit, damit auch ohne KI-Unterstützung verstanden werden kann, warum etwas so ist, wie es ist.
 
+## 18.10.2026 — Messen, Partnerlinks, Bewertungsbitte, Monatsauswertung
+
+### Anlass
+
+Stefan: Die Maßnahmen „Partner gewinnen“, „echte Bewertungen“ und „eigene Auswertungen“ sollen automatisch laufen. Dazu die Frage, ob sich das Projekt mittel- bis langfristig lohnt. Befund dabei: Die Seite misst nicht, wie viele Besucher die kostenlose Prüfung starten und wie viele davon kaufen (GA4 läuft nur mit Einwilligung, Funnel-Ereignisse gab es keine). Ohne diese Zahl lässt sich die Frage nicht beantworten. Prüftermin für die Entscheidung: 31.03.2027.
+
+### Umgesetzt
+
+1. **Anonyme Zähler** (`src/lib/messung.js`, `api/zaehler.js`): Tagessummen für „Partnerbesuch“, „Prüfung gestartet“, „Ergebnis angezeigt“, „Jetzt kaufen geklickt“. Kein Cookie, kein Storage, keine IP, keine Kennung; Bots grob gefiltert. Käufe kommen weiterhin aus den echten Zahlungen. Vercel-Functions: jetzt 11 von 12.
+2. **Partnerlinks**: `nebenkostenradar.com/?p=<kürzel>` (auf jeder Seite). Das Kürzel wird aus der Adresszeile entfernt, im Arbeitsspeicher gehalten und beim Kauf in `nkr_reports.partner` gespeichert. Keine Provision, kein Rabatt (Ausgabengrundsatz 25.09.2026). Anleitung: `marketing/partner-kandidaten.md`.
+3. **Bewertungsbitte** (`scripts/bewertung-versand.mjs`, täglich im Workflow der Rabatt-Mail): einmalig 5 bis 30 Tage nach dem Kauf, NUR mit eigener Einwilligung (zweite Checkbox auf der Kaufseite, nicht vorausgewählt). Begründung: Bewertungsbitten per E-Mail sind Werbung (BGH, 10.07.2018, VI ZR 225/17), die Rabatt-Einwilligung deckt diesen Zweck nicht ab. Bittet um ehrliche Bewertung, auch kritische, ohne Gegenleistung. Ziel: `BUSINESS.BEWERTUNG_URL` (Google-Bewertungslink aus dem Unternehmensprofil, von Stefan vorgegeben). Abmeldelink stoppt Rabatt-Mail und Bewertungsbitte.
+4. **Monatsauswertung** (`scripts/monatsauswertung.mjs`, `.github/workflows/monatsauswertung.yml`, am 1. um 05:00 UTC): GitHub-Issue mit Label `auswertung`: Trichter, Kaufquoten, Käufe nach Stufe, Partner, und ab 30 bezahlten Prüfungen eine anonyme Befundstatistik (Anteil mit auffälligen Posten, häufigste Posten, Median der möglichen Rückforderung) mit Einschränkungshinweis für Pressetexte.
+5. **Datenschutzerklärung**: neue Abschnitte 3b (Bewertungsbitte) und 3c (anonyme Zählung, Partnerlinks, anonyme Statistik nach Art. 6 Abs. 4 DSGVO), Stand 18.10.2026.
+6. **Geplante SEO/GEO-Aufgabe** erweitert: Saisonplan, monatliche Partnersuche (5 Kandidaten mit Anschreiben-Entwurf, Stefan verschickt selbst), Pressetext-Entwurf aus der Monatsauswertung.
+
+### Einmaliger Schritt vor dem Mergen
+
+`supabase/2026-10-18-wachstum.sql` im Supabase-SQL-Editor ausführen (Tabelle `nkr_zaehler`, Funktion `nkr_zaehler_plus`, drei Spalten in `nkr_reports`). Ohne das Skript funktioniert der Kauf weiter (`save-report.js` speichert dann ohne die neuen Felder), aber Zähler, Partnerzuordnung und Bewertungsbitte bleiben leer.
+
+### Geprüft
+
+`npm run check` grün (33 Seiten 0 Verstöße, 72 Konstellationen 0 Verletzungen). SQL mit pglast geparst (8 Anweisungen). Mock-Tests: Zähler-API (Whitelist, Bereinigung, Fehler unsichtbar), save-report mit und ohne neue Spalten, Bewertungsbitte nur mit Einwilligung und nur einmal, Monatsauswertung (Vormonat über Jahreswechsel, Quoten, Partner, Mindestfallzahl). Playwright (390 px): Partnercode aus URL entfernt und nicht gespeichert, Zähler mit Code, beide Checkboxen nicht vorausgewählt, save-report erhält Partner und Einwilligungen, Datenschutz 3b/3c, keine JS-Fehler.
+
 ## 17.10.2026 — PDF aus Stefans Testkauf korrigiert, Jahreszahlen wandern automatisch mit
 
 ### PDF (Befunde aus dem echten Testkauf)
