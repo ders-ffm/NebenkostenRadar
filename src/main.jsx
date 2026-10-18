@@ -1,3 +1,10 @@
+// Schrift Inter (Redesign 18.10.2026), selbst gehostet: Vite übernimmt die
+// woff2-Dateien aus dem npm-Paket in den Build, sie kommen von unserer
+// eigenen Domain. Nur der Zeichensatz "latin" (enthält Umlaute, ß, €, §).
+import "@fontsource/inter/latin-400.css";
+import "@fontsource/inter/latin-500.css";
+import "@fontsource/inter/latin-600.css";
+import "@fontsource/inter/latin-700.css";
 import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
 import App from "./App.jsx";
