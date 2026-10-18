@@ -100,10 +100,11 @@ export const BUSINESS = {
 
   // Ziel der Bewertungsbitte (18.10.2026, scripts/bewertung-versand.mjs).
   // Leer lassen = es wird keine Bewertungsbitte verschickt.
-  // Trustpilot: Die "evaluate"-Adresse öffnet direkt das Bewertungsformular
-  // für die Domain, ohne Profil-ID. Alternative: Google-Bewertungslink aus
-  // dem Google-Unternehmensprofil ("Rezensionen anfordern" → Link kopieren).
-  BEWERTUNG_URL: "https://de.trustpilot.com/evaluate/nebenkostenradar.com",
+  // Google-Bewertungslink aus dem Google-Unternehmensprofil ("Rezensionen
+  // anfordern" → Link kopieren), von Stefan am 18.10.2026 vorgegeben.
+  // Google-Regeln: alle Kunden gleich fragen, keine Gegenleistung.
+  // Alternative ohne Profil-ID: https://de.trustpilot.com/evaluate/nebenkostenradar.com
+  BEWERTUNG_URL: "https://g.page/r/CZo7LP2oLNUMEBM/review",
   // Ab wie vielen Tagen nach dem Kauf, und bis wie viele Tage danach
   // höchstens (ältere Käufe bekommen keine Bitte mehr).
   BEWERTUNG_NACH_TAGEN: 5,
