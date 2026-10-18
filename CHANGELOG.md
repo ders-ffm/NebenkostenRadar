@@ -2,6 +2,42 @@
 
 Alle wesentlichen Änderungen an diesem Projekt, mit Datum und Begründung. Dient der Nachvollziehbarkeit, damit auch ohne KI-Unterstützung verstanden werden kann, warum etwas so ist, wie es ist.
 
+## 18.10.2026 — Redesign „Vorschlag A · klar & digital“ und nur noch ein Paket (12,99 €)
+
+### Anlass
+
+Stefan: „die grafische Optik der Website in Frage stellen und recherchieren, was gerade optisch State of the Art ist (Symbole, Typo, Farbkombination), das Logo muss bleiben.“ Dazu: „die 9,99-Variante einstellen. Nur die Premium, keine Auswahl.“ Zwei Entwürfe (A klar & digital, B warm & redaktionell) als Vorschau gezeigt, Stefan hat A gewählt.
+
+### Befund vorher (gemessen am Stand e5d2569)
+
+| Punkt | Messwert |
+|---|---|
+| H1 mobil | „Nebenkostenabrechnung“ brach bei 360 und 390 px mitten im Wort um (Wortbreite 327 px bei 326 px Platz) |
+| Schriftgrößen | Fließtext überwiegend 11–14 px, Ratgeber 14 px |
+| Kontrast | 25 (Start) bzw. 43 (Artikel) Textstellen unter WCAG AA 4,5:1, v. a. `#8A7A5C` mit 4,18:1 |
+| Zeilenlänge Ratgeber | bis ca. 1.200 px |
+| Symbole | Emojis (📱💻📎📄✅📐 u. a.) |
+| Cookie-Banner | „Akzeptieren“ farbig, „Nur notwendige“ blass (Lenkung zur Zustimmung) |
+
+Wettbewerb (google.de „nebenkostenabrechnung prüfen“, 18.10.2026): mietchecker.app (Bricolage Grotesque/Hanken Grotesk, Fließtext 18 px, Beispielabrechnung im Hero), nebenkostenpro.de (Plus Jakarta Sans, 16 px, Symbole je Schritt), mein-nebenkostenrechner.de (Fraunces/DM Sans), conny.de (Public Sans), mineko.de (PT Sans/Open Sans 14 px). Quellen für Richtwerte: U.S. Web Design System, Typography (Fließtext ≥ 16 px, 45–90 Zeichen je Zeile, Zeilenhöhe ≥ 1,5); WCAG 2.2 (1.4.3 Kontrast 4,5:1, 1.4.11 Kontrast von Bedienelementen 3:1, 1.4.1 Farbe nicht allein); Baymard Institute zu wahrgenommener Sicherheit (visuelle Fehler kosten Vertrauen). Die „Designtrends 2026“-Artikel von Agenturen enthalten keine Daten und wurden nur als Meinung berücksichtigt. Rechtlich: Das BFSG gilt nach § 3 Abs. 3 BFSG nicht für Kleinstunternehmen, die Dienstleistungen anbieten; Barrierefreiheit hier also freiwillig.
+
+### Umgesetzt
+
+1. **Schrift**: Inter für die ganze Website (400/500/600/700, Zeichensatz latin), selbst gehostet über das bereits vorhandene Paket `@fontsource/inter` (Import in `src/main.jsx`, kein Google-Abruf). Poppins/Work Sans bleiben nur für das Logo und die PDFs.
+2. **Farben** (`src/config/theme.js`): neutrale Töne mit leichtem Grünstich statt Beige; Text 15,9 / 8,1 / 5,7 : 1 auf Weiß; neues `inputBorder` (3,07:1) für Eingabefelder; `amber` für „auffällig“ getrennt von Rot für „nicht umlagefähig“. Grün (Logo) und Terrakotta (nur Buttons) unverändert.
+3. **Größen**: alle Schriftgrößen der Webseiten angehoben (Fließtext 16–18 px, nie unter 12 px). PDFs unverändert.
+4. **Symbole**: `src/components/ui/Icon.jsx` mit rund 30 Lucide-Symbolen (ISC-Lizenz, fest eingebettet, kein neues Paket) statt Emojis.
+5. **Startseite** (`Welcome.jsx`): zweispaltiger Hero mit sichtbarem Beispielergebnis, Vertrauenszeile mit Prüfgrundlagen, Schritte mit Symbolen, ein Preisblock. H1-Größe hängt an der Spaltenbreite (`7.9cqi`, „Nebenkostenabrechnung“ ist in Inter 700 das 12,25-Fache der Schriftgröße breit), dazu ein weiches Trennzeichen als Rückfall. Geprüft: einzeilig bei 320, 360, 375, 390, 430 und 1.440 px.
+6. **Ratgeber**: Textspalte max. 760 px, Text 18 px, „Weiterführender Artikel“ als neutrale Karte, CTA-Block mit Terrakotta-Knopf.
+7. **Formulare**: Felder mit sichtbarem Rand (3:1), Fokusring, Beschriftung nicht mehr auf Feldbreite gequetscht; Fortschrittsbalken grün.
+8. **Cookie-Banner**: beide Knöpfe gleich gestaltet (DSK-Orientierungshilfe Telemedien: Ablehnen darf nicht schwerer sein als Zustimmen).
+9. **Nur noch ein Paket**: „Auswertung + Brief + Steuer-Bonus“ für 12,99 €. Geändert: Startseite, Ergebnisseite (keine Auswahl mehr), Kaufseite (immer Stufe `voll`, immer Payment Link „voll“), AGB § 2 und § 4 (Stand 18.10.2026), Datenschutz Abschnitt 6, FAQ, Über uns, Werkzeug-Seite, Ratgeber „prüfen lassen“, Vorab-HTML (`prerender.mjs`), JSON-LD (ein Angebot) und `seo-check.mjs`. **Bestandskäufe** der 9,99-€-Stufe funktionieren weiter (Download, Vertragsmail, Webhook-Zuordnung, Monatsauswertung), deshalb bleiben `PREIS_AUSWERTUNG` und `STRIPE_LINK_AUSWERTUNG` als „nicht mehr verkauft“ markiert stehen.
+10. `body { margin: 0 }`: Vorher endeten Linien und Flächen 8 px vor dem Rand.
+
+### Stripe
+
+Der 9,99-€-Payment-Link ist im Stripe-Dashboard deaktiviert bzw. archiviert (Stefan, 18.10.2026, schon vor dem Mergen). Bis zum Mergen dieser Änderung lief die Auswahl „Nur Auswertung“ auf der Live-Seite deshalb ins Leere; daher zügig mergen.
+
 ## 18.10.2026 — Messen, Partnerlinks, Bewertungsbitte, Monatsauswertung
 
 ### Anlass
