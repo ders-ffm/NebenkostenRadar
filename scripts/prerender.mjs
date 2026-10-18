@@ -119,6 +119,9 @@ function renderBlock(block, artikelById) {
     }
     case "schritte":
       return `<ol>${(block.items || []).map(i => `<li>${escapeHtml(i)}</li>`).join("")}</ol>`;
+    // Musterbrief (18.10.2026), Gegenstück zu MusterBlock in Artikel.jsx.
+    case "muster":
+      return `<p><strong>${escapeHtml(block.titel)}</strong></p><pre style="white-space:pre-wrap">${escapeHtml(block.text)}</pre>`;
     default:
       return "";
   }
@@ -289,6 +292,9 @@ function buildArticleHtml(template, artikel, artikelById) {
   // unzulässig), Datum, Autor/Herausgeber als Verweis auf die Organization
   // aus index.html (@id), mainEntityOfPage.
   const datumIso = lastmodAus(artikel.datum);
+  // "aktualisiert" (18.10.2026): Monat der letzten inhaltlichen Überarbeitung.
+  // Nur setzen, wenn der Artikel tatsächlich überarbeitet wurde.
+  const geaendertIso = lastmodAus(artikel.aktualisiert) || datumIso;
   const artikelJsonLd = {
     "@context": "https://schema.org",
     "@type": "Article",
@@ -300,22 +306,29 @@ function buildArticleHtml(template, artikel, artikelById) {
     inLanguage: "de-DE",
     author: { "@id": BASE + "/#organisation" },
     publisher: { "@id": BASE + "/#organisation" },
-    ...(datumIso ? { datePublished: datumIso, dateModified: datumIso } : {}),
+    ...(datumIso ? { datePublished: datumIso, dateModified: geaendertIso } : {}),
   };
 
   const inhaltHtml = (artikel.inhalt || []).map(b => renderBlock(b, artikelById)).join("\n");
+  // Fragenblock je Artikel (18.10.2026): sichtbar UND als FAQPage-Markup.
+  // Google zeigt FAQ-Rich-Results seit 2023 nur noch für ausgewählte
+  // Behörden- und Gesundheitsseiten; das Markup schadet nicht und macht die
+  // Frage-Antwort-Struktur maschinenlesbar. Entscheidend ist der sichtbare Text.
+  const faqListe = Array.isArray(artikel.faq) ? artikel.faq : [];
 
   const sichtbarerInhalt = `
     <article>
       <p><a href="/ratgeber">← Ratgeber</a></p>
-      <p>${escapeHtml(artikel.kategorie)} · ${escapeHtml(artikel.datum)} · ${escapeHtml(artikel.lesezeit)}</p>
+      <p>${escapeHtml(artikel.kategorie)} · ${escapeHtml(artikel.datum)}${artikel.aktualisiert ? " · aktualisiert " + escapeHtml(artikel.aktualisiert) : ""} · ${escapeHtml(artikel.lesezeit)}</p>
       <h1>${escapeHtml(artikel.titel)}</h1>
       <p>Mit Unterstützung künstlicher Intelligenz erstellt. Kein Ersatz für eine Rechtsberatung.</p>
       ${inhaltHtml}
+      ${faqListe.length ? `<h2>Häufige Fragen</h2>${faqListe.map(f => `<h3>${escapeHtml(f.frage)}</h3><p>${escapeHtml(f.antwort)}</p>`).join("")}` : ""}
       <p>Kostenlose Werkzeuge: ${WERKZEUGE.map(w => `<a href="${w.pfad}">${escapeHtml(w.menue)}</a>`).join(" · ")}</p>
     </article>
   `;
   html = html.replace("</head>", `<script type="application/ld+json">${JSON.stringify(artikelJsonLd).replace(/</g, "\\u003c")}</script>\n</head>`);
+  if (faqListe.length) html = html.replace("</head>", baueFaqJsonLd(faqListe) + "\n</head>");
 
   // Sichtbaren Inhalt in #root einfügen — React (main.jsx, createRoot)
   // ersetzt das beim Laden im Browser vollständig durch die interaktive
@@ -559,7 +572,7 @@ function schreibeSitemap(artikelListe) {
   }
 
   for (const artikel of artikelListe) {
-    const lastmod = lastmodAus(artikel.datum);
+    const lastmod = lastmodAus(artikel.aktualisiert) || lastmodAus(artikel.datum);
     eintraege.push(
       `  <url>\n    <loc>${BASE}/ratgeber/${artikel.id}</loc>\n    <changefreq>monthly</changefreq>\n    <priority>0.8</priority>` +
         (lastmod ? `\n    <lastmod>${lastmod}</lastmod>` : "") +

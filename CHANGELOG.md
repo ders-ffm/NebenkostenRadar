@@ -2,6 +2,42 @@
 
 Alle wesentlichen Änderungen an diesem Projekt, mit Datum und Begründung. Dient der Nachvollziehbarkeit, damit auch ohne KI-Unterstützung verstanden werden kann, warum etwas so ist, wie es ist.
 
+## 18.10.2026 — SEO/GEO-Lauf: Titel mit konkreten Zahlen, Musterbrief, Fragenblöcke, inhaltliche Korrekturen
+
+### Anlass (Daten vom 18.10.2026)
+
+Search Console, letzte 28 Tage (bis 16.10.): 34 Klicks, 3.570 Impressionen, CTR 1,0 %, Ø Position 11,5 (Referenz 17.10.: 31 / 3.430 / 0,9 % / 11,6). Bericht „Generative KI“: 668 Impressionen, davon Betriebskostenspiegel 322 und Widerspruch 260. Größte Hebel (viele Impressionen, Position 5–20, kaum Klicks):
+
+| Seite | Impr. | Ø Pos. | CTR |
+|---|---|---|---|
+| /ratgeber/betriebskostenspiegel-2024 | 1.086 | 14,5 | 0,7 % |
+| /ratgeber/widerspruch-nebenkostenabrechnung | 992 | 10,2 | 0,8 % |
+| /ratgeber/betriebskostenabrechnung-fristen-und-verjaehrung-2026 | 491 | 8,0 | 0 % |
+| /ratgeber/wasserkosten-und-kaltwasserzaehler-in-der-nebenkostenabrechnung | 249 | 7,4 | 0 % |
+
+google.de am 18.10.2026: Vorne rankende Seiten (u. a. mein-nebenkostenrechner.de, conny.de, mineko.de) führen konkrete Zahlen im Titel („2,67 €/m² im Schnitt“, „12 Monate“) und bieten zum Widerspruch einen Musterbrief. Unsere Widerspruchs-Seite versprach im Titel ein „Muster“, enthielt aber keins.
+
+### Änderungen
+
+1. **Suchtitel und Beschreibungen** der vier Seiten oben: konkrete Frist bzw. Kernzahl im Titel („12 Monate Frist + Muster“, „bis 31.12.{JAHR}“, „2,67 €/m²“, „Schnitt 0,29 €/m²“). Zahlen aus der DMB-Meldung vom 18.12.2025 (mieterbund.de) bzw. `business.js`; Jahreszahlen über {JAHR}/{VORJAHR}. Bei einer neuen DMB-Ausgabe müssen 2,67 und 0,29 mitgezogen werden (Kommentar am jeweiligen Artikel).
+2. **Musterbrief** im Widerspruchs-Artikel (neuer Block-Typ `muster`, sichtbar, mit „Text kopieren“), allgemeine Vorlage mit Platzhaltern und Hinweis „keine Rechtsberatung im Einzelfall“.
+3. **Fragenblöcke** (neues Feld `faq` je Artikel) für Widerspruch, Fristen und Betriebskostenspiegel: sichtbar als „Häufige Fragen“ mit Frage-Überschriften und als FAQPage-Markup. Fragen aus „Ähnliche Fragen“ bei google.de. Hinweis: FAQ-Rich-Results zeigt Google seit 2023 nur für ausgewählte Behörden-/Gesundheitsseiten; Ziel ist die klare Frage-Antwort-Struktur für Suche und KI-Übersichten, nicht ein Rich Result. `seo-check.mjs` erlaubt FAQPage jetzt auch auf Artikeln mit `faq` und prüft, dass jede Frage sichtbar ist.
+4. **Feld `aktualisiert`**: sichtbar („aktualisiert Oktober 2026“), als `dateModified` im Article-Schema und als `lastmod` in der Sitemap. Nur bei tatsächlicher inhaltlicher Überarbeitung setzen.
+5. **Inhaltliche Korrekturen** (geprüft am Gesetzestext, gesetze-im-internet.de, 18.10.2026):
+   - Widerspruch: „30 Tage Zahlungsfrist (§ 286 BGB)“ war ungenau. § 286 Abs. 3 BGB regelt den Verzugseintritt, gegenüber Verbrauchern nur bei ausdrücklichem Hinweis in der Rechnung; Mahnung nach Abs. 1 auch früher. Verspätete Abrechnung macht sie nicht „unwirksam“, sondern schließt die Nachforderung aus (§ 556 Abs. 3 Satz 3); formelle Fehler separat. „Mündlich gilt rechtlich nicht“ war falsch: § 556 Abs. 3 Satz 5 verlangt nur, die Einwendungen „mitzuteilen“; Schriftform ist eine Beweisfrage. „Nur Einschreiben mit Rückschein ist beweisbar“ entschärft.
+   - Wasserkosten: „Bei abgelaufener Eichfrist dürfen Sie kürzen“ war falsch. Laut BGH, Urteil vom 17.11.2010, VIII ZR 112/10 (Kommentierung vhw.de) darf der Vermieter die Werte verwenden, muss aber ihre Richtigkeit beweisen. Unbelegte Orientierungswerte (125 l/Tag, 2,20 €/m³) durch den DMB-Wert ersetzt. Wechsel des Verteilerschlüssels jetzt nach § 556a Abs. 2 BGB beschrieben.
+   - Betriebskostenspiegel: Antwort „Muss ich zahlen?“ um das Zurückbehaltungsrecht bei verweigerter Belegeinsicht ergänzt (§ 273 BGB, VIII ZR 78/05, bereits in anderen Artikeln verifiziert).
+6. **Nachtrag (zweiter Lauf am selben Tag):** Müllgebühren-Artikel (3 Monate 246 Impressionen, Ø Position 8,0) bekommt eigenen Suchtitel und Beschreibung mit DMB-Wert 0,16 €/m² und Monat, den Vergleichswert im Abschnitt „normaler Betrag“ (vorher ohne Zahl) und eine korrigierte Aussage zum Verteilerschlüssel: „Das Gesetz schreibt keinen festen Maßstab vor“ war falsch, ohne Vereinbarung gilt die Wohnfläche, bei erfasster Verursachung ein verursachungsgerechter Maßstab (§ 556a Abs. 1 BGB).
+
+### Rechtslage geprüft, ohne Handlungsbedarf in diesem Lauf
+
+- BGH 20.05.2026, VIII ZR 6/24 (Wirtschaftlichkeitsgebot ohne Vergleichsangebote) und VIII ZR 46/25, 47/25 (Wärmelieferung bei Umstellung von Einzelöfen, PM 090/2026 bundesgerichtshof.de): bereits im Artikel „BGH-Urteile 2026“ enthalten.
+- Gebäudemodernisierungsgesetz (Bundestag 10.07.2026, laut haufe.de verkündet 28.07.2026, BGBl. I 2026 Nr. 226): neue §§ 5a, 5b CO2KostAufG zur hälftigen Teilung von CO2-Preis und Netzentgelten bei neu eingebauten Gas-/Ölheizungen. Noch nicht auf der Seite. Vor einem Artikel den Gesetzestext im BGBl. prüfen (Lücke: Inkrafttreten der Kostenteilung nicht primär belegt).
+
+### Geprüft
+
+`npm run check` grün (33 Seiten, 0 Verstöße; PDF 72 Konstellationen; Eingaben 31). Playwright 390 px: Fragen und Musterbrief sichtbar, Kopier-Button vorhanden, keine Konsolenfehler.
+
 ## 17.10.2026 — PDF aus Stefans Testkauf korrigiert, Jahreszahlen wandern automatisch mit
 
 ### PDF (Befunde aus dem echten Testkauf)

@@ -216,14 +216,17 @@ async function main() {
   // mit eigenem Fragenblock. Für diese wird zusätzlich geprüft, dass jede
   // Frage aus dem Markup auch im sichtbaren Text vorkommt.
   const { WERKZEUGE } = await import("../src/config/werkzeuge.js");
-  const FAQ_ERLAUBT = new Set(["/faq", ...WERKZEUGE.map(w => w.pfad)]);
+  // Seit 18.10.2026 auch Ratgeber-Artikel mit eigenem Fragenblock (Feld "faq").
+  const { ARTIKEL: ARTIKEL_FAQ } = await import("../src/artikel.js");
+  const ARTIKEL_MIT_FAQ = ARTIKEL_FAQ.filter(a => Array.isArray(a.faq) && a.faq.length);
+  const FAQ_ERLAUBT = new Set(["/faq", ...WERKZEUGE.map(w => w.pfad), ...ARTIKEL_MIT_FAQ.map(a => "/ratgeber/" + a.id)]);
   const faqHtml = lies("/faq");
   if (!faqHtml || !faqHtml.includes("FAQPage")) verstoesse.push("/faq: FAQPage-Markup fehlt");
   for (const pfad of alle) {
     const html = lies(pfad);
     if (!html || !html.includes("FAQPage")) continue;
     if (!FAQ_ERLAUBT.has(pfad)) { verstoesse.push(`${pfad}: FAQPage-Markup gehört hier nicht hin`); continue; }
-    const w = WERKZEUGE.find(x => x.pfad === pfad);
+    const w = WERKZEUGE.find(x => x.pfad === pfad) || ARTIKEL_MIT_FAQ.find(a => "/ratgeber/" + a.id === pfad);
     if (w) {
       const sichtbar = html.split('<div id="root">')[1] || "";
       for (const f of w.faq) {
