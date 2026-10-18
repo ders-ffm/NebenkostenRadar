@@ -472,10 +472,18 @@ const ARTIKEL_ROH = [
     },
     {
       id: "muellgebuehren-und-abfallentsorgung-als-betriebskosten-2026",
+      // SEO-LAUF 18.10.2026 (zweiter Lauf): 3 Monate 246 Impressionen bei
+      // Ø Position 8,0, bisher ohne eigenen Suchtitel und Beschreibung.
+      // 0,16 € = DMB-Richtwert Müllbeseitigung (business.js, RICHTWERTE.muell);
+      // bei neuer DMB-Ausgabe hier, in metaBeschreibung und im Absatz
+      // "Um einzuschätzen …" mitziehen.
+      seoTitel: "Müllgebühren in der Nebenkostenabrechnung: Schnitt 0,16 €/m²",
+      metaBeschreibung: "Müllabfuhr kostet Mieter im Schnitt 0,16 € pro m² und Monat (DMB). Was umlagefähig ist, was der Vermieter selbst zahlt und welcher Verteilerschlüssel gilt.",
       titelKurz: "Müllgebühren als Betriebskosten",
       titel: "Müllgebühren und Abfallentsorgung als Betriebskosten 2026: Was Mieter zahlen müssen und was nicht",
       teaser: "Müllgebühren gehören zu den Nebenkosten, die fast jede Abrechnung enthält, doch nicht jede Position darf der Vermieter umlegen. Dieser Ratgeber zeigt, was 2026 rechtlich zulässig ist, welche Kosten Vermieter selbst tragen müssen und wie Sie eine überhöhte Müllabrechnung erkennen.",
       datum: "August 2026",
+      aktualisiert: "Oktober 2026",
       lesezeit: "8 Min.",
       bild: "/artikelbilder/muellgebuehren-und-abfallentsorgung-als-betriebskosten-2026.jpg",
       bildAlt: "Mülltonnen an einer Wohnstraße",
@@ -550,7 +558,7 @@ const ARTIKEL_ROH = [
         },
         {
                 "typ": "text",
-                "text": "Ein häufiger Streitpunkt bei Müllgebühren ist der gewählte Verteilerschlüssel. Das Gesetz schreibt hierfür keinen festen Maßstab vor. Zulässig sind unter anderem die Verteilung nach Wohnfläche, nach Personenzahl oder nach Tonnen beziehungsweise Leerungen. Dabei gilt die Verteilung nach Personenzahl oft als sachgerechter, da das Müllaufkommen meist stärker von der Bewohnerzahl als von der Wohnungsgröße abhängt. Wichtig ist in jedem Fall, dass der einmal gewählte Schlüssel konsequent und einheitlich auf alle Mieteinheiten angewendet wird."
+                "text": "Ein häufiger Streitpunkt bei Müllgebühren ist der gewählte Verteilerschlüssel. Maßgeblich ist zuerst der Mietvertrag. Ist nichts vereinbart, wird nach dem Anteil der Wohnfläche umgelegt (§ 556a Abs. 1 Satz 1 BGB); wird die Müllmenge je Wohnung erfasst, etwa durch eine Müllmengenerfassungsanlage, ist ein Maßstab zu wählen, der diese Verursachung berücksichtigt (Satz 2). Vereinbart werden kann auch eine Verteilung nach Personenzahl. Dabei gilt die Verteilung nach Personenzahl oft als sachgerechter, da das Müllaufkommen meist stärker von der Bewohnerzahl als von der Wohnungsgröße abhängt. Wichtig ist in jedem Fall, dass der einmal gewählte Schlüssel konsequent und einheitlich auf alle Mieteinheiten angewendet wird."
         },
         {
                 "typ": "verweis",
@@ -584,7 +592,7 @@ const ARTIKEL_ROH = [
         },
         {
                 "typ": "text",
-                "text": "Um einzuschätzen, ob Ihre Müllkosten im üblichen Rahmen liegen, hilft ein Blick auf regionale und bundesweite Vergleichswerte. Diese schwanken je nach Kommune, Objektgröße und Entsorgungsmodell teils deutlich, geben aber eine erste Orientierung, ob eine Nachforderung plausibel erscheint."
+                "text": "Um einzuschätzen, ob Ihre Müllkosten im üblichen Rahmen liegen, hilft ein Blick auf regionale und bundesweite Vergleichswerte. Diese schwanken je nach Kommune, Objektgröße und Entsorgungsmodell teils deutlich, geben aber eine erste Orientierung, ob eine Nachforderung plausibel erscheint. Laut Betriebskostenspiegel des Deutschen Mieterbunds (Abrechnungsjahr 2024, veröffentlicht am 18.12.2025) kostet die Müllbeseitigung im Schnitt 0,16 Euro pro Quadratmeter und Monat, für eine 75-Quadratmeter-Wohnung also rund 144 Euro im Jahr."
         },
         {
                 "typ": "verweis",
