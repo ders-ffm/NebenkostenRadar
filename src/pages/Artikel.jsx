@@ -1,6 +1,7 @@
 // ─────────────────────────────────────────────────────────────────────────
 // Artikel.jsx — Einzelner Ratgeber-Artikel. URL: "/ratgeber/:id"
 // ─────────────────────────────────────────────────────────────────────────
+import { useState } from "react";
 import { THEME } from "../config/theme.js";
 import { ARTIKEL } from "../artikel.js";
 import { BUSINESS } from "../config/business.js";
@@ -42,6 +43,30 @@ const RICHTWERT_ZEILEN = [
   ["Sonstige Betriebskosten", "sonstiges"],
 ];
 const BEISPIEL_QM = 75;
+
+// ─────────────────────────────────────────────────────────────────────────
+// Musterbrief-Block (18.10.2026, SEO-Lauf): Vorlage als sichtbarer,
+// kopierbarer Text. Anlass: Die Widerspruchs-Seite versprach im Titel ein
+// "Muster", enthielt aber keins; alle vorne rankenden Seiten haben eins.
+// Gleicher Inhalt im vorgerenderten HTML (scripts/prerender.mjs, "muster").
+function MusterBlock({ block }) {
+  const C = THEME.color;
+  const [kopiert, setKopiert] = useState(false);
+  const kopieren = () => {
+    try {
+      navigator.clipboard.writeText(block.text).then(() => { setKopiert(true); setTimeout(() => setKopiert(false), 2500); }, () => {});
+    } catch (e) { /* Zwischenablage nicht verfügbar: Text bleibt markierbar */ }
+  };
+  return (
+    <div style={{ border: "1px solid " + C.border, borderRadius: THEME.radius.sm, margin: "0 0 20px", background: "#fff" }}>
+      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: 12, padding: "10px 14px", borderBottom: "1px solid " + C.border }}>
+        <span style={{ fontSize: 13, fontWeight: 600, color: C.text }}>{block.titel}</span>
+        <button type="button" onClick={kopieren} style={{ background: C.brand, color: "#fff", border: "none", borderRadius: 6, padding: "6px 12px", fontSize: 12.5, fontWeight: 600, cursor: "pointer", flexShrink: 0 }}>{kopiert ? "Kopiert ✓" : "Text kopieren"}</button>
+      </div>
+      <div style={{ whiteSpace: "pre-wrap", fontSize: 13, color: C.text, lineHeight: 1.65, padding: "14px 16px", overflowWrap: "anywhere" }}>{block.text}</div>
+    </div>
+  );
+}
 const eur = n => n.toLocaleString("de-DE", { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + " €";
 
 export default function Artikel({ navigateTo, navigateToArtikel, ratgeberArtikel }) {
@@ -70,7 +95,7 @@ export default function Artikel({ navigateTo, navigateToArtikel, ratgeberArtikel
         <img src={artikel.bild} alt={artikel.bildAlt} style={{ width: "100%", height: 220, objectFit: "cover", borderRadius: THEME.radius.lg, marginBottom: 24 }} />
         <div style={{ display: "flex", gap: 10, alignItems: "center", marginBottom: 12 }}>
           <span style={{ background: C.brandBg, color: C.brand, fontSize: 10, fontWeight: 700, padding: "3px 10px", borderRadius: 4 }}>{artikel.kategorie}</span>
-          <span style={{ color: C.textDim, fontSize: 12 }}>{artikel.datum} · {artikel.lesezeit}</span>
+          <span style={{ color: C.textDim, fontSize: 12 }}>{artikel.datum}{artikel.aktualisiert ? " · aktualisiert " + artikel.aktualisiert : ""} · {artikel.lesezeit}</span>
         </div>
         <h1 style={{ fontFamily: THEME.font.heading, fontSize: 24, fontWeight: 600, margin: "0 0 8px", lineHeight: 1.3 }}>{artikel.titel}</h1>
         {/* KI-HINWEIS (17.10.2026, Compliance-Check): Die Ratgeber-Artikel
@@ -203,6 +228,7 @@ export default function Artikel({ navigateTo, navigateToArtikel, ratgeberArtikel
               </Verweis>
             );
           }
+          if (block.typ === "muster") return <MusterBlock key={i} block={block} />;
           if (block.typ === "cta") return (
             <div key={i} style={{ background: C.brand, borderRadius: THEME.radius.md, padding: "18px 20px", margin: "24px 0", textAlign: "center" }}>
               <p style={{ color: "#fff", fontSize: 14, margin: "0 0 12px", lineHeight: 1.6 }}>{block.text}</p>
@@ -211,6 +237,22 @@ export default function Artikel({ navigateTo, navigateToArtikel, ratgeberArtikel
           );
           return null;
         })}
+
+        {/* Fragenblock (18.10.2026, SEO-Lauf): sichtbare Fragen und Antworten
+            je Artikel (Feld "faq" in artikel.js). Dieselben Fragen stehen als
+            FAQPage-Markup im vorgerenderten HTML; seo-check.mjs prüft, dass
+            jede Frage dort auch sichtbar ist. */}
+        {Array.isArray(artikel.faq) && artikel.faq.length > 0 && (
+          <section style={{ marginTop: 32 }}>
+            <h2 style={{ fontFamily: THEME.font.heading, fontSize: 19, fontWeight: 600, color: C.text, margin: "0 0 12px" }}>Häufige Fragen</h2>
+            {artikel.faq.map((f, j) => (
+              <div key={j} style={{ borderTop: "1px solid " + C.border, padding: "14px 0" }}>
+                <h3 style={{ fontSize: 15, fontWeight: 600, color: C.text, margin: "0 0 6px", lineHeight: 1.45 }}>{f.frage}</h3>
+                <p style={{ fontSize: 14, color: C.textMuted, lineHeight: 1.75, margin: 0 }}>{f.antwort}</p>
+              </div>
+            ))}
+          </section>
+        )}
 
         {/* Kostenlose Werkzeuge (17.10.2026): interne Verlinkung von jedem
             Artikel auf die drei Werkzeug-Seiten, siehe werkzeuge.js. */}
