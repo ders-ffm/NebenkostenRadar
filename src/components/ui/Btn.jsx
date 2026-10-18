@@ -24,12 +24,13 @@ export default function Btn({ onClick, children, variant = "primary", disabled =
         color: disabled ? C.textDim : s.color,
         border: s.border,
         borderRadius: THEME.radius.lg,
-        padding: "16px",
-        fontSize: 15,
+        padding: "17px 20px",
+        fontSize: 17,
         fontFamily: THEME.font.heading,
         fontWeight: 600,
         cursor: disabled ? "not-allowed" : "pointer",
-        transition: "opacity 0.15s",
+        transition: "background 0.15s",
+        display: "flex", alignItems: "center", justifyContent: "center", gap: 10,
         ...style,
       }}
     >
