@@ -20,12 +20,12 @@ export default function LegalFooter({ navigateTo }) {
   // § 356a BGB. Muss gut sichtbar und auf jeder Seite erreichbar sein,
   // deshalb hier in der Fußzeile und nicht nur in den AGB.
   const items = [["Impressum", "impressum"], ["AGB", "agb"], ["Datenschutz", "datenschutz"], ["Vertrag widerrufen", "widerruf"]];
-  const linkStil = { color: C.textDim, fontSize: 12, fontFamily: THEME.font.body, cursor: "pointer", textDecoration: "underline" };
+  const linkStil = { color: C.textMuted, fontSize: 14, fontFamily: THEME.font.body, cursor: "pointer", textDecoration: "underline" };
   // Zweite Zeile mit den kostenlosen Werkzeugen (17.10.2026): Jede Seite
   // verlinkt sie damit einmal — wichtig, damit Google die neuen Seiten
   // schnell findet und als zusammengehörig erkennt.
   return (
-    <div style={{ borderTop: "1px solid " + C.border }}>
+    <div style={{ borderTop: "1px solid " + C.border, background: C.alt, paddingTop: 10, paddingBottom: 10 }}>
     <div style={{ padding: "14px 20px 0", display: "flex", justifyContent: "center", gap: 18, flexWrap: "wrap" }}>
       <span style={{ ...linkStil, textDecoration: "none", fontWeight: 600 }}>Kostenlos:</span>
       {WERKZEUGE.map(w => (

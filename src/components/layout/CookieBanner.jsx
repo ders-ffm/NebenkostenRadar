@@ -88,16 +88,22 @@ export default function CookieBanner() {
 
   if (!visible) return null;
   return (
-    <div style={{ position: "fixed", bottom: 0, left: 0, right: 0, zIndex: 9999, background: C.text, borderTop: "3px solid " + C.accent, padding: "16px 20px" }}>
+    <div style={{ position: "fixed", bottom: 0, left: 0, right: 0, zIndex: 9999, background: C.text, borderTop: "3px solid " + C.brand, padding: "16px 20px", fontFamily: THEME.font.body }}>
       <div style={{ maxWidth: 900, margin: "0 auto", display: "flex", alignItems: "flex-start", gap: 20, flexWrap: "wrap" }}>
-        <div style={{ flex: 1, fontSize: 12, color: "#D8D2C4", lineHeight: 1.6 }}>
+        <div style={{ flex: 1, minWidth: 240, fontSize: 15, color: "#E3E9E5", lineHeight: 1.6 }}>
           <strong style={{ color: "#fff" }}>Ihre Privatsphäre</strong><br />
           Wir verwenden Google Analytics nur mit Ihrer Einwilligung. Technisch notwendige Cookies sind immer aktiv.{" "}
-          <a href="/datenschutz" style={{ color: C.accent }}>Mehr erfahren</a>
+          <a href="/datenschutz" style={{ color: "#FFFFFF", fontWeight: 600 }}>Mehr erfahren</a>
         </div>
         <div style={{ display: "flex", gap: 8, alignItems: "center", flexShrink: 0 }}>
-          <button onClick={accept} style={{ background: C.accent, color: C.accentText, border: "none", borderRadius: 6, padding: "9px 18px", fontSize: 12, fontWeight: 700, cursor: "pointer" }}>Akzeptieren</button>
-          <button onClick={reject} style={{ background: "transparent", color: "#9B9284", border: "1px solid #4A4335", borderRadius: 6, padding: "9px 14px", fontSize: 12, cursor: "pointer" }}>Nur notwendige</button>
+          {/* 18.10.2026: Beide Knöpfe gleich gestaltet. Vorher war "Akzeptieren"
+              farbig und "Nur notwendige" ein blasser Rahmen-Knopf (Kontrast
+              unter 4,5:1). Die Datenschutzbehörden (DSK-Orientierungshilfe
+              Telemedien) verlangen, dass Ablehnen nicht schwerer zu finden
+              ist als Zustimmen; eine optische Lenkung zur Zustimmung macht
+              die Einwilligung angreifbar. */}
+          <button onClick={reject} style={{ background: "#FFFFFF", color: C.text, border: "none", borderRadius: 10, padding: "11px 18px", fontSize: 15, fontWeight: 600, fontFamily: THEME.font.body, cursor: "pointer" }}>Nur notwendige</button>
+          <button onClick={accept} style={{ background: "#FFFFFF", color: C.text, border: "none", borderRadius: 10, padding: "11px 18px", fontSize: 15, fontWeight: 600, fontFamily: THEME.font.body, cursor: "pointer" }}>Akzeptieren</button>
         </div>
       </div>
     </div>
