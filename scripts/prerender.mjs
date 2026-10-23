@@ -93,7 +93,8 @@ function renderBlock(block, artikelById) {
       return `<p><a href="/ratgeber/${ziel.id}">${escapeHtml(block.text)}</a></p>`;
     }
     case "cta":
-      return `<p>${escapeHtml(block.text)} <a href="/pruefen/wohnung">Kostenlos prüfen →</a></p>`;
+      // 23.10.2026: zusätzlicher Textlink auf die Werkzeug-Seite, siehe Artikel.jsx.
+      return `<p>${escapeHtml(block.text)} <a href="/pruefen/wohnung">Kostenlos prüfen →</a></p><p><a href="/nebenkostenabrechnung-pruefen">So funktioniert die kostenlose Online-Prüfung der Nebenkostenabrechnung</a></p>`;
     // ── NEU 09.09.2026 (siehe CHANGELOG) ──────────────────────────────────
     // Diese drei Typen fehlten hier UND in Artikel.jsx. Der default-Zweig
     // gibt "" zurück, unbekannte Blöcke verschwanden also spurlos — ohne
