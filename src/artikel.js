@@ -477,8 +477,13 @@ const ARTIKEL_ROH = [
       // 0,16 € = DMB-Richtwert Müllbeseitigung (business.js, RICHTWERTE.muell);
       // bei neuer DMB-Ausgabe hier, in metaBeschreibung und im Absatz
       // "Um einzuschätzen …" mitziehen.
-      seoTitel: "Müllgebühren in der Nebenkostenabrechnung: Schnitt 0,16 €/m²",
-      metaBeschreibung: "Müllabfuhr kostet Mieter im Schnitt 0,16 € pro m² und Monat (DMB). Was umlagefähig ist, was der Vermieter selbst zahlt und welcher Verteilerschlüssel gilt.",
+      // SEO-LAUF 23.10.2026: 28 Tage 813 Impressionen (7 Tage: 689, GSC:
+      // +780 %), Ø Position 7,5, CTR 0,3–0,6 %. Sichtbare Suchanfragen sind
+      // Fragen: "müllgebühren pro person oder qm", "wer zahlt müllgebühren
+      // mieter oder vermieter", "berechnung müllgebühren …". Titel greift die
+      // häufigste Frage auf; Fragenblock unten beantwortet alle drei.
+      seoTitel: "Müllgebühren: pro Person oder m²? Schnitt 0,16 €/m²",
+      metaBeschreibung: "Müllabfuhr kostet Mieter im Schnitt 0,16 € pro m² und Monat (DMB). Wer zahlt, wann nach Personen statt Fläche verteilt wird und was der Vermieter trägt.",
       titelKurz: "Müllgebühren als Betriebskosten",
       titel: "Müllgebühren und Abfallentsorgung als Betriebskosten 2026: Was Mieter zahlen müssen und was nicht",
       teaser: "Müllgebühren gehören zu den Nebenkosten, die fast jede Abrechnung enthält, doch nicht jede Position darf der Vermieter umlegen. Dieser Ratgeber zeigt, was 2026 rechtlich zulässig ist, welche Kosten Vermieter selbst tragen müssen und wie Sie eine überhöhte Müllabrechnung erkennen.",
@@ -639,6 +644,17 @@ const ARTIKEL_ROH = [
                 "text": "Jetzt Abrechnung kostenlos prüfen lassen."
         }
 ],
+      // Fragenblock (23.10.2026): Fragen aus Search Console (28 Tage).
+      // Belegt mit § 556 Abs. 1, § 556a Abs. 1 und 2 BGB, § 1 Abs. 1 und
+      // § 2 Nr. 8 BetrKV (gesetze-im-internet.de, abgerufen 23.10.2026) und
+      // dem DMB-Betriebskostenspiegel (Meldung vom 18.12.2025). Bei neuer
+      // DMB-Ausgabe 0,16 € und 144 € mitziehen.
+      faq: [
+        { frage: "Werden Müllgebühren nach Personen oder nach Quadratmetern verteilt?", antwort: "Zuerst gilt, was im Mietvertrag vereinbart ist; das kann auch die Personenzahl sein. Ist nichts vereinbart, wird nach dem Anteil der Wohnfläche verteilt (§ 556a Abs. 1 Satz 1 BGB). Wird die Müllmenge je Wohnung erfasst, etwa mit einer Müllmengenerfassungsanlage, muss der Maßstab diese Verursachung berücksichtigen (Satz 2). Auf eine solche Verteilung darf der Vermieter auch einseitig umstellen, in Textform und nur vor Beginn eines Abrechnungszeitraums (§ 556a Abs. 2 BGB)." },
+        { frage: "Wer zahlt die Müllgebühren: Mieter oder Vermieter?", antwort: "Die Gebühren der Müllabfuhr sind Betriebskosten (§ 2 Nr. 8 BetrKV). Der Mieter trägt sie nur, wenn der Mietvertrag die Umlage der Betriebskosten vereinbart (§ 556 Abs. 1 BGB), sonst bleiben sie beim Vermieter. Rechnet die Gemeinde die Gebühr direkt mit den Bewohnern ab, darf sie nicht zusätzlich in der Nebenkostenabrechnung stehen." },
+        { frage: "Wie viel Müllgebühren sind normal?", antwort: "Laut Betriebskostenspiegel des Deutschen Mieterbunds (Abrechnungsjahr 2024, veröffentlicht am 18.12.2025) im Schnitt 0,16 € pro Quadratmeter und Monat, bei 75 m² also rund 144 € im Jahr. Die Gebühren unterscheiden sich je nach Kommune deutlich. Ein höherer Betrag ist ein Anlass, die Belege anzusehen, aber noch kein Beweis für einen Fehler." },
+        { frage: "Welche Müllkosten darf der Vermieter umlegen?", antwort: "Nach § 2 Nr. 8 BetrKV die Gebühren der Müllabfuhr, die Kosten vergleichbarer nicht öffentlicher Entsorgung sowie den Betrieb von Müllkompressoren, Müllschluckern, Müllabsauganlagen und Müllmengenerfassungsanlagen einschließlich Berechnung und Aufteilung. Die Anschaffung oder der Ersatz von Tonnen gehört nicht dazu, weil Betriebskosten laufend entstehen müssen (§ 1 Abs. 1 BetrKV)." },
+      ],
     },
     {
       id: "wasserkosten-und-kaltwasserzaehler-in-der-nebenkostenabrechnung",
@@ -805,8 +821,13 @@ const ARTIKEL_ROH = [
       // SEO-LAUF 18.10.2026: 491 Impressionen in 28 Tagen bei Ø Position 8,0,
       // aber 0 Klicks. Der Titel nennt jetzt den konkreten Stichtag, nach
       // dem Mieter mit der Abrechnung in der Hand suchen.
-      seoTitel: "Nebenkostenabrechnung {VORJAHR}: bis 31.12.{JAHR} – alle Fristen",
-      metaBeschreibung: "Kommt die Abrechnung {VORJAHR} nach dem 31.12.{JAHR}, ist eine Nachzahlung meist ausgeschlossen. Dazu: 12 Monate Widerspruch, 3 Jahre Verjährung, Fristenrechner.",
+      // SEO-LAUF 23.10.2026: 1.247 Impressionen in 28 Tagen (7 Tage: 829) bei
+      // Ø Position 7,5, CTR weiter 0,1 %, obwohl der Titel vom 18.10. seit dem
+      // Crawl am 18.10. live ist. Häufigste sichtbare Suchanfrage: "wann kommt
+      // die nebenkostenabrechnung 2026" (und Varianten). Titel jetzt als
+      // genau diese Frage mit Antwort; Kurzantwort-Block oben, BGH zum Zugang.
+      seoTitel: "Wann kommt die Nebenkostenabrechnung {VORJAHR}? Bis 31.12.{JAHR}",
+      metaBeschreibung: "Spätestens am 31.12.{JAHR} muss die Abrechnung {VORJAHR} bei Ihnen sein. Absenden reicht nicht (BGH). Kommt sie später, entfällt die Nachzahlung meist.",
       aktualisiert: "Oktober 2026",
       titelKurz: "Fristen und Verjährung 2026",
       titel: "Betriebskostenabrechnung 2026: Fristen und Verjährung: was Mieter wissen müssen",
@@ -821,6 +842,26 @@ const ARTIKEL_ROH = [
         {
                 "typ": "intro",
                 "text": "Die Betriebskostenabrechnung ist für viele Mieterinnen und Mieter ein jährliches Ärgernis: Zu spät zugestellt, unverständlich aufgebaut oder mit einer überraschenden Nachforderung versehen. Doch das Gesetz gibt klare Fristen vor, an die sich sowohl Vermieter als auch Mieter halten müssen. Wer diese Fristen kennt, kann unberechtigte Nachzahlungen abwehren und weiß genau, wie lange er selbst noch Ansprüche geltend machen kann."
+        },
+        // Kurzantwort (SEO-LAUF 23.10.2026): beantwortet die häufigste
+        // Suchanfrage direkt oben, für Leser und für KI-Übersichten. Beide
+        // Lesarten von "Nebenkostenabrechnung {JAHR}" (Abrechnung, die {JAHR}
+        // kommt, und Abrechnung über das Jahr {JAHR}). Quelle: § 556 Abs. 3
+        // BGB (gesetze-im-internet.de, abgerufen 23.10.2026).
+        {
+                "typ": "h2",
+                "text": "Kurz beantwortet: Wann kommt die Nebenkostenabrechnung {JAHR}?"
+        },
+        {
+                "typ": "liste",
+                "items": [
+                        "Abrechnung für {VORJAHR} (Zeitraum 1. Januar bis 31. Dezember {VORJAHR}): Sie muss spätestens am 31. Dezember {JAHR} bei Ihnen sein (§ 556 Abs. 3 Satz 2 BGB).",
+                        "Abrechnung für das laufende Jahr {JAHR}: Sie kommt erst {FOLGEJAHR}, spätestens am 31. Dezember {FOLGEJAHR}.",
+                        "Weicht der Abrechnungszeitraum vom Kalenderjahr ab, etwa 1. Juli bis 30. Juni, endet die Frist zwölf Monate nach dem Ende dieses Zeitraums.",
+                        "Einen früheren gesetzlichen Termin gibt es nicht. Der Vermieter darf die zwölf Monate ausschöpfen.",
+                        "Maßgeblich ist, wann die Abrechnung bei Ihnen ankommt, nicht wann sie abgeschickt wurde (BGH, Urteil vom 21. Januar 2009, VIII ZR 107/08).",
+                        "Kommt sie zu spät, kann der Vermieter keine Nachzahlung mehr verlangen, es sei denn, er hat die Verspätung nicht zu vertreten (§ 556 Abs. 3 Satz 3 BGB). Ein Guthaben muss er trotzdem auszahlen."
+                ]
         },
         {
                 "typ": "h2",
@@ -845,6 +886,21 @@ const ARTIKEL_ROH = [
         {
                 "typ": "hinweis",
                 "text": "Zahlen Sie eine verspätet zugestellte Nachforderung aus Unwissenheit, können Sie das Geld später zurückverlangen. Prüfen Sie daher bei jeder Abrechnung zuerst das Zugangsdatum, bevor Sie überweisen."
+        },
+        // SEO-LAUF 23.10.2026: Zugang und Postversand. Primärquelle:
+        // BGH-Pressemitteilung Nr. 016/2009 zum Urteil vom 21.01.2009,
+        // VIII ZR 107/08 (bundesgerichtshof.de, abgerufen 23.10.2026).
+        {
+                "typ": "h2",
+                "text": "Zugang zählt, nicht der Poststempel: was der BGH verlangt"
+        },
+        {
+                "typ": "text",
+                "text": "Der Bundesgerichtshof hat entschieden, dass die rechtzeitige Absendung nicht genügt: Die Abrechnung muss dem Mieter noch innerhalb der Frist zugegangen sein (Urteil vom 21. Januar 2009, VIII ZR 107/08). Für einen einfachen Brief, der zur Post gegeben wurde, gibt es keinen Anscheinsbeweis, dass er angekommen ist. Den Zugang muss also der Vermieter beweisen. Geht die Abrechnung auf dem Postweg verloren oder verzögert sie sich, kann sich der Vermieter nicht ohne Weiteres darauf berufen, er habe das nicht zu vertreten: Die Post ist seine Erfüllungsgehilfin (§ 278 BGB). Ob eine Verzögerung ihm zuzurechnen ist, hängt nach dem BGH von den Umständen des Einzelfalls ab."
+        },
+        {
+                "typ": "hinweis",
+                "text": "Notieren Sie, an welchem Tag die Abrechnung bei Ihnen ankam, und heben Sie den Umschlag auf. Kommt sie erst nach dem 31. Dezember, ist dieses Datum Ihr wichtigstes Argument gegen eine Nachforderung."
         },
         {
                 "typ": "verweis",
@@ -931,7 +987,13 @@ const ARTIKEL_ROH = [
 ],
       // Fragenblock (18.10.2026): "Ähnliche Fragen" bei google.de für
       // "nebenkostenabrechnung frist" (abgerufen 18.10.2026).
+      // Ergänzt 23.10.2026: drei Fragen aus Search Console ("wann kommt die
+      // nebenkostenabrechnung 2026") und "Wird auch oft gesucht" bei google.de
+      // ("Nebenkostenabrechnung Zahlungsfrist 14 Tage", "… zu spät").
       faq: [
+        { frage: "Wann kommt die Nebenkostenabrechnung {JAHR}?", antwort: "Im Jahr {JAHR} ist die Abrechnung für {VORJAHR} dran: Sie muss spätestens am 31. Dezember {JAHR} bei Ihnen sein (§ 556 Abs. 3 Satz 2 BGB). Die Abrechnung über das laufende Jahr {JAHR} kommt erst {FOLGEJAHR}, spätestens am 31. Dezember {FOLGEJAHR}. Einen früheren gesetzlichen Termin gibt es nicht." },
+        { frage: "Reicht es, wenn der Vermieter die Abrechnung am 31. Dezember abschickt?", antwort: "Nein. Die Abrechnung muss Ihnen innerhalb der Frist zugehen, die rechtzeitige Absendung genügt nicht. Für einen einfachen Brief gibt es keinen Anscheinsbeweis, dass er angekommen ist, und Verzögerungen oder Verluste bei der Post muss sich der Vermieter grundsätzlich zurechnen lassen (BGH, Urteil vom 21. Januar 2009, VIII ZR 107/08)." },
+        { frage: "Wie lange habe ich Zeit, die Nachzahlung zu bezahlen?", antwort: "Eine feste gesetzliche Zahlungsfrist von 14 oder 30 Tagen gibt es nicht. In Verzug kommen Sie nach einer Mahnung des Vermieters (§ 286 Abs. 1 BGB) oder spätestens 30 Tage nach Fälligkeit und Zugang, wenn die Abrechnung ausdrücklich auf diese Folge hinweist (§ 286 Abs. 3 BGB). Die zwölf Monate für Einwendungen schieben die Zahlung nicht hinaus. Wer Zweifel hat, zahlt unter Vorbehalt und lässt die Abrechnung prüfen." },
         { frage: "Wie lange darf sich der Vermieter mit der Nebenkostenabrechnung Zeit lassen?", antwort: "Zwölf Monate nach Ende des Abrechnungszeitraums (§ 556 Abs. 3 Satz 2 BGB). Läuft der Abrechnungszeitraum vom 1. Januar bis 31. Dezember {VORJAHR}, muss die Abrechnung spätestens am 31. Dezember {JAHR} bei Ihnen sein. Maßgeblich ist der Zugang, nicht das Datum auf dem Schreiben." },
         { frage: "Was passiert, wenn die Nebenkostenabrechnung zu spät kommt?", antwort: "Dann kann der Vermieter keine Nachzahlung mehr verlangen, es sei denn, er hat die Verspätung nicht zu vertreten (§ 556 Abs. 3 Satz 3 BGB). Ein Guthaben aus der Abrechnung muss er Ihnen trotzdem auszahlen." },
         { frage: "Wann muss ich die Nebenkostenabrechnung nicht mehr bezahlen?", antwort: "Wenn sie erst nach Ablauf der Zwölf-Monats-Frist bei Ihnen eingeht, wenn die Forderung verjährt ist (drei Jahre ab dem Ende des Jahres, in dem sie entstanden ist, §§ 195, 199 BGB) oder soweit sie Kosten enthält, die nicht umgelegt werden dürfen. Bei einer formell unwirksamen Abrechnung ist die Nachzahlung erst fällig, wenn eine ordnungsgemäße Abrechnung vorliegt." },

@@ -239,6 +239,13 @@ export default function Artikel({ navigateTo, navigateToArtikel, ratgeberArtikel
             <div key={i} style={{ background: C.brandBg, borderRadius: THEME.radius.lg, padding: "22px 24px", margin: "28px 0" }}>
               <p style={{ color: C.text, fontSize: 17, margin: "0 0 14px", lineHeight: 1.6 }}>{block.text}</p>
               <Verweis href="/pruefen/wohnung" onNavigate={() => navigateTo("wohnung")} style={{ display: "inline-flex", alignItems: "center", gap: 8, background: C.accent, borderRadius: THEME.radius.md, padding: "13px 22px", fontSize: 16, fontFamily: THEME.font.heading, fontWeight: 600, color: C.accentText, cursor: "pointer", textDecoration: "none" }}>Kostenlos prüfen <Icon name="arrow-right" size={18} /></Verweis>
+              {/* SEO-LAUF 23.10.2026: Textlink mit beschreibendem Ankertext auf
+                  die Werkzeug-Seite. Sie ist seit 17.10. indexiert, hatte aber
+                  in 28 Tagen 0 Impressionen; die URL-Prüfung fand keine
+                  verweisende Seite. Gegenstück in scripts/prerender.mjs. */}
+              <p style={{ fontSize: 15, margin: "12px 0 0", lineHeight: 1.6 }}>
+                <Verweis href="/nebenkostenabrechnung-pruefen" onNavigate={() => navigateTo("werkzeug-pruefen")} style={{ color: C.brand, textDecoration: "underline" }}>So funktioniert die kostenlose Online-Prüfung der Nebenkostenabrechnung</Verweis>
+              </p>
             </div>
           );
           return null;
