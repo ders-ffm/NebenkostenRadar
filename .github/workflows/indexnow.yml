@@ -1,0 +1,87 @@
+# IndexNow: meldet Bing (und den anderen IndexNow-Suchmaschinen) geänderte
+# Seiten, sobald eine Änderung auf main live ist.
+#
+# WARUM ES DIESEN WORKFLOW GIBT (23.10.2026, Stefan: "sichtbarer werden,
+# sowohl in Suchmaschinen als auch in KI"):
+# - Bing kennt am 23.10.2026 nur wenige unserer Seiten: Die Suche nach
+#   "nebenkostenradar" zeigt die Startseite und einen Ratgeber, die Suche
+#   nach "nebenkostenradar.com" liefert 0 Treffer.
+# - Microsoft Copilot und die KI-Zusammenfassungen in Bing beziehen ihre
+#   Quellen aus dem Bing-Index. Bing empfiehlt IndexNow ausdrücklich, damit
+#   KI-Antworten die aktuelle Fassung einer Seite verwenden (Bing Webmaster
+#   Blog, "Introducing AI Performance in Bing Webmaster Tools", Februar 2026).
+# - Google nimmt an IndexNow nicht teil; dort bleibt es bei Sitemap und
+#   "Indexierung beantragen" in der Search Console.
+#
+# WIE ES FUNKTIONIERT (Protokoll: indexnow.org/documentation):
+# Der Schlüssel liegt als public/6064b033007c4f8e55f387d9124b8290.txt auf der
+# Website. Er ist kein Geheimnis, er beweist nur, dass die Meldung von der
+# Domain selbst kommt. Nach jedem Push auf main, der Inhalte ändert, wartet
+# der Workflow, bis Vercel fertig ist (Schlüsseldatei erreichbar), liest die
+# Sitemap und meldet alle Adressen in einer Anfrage. Bei rund 30 Adressen und
+# wenigen Änderungen pro Woche ist das unkritisch; Antwort 429 würde auf zu
+# häufige Meldungen hinweisen.
+#
+# Braucht keine Secrets, schreibt nichts ins Repository.
+# ─────────────────────────────────────────────────────────────────────────
+name: IndexNow
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "src/**"
+      - "public/**"
+      - "index.html"
+      - "scripts/prerender.mjs"
+  workflow_dispatch: {} # manueller Start: Actions-Tab → IndexNow → "Run workflow"
+
+permissions:
+  contents: read
+
+jobs:
+  melden:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      HOST: nebenkostenradar.com
+      KEY: 6064b033007c4f8e55f387d9124b8290
+    steps:
+      - name: Warten, bis Vercel die neue Fassung ausliefert
+        run: |
+          # Vercel braucht nach dem Push meist 1 bis 3 Minuten.
+          sleep 150
+          for i in $(seq 1 20); do
+            if curl -fsS "https://$HOST/$KEY.txt" | grep -q "$KEY"; then
+              echo "Schlüsseldatei erreichbar."
+              exit 0
+            fi
+            echo "Noch nicht erreichbar, neuer Versuch in 30 s ($i/20)."
+            sleep 30
+          done
+          echo "::error::Schlüsseldatei https://$HOST/$KEY.txt nicht erreichbar."
+          exit 1
+
+      - name: Adressen aus der Sitemap an IndexNow melden
+        run: |
+          curl -fsS "https://$HOST/sitemap.xml" -o sitemap.xml
+          python3 - <<'PY'
+          import json, os, re, urllib.request
+          host, key = os.environ["HOST"], os.environ["KEY"]
+          urls = re.findall(r"<loc>\s*([^<\s]+)\s*</loc>", open("sitemap.xml", encoding="utf-8").read())
+          urls = [u for u in urls if u.startswith("https://" + host + "/") or u == "https://" + host]
+          if not urls:
+              raise SystemExit("Keine Adressen in der Sitemap gefunden.")
+          body = json.dumps({"host": host, "key": key, "urlList": urls}).encode("utf-8")
+          req = urllib.request.Request(
+              "https://api.indexnow.org/indexnow", data=body, method="POST",
+              headers={"Content-Type": "application/json; charset=utf-8"})
+          try:
+              with urllib.request.urlopen(req, timeout=30) as r:
+                  print(f"IndexNow: HTTP {r.status} für {len(urls)} Adressen")
+          except urllib.error.HTTPError as e:
+              # 200/202 = angenommen; 403 = Schlüssel nicht gefunden;
+              # 422 = Adressen passen nicht zur Domain; 429 = zu häufig.
+              print(f"::error::IndexNow antwortet HTTP {e.code}: {e.read()[:300]!r}")
+              raise SystemExit(1)
+          PY

@@ -2,6 +2,35 @@
 
 Alle wesentlichen Änderungen an diesem Projekt, mit Datum und Begründung. Dient der Nachvollziehbarkeit, damit auch ohne KI-Unterstützung verstanden werden kann, warum etwas so ist, wie es ist.
 
+## 23.10.2026 (zweiter Lauf) — IndexNow für Bing und KI-Assistenten; Korrektur zu NebenkostenPro
+
+### Anlass
+
+Stefan: „Alles daran setzen, dass wir sichtbarer werden, sowohl in Suchmaschinen als auch in KI. Ich möchte, dass man an uns verweist, wenn in einer KI nach einem nützlichen Tool gefragt wird.“
+
+### Befund (23.10.2026)
+
+- **Google KI-Modus**, Frage „Welches Online-Tool prüft meine Nebenkostenabrechnung günstig oder kostenlos?“: genannt werden NebenkostenPro, Mein-Nebenkostenrechner, die Check24-App (Quelle chip.de), nebenkosten.guru, Mineko, MieterEngel, nebenkostenrechneronline.de. Frage „Nebenkostenabrechnung mit KI prüfen lassen, welche Anbieter gibt es“: zusätzlich nebenkostenprüfen.de, mietnebenkostenchecker.de, Mister Check; Quellen u. a. ki-syndikat.de, immobilienscout24.de, anwalt.org. NebenkostenRadar wird in keiner der beiden Antworten genannt.
+- **Bing**: „nebenkostenradar“ zeigt die Startseite und einen Ratgeber; „"nebenkostenradar.com"“ liefert 0 Treffer. Bing ist die Grundlage von Microsoft Copilot und den KI-Zusammenfassungen in Bing.
+- **robots.txt** sperrt keine Crawler (`User-agent: * Allow: /`). Ob die Vercel-Firewall KI-Crawler blockiert, ließ sich ohne Vercel-Anmeldung nicht prüfen (Lücke).
+- **Korrektur zum ersten Lauf**: Im Bericht an Stefan stand, NebenkostenPro sei ein „neuer“ Wettbewerber. Das war falsch. StartingUp berichtete bereits am 17.04.2026 über NebenkostenPro, der erste Commit von NebenkostenRadar ist vom 11.06.2026, und dieses Repository führt NebenkostenPro seit August 2026 als direkten Wettbewerber (`planung/businessplan-umsatzprognose.md`). Ein genaues Startdatum war nicht belegbar (Webarchiv nicht abrufbar).
+
+### Was die Plattformen selbst sagen (Primärquellen)
+
+- Google (Search Central, „AI features and your website“): keine zusätzlichen Anforderungen für AI Overviews und KI-Modus, kein besonderes Markup, keine KI-Textdateien nötig; es gelten die normalen Grundlagen (crawlbar, indexiert, Text, strukturierte Daten passend zum sichtbaren Inhalt).
+- OpenAI (developers.openai.com, „Overview of OpenAI Crawlers“): Seiten, die OAI-SearchBot aussperren, erscheinen nicht in ChatGPT-Suchantworten. Bei uns nicht gesperrt.
+- Bing (Webmaster Blog, Februar 2026): IndexNow, klare Überschriften, Tabellen, FAQ, Belege, Aktualität; neuer Bericht „AI Performance“ in Bing Webmaster Tools zeigt Zitate in Copilot.
+- llms.txt: laut John Mueller (Google, 17.06.2025) nutzt kein KI-System die Datei. Deshalb nicht angelegt.
+
+### Umgesetzt
+
+1. **IndexNow**: Schlüsseldatei `public/6064b033007c4f8e55f387d9124b8290.txt` und Workflow `.github/workflows/indexnow.yml`. Nach jedem Push auf main mit Inhaltsänderungen wartet er, bis Vercel ausgeliefert hat, und meldet alle Adressen der Sitemap an api.indexnow.org (Bing, Yandex, Seznam, Naver u. a.). Google nimmt an IndexNow nicht teil. Manuell startbar über Actions → IndexNow → „Run workflow“.
+
+### Offen, braucht Stefan
+
+- Bing Webmaster Tools einrichten (Anmeldung mit eigenem Konto, Import aus der Search Console). Erst dann gibt es den Bericht „AI Performance“.
+- Erwähnungen auf Seiten, die KI-Antworten als Quelle nutzen (Tool-Verzeichnisse, Vergleichsartikel, Gründerportale). Kandidaten stehen in `marketing/partner-kandidaten.md`.
+
 ## 23.10.2026 — SEO/GEO-Lauf: Fristen-Seite beantwortet „Wann kommt die Nebenkostenabrechnung?“, Müll-Fragen, Links auf die Prüfseite
 
 ### Anlass (Daten vom 23.10.2026)
