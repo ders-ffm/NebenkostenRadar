@@ -2,6 +2,38 @@
 
 Alle wesentlichen Änderungen an diesem Projekt, mit Datum und Begründung. Dient der Nachvollziehbarkeit, damit auch ohne KI-Unterstützung verstanden werden kann, warum etwas so ist, wie es ist.
 
+## 23.10.2026 — SEO/GEO-Lauf: Fristen-Seite beantwortet „Wann kommt die Nebenkostenabrechnung?“, Müll-Fragen, Links auf die Prüfseite
+
+### Anlass (Daten vom 23.10.2026)
+
+Search Console, letzte 28 Tage (bis 21.10.): 36 Klicks, 5.300 Impressionen, CTR 0,7 %, Ø Position 10,9 (18.10.: 34 / 3.570 / 1,0 % / 11,5; Referenz 17.10.: 31 / 3.430 / 0,9 % / 11,6). Letzte 7 Tage: 11 Klicks, 2.640 Impressionen. Der Zuwachs kommt fast ganz aus zwei Seiten, die kaum Klicks bekommen:
+
+| Seite | Impr. 28 T | Impr. 7 T | Ø Pos. | CTR |
+|---|---|---|---|---|
+| /ratgeber/betriebskostenabrechnung-fristen-und-verjaehrung-2026 | 1.247 | 829 | 7,5 | 0,1 % |
+| /ratgeber/muellgebuehren-und-abfallentsorgung-als-betriebskosten-2026 | 813 | 689 | 7,5 | 0,6 % |
+| /nebenkostenabrechnung-pruefen | 0 | 0 | – | – |
+
+Die Fristen-Seite trägt den Titel vom 18.10. seit dem Crawl am 18.10. (URL-Prüfung); die CTR blieb bei 0,1 %. Häufigste sichtbare Suchanfrage: „wann kommt die nebenkostenabrechnung 2026“ (36 Impr., Pos. 8,1) und Varianten. Müll: „müllgebühren pro person oder qm“, „wer zahlt müllgebühren mieter oder vermieter“, „berechnung müllgebühren nebenkostenabrechnung“. Die Prüfseite ist seit 17.10. indexiert, hatte aber 0 Impressionen; die URL-Prüfung fand keine verweisende Seite. Kaufabsicht-Suchen weiter weit hinten („nebenkostenabrechnung prüfen lassen“ Pos. 65, „… online prüfen lassen“ 45, „… prüfen online kostenlos“ 31).
+
+google.de am 23.10.2026: Für „wann kommt die nebenkostenabrechnung 2026“ steht nebenkostenpro.de auf Platz 1 (liest „2026“ als Abrechnungsjahr 2026), wir auf Platz 7. Die KI-Übersicht beantwortet beide Lesarten und zitiert nebenkostenpro.de, vermieterwelt.de, hf-hf.de, mineko.de. „Wird auch oft gesucht“: „Nebenkostenabrechnung Zahlungsfrist 14 Tage“, „… zu spät“. Die KI-Übersicht zu „nebenkostenabrechnung frist“ behauptet, der Vermieter verliere den Anspruch, wenn er die Frist „ohne eigenes Verschulden“ verpasst; das Gesetz sagt das Gegenteil (§ 556 Abs. 3 Satz 3 BGB).
+
+### Änderungen
+
+1. **Fristen-Artikel**: Suchtitel als Frage mit Antwort („Wann kommt die Nebenkostenabrechnung {VORJAHR}? Bis 31.12.{JAHR}“), neue Beschreibung. Neuer Block „Kurz beantwortet“ direkt unter der Einleitung (beide Lesarten, abweichender Abrechnungszeitraum, kein früherer Termin, Zugang statt Absendung, Folge der Verspätung). Neuer Abschnitt „Zugang zählt, nicht der Poststempel“. Drei neue Fragen: „Wann kommt die Nebenkostenabrechnung {JAHR}?“, „Reicht es, wenn der Vermieter die Abrechnung am 31. Dezember abschickt?“, „Wie lange habe ich Zeit, die Nachzahlung zu bezahlen?“ (keine gesetzliche 14- oder 30-Tage-Frist; Verzug nach § 286 Abs. 1 bzw. 3 BGB, wie im Widerspruchs-Artikel vom 18.10.).
+   Quellen: § 556 Abs. 3 BGB (gesetze-im-internet.de, 23.10.2026); BGH, Urteil vom 21.01.2009, VIII ZR 107/08, Pressemitteilung Nr. 016/2009 (bundesgerichtshof.de, 23.10.2026): Absendung genügt nicht, kein Anscheinsbeweis für den Zugang eines einfachen Briefs, Post ist Erfüllungsgehilfin (§ 278 BGB), Zurechnung je nach Einzelfall.
+2. **Müll-Artikel**: Suchtitel „Müllgebühren: pro Person oder m²? Schnitt 0,16 €/m²“, Beschreibung angepasst, Fragenblock mit vier Fragen (Verteilung nach Personen oder Fläche, wer zahlt, normaler Betrag, was umlagefähig ist). Quellen: § 556 Abs. 1, § 556a Abs. 1 und 2 BGB, § 1 Abs. 1 und § 2 Nr. 8 BetrKV (gesetze-im-internet.de, 23.10.2026), DMB-Betriebskostenspiegel (Meldung 18.12.2025, Wert schon in `business.js`).
+3. **Interne Verlinkung der Prüfseite**: Jeder CTA-Block in den Ratgeber-Artikeln hat zusätzlich einen Textlink „So funktioniert die kostenlose Online-Prüfung der Nebenkostenabrechnung“ auf `/nebenkostenabrechnung-pruefen` (React und Vorab-HTML). Der Knopf „Kostenlos prüfen“ führt unverändert zu `/pruefen/wohnung`. Begründung: Google empfiehlt beschreibende Ankertexte für interne Links (Google Search Central, „Link best practices“); bisher stand die Prüfseite nur in der Werkzeug-Leiste am Artikelende.
+
+### Rechtslage geprüft, ohne Handlungsbedarf
+
+- BGH-Pressemitteilungen 192/2026 bis 201/2026 (13.–23.10.2026): nichts zu Betriebskosten oder Wohnraummiete.
+- Neuer DMB-Betriebskostenspiegel: noch nicht erschienen (letzte Meldung 18.12.2025).
+
+### Geprüft
+
+`npm run check` grün (33 Seiten, 0 Verstöße; 72 Brief-Konstellationen; 31 Eingaben). Titel 57 bzw. 51 Zeichen, Beschreibungen 144 bzw. 152 Zeichen, keine offenen Jahres-Platzhalter, FAQPage-Markup auf beiden Artikeln. Lokal (390 px): neue Blöcke sichtbar, Textlink führt auf die Prüfseite, keine Konsolenfehler.
+
 ## 18.10.2026 — Redesign „Vorschlag A · klar & digital“ und nur noch ein Paket (12,99 €)
 
 ### Anlass
