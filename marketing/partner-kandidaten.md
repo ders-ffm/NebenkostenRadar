@@ -27,3 +27,28 @@ Eine Versicherungsvertretung aus Stefans persönlichem Umfeld spricht Stefan sel
 
 | Datum | Name | URL | Warum passend | Kontaktweg | Kürzel | Status |
 |---|---|---|---|---|---|---|
+
+## Quellen von KI-Antworten (23.10.2026)
+
+Hintergrund: Bei Google im KI-Modus („Welches Online-Tool prüft meine Nebenkostenabrechnung …?“, „… mit KI prüfen lassen, welche Anbieter gibt es“) stützen sich die Antworten neben den Anbieterseiten auf Drittseiten. NebenkostenRadar wird dort nicht genannt. Ein Eintrag auf diesen Seiten ist der direkteste Weg in solche Antworten. Kein Geld ausgeben: nur kostenlose Einträge bzw. redaktionelle Erwähnungen.
+
+| Datum | Name | URL | Warum passend (belegt) | Kontaktweg | Status |
+|---|---|---|---|---|---|
+| 23.10.2026 | KI-Syndikat (KI-Tool-Verzeichnis) | ki-syndikat.de | Von Google KI-Modus als Quelle zitiert; führt NebenkostenPro unter /tools/nebenkostenpro/ („zuletzt geprüft 18.09.2026“) | Kontaktformular ki-syndikat.de/kontakt/ (laut Seite kein Kauf von Einträgen) | vorgeschlagen |
+| 23.10.2026 | ImmobilienScout24 Wissen, Artikel „Nebenkostenabrechnung KI“ | immobilienscout24.de/wissen/ki-wissen/nebenkostenabrechnung-ki.html | Von Google KI-Modus als Quelle zitiert | Redaktionskontakt im Impressum prüfen | vorgeschlagen |
+| 23.10.2026 | Gründerfreunde, Reihe „Neue Startups im Monat“ | gruenderfreunde.de/neue-startups-oktober-2026/ | Hat NebenkostenPro im Oktober 2026 vorgestellt | Einreichungsweg nicht belegt, Impressum/Kontakt prüfen | vorgeschlagen |
+| 23.10.2026 | StartingUp, Rubrik Gründerstorys | starting-up.de | Gründerstory über NebenkostenPro vom 17.04.2026 | Redaktionskontakt im Impressum prüfen | vorgeschlagen |
+| 23.10.2026 | CHIP, Ratgeber zu Nebenkosten-Apps | chip.de | Von Google KI-Modus als Quelle für die Check24-App zitiert | Redaktionskontakt prüfen; passenden Artikel vorher heraussuchen | vorgeschlagen |
+
+Entwurf (Stefan verschickt, Text anpassen):
+
+> Betreff: Hinweis auf ein Prüfwerkzeug für Nebenkostenabrechnungen
+>
+> Guten Tag,
+>
+> ich betreibe NebenkostenRadar (nebenkostenradar.com), ein Online-Werkzeug, mit dem Mieter ihre Nebenkostenabrechnung prüfen: Abrechnung als Foto oder PDF hochladen, jeder Posten wird gegen die Betriebskostenverordnung, die Heizkostenverordnung und den Betriebskostenspiegel des Deutschen Mieterbunds geprüft. Die Basisanalyse ist kostenlos und ohne Konto; der vollständige Bericht mit Brief an den Vermieter kostet einmalig 12,99 €.
+>
+> Falls Sie Werkzeuge dieser Art aufführen oder vergleichen, würde ich mich über eine Aufnahme freuen. Für Rückfragen oder einen Test stehe ich gern zur Verfügung.
+>
+> Viele Grüße
+> Stefan Hennig
