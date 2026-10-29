@@ -159,7 +159,7 @@ function FristenWidget({ C, navigateTo }) {
         {ergebnis.map((r, i) => <Ergebniszeile key={i} C={C} {...r} />)}
       </div>
       <p style={{ fontSize: 13.5, color: C.textDim, lineHeight: 1.6, margin: "12px 0 16px" }}>
-        Allgemeine Berechnung nach § 556 Abs. 3 BGB, keine Rechtsberatung im Einzelfall. Abweichende Vereinbarungen zum Nachteil des Mieters sind unwirksam (§ 556 Abs. 4 BGB).
+        Allgemeine Berechnung nach § 556 Abs. 3 BGB, keine Rechtsberatung im Einzelfall. Abweichende Vereinbarungen zum Nachteil des Mieters sind unwirksam (§ 556 Abs. 5 BGB).
       </p>
       <div style={{ textAlign: "center" }}><PruefenKnopf C={C} navigateTo={navigateTo} text="Jetzt die Abrechnung selbst prüfen →" /></div>
     </Kasten>
