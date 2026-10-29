@@ -60,7 +60,7 @@ function brief(result) {
     summeSichtbar: hatBeanstandungen,
     zeigtListe: modus !== "belegeinsicht",
     // Auch der Modus "belegeinsicht" hat Briefinhalt (Aufforderung zur
-    // Belegeinsicht nach § 259 BGB), nur eben ohne Positionsliste.
+    // Belegeinsicht nach § 556 Abs. 4 BGB), nur eben ohne Positionsliste.
     hatInhalt: hart.length + stat.length + offene.length > 0 || modus === "belegeinsicht",
   };
 }
