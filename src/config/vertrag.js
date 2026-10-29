@@ -26,7 +26,9 @@ import { euro } from "../lib/format.js";
 // Variante "nur Auswertung" (9,99 €) wird nicht mehr verkauft (Stefans
 // Entscheidung). Wer sie vorher gekauft hat, behält sie; deshalb bleibt
 // leistungsbeschreibung("auswertung") für Bestandsbestellungen erhalten.
-export const AGB_STAND = "18.10.2026";
+// 29.10.2026: § 2 nennt für die Belegeinsicht § 556 Abs. 4 BGB statt § 259 BGB
+// (Rechtsgrundlage seit 01.01.2025), Freigabe Stefan 29.10.2026.
+export const AGB_STAND = "29.10.2026";
 
 export const ANBIETER = {
   name: "NebenkostenRadar",
@@ -43,7 +45,7 @@ const ANBIETER_ZEILE = `${ANBIETER.name}, ${ANBIETER.inhaber}, ${ANBIETER.strass
 // deshalb hier zentral. "auswertung" nur noch für Käufe vor dem 18.10.2026.
 export function leistungsbeschreibung(stufe) {
   return stufe === "voll"
-    ? "Auswertung + Brief: PDF-Prüfbericht mit vollständiger Positionsübersicht, Richtwerten und Begründungen, dazu ein versandfertiger Brief an den Vermieter (Inhalt je nach Prüfergebnis: Einwendungen, Rückfragen mit Bitte um Belegeinsicht oder Aufforderung zur Belegeinsicht nach § 259 BGB) und ein unverbindlicher Hinweis zu möglicherweise steuerlich absetzbaren Positionen nach § 35a EStG."
+    ? "Auswertung + Brief: PDF-Prüfbericht mit vollständiger Positionsübersicht, Richtwerten und Begründungen, dazu ein versandfertiger Brief an den Vermieter (Inhalt je nach Prüfergebnis: Einwendungen, Rückfragen mit Bitte um Belegeinsicht oder Aufforderung zur Belegeinsicht nach § 556 Abs. 4 BGB) und ein unverbindlicher Hinweis zu möglicherweise steuerlich absetzbaren Positionen nach § 35a EStG."
     : "Auswertung: PDF-Prüfbericht mit vollständiger Positionsübersicht, Richtwerten und Begründungen.";
 }
 
@@ -56,7 +58,7 @@ export function agbAbschnitte() {
     ]},
     { t: "§ 2 Vertragsgegenstand", lines: [
       "Gegenstand ist die einmalige Erstellung und Bereitstellung eines digitalen PDF-Prüfberichts zu einer Nebenkostenabrechnung, deren Angaben du selbst eingibst oder per Foto-/PDF-Erkennung vorausfüllen lässt.",
-      "Auswertung + Brief (" + euro(BUSINESS.PREIS_VOLL) + "): PDF mit vollständiger Positionsübersicht, Richtwerten und Begründungen sowie ein versandfertiger Brief an den Vermieter. Sein Inhalt richtet sich nach dem Prüfergebnis: Einwendungen gegen auffällige Positionen, Rückfragen mit Bitte um Belegeinsicht oder, wenn nichts auffällt, eine Aufforderung zur Belegeinsicht nach § 259 BGB. Dazu kommt ein unverbindlicher Hinweis zu möglicherweise steuerlich absetzbaren Positionen nach § 35a EStG mit einer Anfrage-Vorlage an den Vermieter (reine Rechenhilfe, keine Steuerberatung).",
+      "Auswertung + Brief (" + euro(BUSINESS.PREIS_VOLL) + "): PDF mit vollständiger Positionsübersicht, Richtwerten und Begründungen sowie ein versandfertiger Brief an den Vermieter. Sein Inhalt richtet sich nach dem Prüfergebnis: Einwendungen gegen auffällige Positionen, Rückfragen mit Bitte um Belegeinsicht oder, wenn nichts auffällt, eine Aufforderung zur Belegeinsicht nach § 556 Abs. 4 BGB. Dazu kommt ein unverbindlicher Hinweis zu möglicherweise steuerlich absetzbaren Positionen nach § 35a EStG mit einer Anfrage-Vorlage an den Vermieter (reine Rechenhilfe, keine Steuerberatung).",
       "Die Prüfung läuft automatisiert: Sie vergleicht deine Angaben mit gesetzlichen Vorgaben (u. a. Betriebskostenverordnung, Heizkostenverordnung) und mit Durchschnittswerten aus dem Betriebskostenspiegel des Deutschen Mieterbundes. Eine Abweichung vom Durchschnitt ist ein Anlass zur Nachfrage, kein Nachweis eines Fehlers. Der Bericht ist keine Rechtsberatung und keine individuelle Prüfung durch eine Juristin oder einen Juristen.",
       "Die optionale Foto-/PDF-Erkennung ist eine Ausfüllhilfe. Die vollständige manuelle Eingabe steht immer zur Verfügung und ist keine Voraussetzung für den Kauf.",
     ]},
