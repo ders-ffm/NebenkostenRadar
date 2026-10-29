@@ -2,6 +2,55 @@
 
 Alle wesentlichen Änderungen an diesem Projekt, mit Datum und Begründung. Dient der Nachvollziehbarkeit, damit auch ohne KI-Unterstützung verstanden werden kann, warum etwas so ist, wie es ist.
 
+## 29.10.2026 — SEO/GEO-Lauf: Belegeinsicht nach § 556 Abs. 4 BGB, Kurzantwort Widerspruch, Tabelle nach Wohnungsgröße, Überschrift Fristen-Artikel
+
+### Anlass (Daten vom 29.10.2026)
+
+Search Console, letzte 28 Tage (bis 26.10.): 51 Klicks, 7.680 Impressionen, CTR 0,7 %, Ø Position 10,7 (23.10.: 36 / 5.300 / 0,7 % / 10,9; Referenz 17.10.: 31 / 3.430 / 0,9 % / 11,6). 3 Monate: 90 / 9.780 / 0,9 % / 11,7. Bericht „Generative KI“ (3 Monate): 1.570 Impressionen, davon Betriebskostenspiegel 560, Widerspruch 451, Fristen 235. Funnel-Zahlen: noch keine Monatsauswertung (erste am 01.11.2026).
+
+| Seite | Impr. 28 T | Ø Pos. | CTR |
+|---|---|---|---|
+| /ratgeber/betriebskostenabrechnung-fristen-und-verjaehrung-2026 | 2.277 | 7,2 | 0,3 % |
+| /ratgeber/betriebskostenspiegel-2024 | 1.459 | 16,9 | 0,8 % |
+| /ratgeber/muellgebuehren-und-abfallentsorgung-als-betriebskosten-2026 | 1.187 | 7,4 | 0,5 % |
+| /ratgeber/widerspruch-nebenkostenabrechnung | 1.128 | 11,3 | 0,9 % |
+| /ratgeber/wasserkosten-und-kaltwasserzaehler-in-der-nebenkostenabrechnung | 460 | 8,0 | 0 % |
+| /nebenkostenabrechnung-pruefen | 0 | – | – |
+
+Kaufabsicht-Suchen weiter weit hinten: „nebenkostenabrechnung prüfen lassen“ Pos. 65, „… online prüfen lassen“ 45, „… prüfen online kostenlos“ 31, „… prüfen lassen rechtsschutzversicherung“ 47.
+
+google.de am 29.10.2026:
+- „wann kommt die nebenkostenabrechnung 2026“: KI-Übersicht zitiert nebenkostenradar.com zweimal (erste beiden Sätze); organisch Platz 3. Google zeigt als Titel aber die Überschrift („Betriebskostenabrechnung 2026: Fristen und Verjährung“), nicht den `<title>` vom 23.10.
+- „betriebskostenspiegel 2026“: wir Platz 5 (vor uns nebenkostenpro.de, mieterbund.de, mein-nebenkostenrechner.de, mieterverein-bochum.de). Die KI-Übersicht zitiert für „Durchschnittskosten nach Wohnungsgröße“ nebenkostenpro.de und mein-nebenkostenrechner.de; unsere Seite hatte nur ein Rechenbeispiel für 75 m².
+- „widerspruch nebenkostenabrechnung“: KI-Übersicht behauptet, der Widerspruch müsse „schriftlich und eigenhändig unterschrieben“ sein. § 556 Abs. 3 Satz 5 BGB verlangt nur, die Einwendungen „mitzuteilen“.
+- „nebenkostenabrechnung prüfen“ / „… prüfen lassen“: Anzeigen von mineko.de, mietchecker.app, nebify.de, yourxpert.de, arag.de (neu gegenüber 18.10.: nebify, yourxpert, ARAG; sedicogroup nicht mehr gesehen). Wir nicht unter den ersten 9.
+
+### Rechtslage (Primärquelle)
+
+§ 556 BGB (gesetze-im-internet.de, abgerufen 29.10.2026) enthält einen Absatz 4: „Der Vermieter hat dem Mieter auf Verlangen Einsicht in die der Abrechnung zugrundeliegenden Belege zu gewähren. Der Vermieter ist berechtigt, die Belege elektronisch bereitzustellen.“ Eingefügt durch Art. 14 Nr. 5 des Vierten Bürokratieentlastungsgesetzes vom 23.10.2024 (BGBl. 2024 I Nr. 323); der bisherige Absatz 4 wurde Absatz 5. Inkrafttreten 01.01.2025 laut Änderungstabelle bei buzer.de und GdW-Kommentar (wohwi.online); den Wortlaut von Art. 74 (Inkrafttreten) konnte ich im BGBl.-PDF nicht auslesen (Lücke). Die Website stützte die Belegeinsicht bisher nur auf § 259 BGB und nannte im Fristenrechner „§ 556 Abs. 4 BGB“ für das Verbot abweichender Vereinbarungen (seit 2025 Abs. 5).
+
+BGH-Pressemitteilungen 202/2026 bis 206/2026 (26.–28.10.2026): nichts zu Betriebskosten. DMB-Meldungen bis 27.10.2026: kein neuer Betriebskostenspiegel.
+
+### Änderungen
+
+1. **Belegeinsicht-Artikel**: Rechtsgrundlage § 556 Abs. 4 BGB mit Wortlaut, elektronische Bereitstellung (Satz 2), neuer Block „Kurz beantwortet“, vier Fragen mit FAQPage-Markup, eigener Suchtitel und Beschreibung, `aktualisiert: Oktober 2026`. § 259 BGB bleibt als frühere Herleitung erwähnt. Saisonplan Oktober bis Dezember: Belegeinsicht ist Schwerpunkt.
+2. **Weitere Ratgeber-Stellen**: § 259 BGB → § 556 Abs. 4 BGB (prüfen lassen, Widerspruch-Schritte und -Brief, FAQ Widerspruch und Betriebskostenspiegel). Im Musterbrief des Widerspruchs-Artikels jetzt die Bitte um elektronische Bereitstellung statt „Kopien“. **Fristenrechner** (`Werkzeug.jsx`): § 556 Abs. 4 → Abs. 5.
+3. **Widerspruch-Artikel**: Block „Kurz beantwortet“ direkt unter der Einleitung (Frist, Form ohne Schriftformzwang, Inhalt, Zahlung, Belege, verspätete Abrechnung), zitierfähig für KI-Übersichten. Begründung: zweitstärkste Seite im Bericht „Generative KI“ und falsche Formaussage in der KI-Übersicht. Google Search Central („AI features and your website“) nennt keine Sonderanforderungen; klare, belegte Aussagen im sichtbaren Text sind der normale Weg.
+4. **Betriebskostenspiegel-Artikel**: Abschnitt „Nebenkosten pro m²: Durchschnitt nach Wohnungsgröße“ mit Tabelle für 40 bis 100 m² (Monat, Jahr, davon Heizung/Warmwasser), berechnet aus `BUSINESS.RICHTWERTE` (`groessenTabelle()` in `artikel.js`), zwei neue Fragen („Nebenkosten pro m² im Durchschnitt“, „Gibt es schon einen Betriebskostenspiegel für 2025?“). Die zweite Antwort nennt den Prüfstand 29.10.2026 und muss bei der nächsten DMB-Ausgabe angepasst werden.
+5. **Fristen-Artikel**: Überschrift „Wann kommt die Nebenkostenabrechnung {VORJAHR}? Fristen und Verjährung“, passend zum Suchtitel. Begründung: Google ersetzt Titel teils durch die Hauptüberschrift (Google Search Central, „Influencing your title links in search results“). URL unverändert.
+
+### Nicht geändert, braucht Stefans Freigabe
+
+Der verkaufte Brief (`src/pdf/BriefPDF.jsx`), die Ergebnistexte (`src/lib/analyse.js`), Startseite (`Welcome.jsx`), Vertrags-/Leistungstexte (`vertrag.js`), Werkzeug-Beschreibung (`werkzeuge.js`) und `faq.js` nennen weiter § 259 BGB. Der Brief verlangt außerdem „Übersendung der Originalbelege“; einen Anspruch darauf sieht das Gesetz nicht vor, der Vermieter darf zwischen Einsicht und elektronischer Bereitstellung wählen. Vorschlag: auf § 556 Abs. 4 BGB umstellen und um elektronische Bereitstellung bitten.
+
+### Reddit
+
+Nicht erreichbar: Der eingebaute Browser sperrt reddit.com („not allowed due to safety restrictions“), WebFetch meldet „SITE_BLOCKED“. Die Websuche lieferte nur Spiegelseiten (reddit.sentinel-team.org), die laut Auftrag nicht genutzt werden. Keine Reddit-Befunde in diesem Lauf.
+
+### Geprüft
+
+`npm run check` grün (33 Seiten, 0 Verstöße; 72 Brief-Konstellationen, 0 Verletzungen; 31 Eingaben). Playwright 390 px: Tabelle ohne Seitenüberlauf, neue Blöcke und Fragen sichtbar, Fristenrechner zeigt Abs. 5, keine Konsolenfehler.
+
 ## 23.10.2026 (zweiter Lauf) — IndexNow für Bing und KI-Assistenten; Korrektur zu NebenkostenPro
 
 ### Anlass
