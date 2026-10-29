@@ -35,6 +35,27 @@
 // gebaut werden. Das erledigt .github/workflows/jahreswechsel.yml.
 // ───────────────────────────────────────────────────────────────────────────
 import { jahrEinsetzenTief, enthaeltJahrPlatzhalter } from "./lib/jahr.js";
+import { BUSINESS } from "./config/business.js";
+
+// Tabelle "Nebenkosten nach Wohnungsgröße" (29.10.2026) für den
+// Betriebskostenspiegel-Artikel. Berechnet aus BUSINESS.RICHTWERTE, damit
+// Ratgeber, Prüfung und Prüfbericht dieselben Zahlen verwenden. Reine
+// Multiplikation, keine eigene Schätzung.
+function groessenTabelle() {
+  const R = BUSINESS.RICHTWERTE;
+  // Geschütztes Leerzeichen vor € und m², damit die Einheit auf schmalen
+  // Bildschirmen nicht allein in die nächste Zeile rutscht. Jahresbeträge
+  // auf volle Euro gerundet (Spaltenüberschrift sagt "rund").
+  const eur = (x, stellen) => x.toLocaleString("de-DE", { minimumFractionDigits: stellen, maximumFractionDigits: stellen }) + "\u00A0€";
+  const kopf = ["Fläche", "Ø Monat", "Ø Jahr (rund)", "davon Heizung + Warmwasser (Jahr)"];
+  const zeilen = [40, 50, 60, 70, 80, 100].map(qm => [
+    qm + "\u00A0m²",
+    eur(R.gesamt * qm, 2),
+    eur(R.gesamt * qm * 12, 0),
+    eur(R.heizung_warmwasser * qm * 12, 0),
+  ]);
+  return [kopf, ...zeilen];
+}
 
 const ARTIKEL_ROH = [
     // ─────────────────────────────────────────────────────────────────────
@@ -124,7 +145,7 @@ const ARTIKEL_ROH = [
         { typ: "h2", text: "Welcher Weg passt zu Ihnen?" },
         { typ: "liste", items: [
           "Sie wollen wissen, ob überhaupt etwas auffällig ist: selbst prüfen oder eine automatisierte Online-Prüfung. Beides geht schnell und kostet wenig oder nichts.",
-          "Sie haben Zweifel an einzelnen Posten: Belegeinsicht verlangen. Das Recht darauf haben Sie ohne Begründung (§ 259 BGB).",
+          "Sie haben Zweifel an einzelnen Posten: Belegeinsicht verlangen. Das Recht darauf haben Sie ohne Begründung (§ 556 Abs. 4 BGB).",
           "Der Vermieter reagiert nicht, oder es geht um viel Geld: Mieterverein oder Anwalt. Haben Sie eine Rechtsschutzversicherung, melden Sie den Fall zuerst dort.",
           "Die Frist läuft bald ab: Erheben Sie Ihre Einwendungen rechtzeitig schriftlich und so konkret wie möglich, auch wenn noch nicht jede Frage geklärt ist.",
         ]},
@@ -830,7 +851,15 @@ const ARTIKEL_ROH = [
       metaBeschreibung: "Spätestens am 31.12.{JAHR} muss die Abrechnung {VORJAHR} bei Ihnen sein. Absenden reicht nicht (BGH). Kommt sie später, entfällt die Nachzahlung meist.",
       aktualisiert: "Oktober 2026",
       titelKurz: "Fristen und Verjährung 2026",
-      titel: "Betriebskostenabrechnung 2026: Fristen und Verjährung: was Mieter wissen müssen",
+      // SEO-LAUF 29.10.2026: Google zeigte in der Trefferliste nicht den
+      // <title> (seit 23.10. "Wann kommt die Nebenkostenabrechnung …?"),
+      // sondern diese Überschrift ("Betriebskostenabrechnung 2026: Fristen und
+      // Verjährung"), geprüft bei google.de am 29.10.2026. Google nutzt laut
+      // Search Central ("Influencing your title links") u. a. die
+      // Hauptüberschrift, wenn sie besser zum Inhalt zu passen scheint.
+      // Überschrift deshalb an die Suchfrage angeglichen; Titel und H1 sagen
+      // jetzt dasselbe. URL unverändert.
+      titel: "Wann kommt die Nebenkostenabrechnung {VORJAHR}? Fristen und Verjährung",
       teaser: "Wann muss der Vermieter abrechnen, wie lange können Sie widersprechen und ab wann sind Nachforderungen verjährt? Der komplette Überblick über alle Fristen rund um die Betriebskostenabrechnung 2026.",
       datum: "Juli 2026",
       lesezeit: "9 Min.",
@@ -1318,6 +1347,23 @@ const ARTIKEL_ROH = [
       keywords: ["Widerspruch Nebenkostenabrechnung", "Frist", "Muster", "§ 556 BGB"],
       inhalt: [
         { typ: "intro", text: "Sie haben Ihre Nebenkostenabrechnung erhalten und vermuten Fehler? Dann haben Sie als Mieter das Recht, innerhalb von 12 Monaten nach Zugang Einwendungen zu erheben (§ 556 Abs. 3 Satz 5 BGB). Doch Vorsicht: Die Nachzahlung wird viel früher fällig, und der Widerspruch allein schiebt sie nicht auf. Wer das verwechselt, riskiert Verzugszinsen. Unten finden Sie einen Musterbrief zum Kopieren." },
+        // Kurzantwort (SEO-LAUF 29.10.2026): Die KI-Übersicht bei google.de
+        // für "widerspruch nebenkostenabrechnung" behauptete am 29.10.2026,
+        // der Widerspruch müsse "schriftlich und eigenhändig unterschrieben"
+        // sein. § 556 Abs. 3 Satz 5 BGB verlangt nur, die Einwendungen
+        // "mitzuteilen" (Wortlaut geprüft auf gesetze-im-internet.de,
+        // 29.10.2026). Dieser Block stellt die belegbaren Kernaussagen
+        // zitierfähig an den Anfang. Belegeinsicht seit 01.01.2025 in
+        // § 556 Abs. 4 BGB.
+        { typ: "h2", text: "Kurz beantwortet: Widerspruch gegen die Nebenkostenabrechnung" },
+        { typ: "liste", items: [
+          "Frist: Ihre Einwendungen müssen dem Vermieter spätestens zwölf Monate nach Zugang der Abrechnung vorliegen (§ 556 Abs. 3 Satz 5 BGB).",
+          "Form: Das Gesetz verlangt nur, dass Sie die Einwendungen mitteilen. Eine Schriftform oder eigenhändige Unterschrift schreibt es nicht vor. Wichtig ist, dass Sie den rechtzeitigen Zugang beweisen können, etwa mit einem Einwurf-Einschreiben.",
+          "Inhalt: Nennen Sie jede beanstandete Position mit Betrag und Grund. „Die Abrechnung stimmt nicht“ reicht nicht.",
+          "Zahlung: Der Widerspruch schiebt die Nachzahlung nicht auf. Zahlen Sie unter Vorbehalt oder halten Sie sie zurück, solange der Vermieter eine berechtigte Bitte um Belegeinsicht nicht erfüllt (§ 273 Abs. 1 BGB; BGH, VIII ZR 78/05).",
+          "Belege: Sie dürfen die Belege zur Abrechnung einsehen (§ 556 Abs. 4 BGB). Der Vermieter darf sie auch elektronisch bereitstellen.",
+          "Abrechnung zu spät: Kam sie später als zwölf Monate nach Ende des Abrechnungszeitraums, ist eine Nachforderung in der Regel ausgeschlossen (§ 556 Abs. 3 Satz 3 BGB).",
+        ]},
         { typ: "h2", text: "Die zwei entscheidenden Fristen und warum viele Mieter sie verwechseln" },
         { typ: "text", text: "Das Mietrecht kennt zwei völlig unterschiedliche Fristen nach Erhalt der Nebenkostenabrechnung:" },
         { typ: "liste", items: [
@@ -1340,7 +1386,7 @@ const ARTIKEL_ROH = [
           "Abrechnung systematisch prüfen: Jeden Posten auf Umlagefähigkeit (§ 2 BetrKV) und Plausibilität (DMB-Betriebskostenspiegel) prüfen.",
           "Fehler konkret benennen: Pauschal 'die Abrechnung ist falsch' reicht nicht, benennen Sie jeden strittigen Posten mit Betrag und Begründung.",
           "Widerspruch schriftlich formulieren und nachweisbar zustellen, etwa per Einwurf-Einschreiben oder durch einen Boten, der den Einwurf bezeugen kann. Das Gesetz schreibt keine Form vor, aber Sie müssen den rechtzeitigen Zugang im Streitfall belegen können.",
-          "Belegeinsicht anfordern: Sie haben das Recht, alle Originalrechnungen einzusehen (§ 259 BGB). Verlangen Sie die Belege immer, auch wenn Sie zahlen.",
+          "Belegeinsicht anfordern: Sie haben das Recht, die Belege zur Abrechnung einzusehen (§ 556 Abs. 4 BGB). Der Vermieter darf sie auch elektronisch bereitstellen. Verlangen Sie die Belege immer, auch wenn Sie zahlen.",
           "Frist im Blick behalten: Spätestens 12 Monate nach Erhalt der Abrechnung muss der Widerspruch beim Vermieter eingegangen sein.",
         ]},
         { typ: "h2", text: "Was gehört in den Widerspruchsbrief?" },
@@ -1350,13 +1396,13 @@ const ARTIKEL_ROH = [
           "Klarer Betreff: 'Widerspruch zur Betriebskostenabrechnung [Jahr]'",
           "Konkrete Benennung der beanstandeten Positionen mit Betrag",
           "Rechtsgrundlage (z.B. '§ 2 BetrKV, nicht umlagefähig')",
-          "Aufforderung zur Belegeinsicht (§ 259 BGB)",
+          "Aufforderung zur Belegeinsicht (§ 556 Abs. 4 BGB)",
           "Vorbehalt für weitere Einwände nach Belegeinsicht",
           "Bitte um schriftliche Stellungnahme",
         ]},
         { typ: "h2", text: "Musterbrief: Widerspruch gegen die Nebenkostenabrechnung" },
         { typ: "text", text: "Die folgende Vorlage können Sie kopieren und anpassen. Ersetzen Sie alle Angaben in eckigen Klammern. Nennen Sie nur Punkte, die auf Ihre Abrechnung tatsächlich zutreffen: Die beiden Beispiele sind Platzhalter, keine Prüfung Ihres Falls." },
-        { typ: "muster", titel: "Musterbrief Widerspruch Nebenkostenabrechnung", text: "[Ihr Name]\n[Straße und Hausnummer]\n[PLZ Ort]\n\n[Name des Vermieters oder der Hausverwaltung]\n[Straße und Hausnummer]\n[PLZ Ort]\n\n[Ort], [Datum]\n\nWiderspruch gegen die Betriebskostenabrechnung für den Zeitraum [01.01.{VORJAHR} bis 31.12.{VORJAHR}]\nMietobjekt: [Adresse, Lage der Wohnung]\n\nSehr geehrte Damen und Herren,\n\nIhre Betriebskostenabrechnung vom [Datum der Abrechnung] habe ich am [Datum des Zugangs] erhalten. Gegen diese Abrechnung erhebe ich nach § 556 Abs. 3 Satz 5 BGB folgende Einwendungen:\n\n1. [Position, z. B. Kabelanschluss], [Betrag] €: [Begründung, z. B. Seit dem 1. Juli 2024 nicht mehr als Betriebskosten umlagefähig.]\n2. [Position, z. B. Verwaltungskosten], [Betrag] €: [Begründung, z. B. Verwaltungskosten sind keine Betriebskosten, § 1 Abs. 2 Nr. 1 BetrKV.]\n\nBitte gewähren Sie mir Einsicht in die Originalbelege zu den genannten Positionen sowie zu [weitere Positionen] (§ 259 BGB). Nennen Sie mir dafür bitte einen Termin oder senden Sie mir Kopien der Belege.\n\nWeitere Einwendungen nach Einsicht in die Belege behalte ich mir vor. Eine etwaige Zahlung leiste ich nur unter dem Vorbehalt der Rückforderung.\n\nBitte senden Sie mir bis zum [Datum, etwa vier Wochen später] eine korrigierte Abrechnung oder eine schriftliche Stellungnahme.\n\nMit freundlichen Grüßen\n\n[Unterschrift]\n[Name]" },
+        { typ: "muster", titel: "Musterbrief Widerspruch Nebenkostenabrechnung", text: "[Ihr Name]\n[Straße und Hausnummer]\n[PLZ Ort]\n\n[Name des Vermieters oder der Hausverwaltung]\n[Straße und Hausnummer]\n[PLZ Ort]\n\n[Ort], [Datum]\n\nWiderspruch gegen die Betriebskostenabrechnung für den Zeitraum [01.01.{VORJAHR} bis 31.12.{VORJAHR}]\nMietobjekt: [Adresse, Lage der Wohnung]\n\nSehr geehrte Damen und Herren,\n\nIhre Betriebskostenabrechnung vom [Datum der Abrechnung] habe ich am [Datum des Zugangs] erhalten. Gegen diese Abrechnung erhebe ich nach § 556 Abs. 3 Satz 5 BGB folgende Einwendungen:\n\n1. [Position, z. B. Kabelanschluss], [Betrag] €: [Begründung, z. B. Seit dem 1. Juli 2024 nicht mehr als Betriebskosten umlagefähig.]\n2. [Position, z. B. Verwaltungskosten], [Betrag] €: [Begründung, z. B. Verwaltungskosten sind keine Betriebskosten, § 1 Abs. 2 Nr. 1 BetrKV.]\n\nBitte gewähren Sie mir Einsicht in die Originalbelege zu den genannten Positionen sowie zu [weitere Positionen] (§ 556 Abs. 4 BGB). Gern können Sie mir die Belege elektronisch bereitstellen, etwa als Scan per E-Mail; andernfalls nennen Sie mir bitte einen Termin zur Einsicht.\n\nWeitere Einwendungen nach Einsicht in die Belege behalte ich mir vor. Eine etwaige Zahlung leiste ich nur unter dem Vorbehalt der Rückforderung.\n\nBitte senden Sie mir bis zum [Datum, etwa vier Wochen später] eine korrigierte Abrechnung oder eine schriftliche Stellungnahme.\n\nMit freundlichen Grüßen\n\n[Unterschrift]\n[Name]" },
         { typ: "hinweis", text: "Der Musterbrief ist eine allgemeine Vorlage und ersetzt keine Rechtsberatung im Einzelfall. Ob eine Position in Ihrer Abrechnung tatsächlich zu beanstanden ist, hängt von Ihrem Mietvertrag und den Belegen ab." },
         { typ: "verweis", ziel: "nebenkostenabrechnung-pruefen-lassen", text: "Sie überlegen, Ihre Nebenkostenabrechnung prüfen zu lassen? Mieterverein, Anwalt, Rechtsschutz und Online-Prüfung im Vergleich, mit Kosten und Dauer." },
         { typ: "cta", text: "NebenkostenRadar erstellt den Widerspruchsbrief automatisch, mit allen Rechtsgrundlagen, auf Basis Ihrer konkreten Abrechnung." },
@@ -1376,7 +1422,7 @@ const ARTIKEL_ROH = [
       faq: [
         { frage: "Muss ich trotz Widerspruch die Nachzahlung bezahlen?", antwort: "Ein Widerspruch allein schiebt die Zahlung nicht auf. Sicherer ist es, unter Vorbehalt zu zahlen und zu viel Gezahltes später zurückzufordern. Eine Ausnahme gilt, solange der Vermieter eine berechtigte Bitte um Belegeinsicht nicht erfüllt: Dann dürfen Sie die Nachzahlung zurückhalten (§ 273 Abs. 1 BGB; BGH, Urteil vom 8. März 2006, Az. VIII ZR 78/05). Kam die Abrechnung zu spät, ist eine Nachforderung in der Regel ganz ausgeschlossen (§ 556 Abs. 3 Satz 3 BGB)." },
         { frage: "Wie lange kann ich gegen die Nebenkostenabrechnung Widerspruch einlegen?", antwort: "Ihre Einwendungen müssen dem Vermieter spätestens bis zum Ablauf des zwölften Monats nach Zugang der Abrechnung vorliegen (§ 556 Abs. 3 Satz 5 BGB). Danach sind sie ausgeschlossen, es sei denn, Sie haben die Verspätung nicht zu vertreten (Satz 6). Notieren Sie deshalb das Datum, an dem die Abrechnung bei Ihnen angekommen ist." },
-        { frage: "Muss der Vermieter auf einen Widerspruch reagieren?", antwort: "Eine gesetzliche Antwortfrist gibt es nicht. Der Vermieter muss Ihnen aber auf Verlangen Einsicht in die Belege gewähren (§ 259 BGB). Ihre Einwendungen bleiben auch dann wirksam erhoben, wenn er nicht antwortet, sofern sie rechtzeitig bei ihm eingegangen sind." },
+        { frage: "Muss der Vermieter auf einen Widerspruch reagieren?", antwort: "Eine gesetzliche Antwortfrist gibt es nicht. Der Vermieter muss Ihnen aber auf Verlangen Einsicht in die Belege gewähren (§ 556 Abs. 4 BGB). Ihre Einwendungen bleiben auch dann wirksam erhoben, wenn er nicht antwortet, sofern sie rechtzeitig bei ihm eingegangen sind." },
         { frage: "Ist ein Widerspruch per E-Mail wirksam?", antwort: "Das Gesetz verlangt nur, dass Sie dem Vermieter Ihre Einwendungen mitteilen (§ 556 Abs. 3 Satz 5 BGB), eine bestimmte Form schreibt es nicht vor. Entscheidend ist, dass Sie den rechtzeitigen Zugang später nachweisen können. Ein Brief per Einwurf-Einschreiben ist dafür ein verbreiteter Weg." },
         { frage: "Was passiert nach einem Widerspruch?", antwort: "Der Vermieter prüft Ihre Einwendungen und korrigiert die Abrechnung, legt Belege vor oder bleibt bei seiner Abrechnung. Bleibt es strittig, können ein Mieterverein oder eine Anwältin für Mietrecht weiterhelfen. Bis zur Klärung ist die Zahlung unter Vorbehalt der sichere Weg." },
       ],
@@ -1476,6 +1522,18 @@ const ARTIKEL_ROH = [
         { typ: "h2", text: "Wie nutze ich die Richtwerte?" },
         { typ: "text", text: "Multiplizieren Sie den €/m²/Monat-Wert mit Ihrer Wohnfläche und mit 12: das ergibt den erwarteten Jahresbetrag für Ihre Wohnung. Beispiel: Der Gesamtdurchschnitt von 2,67 €/m²/Monat bedeutet für eine 75-Quadratmeter-Wohnung rund 2.403 Euro im Jahr, also etwa 200 Euro im Monat." },
         { typ: "text", text: "Für einzelne Positionen funktioniert die Rechnung genauso. Liegt ein Posten deutlich über dem erwarteten Wert, ist das der Punkt, an dem Sie Belegeinsicht verlangen sollten, nicht, um sofort zu widersprechen, sondern um nachzuvollziehen, wie der Betrag zustande kommt." },
+        // SEO-LAUF 29.10.2026: Search Console (28 Tage) zeigt viele Anfragen
+        // nach "nebenkosten pro qm", "durchschnittliche betriebskosten pro m2",
+        // "nebenkosten durchschnitt" (Positionen 25 bis 60). Die KI-Übersicht
+        // zu "betriebskostenspiegel 2026" zitierte am 29.10.2026 für
+        // "Durchschnittskosten nach Wohnungsgröße" zwei Wettbewerber; diese
+        // Seite hatte nur ein Rechenbeispiel für 75 m². Die Tabelle wird aus
+        // BUSINESS.RICHTWERTE berechnet (siehe groessenTabelle() unten), zieht
+        // also bei einer neuen DMB-Ausgabe automatisch mit.
+        { typ: "h2", text: "Nebenkosten pro m²: Durchschnitt nach Wohnungsgröße" },
+        { typ: "text", text: "Die folgende Tabelle rechnet die DMB-Durchschnittswerte auf typische Wohnungsgrößen um (Wert pro m² und Monat mal Wohnfläche, beim Jahresbetrag mal 12). Sie zeigt, was im bundesweiten Schnitt üblich ist, nicht, was in Ihrem Haus richtig ist." },
+        { typ: "tabelle", zeilen: groessenTabelle() },
+        { typ: "hinweis", text: "Rechenbeispiel, keine Prüfung: Quelle der Werte ist der Betriebskostenspiegel des Deutschen Mieterbunds für das Abrechnungsjahr 2024 (veröffentlicht am 18.12.2025). Fallen in Ihrem Haus alle Kostenarten an, kann der Durchschnitt laut DMB bis zu 3,68 € pro m² und Monat betragen." },
 
         { typ: "h2", text: "Was sich gegenüber dem Vorjahr verändert hat" },
         { typ: "text", text: "Der Betriebskostenspiegel für das Abrechnungsjahr 2024 wurde am 18. Dezember 2025 veröffentlicht. Gegenüber dem Abrechnungsjahr 2023 sind die durchschnittlichen Betriebskosten um mehr als sechs Prozent gestiegen. Fallen in einem Gebäude sämtliche denkbaren Betriebskostenarten an, kann die sogenannte zweite Miete laut DMB bis zu 3,68 €/m²/Monat betragen." },
@@ -1522,10 +1580,12 @@ const ARTIKEL_ROH = [
       // DMB-Meldung vom 18.12.2025 (mieterbund.de), abgerufen 18.10.2026.
       faq: [
         { frage: "Wie viel Nebenkosten sind {JAHR} normal?", antwort: "Laut aktuellem Betriebskostenspiegel des Deutschen Mieterbunds (Abrechnungsjahr 2024, veröffentlicht am 18.12.2025) zahlen Mieter im Schnitt 2,67 € pro Quadratmeter und Monat, Heizung und Warmwasser eingerechnet. Fallen alle denkbaren Kostenarten an, können es bis zu 3,68 € sein. Für eine 75-Quadratmeter-Wohnung entspricht der Durchschnitt rund 200 € im Monat." },
+        { frage: "Wie hoch sind die Nebenkosten pro m² im Durchschnitt?", antwort: "Im Schnitt 2,67 € pro Quadratmeter und Monat, Heizung und Warmwasser eingerechnet (DMB-Betriebskostenspiegel, Abrechnungsjahr 2024). Für 50 m² sind das rund 134 € im Monat, für 70 m² rund 187 €, für 100 m² rund 267 €. Ohne Heizung und Warmwasser (1,32 €) bleiben im Schnitt rund 1,35 € pro m² für die übrigen Betriebskosten." },
+        { frage: "Gibt es schon einen Betriebskostenspiegel für das Abrechnungsjahr 2025?", antwort: "Noch nicht (geprüft am 29.10.2026 auf mieterbund.de). Die aktuelle Ausgabe wertet das Abrechnungsjahr 2024 aus und wurde am 18.12.2025 veröffentlicht. Sobald der Deutsche Mieterbund neue Werte veröffentlicht, übernehmen wir sie hier." },
         { frage: "Wie hoch sind die durchschnittlichen Heizkosten pro Quadratmeter?", antwort: "Für Heizung und Warmwasser nennt der Deutsche Mieterbund für das Abrechnungsjahr 2024 durchschnittlich 1,32 € pro Quadratmeter und Monat, als Spitzenwert 2,18 €. Wie hoch die Kosten im Einzelfall sind, hängt stark vom energetischen Zustand des Gebäudes, vom Energieträger und vom Versorger ab." },
         { frage: "Woher stammen die Daten?", antwort: "Vom Deutschen Mieterbund, ausgewertet aus bundesweit eingereichten realen Abrechnungen. Die Ausgabe für das Abrechnungsjahr 2024 wurde am 18.12.2025 veröffentlicht." },
         { frage: "Warum gibt es keine Werte für meine Stadt?", antwort: "Auf Stadt- oder Kreisebene existieren in Deutschland keine belastbaren Betriebskostendaten. Was dort veröffentlicht wird, sind Mietspiegel: Die bilden die Kaltmiete ab, nicht die Nebenkosten." },
-        { frage: "Ist eine Abweichung nach oben ein Beweis für einen Fehler?", antwort: "Nein. Sie ist ein Anlass, Belegeinsicht zu verlangen (§ 259 BGB). Diesen Anspruch haben Sie ohne Angabe von Gründen." },
+        { frage: "Ist eine Abweichung nach oben ein Beweis für einen Fehler?", antwort: "Nein. Sie ist ein Anlass, Belegeinsicht zu verlangen (§ 556 Abs. 4 BGB). Diesen Anspruch haben Sie ohne Angabe von Gründen." },
         { frage: "Muss ich zahlen, wenn ich die Abrechnung anzweifle?", antwort: "In der Regel ja, und zwar zuerst. Zahlen Sie unter Vorbehalt und widersprechen Sie parallel. Wer nicht zahlt, riskiert Verzugszinsen, unabhängig davon, ob der Widerspruch später Erfolg hat. Solange der Vermieter eine berechtigte Bitte um Belegeinsicht nicht erfüllt, dürfen Sie die Nachzahlung allerdings zurückhalten (§ 273 Abs. 1 BGB)." },
         { frage: "Wie aktuell sind die Werte auf dieser Seite?", antwort: "Sie stammen direkt aus der Konfiguration, mit der auch unsere Prüfung rechnet. Ratgeber und Prüfbericht können deshalb nicht auseinanderlaufen." },
         { frage: "Ist NebenkostenRadar unabhängig?", antwort: "Ja. Keine Verbindung zu Vermietern, Hausverwaltungen, Messdienstleistern oder Immobilienunternehmen. Wir verkaufen ausschließlich die Prüfung an Mieter." },
@@ -1595,7 +1655,16 @@ const ARTIKEL_ROH = [
     },
     {
       id: "belegeinsicht-nebenkostenabrechnung-verlangen",
-      metaBeschreibung: "Sie dürfen alle Originalbelege einsehen und die Nachzahlung bis dahin zurückhalten. Rechtsgrundlage, Ablauf und was der Vermieter nicht verlangen darf.",
+      // SEO-LAUF 29.10.2026: Rechtsgrundlage aktualisiert. Seit 01.01.2025
+      // steht das Einsichtsrecht ausdrücklich in § 556 Abs. 4 BGB (eingefügt
+      // durch Art. 14 Nr. 5 Viertes Bürokratieentlastungsgesetz, BGBl. 2024 I
+      // Nr. 323); Satz 2 erlaubt dem Vermieter die elektronische
+      // Bereitstellung. Wortlaut geprüft auf gesetze-im-internet.de am
+      // 29.10.2026. Der Artikel stützte sich bis dahin nur auf § 259 BGB.
+      // Saisonplan Oktober bis Dezember: Belegeinsicht ist Schwerpunkt.
+      seoTitel: "Belegeinsicht Nebenkosten: Ihr Recht nach § 556 Abs. 4 BGB",
+      metaBeschreibung: "Seit 2025 ausdrücklich im Gesetz: Sie dürfen die Belege zur Abrechnung einsehen, der Vermieter darf sie auch digital schicken. Bis dahin dürfen Sie die Nachzahlung zurückhalten.",
+      aktualisiert: "Oktober 2026",
       titelKurz: "Belegeinsicht verlangen",
       titel: "Belegeinsicht bei der Nebenkostenabrechnung verlangen: So gehen Sie vor",
       teaser: "Sie dürfen alle Originalbelege zu Ihrer Abrechnung einsehen und die Nachzahlung bis dahin zurückhalten. Rechtsgrundlage, Ablauf und was der Vermieter Ihnen nicht abverlangen darf.",
@@ -1604,27 +1673,45 @@ const ARTIKEL_ROH = [
       bild: "/artikelbilder/belegeinsicht-nebenkostenabrechnung-verlangen.jpg",
       bildAlt: "Rote Aktenordner in einem Regal",
       kategorie: "Mietrecht",
-      keywords: ["Belegeinsicht", "Belege Nebenkostenabrechnung", "§ 259 BGB", "Zurückbehaltungsrecht"],
+      keywords: ["Belegeinsicht", "Belege Nebenkostenabrechnung", "§ 556 Abs. 4 BGB", "Zurückbehaltungsrecht"],
       inhalt: [
         { typ: "intro", text: "Eine Abrechnung nennt Ihnen Zahlen. Ob diese Zahlen stimmen, sagt sie Ihnen nicht. Genau dafür gibt es das Recht auf Belegeinsicht, den wirksamsten und zugleich am seltensten genutzten Hebel, den Mieter bei der Nebenkostenabrechnung haben." },
+        { typ: "h2", text: "Kurz beantwortet: Belegeinsicht in die Nebenkostenabrechnung" },
+        { typ: "liste", items: [
+          "Rechtsgrundlage: Der Vermieter muss Ihnen auf Verlangen Einsicht in die Belege gewähren, die der Abrechnung zugrunde liegen (§ 556 Abs. 4 Satz 1 BGB, in Kraft seit 1. Januar 2025).",
+          "Eine Begründung brauchen Sie dafür nicht. Es genügt, dass Sie die Abrechnung prüfen wollen.",
+          "Der Vermieter darf die Belege auch elektronisch bereitstellen, etwa als Scan per E-Mail oder in einem Online-Portal (§ 556 Abs. 4 Satz 2 BGB).",
+          "Solange er eine berechtigte Bitte um Einsicht nicht erfüllt, dürfen Sie die Nachzahlung zurückhalten (§ 273 Abs. 1 BGB; BGH, Urteil vom 8. März 2006, VIII ZR 78/05).",
+          "Die Frist für Ihre Einwendungen läuft trotzdem weiter: zwölf Monate ab Zugang der Abrechnung (§ 556 Abs. 3 Satz 5 BGB).",
+        ]},
         { typ: "h2", text: "Worauf sich der Anspruch stützt" },
-        { typ: "text", text: "Der Vermieter schuldet mit der Abrechnung eine Rechenschaftslegung. Nach § 259 Abs. 1 BGB umfasst diese auch die Vorlage der Belege, soweit Belege üblicherweise erteilt werden. Der Bundesgerichtshof hat dieses Recht mit Urteil vom 8. März 2006 (Az. VIII ZR 78/05) ausdrücklich bestätigt: Der Mieter darf die Unterlagen einsehen, die der Betriebskostenabrechnung zugrunde liegen." },
+        { typ: "text", text: "Seit dem 1. Januar 2025 steht das Recht ausdrücklich im Gesetz: „Der Vermieter hat dem Mieter auf Verlangen Einsicht in die der Abrechnung zugrundeliegenden Belege zu gewähren.“ (§ 556 Abs. 4 Satz 1 BGB, eingefügt durch das Vierte Bürokratieentlastungsgesetz, BGBl. 2024 I Nr. 323). Vorher leiteten die Gerichte den Anspruch aus der Pflicht zur Rechenschaft ab (§ 259 Abs. 1 BGB). Der Bundesgerichtshof hatte ihn mit Urteil vom 8. März 2006 (Az. VIII ZR 78/05) bestätigt: Der Mieter darf die Unterlagen einsehen, die der Betriebskostenabrechnung zugrunde liegen." },
         { typ: "text", text: "Dazu gehören nicht nur die Rechnungen selbst, sondern auch die Unterlagen, aus denen sich die Verteilung nachvollziehen lässt, etwa Verträge mit Dienstleistern, Zählerablesungen oder die Flächenberechnung. Erst diese Unterlagen machen die Abrechnung überprüfbar." },
         { typ: "h2", text: "Der stärkste Punkt: das Zurückbehaltungsrecht" },
         { typ: "text", text: "Solange der Vermieter eine berechtigte Bitte um Belegeinsicht nicht erfüllt, können Sie die Nachzahlung nach § 273 Abs. 1 BGB zurückhalten. Auch das hat der Bundesgerichtshof in derselben Entscheidung (VIII ZR 78/05) festgestellt. Der Gedanke dahinter ist einfach: Wer eine Forderung stellt, muss sie auch belegen können." },
         { typ: "hinweis", text: "Zurückhalten heißt nicht: nicht zahlen und die Sache aussitzen. Das Zurückbehaltungsrecht endet, sobald die Einsicht gewährt wird, dann ist der Betrag fällig. Wer auf Nummer sicher gehen will, zahlt unter Vorbehalt und verlangt die Belege parallel. Damit vermeiden Sie jedes Verzugsrisiko und behalten trotzdem alle Rechte." },
-        { typ: "h2", text: "Wo die Einsicht stattfinden muss" },
+        { typ: "h2", text: "Wo und wie die Einsicht stattfindet" },
         { typ: "text", text: "Der Grundsatz lautet: am Ort der Verwaltung, also dort, wo die Unterlagen geführt werden. Liegt dieser Ort für Sie unzumutbar weit entfernt, kann ausnahmsweise die Übersendung von Kopien geschuldet sein. Kopien darf der Vermieter Ihnen grundsätzlich in Rechnung stellen: die Einsicht in die Originale selbst ist dagegen kostenlos." },
+        { typ: "text", text: "Neu seit 2025: Der Vermieter ist berechtigt, die Belege elektronisch bereitzustellen (§ 556 Abs. 4 Satz 2 BGB), zum Beispiel als Scans per E-Mail oder zum Abruf in einem Mieterportal. Das Gesetz formuliert das als Recht des Vermieters, nicht als Anspruch des Mieters. Fragen kostet aber nichts: Bitten Sie in Ihrem Schreiben ausdrücklich um eine elektronische Bereitstellung. Das erspart beiden Seiten einen Termin, und Sie können die Belege in Ruhe mit der Abrechnung vergleichen." },
         { typ: "h2", text: "So formulieren Sie die Aufforderung" },
         { typ: "schritte", items: [
           "Schriftlich anfordern, am besten per Einschreiben, mündliche Bitten lassen sich später nicht nachweisen.",
           "Konkret benennen, welche Positionen Sie prüfen wollen. Eine pauschale Anforderung „aller Unterlagen“ ist zwar zulässig, führt aber oft zu Verzögerungen.",
           "Eine angemessene Frist setzen, üblich sind zwei bis vier Wochen.",
-          "Auf § 259 BGB und auf das Zurückbehaltungsrecht nach § 273 BGB hinweisen.",
+          "Auf § 556 Abs. 4 BGB und auf das Zurückbehaltungsrecht nach § 273 BGB hinweisen, dazu um elektronische Bereitstellung bitten.",
           "Parallel die Nachzahlung unter Vorbehalt überweisen, um Verzug auszuschließen.",
         ]},
         { typ: "verweis", ziel: "betriebskostenabrechnung-fristen-und-verjaehrung-2026", text: "Achten Sie dabei auf die Einwendungsfrist: Wie lange Sie Zeit haben, steht im Ratgeber zu Fristen und Verjährung." },
         { typ: "cta", text: "In der Auswertung mit Brief erstellt NebenkostenRadar das Schreiben an Ihren Vermieter automatisch, mit den passenden Rechtsgrundlagen und den konkreten Positionen aus Ihrer Abrechnung." },
+      ],
+      // Fragenblock (29.10.2026). Antworten nur mit Gesetzeswortlaut
+      // (§ 556 Abs. 3 und 4, § 273 BGB, gesetze-im-internet.de, 29.10.2026)
+      // und dem bereits im Artikel verifizierten BGH-Urteil VIII ZR 78/05.
+      faq: [
+        { frage: "Habe ich ein Recht auf Belegeinsicht bei der Nebenkostenabrechnung?", antwort: "Ja. Der Vermieter muss Ihnen auf Verlangen Einsicht in die Belege gewähren, die der Abrechnung zugrunde liegen (§ 556 Abs. 4 Satz 1 BGB). Eine Begründung müssen Sie nicht angeben." },
+        { frage: "Darf der Vermieter mir die Belege per E-Mail schicken?", antwort: "Ja. Seit dem 1. Januar 2025 ist der Vermieter ausdrücklich berechtigt, die Belege elektronisch bereitzustellen (§ 556 Abs. 4 Satz 2 BGB), etwa als Scan per E-Mail oder über ein Portal." },
+        { frage: "Muss ich die Nachzahlung zahlen, solange ich die Belege nicht gesehen habe?", antwort: "Solange der Vermieter eine berechtigte Bitte um Belegeinsicht nicht erfüllt, dürfen Sie die Nachzahlung zurückhalten (§ 273 Abs. 1 BGB; BGH, Urteil vom 8. März 2006, VIII ZR 78/05). Sobald er die Einsicht gewährt, wird der Betrag fällig. Sicherer ist es, unter Vorbehalt zu zahlen und die Belege parallel anzufordern." },
+        { frage: "Verlängert die Belegeinsicht meine Widerspruchsfrist?", antwort: "Nein. Ihre Einwendungen müssen dem Vermieter spätestens bis zum Ablauf des zwölften Monats nach Zugang der Abrechnung vorliegen (§ 556 Abs. 3 Satz 5 BGB). Fordern Sie die Belege deshalb früh an und erheben Sie Einwendungen notfalls vorsorglich, bevor die Frist abläuft." },
       ],
     },
     {
