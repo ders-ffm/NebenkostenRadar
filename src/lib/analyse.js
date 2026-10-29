@@ -891,7 +891,7 @@ export function analysierePosten(w, wohn) {
         hi = a + "% über DMB-Richtwert! Belege anfordern." + (istGrundsteuer ? " In Großstädten mit hohen Immobilienwerten oft ortsüblich, kein sicheres Zeichen für einen Fehler." : "");
         widerspruch.push({
           typ: "statistisch",
-          text: p.label + " " + fmt(b) + " liegt " + a + "% über DMB-Richtwert. Belegeinsicht anfordern (§ 259 BGB)."
+          text: p.label + " " + fmt(b) + " liegt " + a + "% über DMB-Richtwert. Belegeinsicht anfordern (§ 556 Abs. 4 BGB)."
             + (istGrundsteuer ? " Hinweis: Der DMB-Richtwert ist ein bundesweiter Durchschnitt; in Großstädten mit hohen Immobilienwerten ist eine überdurchschnittliche Grundsteuer oft ortsüblich und kein Abrechnungsfehler." : ""),
         });
       }
@@ -1168,8 +1168,8 @@ export function buildResult(w, wohn) {
       return "Widerspruchsfrist: 12 Monate nach Erhalt der Abrechnung (§ 556 Abs. 3 Satz 3 BGB). Für Abrechnungsjahr " + wohn.jahr + " endet die Frist typisch Ende " + (parseInt(wohn.jahr) + 2) + " (Näherungswert, trage oben das genaue Erhaltsdatum ein für eine exakte Frist). Sofort handeln!";
     })(),
     naechste_schritte: [
-      widerspruch.length > 0 ? "Prüfbericht mit Mustertext per Einschreiben senden" : "Belege beim Vermieter anfordern (§ 259 BGB)",
-      "Originalbelege einsehen, dieses Recht besteht unabhängig vom Ergebnis",
+      widerspruch.length > 0 ? "Prüfbericht mit Mustertext per Einschreiben senden" : "Belege beim Vermieter anfordern (§ 556 Abs. 4 BGB)",
+      "Belege einsehen, dieses Recht besteht unabhängig vom Ergebnis (§ 556 Abs. 4 BGB)",
       "Bei Ablehnung: Deutschen Mieterbund einschalten (mieterbund.de · Tel. 030 223230)",
     ],
     co2_hinweis: toNum(w.co2_abgabe) > 0 ? "CO2-Abgabe abgerechnet: Vermieter muss je nach Energieklasse 0-95% selbst tragen. Energieausweis anfordern." : "",
