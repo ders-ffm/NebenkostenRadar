@@ -229,7 +229,7 @@ export default function Welcome({ navigateTo, navigateToArtikel, IS_DEMO }) {
           <ul style={{ listStyle: "none", padding: 0, margin: 0, display: "grid", gap: 12, fontSize: 16, color: C.textMuted, lineHeight: 1.5 }}>
             {[
               "Alle Positionen mit Richtwerten und Begründungen als PDF",
-              "Fertiger Brief an den Vermieter, passend zum Ergebnis: Widerspruch gegen auffällige Posten oder Aufforderung zur Belegeinsicht (§\u00A0259\u00A0BGB)",
+              "Fertiger Brief an den Vermieter, passend zum Ergebnis: Widerspruch gegen auffällige Posten oder Aufforderung zur Belegeinsicht (§\u00A0556 Abs.\u00A04\u00A0BGB)",
               "Hinweis auf steuerlich absetzbare Posten (§\u00A035a\u00A0EStG)",
             ].map(t => (
               <li key={t} style={{ display: "grid", gridTemplateColumns: "22px 1fr", gap: 10 }}><span style={{ color: C.brand, display: "inline-flex", marginTop: 2 }}><Icon name="circle-check" size={18} /></span><span>{t}</span></li>
