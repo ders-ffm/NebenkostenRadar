@@ -65,7 +65,7 @@ const WERKZEUGE_ROH = [
       },
       {
         h2: "Was es kostet",
-        text: () => `Die Basisanalyse ist kostenlos. Die Auswertung aller Posten als PDF kostet einmalig ${euro(BUSINESS.PREIS_VOLL)}. Darin enthalten ist ein fertiger Brief an deinen Vermieter, passend zum Ergebnis: den Widerspruch mit allen Beanstandungen oder, wenn nichts auffällt, die Aufforderung zur Belegeinsicht nach § 259 BGB. Dazu kommt ein Hinweis auf steuerlich absetzbare Posten (§ 35a EStG). Kein Abo, keine Registrierung.`,
+        text: () => `Die Basisanalyse ist kostenlos. Die Auswertung aller Posten als PDF kostet einmalig ${euro(BUSINESS.PREIS_VOLL)}. Darin enthalten ist ein fertiger Brief an deinen Vermieter, passend zum Ergebnis: den Widerspruch mit allen Beanstandungen oder, wenn nichts auffällt, die Aufforderung zur Belegeinsicht nach § 556 Abs. 4 BGB. Dazu kommt ein Hinweis auf steuerlich absetzbare Posten (§ 35a EStG). Kein Abo, keine Registrierung.`,
       },
       {
         h2: "Was wir nicht können",
