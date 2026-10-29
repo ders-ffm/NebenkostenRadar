@@ -53,7 +53,7 @@ export default function BriefPDF({ result, wohnung, adressen }) {
   // gekennzeichnete Gruppe in den Brief. Das ist inhaltlich korrekt — ob
   // eine solche Position umlagefähig ist, hängt am Mietvertrag, den wir
   // nicht kennen. Der Mieter hat auf diese Auskunft einen Anspruch
-  // (§ 259 BGB Belegeinsicht), ohne dass irgendetwas behauptet wird.
+  // (Belegeinsicht, § 556 Abs. 4 BGB), ohne dass irgendetwas behauptet wird.
   //
   // NACHBESSERUNG 09.09.2026 (zweiter Testkauf mit echten Daten): Manche
   // Positionen haben Status "pruefen" UND erzeugen zusätzlich einen
@@ -79,7 +79,7 @@ export default function BriefPDF({ result, wohnung, adressen }) {
   // aber im Brief. Im Testkauf: Kopfzahl 456,87 €, im Brief nur 300,88 €,
   // Grundsteuer (+43 %) und Müllbeseitigung (+53 %) tauchten nicht auf.
   // Für einen förmlichen Einwand sind diese Abweichungen zu schwach (deshalb
-  // nicht in der Liste oben), für eine Bitte um Belegeinsicht nach § 259 BGB
+  // nicht in der Liste oben), für eine Bitte um Belegeinsicht nach § 556 Abs. 4 BGB
   // reichen sie: Darauf hat der Mieter ohnehin Anspruch. Jetzt stehen sie
   // als eigene Gruppe im Brief, Bericht und Brief passen zusammen.
   const erhoehtePositionen = (result.posten_bewertung || [])
@@ -108,7 +108,7 @@ export default function BriefPDF({ result, wohnung, adressen }) {
   // Prüfung vergleicht mit Durchschnittswerten. Ein unauffälliger Vergleich
   // beweist NICHT, dass die abgerechneten Kosten tatsächlich angefallen sind
   // oder der Umlageschlüssel richtig angewendet wurde — das zeigen nur die
-  // Originalbelege. Auf deren Einsicht hat jeder Mieter nach § 259 BGB
+  // Originalbelege. Auf deren Einsicht hat jeder Mieter nach § 556 Abs. 4 BGB
   // Anspruch, ohne einen Verdacht äußern zu müssen. Genau das ist hier der
   // Inhalt: eine sachliche, jederzeit berechtigte Aufforderung zur
   // Belegeinsicht — kein Vorwurf, keine Behauptung, kein leeres Blatt.
@@ -154,8 +154,8 @@ export default function BriefPDF({ result, wohnung, adressen }) {
       <Text style={s.absatz}>
         {{
           einwendungen: "nach Prüfung der Betriebskostenabrechnung für den Zeitraum 01.01." + wohnung.jahr + " bis 31.12." + wohnung.jahr + " erhebe ich gemäß § 556 Abs. 3 BGB fristgerecht Einwendungen gegen folgende Positionen:",
-          auskunft: "nach Prüfung der Betriebskostenabrechnung für den Zeitraum 01.01." + wohnung.jahr + " bis 31.12." + wohnung.jahr + " bitte ich Sie um Belegeinsicht nach § 259 BGB sowie um Auskunft zu folgenden Positionen, deren vertragliche Grundlage sich aus der Abrechnung nicht ergibt:",
-          belegeinsicht: "ich habe die Betriebskostenabrechnung für den Zeitraum 01.01." + wohnung.jahr + " bis 31.12." + wohnung.jahr + " geprüft. Die abgerechneten Beträge liegen im üblichen Rahmen; hierzu habe ich derzeit keine Einwendungen. Zur abschließenden Prüfung bitte ich Sie um Einsicht in die Originalbelege nach § 259 BGB.",
+          auskunft: "nach Prüfung der Betriebskostenabrechnung für den Zeitraum 01.01." + wohnung.jahr + " bis 31.12." + wohnung.jahr + " bitte ich Sie um Belegeinsicht nach § 556 Abs. 4 BGB sowie um Auskunft zu folgenden Positionen, deren vertragliche Grundlage sich aus der Abrechnung nicht ergibt:",
+          belegeinsicht: "ich habe die Betriebskostenabrechnung für den Zeitraum 01.01." + wohnung.jahr + " bis 31.12." + wohnung.jahr + " geprüft. Die abgerechneten Beträge liegen im üblichen Rahmen; hierzu habe ich derzeit keine Einwendungen. Zur abschließenden Prüfung bitte ich Sie um Einsicht in die Belege nach § 556 Abs. 4 BGB.",
         }[modus]}
       </Text>
       {modus === "belegeinsicht" && (
@@ -291,11 +291,21 @@ export default function BriefPDF({ result, wohnung, adressen }) {
       {/* Schlussabsatz angepasst 09.09.2026: Ohne einzige Beanstandung darf
           hier keine Korrektur und keine Rückerstattung gefordert werden, 
           das wäre sachlich falsch und würde den Mieter angreifbar machen. */}
+      {/* Belegeinsicht umgestellt 29.10.2026 (Freigabe Stefan): Seit 01.01.2025
+          steht das Einsichtsrecht in § 556 Abs. 4 BGB (Viertes
+          Bürokratieentlastungsgesetz, BGBl. 2024 I Nr. 323). Satz 2 erlaubt
+          dem Vermieter, die Belege elektronisch bereitzustellen. Einen
+          Anspruch auf "Übersendung der Originalbelege" gibt das Gesetz nicht
+          her; der Brief bittet deshalb um Belegeinsicht "gern per E-Mail".
+          Bewusst nicht länger als die alte Fassung: Ein längerer Satz schob
+          im Probedruck ohne Heizkosten-Angaben die Grußformel allein auf
+          eine neue Seite. Wortlaut geprüft auf gesetze-im-internet.de am
+          29.10.2026. */}
       <Text style={s.absatz}>
         {{
-          einwendungen: "Ich bitte um Übersendung der Originalbelege zur Einsichtnahme (§ 259 BGB), um nachvollziehbare Darlegung des Umlageschlüssels sowie um Korrektur der beanstandeten Positionen und Rückerstattung des zu viel gezahlten Betrags, soweit sich die Beanstandungen bestätigen.",
-          auskunft: "Ich bitte um Übersendung der Originalbelege zur Einsichtnahme (§ 259 BGB) sowie um nachvollziehbare Darlegung des Umlageschlüssels für die oben genannten Positionen. Sollte sich daraus eine nicht umlagefähige Position ergeben, behalte ich mir vor, hierauf zurückzukommen.",
-          belegeinsicht: "Bitte teilen Sie mir mit, wann und wo ich die Originalbelege einsehen kann, oder übersenden Sie mir Kopien. Ich bitte zusätzlich um nachvollziehbare Darlegung des angewendeten Umlageschlüssels. Sollten sich aus der Einsicht Beanstandungen ergeben, behalte ich mir vor, hierauf innerhalb der Frist des § 556 Abs. 3 BGB zurückzukommen.",
+          einwendungen: "Ich bitte um Belegeinsicht (§ 556 Abs. 4 BGB), gern per E-Mail, um nachvollziehbare Darlegung des Umlageschlüssels sowie um Korrektur der beanstandeten Positionen und Rückerstattung des zu viel gezahlten Betrags, soweit sich die Beanstandungen bestätigen.",
+          auskunft: "Ich bitte um Belegeinsicht (§ 556 Abs. 4 BGB), gern per E-Mail, sowie um nachvollziehbare Darlegung des Umlageschlüssels für die oben genannten Positionen. Sollte sich daraus eine nicht umlagefähige Position ergeben, behalte ich mir vor, hierauf zurückzukommen.",
+          belegeinsicht: "Bitte stellen Sie mir die Belege per E-Mail bereit oder nennen Sie mir einen Termin zur Einsicht. Ich bitte zusätzlich um nachvollziehbare Darlegung des angewendeten Umlageschlüssels. Sollten sich aus der Einsicht Beanstandungen ergeben, behalte ich mir vor, hierauf innerhalb der Frist des § 556 Abs. 3 BGB zurückzukommen.",
         }[modus]}
       </Text>
       {result.saldo > 0 && (
