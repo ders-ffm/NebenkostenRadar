@@ -2,6 +2,25 @@
 
 Alle wesentlichen Änderungen an diesem Projekt, mit Datum und Begründung. Dient der Nachvollziehbarkeit, damit auch ohne KI-Unterstützung verstanden werden kann, warum etwas so ist, wie es ist.
 
+## 29.10.2026 (zweiter Schritt) — Brief, Ergebnis, Startseite und AGB: Belegeinsicht nach § 556 Abs. 4 BGB
+
+### Anlass
+
+Im SEO/GEO-Lauf vom selben Tag fiel auf, dass das Einsichtsrecht seit 01.01.2025 ausdrücklich in § 556 Abs. 4 BGB steht (Satz 2: Der Vermieter darf die Belege elektronisch bereitstellen). Die Ratgeber wurden dort umgestellt; verkaufter Brief, Ergebnistexte, Startseite und AGB brauchten Stefans Freigabe. Freigabe Stefan am 29.10.2026, für die AGB ausdrücklich.
+
+### Geändert
+
+1. **Brief** (`src/pdf/BriefPDF.jsx`): § 259 BGB → § 556 Abs. 4 BGB in allen drei Fassungen (Einwendungen, Auskunft, Belegeinsicht). Statt „Übersendung der Originalbelege“, auf die das Gesetz keinen Anspruch gibt, bittet der Brief um Belegeinsicht „gern per E-Mail“ bzw. um elektronische Bereitstellung oder einen Termin. Die Sätze sind bewusst nicht länger als vorher: Eine erste, längere Fassung schob im Probedruck ohne Heizkosten-Angaben die Grußformel auf eine fast leere Seite (`npm run probedruck` meldete es).
+2. **Ergebnistexte** (`src/lib/analyse.js`): drei Hinweise auf § 556 Abs. 4 BGB umgestellt.
+3. **Startseite** (`Welcome.jsx`), **Werkzeug-Text** (`werkzeuge.js`), **FAQ** (`faq.js`), **Beispielbrief** (`beispiel.js`): § 556 Abs. 4 BGB.
+4. **AGB § 2 und Leistungsbeschreibung in der Vertragsmail** (`vertrag.js`): § 556 Abs. 4 BGB; `AGB_STAND` 29.10.2026. Inhaltlich ändert sich die Leistung nicht, nur die genannte Rechtsgrundlage.
+
+Quelle: § 556 Abs. 4 BGB (gesetze-im-internet.de, 29.10.2026), Art. 14 Nr. 5 Viertes Bürokratieentlastungsgesetz, BGBl. 2024 I Nr. 323.
+
+### Geprüft
+
+`npm run check` grün (33 Seiten, 0 Verstöße; 72 Konstellationen, 0 Verletzungen; 31 Eingaben). `npm run probedruck`: keine Satzfehler, Brief einseitig. Zusätzlich Brief in den Fassungen „Auskunft“ und „Belegeinsicht“ gerendert: Text korrekt, keine leeren Seiten.
+
 ## 29.10.2026 — SEO/GEO-Lauf: Belegeinsicht nach § 556 Abs. 4 BGB, Kurzantwort Widerspruch, Tabelle nach Wohnungsgröße, Überschrift Fristen-Artikel
 
 ### Anlass (Daten vom 29.10.2026)
