@@ -129,4 +129,4 @@ export const BEISPIEL_BRIEF =
   "Sehr geehrte Damen und Herren,\n\n" +
   "gegen Ihre Betriebskostenabrechnung für das Jahr 2024, zugegangen am 14.03.2025, erhebe ich fristgerecht Einwendungen.\n\n" +
   "Die Position „Kabelanschluss“ über 138,00 € ist nicht umlagefähig. Das Nebenkostenprivileg ist zum 1. Juli 2024 entfallen (§ 2 Nr. 15 BetrKV i. V. m. § 71 TKG). Die Position „Verwaltungskosten“ über 96,00 € gehört nach § 1 Abs. 2 Nr. 1 BetrKV ausdrücklich nicht zu den Betriebskosten.\n\n" +
-  "Ich fordere Sie auf, die Abrechnung um diese Positionen zu korrigieren. Für die Position „Hausmeister“ beantrage ich zudem Einsicht in die zugrunde liegenden Belege (§ 259 BGB).";
+  "Ich fordere Sie auf, die Abrechnung um diese Positionen zu korrigieren. Für die Position „Hausmeister“ beantrage ich zudem Einsicht in die zugrunde liegenden Belege (§ 556 Abs. 4 BGB).";
